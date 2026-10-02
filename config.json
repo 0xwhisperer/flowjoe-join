@@ -3,9 +3,5 @@
     "dvo": "https://dvo.flowjoe.app",
     "shalom": "https://shalom.flowjoe.app",
     "matt": "https://matt.flowjoe.app"
-  },
-  "retryMs": 15000,
-  "pollWaitMs": 20000,
-  "requestTimeoutMs": 15000,
-  "pollGraceMs": 10000
+  }
 }

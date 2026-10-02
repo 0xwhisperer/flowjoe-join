@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Coffee Mug Logo">
+  <!-- Mug body -->
+  <rect x="8" y="8" width="16" height="16" rx="3" fill="#ce7800"></rect>
+  
+  <!-- Coffee inside the mug -->
+  <rect x="9.5" y="9.5" width="13" height="10" rx="2" fill="#6b4226"></rect>
+  
+  <!-- Coffee surface with steam -->
+  <rect x="9.5" y="9.5" width="13" height="3" rx="1" fill="#8c5e3b"></rect>
+  
+  <!-- Steam -->
+  <path d="M13 7.5C13 6.5 14 6 14 5.5C14 5 13 4.5 13 3.5" stroke="#8c5e3b" stroke-width="1" stroke-linecap="round"></path>
+  <path d="M16 6.5C16 5.5 17 5 17 4.5C17 4 16 3.5 16 2.5" stroke="#8c5e3b" stroke-width="1" stroke-linecap="round"></path>
+  <path d="M19 7.5C19 6.5 20 6 20 5.5C20 5 19 4.5 19 3.5" stroke="#8c5e3b" stroke-width="1" stroke-linecap="round"></path>
+  
+  <!-- Mug handle -->
+  <path d="M 24 12 C 26.6 11.833 27.665 12.581 27.697 15.56 C 27.729 18.539 27.494 19.706 24.022 19.673" stroke="#ce7800" stroke-width="2" stroke-linecap="round" fill="none"></path>
+</svg><style>@media (prefers-color-scheme: light) { :root { filter: none; } }
+@media (prefers-color-scheme: dark) { :root { filter: none; } }
+</style></svg>

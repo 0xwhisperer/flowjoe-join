@@ -3522,7 +3522,7 @@
   }
 
   .gallery-inline-audio-cover-fallback {
-    background-image: url("/src/assets/album-art-placeholder.png");
+    background-image: url("../assets/album-art-placeholder.png");
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;

@@ -1,267 +1,2053 @@
 <!doctype html>
-<html lang="en" class="theme-modern-ember">
+<html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; media-src https://dvo.flowjoe.app https://shalom.flowjoe.app https://matt.flowjoe.app; font-src 'self'; connect-src 'self' https://dvo.flowjoe.app https://shalom.flowjoe.app https://matt.flowjoe.app; base-uri 'none'; form-action 'none'" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta charset="UTF-8" />
+    <meta name="flowjoe-profile" content="guest" />
+    <script src="boot/framebust.b6e4dceb977cdbc4.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Content Security Policy sets the allowed sources for various content types and scripts -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self'; connect-src 'self' https://dvo.flowjoe.app https://shalom.flowjoe.app https://matt.flowjoe.app; frame-src 'none'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'" />
     <meta name="referrer" content="no-referrer" />
     <title>FlowJoe</title>
-    <link rel="icon" href="data:," />
-    <!-- G0/T4b-1 PROTOTYPE guest page (throwaway). Plain ES modules, no build step. Markup and styles are the approved
-     mockup's (docs/IMPLEMENTATION/mockups/browser-collaboration-presence.html); the Flow view DOM is the real app's
-     (the mockup's app snapshot) filled with live data. Every owner- or guest-supplied string is written with
-     textContent, never as HTML. -->
-    <!-- The app's own stylesheets, in the order src/preBootstrap.js loads them -->
-    <!-- Self-hosted (T4b-1 loads nothing from a third-party host): the Font Awesome Free icons and the font families the five themes use. See vendor-assets/THIRD_PARTY_NOTICES.md. -->
-    <link rel="stylesheet" href="/vendor-assets/font-awesome/fontawesome-subset.css" />
-    <link rel="stylesheet" href="/vendor-assets/fonts/fonts.css" />
-    <link rel="stylesheet" href="/src/css/00-layer-order.css" />
-    <link rel="stylesheet" href="/src/css/z-index-tokens.css" />
-    <link rel="stylesheet" href="/src/css/themes.css" />
-    <link rel="stylesheet" href="/src/css/node-themes.css" />
-    <link rel="stylesheet" href="/src/css/styles-variables.css" />
-    <link rel="stylesheet" href="/src/css/styles-layout.css" />
-    <link rel="stylesheet" href="/src/css/styles-search.css" />
-    <link rel="stylesheet" href="/src/css/appRail.css" />
-    <link rel="stylesheet" href="/src/css/styles-tree.css" />
-    <link rel="stylesheet" href="/src/css/styles-gallery-horizontal.css" />
-    <link rel="stylesheet" href="/src/css/repoFileExplorerView.css" />
-    <link rel="stylesheet" href="/src/css/sourceControlPanel.css" />
-    <link rel="stylesheet" href="/src/css/repoMergeConflictEditor.css" />
-    <link rel="stylesheet" href="/src/css/styles-gallery-vertical.css" />
-    <link rel="stylesheet" href="/src/css/styles-gallery-notes.css" />
-    <link rel="stylesheet" href="/src/css/styles-settings.css" />
-    <link rel="stylesheet" href="/src/css/styles-themes.css" />
-    <link rel="stylesheet" href="/src/css/styles-browser.css" />
-    <link rel="stylesheet" href="/src/css/tags.css" />
-    <link rel="stylesheet" href="/src/css/gallery-scrubber.css" />
-    <link rel="stylesheet" href="/src/css/stack-styles.css" />
-    <link rel="stylesheet" href="/src/css/buttons.css" />
-    <link rel="stylesheet" href="/src/css/tooltip.css" />
-    <link rel="stylesheet" href="/src/css/confetti.css" />
-    <link rel="stylesheet" href="/src/css/z-index-fix.css" />
-    <link rel="stylesheet" href="/src/css/onboarding.css" />
-    <link rel="stylesheet" href="/src/components/AIComponents.css" />
-    <link rel="stylesheet" href="/src/css/AIAssistModal.css" />
-    <link rel="stylesheet" href="/src/css/AIAssistModalSendToSlot.css" />
-    <link rel="stylesheet" href="/src/css/AIAssistModalSpellCheckShell.css" />
-    <link rel="stylesheet" href="/src/css/AIAssistModalChatImageGenCard.css" />
-    <link rel="stylesheet" href="/src/css/AIAssistModalChatHistoryPopup.css" />
-    <link rel="stylesheet" href="/src/css/AIAssistModalResizeJsonContext.css" />
-    <link rel="stylesheet" href="/src/css/AIAssistModalChatConversationActions.css" />
-    <link rel="stylesheet" href="/src/css/AIAssistModalChatMisc.css" />
-    <link rel="stylesheet" href="/src/css/AIAssistModalChatInput.css" />
-    <link rel="stylesheet" href="/src/css/AIAssistModalJoePet.css" />
-    <link rel="stylesheet" href="/src/css/AIAssistModalPill.css" />
-    <link rel="stylesheet" href="/src/css/AIAssistModalSchedulerRunnow.css" />
-    <link rel="stylesheet" href="/src/css/AIAssistModalImageRedirect.css" />
-    <link rel="stylesheet" href="/src/css/AIAssistModalTreePreview.css" />
-    <link rel="stylesheet" href="/src/css/AIAssistModalChatHeaderControls.css" />
-    <link rel="stylesheet" href="/src/css/AIAssistModalApprovalCard.css" />
-    <link rel="stylesheet" href="/src/css/AIAssistModalFileChips.css" />
-    <link rel="stylesheet" href="/src/css/AIAssistModalMemories.css" />
-    <link rel="stylesheet" href="/src/css/AIAssistModalSpellcheckReview.css" />
-    <link rel="stylesheet" href="/src/css/AIAssistModalImageHistory.css" />
-    <link rel="stylesheet" href="/src/css/AIAssistModalFontScale.css" />
-    <link rel="stylesheet" href="/src/css/AIAssistModalImageModalButtons.css" />
-    <link rel="stylesheet" href="/src/css/AIAssistModalMultiAttach.css" />
-    <link rel="stylesheet" href="/src/css/AIAssistModalChatAttachment.css" />
-    <link rel="stylesheet" href="/src/css/AIAssistModalMessageAttachment.css" />
-    <link rel="stylesheet" href="/src/css/AIAssistModalJsonPreview.css" />
-    <link rel="stylesheet" href="/src/css/AIAssistModalGeneratePrompt.css" />
-    <link rel="stylesheet" href="/src/css/AIAssistModalGenerateOptions.css" />
-    <link rel="stylesheet" href="/src/css/AIAssistModalGenerateReference.css" />
-    <link rel="stylesheet" href="/src/css/AIAssistModalGeneratePreview.css" />
-    <link rel="stylesheet" href="/src/css/AIAssistModalGeneratePromptHistory.css" />
-    <link rel="stylesheet" href="/src/css/AIAssistModalTranscribeSource.css" />
-    <link rel="stylesheet" href="/src/css/AIAssistModalTranscribeOptions.css" />
-    <link rel="stylesheet" href="/src/css/AIAssistModalTranscribeResult.css" />
-    <link rel="stylesheet" href="/src/css/AIAssistModalGenerateTranscribeResponsive.css" />
-    <link rel="stylesheet" href="/src/css/joeDock.css" />
-    <link rel="stylesheet" href="/src/css/joeDockChat.css" />
-    <link rel="stylesheet" href="/src/css/joeDockTabs.css" />
-    <link rel="stylesheet" href="/src/css/tiptap-editor.css" />
-    <link rel="stylesheet" href="/src/css/fj-rail-collapse.css" />
-    <link rel="stylesheet" href="/src/css/terminalPanel.css" />
-    <link rel="stylesheet" href="/src/css/mcpBridgeSettings.css" />
-    <link rel="stylesheet" href="/src/css/statusFooter.css" />
-    <link rel="stylesheet" href="/src/css/fa-interop.css" />
-    <link rel="stylesheet" href="/src/css/activityPanel.css" />
-    <link rel="stylesheet" href="/src/css/dropin/01-density-compact.css" />
-    <link rel="stylesheet" href="/src/css/dropin/02-density-rules.css" />
-    <link rel="stylesheet" href="/src/css/dropin/03-shape-soft.css" />
-    <link rel="stylesheet" href="/src/css/dropin/04-theme-modern.css" />
-    <link rel="stylesheet" href="/src/css/dropin/05-shape-modern-density.css" />
-    <link rel="stylesheet" href="/src/css/dropin/06-joe-dock-density.css" />
-    <link rel="stylesheet" href="/snapshot/snapshot.css" />
-    <link rel="stylesheet" href="/snapshot/snapshot-modals.css" />
-    <link rel="stylesheet" id="collab-style" href="/collab.css" />
-    <link rel="stylesheet" href="/media.css" />
-    <link rel="stylesheet" href="/images.css" />
+    <link rel="icon" type="image/png" href="src/favicons/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="src/favicons/favicon.svg" />
+    <link rel="shortcut icon" href="src/favicons/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="src/favicons/apple-touch-icon.png" />
+    <!-- <link rel="manifest" href="src/favicons/site.webmanifest" /> -->
+    <!-- FontAwesome CDN for icons -->
+    <link rel="stylesheet" href="vendor/fontawesome-free-6.5.0/css/all.min.css" />
+    <!-- Preload the FA Regular (400) webfont so fa-regular icons (e.g. the bookmark
+         star outline) don't briefly fall back to their solid glyph before it loads. -->
+    <link rel="preload" as="font" type="font/woff2" crossorigin="anonymous" href="vendor/fontawesome-free-6.5.0/webfonts/fa-regular-400.woff2" />
+    <!-- App typography families -->
+    <link rel="stylesheet" href="vendor/fonts/fonts.css" />
+    <script src="boot/prebootstrap.55cf98fd7fa5479d.js"></script>
+    <!-- canvas-confetti is now bundled (see VENDOR_GLOBALS in scripts/build-bundle-esm.js) — no CDN dependency. -->
   </head>
   <body>
-    <div id="snapRoot"></div>
-    <div id="gsModalHost"></div>
-    <div class="notification-container toast-bottom-right" id="notification-container" aria-live="polite"></div>
-
-    <!-- 1 · Guest entry — sits on the app's real modal overlay (#modal) and uses the app's tokens, fonts,
-     logo, text input and .btn; the panel's own hierarchy is the design the user chose (roomier than the
-     app's compact confirm dialogs, on purpose: it is the first thing a guest ever sees) -->
-    <div id="modal" class="cx-join-modal" hidden>
-      <div class="cx-join" role="dialog" aria-modal="true" aria-labelledby="cxJoinTitle" aria-describedby="cxJoinLede">
-        <div class="cx-join-top">
-          <!-- the real header lockup, copied from index.html's .topbar (same classes, same markup) -->
-          <div class="cx-brand-row">
-            <span class="logo-svg"><img src="/src/assets/coffee-mug-logo.svg" alt="" /></span>
-            <div class="topbar-brand-stack">
-              <h1>FlowJoe</h1>
-              <div class="topbar-subtext">Visual Intelligence Workspace</div>
-            </div>
-          </div>
-          <span class="cx-invite-from" data-cx="inviteFrom">Invitation from the owner</span>
-        </div>
-        <h2 class="cx-join-title" id="cxJoinTitle">
-          Choose your mark to join
-          <span id="cxJoinFlow">a shared Flow</span>
-        </h2>
-        <p class="cx-join-lede" id="cxJoinLede">Everyone in the shared Flow sees your mark beside your name and on every change you make.</p>
-
-        <div class="cx-membercard" id="cxMemberCard">
-          <div class="cx-join-preview" id="cxJoinPreview" aria-hidden="true"></div>
-          <div class="cx-member-main">
-            <label class="ob-field-label cx-field-label" for="cxNameInput">Your name</label>
-            <div class="cx-name-wrap" id="cxNameWrap">
-              <input type="text" id="cxNameInput" class="ob-input cx-name-input" maxlength="60" placeholder="Your name" autocomplete="nickname" spellcheck="false" aria-describedby="cxNameErr" />
-              <span class="cx-name-count" id="cxNameCount" aria-hidden="true">0/40</span>
-              <i class="fa-solid fa-pen cx-name-pen" id="cxNamePen" aria-hidden="true"></i>
-            </div>
-            <p class="cx-name-err" id="cxNameErr" role="alert" hidden></p>
-            <div class="cx-who">
-              <span class="cx-chip edit" id="cxJoinRole">
-                <i class="fa-solid fa-pen"></i>
-                <span>Can edit</span>
-              </span>
-              <span class="cx-meta" id="cxJoinScope">Shared Flow</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="cx-section">
-          <span class="ob-field-label cx-section-label" id="cxMarkLabel">Your mark</span>
-          <span class="cx-section-meta">
-            12 marks · pick one ·
-            <i class="fa-solid fa-star" aria-hidden="true"></i>
-            suggested for you
-          </span>
-        </div>
-        <div class="cx-mark-grid" id="cxMarkGrid" role="radiogroup" aria-labelledby="cxMarkLabel" aria-required="true"></div>
-        <p class="cx-join-hint" id="cxJoinHint" aria-live="polite">Choose a mark to continue.</p>
-
-        <div class="cx-join-foot">
-          <span class="cx-remember">
-            <i class="fa-solid fa-bookmark"></i>
-            This browser remembers your name and mark, so you won't be asked again.
-          </span>
-          <button class="ob-btn primary cx-primary" type="button" id="cxJoinBtn" disabled>Join shared Flow</button>
-        </div>
+    <script src="boot/density.92dc4c7dfa1e65e7.js"></script>
+    <!-- Notification container -->
+    <div class="notification-container" id="notification-container"></div>
+    
+    <!-- Header -->
+    <div class="topbar">
+      <span class="logo-svg">
+        <img src="src/assets/coffee-mug-logo.svg" alt="Coffee Mug Logo" />
+      </span>
+      <!-- prettier-ignore -->
+      <div class="topbar-brand-stack">
+        <h1>FlowJoe</h1>
+        <div class="topbar-subtext" data-i18n="tooltips.topbar.tagline">Visual Intelligence Workspace</div>
       </div>
-    </div>
 
-    <!-- 8 · Owner unavailable — same dialog structure, branding, type and spacing as the entry dialog -->
-    <div class="cx-guest-screen cx-join-modal" id="cxUnavailable" hidden>
-      <div class="cx-join" role="status" aria-labelledby="cxLandTitle">
-        <div class="cx-join-top">
-          <div class="cx-brand-row">
-            <span class="logo-svg"><img src="/src/assets/coffee-mug-logo.svg" alt="" /></span>
-            <div class="topbar-brand-stack">
-              <h1>FlowJoe</h1>
-              <div class="topbar-subtext">Visual Intelligence Workspace</div>
-            </div>
-          </div>
-          <span class="cx-invite-from" data-cx="inviteFrom">Invitation from the owner</span>
+      <!-- Browser controls (shown when browser-view-active, positioned above gallery) -->
+      <div id="browser-controls" class="browser-controls">
+        <button class="icon-btn" id="browser-back-btn" data-tooltip="Back|" data-position="right" data-align="left" aria-label="Browser back" data-i18n-attr="data-tooltip:tooltips.browserShell.back;aria-label:tooltips.browserShell.backAriaLabel">
+          <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <button class="icon-btn" id="browser-forward-btn" data-tooltip="Forward|" data-position="right" data-align="left" aria-label="Browser forward" data-i18n-attr="data-tooltip:tooltips.browserShell.forward;aria-label:tooltips.browserShell.forwardAriaLabel">
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+        <button class="icon-btn" id="browser-home-btn" data-tooltip="Home|" data-position="right" data-align="left" aria-label="Browser home" data-i18n-attr="data-tooltip:tooltips.browserShell.home;aria-label:tooltips.browserShell.homeAriaLabel">
+          <i class="fa-solid fa-house"></i>
+        </button>
+	        <button class="icon-btn" id="browser-refresh-btn" data-tooltip="Refresh|" data-position="right" data-align="left" aria-label="Browser refresh" data-i18n-attr="data-tooltip:tooltips.browserShell.refresh;aria-label:tooltips.browserShell.refreshAriaLabel">
+	          <i class="fa-solid fa-rotate-right"></i>
+	        </button>
+	        <button class="icon-btn" id="browser-sleep-inactive-btn" data-tooltip="Sleep Inactive Tabs|" data-position="right" data-align="left" aria-label="Sleep inactive browser tabs" data-i18n-attr="data-tooltip:tooltips.browserShell.sleepInactiveTabs;aria-label:tooltips.browserShell.sleepInactiveTabsAriaLabel">
+	          <i class="fa-solid fa-moon"></i>
+	        </button>
+	        <div class="browser-address-wrap">
+          <input type="text" id="browser-address-bar" class="browser-address-bar" placeholder="Enter URL..." aria-label="Browser address bar" data-i18n-attr="aria-label:tooltips.browserShell.addressBar">
+          <span id="browser-address-loading-indicator" class="browser-address-loading-indicator" aria-hidden="true"></span>
+          <span id="browser-tab-count-pill" class="browser-tab-count-pill" data-tooltip="Open Tabs (1)|" data-position="right" data-align="left" aria-label="Open browser tabs">1</span>
+          <button class="browser-bookmark-star" id="browser-bookmark-star-btn" data-sound-key="tree_select" data-tooltip="Bookmark Page|" data-position="right" data-align="left" aria-label="Bookmark current page" data-i18n-attr="data-tooltip:tooltips.browserShell.bookmarkPage;aria-label:tooltips.browserShell.bookmarkPageAriaLabel">
+            <i class="fa-regular fa-star"></i>
+          </button>
         </div>
-        <h2 class="cx-join-title" id="cxLandTitle" data-cx="flowName">Shared Flow</h2>
-        <p class="cx-join-lede" id="cxLandLede">The owner's FlowJoe is offline. Keep this page open and it connects as soon as it's back.</p>
-        <div class="cx-status-card">
-          <span id="cxLandOwner"></span>
-          <div class="cx-status-main">
-            <div class="cx-status-name">
-              <span data-cx="ownerName">The owner</span>
-              <span class="cx-chip owner">
-                <i class="fa-solid fa-crown"></i>
-                Owner · offline
-              </span>
-            </div>
-            <ul class="cx-status-list">
-              <li>
-                <i class="fa-solid fa-check"></i>
-                Your invitation is still valid
-              </li>
-              <li>
-                <i class="fa-solid fa-check"></i>
-                <span id="cxLandRemember">Your mark and name are remembered on this browser</span>
-              </li>
-            </ul>
+        <button class="icon-btn" id="browser-go-btn" data-tooltip="Go|" data-position="right" data-align="left" aria-label="Go to URL" data-i18n-attr="data-tooltip:tooltips.browserShell.goToUrl;aria-label:tooltips.browserShell.goToUrlAriaLabel">
+          <i class="fa-solid fa-arrow-right-to-bracket"></i>
+        </button>
+        <button class="icon-btn" id="browser-send-to-slot-btn" data-tooltip="Send to Gallery|" data-position="right" data-align="left" aria-label="Send to Gallery" data-i18n-attr="data-tooltip:tooltips.browserShell.sendToGallery;aria-label:tooltips.browserShell.sendToGallery">
+          <i class="fa-solid fa-download"></i>
+        </button>
+      </div>
+      <div id="browser-find-bar" class="browser-find-bar" role="search" aria-label="Find on page" hidden data-i18n-attr="aria-label:tooltips.browserShell.findOnPage">
+        <input type="text" id="browser-find-input" class="browser-find-input" placeholder="Find on page" aria-label="Find on page" autocomplete="off" spellcheck="false" data-i18n-attr="aria-label:tooltips.browserShell.findOnPage;placeholder:tooltips.browserShell.findOnPage">
+        <span id="browser-find-count" class="browser-find-count" aria-live="polite">0/0</span>
+        <span class="browser-find-divider" aria-hidden="true"></span>
+        <button type="button" id="browser-find-prev-btn" class="browser-find-btn" aria-label="Previous match" title="Previous (Shift+Enter)" data-i18n-attr="title:tooltips.browserShell.findPrevious;aria-label:tooltips.browserShell.findPreviousAriaLabel">
+          <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+        </button>
+        <button type="button" id="browser-find-next-btn" class="browser-find-btn" aria-label="Next match" title="Next (Enter)" data-i18n-attr="title:tooltips.browserShell.findNext;aria-label:tooltips.browserShell.findNextAriaLabel">
+          <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+        </button>
+        <button type="button" id="browser-find-close-btn" class="browser-find-btn browser-find-close" aria-label="Close find" title="Close (Esc)" data-i18n-attr="title:tooltips.browserShell.findClose;aria-label:tooltips.browserShell.findCloseAriaLabel">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <div style="margin-left: auto; display: flex; gap: var(--header-gap); align-items: center">
+        <!-- 2026-10-03: Changes sits LEFT of the whole sharing group so the sharing pill, avatars, "+" and the Share button read as one cluster. -->
+        <div
+          id="header-unsaved-indicator"
+          class="topbar-unsaved-indicator"
+          aria-live="polite"
+          aria-hidden="true"
+          data-tooltip="Last export:|Export now?"
+          data-i18n-attr="data-tooltip:modals.eventListeners.lastExportExportNowTooltip"
+          data-tooltip-placement="bottom"
+          data-tooltip-align="end"
+        >
+          <span class="topbar-unsaved-indicator-dot" aria-hidden="true"></span>
+          <span class="topbar-unsaved-indicator-text" data-i18n="modals.eventListeners.changes">Changes</span>
+        </div>
+        <!-- TEMPORARY dev-mode owner identity (replaced by account login). Hidden unless the desktop bridge loaded the owner list; built by ownerAvatarController.js. -->
+        <div id="owner-presence" class="cx-presence" hidden>
+          <div class="cx-stack">
+            <button type="button" id="owner-avatar-btn" class="cx-member" aria-haspopup="menu" aria-expanded="false" aria-controls="owner-avatar-menu" data-tooltip-placement="bottom" data-tooltip-align="end" aria-label="Sharing identity"></button>
+            <button type="button" id="owner-seat" class="cx-seat" aria-disabled="true" data-tooltip-placement="bottom" data-tooltip-align="end" aria-label="Invite someone"><i class="fa-solid fa-plus" aria-hidden="true"></i></button>
+          </div>
+          <div id="owner-avatar-menu" class="file-menu-dropdown owner-menu" role="menu" aria-hidden="true" aria-label="Sharing identity" data-i18n-attr="aria-label:settings.data.ownerAvatar.menuAria"></div>
+        </div>
+        <!-- Owner Share button (built by shareModalController.js; hidden unless the desktop sharing bridge exists). -->
+        <div id="share-btn-wrap" class="tooltip-wrapper header-tooltip-wrapper share-btn-wrap" hidden>
+          <button type="button" class="icon-btn" id="share-btn" data-tooltip="Share this Flow|Invite people to view or edit it in their browser" data-tooltip-placement="bottom" data-tooltip-align="end" aria-haspopup="dialog" aria-label="Share this Flow"><i class="fa-solid fa-user-plus"></i></button>
+        </div>
+        <div
+          id="header-audio-player"
+          class="header-audio-player is-hidden"
+          aria-hidden="true"
+        >
+          <button
+            type="button"
+            id="header-audio-restart-btn"
+            class="header-audio-btn"
+            data-sound-key="tree_select"
+            aria-label="Restart current audio. Double-click for previous track."
+            data-i18n-attr="aria-label:tooltips.browserShell.restartAudio"
+          >
+            <i class="fa-solid fa-rotate-left"></i>
+          </button>
+          <button
+            type="button"
+            id="header-audio-next-btn"
+            class="header-audio-btn"
+            data-sound-key="tree_select"
+            aria-label="Next track"
+            data-i18n-attr="aria-label:tooltips.browserShell.nextTrack"
+          >
+            <i class="fa-solid fa-forward-step"></i>
+          </button>
+          <div
+            id="header-audio-seek-panel"
+            class="header-audio-seek-panel"
+            aria-hidden="true"
+          >
+            <input
+              type="range"
+              id="header-audio-seek-range"
+              class="header-audio-seek-range"
+              min="0"
+              max="1000"
+              value="0"
+              step="1"
+              aria-label="Seek current audio"
+              data-i18n-attr="aria-label:tooltips.browserShell.seekAudio"
+            />
+          </div>
+          <button
+            type="button"
+            id="header-audio-rate-btn"
+            class="header-audio-btn header-audio-rate-btn"
+            data-sound-key="tree_select"
+            aria-label="Change audio playback speed"
+          >
+            1x
+          </button>
+          <button
+            type="button"
+            id="header-audio-playlist-btn"
+            class="header-audio-btn"
+            data-sound-key="tree_select"
+            aria-label="Open audio playlist"
+            data-i18n-attr="aria-label:tooltips.browserShell.openAudioPlaylist"
+          >
+            <i class="fa-solid fa-list-ul"></i>
+          </button>
+          <button
+            type="button"
+            id="header-audio-play-btn"
+            class="header-audio-btn header-audio-btn-primary"
+            data-sound-key="tree_select"
+            aria-label="Play or pause header audio player"
+          >
+            <i class="fa-solid fa-play"></i>
+          </button>
+          <span
+            id="header-audio-play-tooltip"
+            class="header-audio-play-tooltip"
+            aria-hidden="true"
+            data-i18n-html="tooltips.browserShell.streamAudioTooltipHtml"
+          >Stream audio from your Flow</span>
+          <audio id="header-audio-element" preload="metadata"></audio>
+        </div>
+
+        <!-- File dropdown -->
+        <div id="file-menu-wrapper" style="position: relative;">
+          <button class="icon-btn" id="file-menu-btn" data-tooltip="File Menu: New, Import, Export" data-tooltip-placement="bottom" data-tooltip-align="end" aria-haspopup="true" aria-expanded="false" aria-label="File Menu: New, Import, Export" data-i18n-attr="data-tooltip:tooltips.browserShell.fileMenu;aria-label:tooltips.browserShell.fileMenu">
+            <i class="fa-solid fa-folder-open"></i>
+          </button>
+          <div id="file-menu-dropdown" class="file-menu-dropdown" role="menu" aria-hidden="true">
+            <button class="file-menu-item" id="new-flow" role="menuitem">
+              <div class="file-menu-item-icon"><i class="fa-solid fa-file"></i></div>
+              <div class="file-menu-item-text">
+                <span class="file-menu-item-label" data-i18n="tooltips.fileMenu.createNewFlow">Create New Flow</span>
+                <span class="file-menu-item-desc" data-i18n="tooltips.fileMenu.createNewFlowDesc">Start a fresh Flow with a new empty tree. Shortcut: Cmd+N.</span>
+              </div>
+            </button>
+            <button class="file-menu-item" id="import-json" role="menuitem">
+              <div class="file-menu-item-icon"><i class="fa-solid fa-folder-open"></i></div>
+              <div class="file-menu-item-text">
+                <span class="file-menu-item-label" data-i18n="tooltips.fileMenu.importFlow">Import Flow</span>
+                <span class="file-menu-item-desc" data-i18n="tooltips.fileMenu.importFlowDesc">Import a .fj, .zip, or .json Flow file. Shortcut: Cmd+I / Ctrl+I.</span>
+              </div>
+            </button>
+            <button class="file-menu-item" id="import-node-json" role="menuitem">
+              <div class="file-menu-item-icon"><i class="fa-solid fa-list-check"></i></div>
+              <div class="file-menu-item-text">
+                <span class="file-menu-item-label" data-i18n="tooltips.fileMenu.importNodes">Import Node(s)</span>
+                <span class="file-menu-item-desc" data-i18n="tooltips.fileMenu.importNodesDesc">Cherry-pick one or more nodes from a .fj, .zip, or .json file without importing the whole Flow.</span>
+              </div>
+            </button>
+            <button class="file-menu-item" id="export-json" role="menuitem">
+              <div class="file-menu-item-icon"><i class="fa-solid fa-save"></i></div>
+              <div class="file-menu-item-text">
+                <span class="file-menu-item-label" data-i18n="tooltips.fileMenu.exportFlow">Export Flow</span>
+                <span class="file-menu-item-desc" data-i18n="tooltips.fileMenu.exportFlowDesc">Export as full package (.fj) or data-only (.json). Shortcut: Cmd+S / Ctrl+S.</span>
+              </div>
+            </button>
+            <button class="file-menu-item" id="import-images" role="menuitem" hidden>
+              <div class="file-menu-item-icon"><i class="fa-solid fa-images"></i></div>
+              <div class="file-menu-item-text">
+                <span class="file-menu-item-label" data-i18n="tooltips.fileMenu.bulkImportImages">Bulk Import Images</span>
+                <span class="file-menu-item-desc" data-i18n="tooltips.fileMenu.bulkImportImagesDesc">Import folders of images, like Mobbin exports</span>
+              </div>
+            </button>
           </div>
         </div>
-        <div class="cx-join-foot">
-          <span class="cx-remember" id="cxRetryText" aria-live="polite">
+
+        <button class="icon-btn" id="sounds-toggle-btn" data-tooltip="Sound FX on|" data-tooltip-placement="bottom" data-tooltip-align="end" aria-label="Sound effects toggle" data-i18n-attr="data-tooltip:tooltips.browserShell.soundEffectsToggle;aria-label:tooltips.browserShell.soundEffectsToggle">
+          <i class="fa-solid fa-volume-high"></i>
+        </button>
+
+        <!-- Cache-busting reload -->
+        <div class="tooltip-wrapper header-tooltip-wrapper">
+          <button class="icon-btn" id="cache-bust-btn" data-tooltip-placement="bottom" data-tooltip-align="end" aria-label="Cache-busting reload" data-i18n-attr="aria-label:tooltips.browserShell.cacheBustingReload">
             <i class="fa-solid fa-rotate"></i>
-            Checking again in 15 s
-          </span>
-          <button class="ob-btn" type="button" id="cxRetryBtn">Try now</button>
+          </button>
+          <span class="tooltip-content" data-i18n="tooltips.browserShell.cacheBustingReload">Cache-busting reload</span>
+        </div>
+
+        <!-- Browser view toggle -->
+        <div class="tooltip-wrapper header-tooltip-wrapper browser-tooltip-wrapper">
+          <button class="icon-btn" id="browser-btn" data-tooltip-placement="bottom" data-tooltip-align="end" aria-label="Toggle embedded browser view" data-i18n-attr="aria-label:tooltips.browserShell.toggleBrowserViewAriaLabel">
+            <i class="fa-solid fa-globe"></i>
+            <span class="browser-btn-audio-indicator" aria-hidden="true" hidden>
+              <i class="fa-solid fa-volume-high"></i>
+            </span>
+          </button>
+          <span class="tooltip-content" data-i18n="tooltips.browserShell.toggleBrowserView">Toggle Browser View (B)</span>
+        </div>
+
+        <!-- FlowJoe Forge terminal toggle (desktop-only) -->
+        <div class="tooltip-wrapper header-tooltip-wrapper">
+          <button class="icon-btn" id="terminal-btn" data-tooltip-placement="bottom" data-tooltip-align="end" aria-label="Toggle terminal" aria-pressed="false" data-i18n-attr="aria-label:tooltips.browserShell.toggleTerminalAriaLabel">
+            <i class="fa-solid fa-terminal"></i>
+          </button>
+          <span class="tooltip-content" data-i18n="tooltips.browserShell.toggleTerminal">Toggle Terminal (Ctrl/Cmd+`)</span>
+        </div>
+
+        <div class="topbar-settings-group">
+          <div class="topbar-settings-separator" aria-hidden="true"></div>
+          <div class="tooltip-wrapper header-tooltip-wrapper">
+            <button class="icon-btn" id="settings-btn" data-tooltip-placement="bottom" data-tooltip-align="end" aria-label="Settings" data-i18n-attr="aria-label:tooltips.browserShell.settings">
+              <i class="fa-solid fa-gear"></i>
+            </button>
+            <span class="tooltip-content" data-i18n-html="tooltips.browserShell.settingsTooltipHtml">Settings<br />Cmd/Ctrl+,</span>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- 8b · Invitation ended (expired or turned off) — same family -->
-    <div class="cx-guest-screen cx-join-modal" id="cxEnded" hidden>
-      <div class="cx-join" role="status" aria-labelledby="cxEndedTitle">
-        <div class="cx-join-top">
-          <div class="cx-brand-row">
-            <span class="logo-svg"><img src="/src/assets/coffee-mug-logo.svg" alt="" /></span>
-            <div class="topbar-brand-stack">
-              <h1>FlowJoe</h1>
-              <div class="topbar-subtext">Visual Intelligence Workspace</div>
+    <div id="browser-tab-shell" class="browser-tab-shell" aria-label="Browser tab bar" data-i18n-attr="aria-label:tooltips.browserShell.tabBarAriaLabel">
+      <button type="button" id="browser-tab-duck-btn" class="browser-tab-row-control browser-tab-duck-btn" aria-label="Duck browser view" title="Duck browser" data-i18n-attr="title:tooltips.browserShell.duckBrowser;aria-label:tooltips.browserShell.duckBrowserAriaLabel">
+        <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+      </button>
+      <div id="browser-tab-strip" class="browser-tab-strip" role="tablist" aria-label="Browser tabs" data-i18n-attr="aria-label:tooltips.browserShell.tabsAriaLabel">
+        <div id="browser-tab-current" class="browser-tab active" role="tab" aria-selected="true" title="Current browser tab" data-i18n-attr="title:tooltips.browserShell.currentBrowserTab">
+          <i class="fa-solid fa-globe browser-tab-icon" aria-hidden="true"></i>
+          <span id="browser-tab-title" class="browser-tab-title">New Tab</span>
+          <button type="button" id="browser-tab-close-btn" class="browser-tab-close" aria-label="Close browser tab" data-i18n-attr="aria-label:tooltips.browserShell.closeBrowserTab">
+            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+          </button>
+        </div>
+        <button type="button" id="browser-new-tab-btn" class="browser-tab-new" aria-label="New browser tab" data-i18n-attr="aria-label:tooltips.browserShell.newBrowserTab">
+          <i class="fa-solid fa-plus" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="browser-tab-overflow-controls" aria-label="Browser tab overflow controls" data-i18n-attr="aria-label:tooltips.browserShell.tabOverflowControlsAriaLabel">
+        <button type="button" id="browser-tab-scroll-left-btn" class="browser-tab-overflow-btn browser-tab-scroll-btn browser-tab-scroll-left" aria-label="Scroll browser tabs left" hidden data-i18n-attr="aria-label:tooltips.browserShell.scrollTabsLeft">
+          <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+        </button>
+        <button type="button" id="browser-tab-scroll-right-btn" class="browser-tab-overflow-btn browser-tab-scroll-btn browser-tab-scroll-right" aria-label="Scroll browser tabs right" hidden data-i18n-attr="aria-label:tooltips.browserShell.scrollTabsRight">
+          <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+        </button>
+      </div>
+      <button type="button" id="browser-bookmarks-btn" class="browser-tab-row-control browser-tab-bookmarks-btn" data-tooltip="Bookmarks|" data-position="bottom" aria-label="Bookmarks" title="Bookmarks" data-i18n-attr="data-tooltip:tooltips.browserShell.bookmarks;aria-label:tooltips.browserShell.bookmarks;title:tooltips.browserShell.bookmarks">
+        <i class="fa-solid fa-bookmark" aria-hidden="true"></i>
+      </button>
+      <button type="button" id="browser-tab-exit-btn" class="browser-tab-row-control browser-tab-exit-btn" aria-label="Close browser view" title="Close browser" data-i18n-attr="title:tooltips.browserShell.closeBrowser;aria-label:tooltips.browserShell.closeBrowserAriaLabel">
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
+    </div>
+      <div id="browser-tab-group-rail" class="browser-tab-group-rail" aria-label="Browser tab groups" hidden data-i18n-attr="aria-label:tooltips.browserShell.tabGroupsRailAriaLabel">
+      <div id="browser-content-rail-title" class="browser-content-rail-title" aria-hidden="true">GROUPS</div>
+      <form id="browser-tab-group-create-form" class="browser-tab-group-create-form" hidden>
+        <input id="browser-tab-group-name-input" class="browser-tab-group-name-input" type="text" autocomplete="off" spellcheck="false" placeholder="Name new group" aria-label="New tab group name" data-i18n-attr="placeholder:tooltips.browserShell.newTabGroupName;aria-label:tooltips.browserShell.newTabGroupName" />
+        <button id="browser-tab-group-save-btn" class="browser-tab-group-action-btn browser-tab-group-primary-btn" type="submit">Create</button>
+        <button id="browser-tab-group-cancel-btn" class="browser-tab-group-action-btn" type="button">Cancel</button>
+      </form>
+      <div id="browser-tab-group-list" class="browser-tab-group-list" aria-live="polite"></div>
+      <button type="button" id="browser-content-rail-scroll-left-btn" class="browser-content-rail-scroll-btn browser-content-rail-scroll-left" aria-label="Scroll browser content rail left" hidden data-i18n-attr="aria-label:tooltips.browserShell.scrollRailLeft">
+        <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+      </button>
+      <button type="button" id="browser-content-rail-scroll-right-btn" class="browser-content-rail-scroll-btn browser-content-rail-scroll-right" aria-label="Scroll browser content rail right" hidden data-i18n-attr="aria-label:tooltips.browserShell.scrollRailRight">
+        <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+      </button>
+      <button type="button" id="browser-content-rail-mode-btn" class="browser-tab-group-rail-label" aria-label="Tab groups" title="Tab groups" data-i18n-attr="title:tooltips.browserShell.tabGroups;aria-label:tooltips.browserShell.tabGroups">
+        <i class="fa-solid fa-table-cells-large" aria-hidden="true"></i>
+      </button>
+      <button type="button" id="browser-content-rail-links-btn" class="browser-content-rail-links-btn" aria-label="Open current rail links" title="Open links" data-i18n-attr="title:tooltips.browserShell.openLinks;aria-label:tooltips.browserShell.openRailLinksAriaLabel">
+        <i class="fa-solid fa-list-ul" aria-hidden="true"></i>
+      </button>
+      <button type="button" id="browser-content-rail-close-btn" class="browser-tab-group-rail-close" aria-label="Close browser content rail" title="Close rail" data-i18n-attr="title:tooltips.browserShell.closeRail;aria-label:tooltips.browserShell.closeRailAriaLabel">
+        <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+      </button>
+    </div>
+    <section id="browser-link-gallery" class="browser-link-gallery" aria-label="Browser link gallery" hidden data-i18n-attr="aria-label:tooltips.browserShell.linkGalleryAriaLabel">
+      <div class="browser-link-gallery-header">
+        <div class="browser-link-gallery-title-wrap">
+          <div id="browser-link-gallery-title" class="browser-link-gallery-title">Links</div>
+          <div id="browser-link-gallery-subtitle" class="browser-link-gallery-subtitle"></div>
+        </div>
+        <div class="gallery-search-wrap header-audio-playlist-search-wrap browser-link-gallery-search-wrap" role="search">
+          <button type="button" id="browser-link-gallery-font-btn" class="close-btn floating-pin-btn flowjoe-font-size-override-btn header-audio-playlist-font-btn browser-link-gallery-font-btn" aria-label="Increase drawer font size" aria-pressed="false" data-i18n-attr="aria-label:tooltips.browserShell.increaseDrawerFontSize">
+            <span class="ai-font-size-button-glyph" aria-hidden="true">
+              <i class="fas fa-font"></i>
+              <span class="ai-font-size-button-level">+</span>
+            </span>
+          </button>
+          <span class="icon-btn header-audio-playlist-search-icon browser-link-gallery-search-icon active" aria-hidden="true">
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          </span>
+          <div class="gallery-search-bar open header-audio-playlist-search-bar browser-link-gallery-search-bar">
+            <input type="text" id="browser-link-gallery-search-input" name="browser-link-gallery-search" class="gallery-search-input header-audio-playlist-search-input browser-link-gallery-search-input" placeholder="Search links..." autocomplete="off" spellcheck="false" aria-label="Search links" data-i18n-attr="placeholder:tooltips.browserShell.searchLinks;aria-label:tooltips.browserShell.searchLinksAriaLabel">
+            <button type="button" id="browser-link-gallery-search-clear" class="gallery-search-clear header-audio-playlist-search-clear browser-link-gallery-search-clear" aria-label="Clear link search" disabled data-i18n-attr="aria-label:tooltips.browserShell.clearLinkSearch">
+              <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
+          </div>
+          <button type="button" id="browser-link-gallery-time-btn" class="header-audio-playlist-time-btn browser-link-gallery-time-btn" aria-label="Show exact link times" aria-pressed="false" data-i18n-attr="aria-label:tooltips.browserShell.showExactLinkTimes">
+            <i class="fa-solid fa-clock" aria-hidden="true"></i>
+          </button>
+          <button type="button" id="browser-link-gallery-sort-btn" class="header-audio-playlist-sort-btn browser-link-gallery-sort-btn" aria-label="Sort links A to Z" aria-pressed="false" data-i18n-attr="aria-label:tooltips.browserShell.sortLinksAtoZ">
+            <i class="fa-solid fa-arrow-down-a-z" aria-hidden="true"></i>
+          </button>
+        </div>
+        <button type="button" id="browser-link-gallery-close-btn" class="browser-link-gallery-close" aria-label="Close link gallery" title="Close link gallery" data-i18n-attr="title:tooltips.browserShell.closeLinkGallery;aria-label:tooltips.browserShell.closeLinkGallery">
+          <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div id="browser-link-gallery-list" class="browser-link-gallery-list header-audio-playlist-list" role="list"></div>
+    </section>
+    <div id="browser-duck-resize" class="browser-duck-resize" role="separator" aria-orientation="horizontal" title="Resize browser" hidden data-i18n-attr="title:tooltips.browserShell.resizeBrowser"></div>
+    
+    <!-- Background elements below header -->
+    <div class="header-bg">
+      <div class="header-bg-left"></div>
+      <div class="header-bg-right"></div>
+    </div>
+    <div class="container">
+      <!-- PROTOTYPE (left-rail): global left navigation rail. Genuine 4th grid track (see
+           .container in styles-search.css); the tree/resizer/content-section columns were
+           renumbered to make room. Collapsed by default, matching the Settings menu's own
+           default. Icons/labels/actions are placeholders — nothing here is wired to real
+           handlers yet; this is a visual-only prototype. -->
+      <nav class="app-rail" aria-label="App navigation" id="app-rail">
+        <button type="button" class="app-rail-collapse" id="app-rail-collapse-btn" aria-label="Expand rail" aria-expanded="false" title="Expand rail" data-i18n-attr="aria-label:appRail.collapseButton.expand;title:appRail.collapseButton.expand">
+          <i class="app-rail-collapse-icon fa-solid fa-angles-left" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="app-rail-item active" id="app-rail-flow-btn" title="Flow" data-i18n-attr="title:appRail.items.flow">
+          <i class="app-rail-icon fa-solid fa-folder-tree" aria-hidden="true"></i>
+          <span class="app-rail-label" data-i18n="appRail.items.flow">Flow</span>
+        </button>
+        <button type="button" class="app-rail-item" id="app-rail-source-control-btn" title="Source Control" data-i18n-attr="title:appRail.items.sourceControl">
+          <i class="app-rail-icon fa-solid fa-code-branch" aria-hidden="true"></i>
+          <span class="app-rail-label" data-i18n="appRail.items.sourceControl">Source Control</span>
+        </button>
+        <button type="button" class="app-rail-item" id="app-rail-browser-btn" title="Browser" data-i18n-attr="title:appRail.items.browser">
+          <i class="app-rail-icon fa-solid fa-globe" aria-hidden="true"></i>
+          <span class="app-rail-label" data-i18n="appRail.items.browser">Browser</span>
+        </button>
+        <button type="button" class="app-rail-item" id="app-rail-terminal-btn" title="Terminal" data-i18n-attr="title:appRail.items.terminal">
+          <i class="app-rail-icon fa-solid fa-terminal" aria-hidden="true"></i>
+          <span class="app-rail-label" data-i18n="appRail.items.terminal">Terminal</span>
+        </button>
+        <button type="button" class="app-rail-item" id="app-rail-joe-btn" title="Joe" data-i18n-attr="title:appRail.items.joe">
+          <i class="app-rail-icon fa-solid fa-robot" aria-hidden="true"></i>
+          <span class="app-rail-label" data-i18n="appRail.items.joe">Joe</span>
+        </button>
+        <div class="app-rail-sep"></div>
+        <button type="button" class="app-rail-item" id="app-rail-docs-btn" title="Documentation" data-i18n-attr="title:appRail.items.docs">
+          <i class="app-rail-icon fa-solid fa-book" aria-hidden="true"></i>
+          <span class="app-rail-label" data-i18n="appRail.items.docs">Documentation</span>
+        </button>
+        <div class="app-rail-spacer"></div>
+        <button type="button" class="app-rail-item app-rail-joe-pet-toggle" id="app-rail-joe-pet-toggle" title="Show Pet Joe" aria-label="Show Pet Joe" aria-pressed="false">
+          <span class="app-rail-icon app-rail-joe-pet-icon-wrap" aria-hidden="true"><img class="app-rail-joe-pet-icon" src="src/assets/joe-pet-mascot.png" alt=""></span>
+          <span class="app-rail-label" data-i18n="settings.appearance.joePet.label">Pet Joe</span>
+        </button>
+        <button type="button" class="app-rail-item" id="app-rail-activity-btn" title="History" data-i18n-attr="title:appRail.items.activity">
+          <i class="app-rail-icon fa-solid fa-clock-rotate-left" aria-hidden="true"></i>
+          <span class="app-rail-label" data-i18n="appRail.items.activity">History</span>
+        </button>
+        <button type="button" class="app-rail-item" id="app-rail-storage-btn" title="Storage" data-i18n-attr="title:appRail.items.storage">
+          <i class="app-rail-icon fa-solid fa-database" aria-hidden="true"></i>
+          <span class="app-rail-label" data-i18n="appRail.items.storage">Storage</span>
+        </button>
+        <button type="button" class="app-rail-item" id="app-rail-settings-btn" title="Settings" data-i18n-attr="title:appRail.items.settings">
+          <i class="app-rail-icon fa-solid fa-gear" aria-hidden="true"></i>
+          <span class="app-rail-label" data-i18n="appRail.items.settings">Settings</span>
+        </button>
+      </nav>
+      <div class="tree-section">
+        <div class="tree-toolbar" aria-label="Tree tools" data-i18n-attr="aria-label:tooltips.browserShell.treeToolsAriaLabel">
+          <div class="toolbar-buttons-row">
+            <div class="toolbar-left-buttons">
+              <button class="icon-btn info-btn-left" type="button" aria-label="Keyboard shortcuts" data-i18n-attr="aria-label:tooltips.browserShell.keyboardShortcuts">
+                <i class="fa-solid fa-info"></i>
+              </button>
+              <button class="icon-btn" id="tree-alpha-sort-btn" type="button" aria-label="Sort tree alphabetically" aria-pressed="false" data-i18n-attr="aria-label:tooltips.treeToolbar.sortTreeAlphabetically">
+                <i class="fa-solid fa-arrow-down-a-z"></i>
+              </button>
+            </div>
+            <div class="toolbar-right-buttons">
+              <button class="icon-btn" id="tree-hidden-nodes-btn" type="button" aria-label="Show hidden nodes" hidden data-i18n-attr="aria-label:tooltips.browserShell.showHiddenNodes">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+              <button class="icon-btn" id="tree-add-node-btn" type="button" aria-label="Add new node" data-i18n-attr="aria-label:tooltips.browserShell.addNewNode">
+                <i class="fa-solid fa-plus"></i>
+              </button>
+              <button class="icon-btn" id="tree-add-image-btn" type="button" aria-label="Attach items" data-i18n-attr="aria-label:tooltips.browserShell.attachItems">
+                <i class="fa-solid fa-image"></i>
+              </button>
+              <button class="icon-btn" id="tree-search-btn" type="button" aria-label="Search tree" data-i18n-attr="aria-label:tooltips.browserShell.searchTree">
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </button>
+              <button class="icon-btn" id="tree-delete-node-btn" type="button" aria-label="Remove selected node" data-i18n-attr="aria-label:tooltips.browserShell.removeSelectedNode">
+                <i class="fa-solid fa-trash-alt"></i>
+              </button>
             </div>
           </div>
-          <span class="cx-invite-from" data-cx="inviteFrom">Invitation from the owner</span>
         </div>
-        <h2 class="cx-join-title" id="cxEndedTitle">This invitation has ended</h2>
-        <p class="cx-join-lede" id="cxEndedLede">The owner turned it off, or it expired. Ask for a new link to join the shared Flow again.</p>
-        <div class="cx-status-card">
-          <span id="cxEndedOwner"></span>
-          <div class="cx-status-main">
-            <div class="cx-status-name">
-              <span data-cx="ownerName">The owner</span>
-              <span class="cx-chip owner">
-                <i class="fa-solid fa-crown"></i>
-                Owner
+        <div class="tree-title-container">
+          <button class="add-root-btn" id="add-root">+</button>
+          <button type="button" class="flow-summary-btn" id="flow-summary-btn" aria-label="Edit Flow Summary" data-tooltip="Edit Flow Summary|" data-position="bottom" data-align="left"><i class="far fa-file-lines" aria-hidden="true"></i></button>
+          <input type="text" id="tree-title" value="Name your Flow" placeholder="Name your Flow" class="tree-title-input" autocomplete="off" spellcheck="false" autocapitalize="off" />
+        </div>
+        <div id="tree"></div>
+      </div>
+      <div class="resizer"></div>
+      <div class="content-section">
+        <div id="node-details">
+          <div id="node-info">
+            <h2 id="selected-node-name"></h2>
+            <div id="gallery-top-scrubber-spacer"></div>
+            <div id="image-display"></div>
+            <div id="gallery-top-scrubber" aria-hidden="true">
+              <div id="gallery-top-scrubber-graduations"></div>
+              <div id="gallery-top-scrubber-inner"></div>
+              <div id="gallery-top-scrubber-count"></div>
+            </div>
+            <!-- Canvas-only Y scrubber: shown when content overflows below the fold -->
+            <div id="gallery-side-scrubber" aria-hidden="true" style="display:none">
+              <div id="gallery-side-scrubber-graduations"></div>
+              <div id="gallery-side-scrubber-inner"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Docked Joe (JOE_DOCKED_PANEL_PLAN.md): tracks 5 and 6 of .container (styles-search.css),
+           both 0px wide unless body.joe-docked-open. The Joe panel element itself is built by
+           joeModalInitController and RE-PARENTED into #joe-dock while docked (joeDockLayout.js);
+           labels are set by joeDockLayout.syncJoeDockControls. -->
+      <div id="joe-dock-resizer" class="joe-dock-resizer" role="separator" aria-orientation="vertical" aria-controls="joe-dock" tabindex="0"></div>
+      <!-- Step 4c task C: narrow-window overlay scrim, shown only under body.joe-docked-open.joe-dock-overlay
+           (joeDock.css). position:fixed (not a grid track), so it takes no space in .container's layout;
+           clicking it collapses the dock (joeDockLayout.js bindOverlayScrim). -->
+      <div id="joe-dock-scrim" class="joe-dock-scrim" hidden></div>
+      <aside id="joe-dock" class="joe-dock"></aside>
+    </div>
+    <div id="modal">
+      <div>
+        <h3 id="modal-title" style="display: none"></h3>
+        <div id="modal-message"></div>
+        <input type="text" id="modal-input" style="display: none" />
+        <div id="modal-button-container">
+          <button id="modal-confirm" class="btn" tabindex="4">Confirm</button>
+          <button id="modal-cancel" class="btn" tabindex="5">Cancel</button>
+        </div>
+      </div>
+    </div>
+    <!-- Settings Panel -->
+    <div id="settings-panel" class="settings-panel">
+      <div class="settings-header">
+        <h3 class="settings-breadcrumb">
+          <span class="settings-breadcrumb-root" data-i18n="settings.title">Settings</span>
+          <span class="settings-breadcrumb-sep" aria-hidden="true">›</span>
+          <span class="settings-breadcrumb-section" id="settings-breadcrumb-section"></span>
+        </h3>
+        <button id="close-settings" class="close-btn" aria-label="Close" data-i18n-attr="aria-label:settings.close">×</button>
+      </div>
+
+      <!-- Body: left sidebar menu + right content. The menu is the former horizontal tab bar
+           re-laid-out as a vertical column on the panel's left edge (data-tab/data-panel pairing
+           and the activateTab() switching logic are unchanged). Icons are monochrome FA line
+           glyphs that inherit currentColor (grey → accent when active); no multicolor. -->
+      <div class="settings-body">
+        <!-- Tab Nav (vertical sidebar) -->
+        <nav class="settings-tabs" aria-label="Settings sections" data-i18n-attr="aria-label:settings.nav.sectionsLabel">
+          <button type="button" id="settings-nav-collapse" class="settings-nav-collapse" aria-label="Expand menu" aria-expanded="false" title="Expand menu" data-i18n-attr="aria-label:settings.nav.expand;title:settings.nav.expand">
+            <i class="settings-nav-collapse-icon fa-solid fa-angles-left" aria-hidden="true"></i>
+            <span class="settings-tab-label" data-i18n="settings.nav.collapse">Collapse</span>
+          </button>
+          <button class="settings-tab active" data-tab="appearance">
+            <i class="settings-tab-icon fa-regular fa-image" aria-hidden="true"></i>
+            <span class="settings-tab-label" data-i18n="settings.tabs.appearance">Appearance</span>
+          </button>
+          <button class="settings-tab" data-tab="tree">
+            <i class="settings-tab-icon fa-solid fa-folder-tree" aria-hidden="true"></i>
+            <span class="settings-tab-label" data-i18n="settings.tabs.tree">Tree</span>
+          </button>
+          <button class="settings-tab" data-tab="gallery">
+            <i class="settings-tab-icon fa-regular fa-images" aria-hidden="true"></i>
+            <span class="settings-tab-label" data-i18n="settings.tabs.gallery">Gallery</span>
+          </button>
+          <button class="settings-tab" data-tab="audio">
+            <i class="settings-tab-icon fa-solid fa-wave-square" aria-hidden="true"></i>
+            <span class="settings-tab-label" data-i18n="settings.tabs.audio">Audio</span>
+          </button>
+          <button class="settings-tab electron-browser-settings-only" data-tab="browser" hidden>
+            <i class="settings-tab-icon fa-regular fa-window-maximize" aria-hidden="true"></i>
+            <span class="settings-tab-label" data-i18n="settings.tabs.browser">Browser</span>
+          </button>
+          <button class="settings-tab" data-tab="ai">
+            <i class="settings-tab-icon fa-regular fa-comment-dots" aria-hidden="true"></i>
+            <span class="settings-tab-label" data-i18n="settings.tabs.ai">Joe AI</span>
+          </button>
+          <button class="settings-tab" data-tab="apis">
+            <i class="settings-tab-icon fa-solid fa-key" aria-hidden="true"></i>
+            <span class="settings-tab-label" data-i18n="settings.tabs.apis">APIs</span>
+          </button>
+          <button class="settings-tab" data-tab="data">
+            <i class="settings-tab-icon fa-solid fa-database" aria-hidden="true"></i>
+            <span class="settings-tab-label" data-i18n="settings.tabs.data">Data</span>
+          </button>
+          <button class="settings-tab" data-tab="automation">
+            <i class="settings-tab-icon fa-regular fa-clock" aria-hidden="true"></i>
+            <span class="settings-tab-label" data-i18n="settings.tabs.automation">Tasks</span>
+          </button>
+        </nav>
+
+        <div class="settings-content">
+
+        <!-- ── Appearance ── -->
+        <div class="settings-tab-panel active" data-panel="appearance">
+          <div class="setting-item" id="language-settings">
+            <div class="setting-control">
+              <label for="language-setting" data-i18n="settings.language">Language</label>
+              <select id="language-setting" class="setting-select">
+                <option value="en">English</option>
+                <option value="es">Español</option>
+                <option value="fr">Français</option>
+                <option value="it">Italiano</option>
+              </select>
+            </div>
+            <p class="setting-description" data-i18n="settings.languageDescription">Translates the user interface. (Default: English)</p>
+          </div>
+
+          <div class="setting-item" id="layout-settings">
+            <div class="setting-control">
+              <label for="density-setting" data-i18n="settings.appearance.layout.densityLabel">Density</label>
+              <select id="density-setting" class="setting-select">
+                <option value="comfy" data-i18n="settings.appearance.layout.densityOptions.comfy">Comfy</option>
+                <option value="compact" selected data-i18n="settings.appearance.layout.densityOptions.compact">Compact (Default)</option>
+                <option value="dense" data-i18n="settings.appearance.layout.densityOptions.dense">Dense</option>
+              </select>
+            </div>
+            <p class="setting-description" data-i18n="settings.appearance.layout.densityDescription">Controls spacing and control sizes throughout the app. Applies immediately. (Default: Compact)</p>
+            <div class="setting-sub-divider"></div>
+            <div class="setting-control">
+              <label for="surface-style-setting" data-i18n="settings.appearance.layout.surfaceStyleLabel">Surface Style</label>
+              <select id="surface-style-setting" class="setting-select">
+                <option value="outlined" data-i18n="settings.appearance.layout.surfaceStyleOptions.outlined">Outlined</option>
+                <option value="filled" selected data-i18n="settings.appearance.layout.surfaceStyleOptions.filled">Filled (Default)</option>
+              </select>
+            </div>
+            <p class="setting-description" data-i18n="settings.appearance.layout.surfaceStyleDescription">Filled softens corners and replaces resting borders on chrome buttons with fills. Applies immediately. (Default: Filled)</p>
+          </div>
+
+          <div class="setting-item" id="theme-settings"></div>
+
+          <div class="setting-item" id="typography-setting-card">
+            <div class="setting-control">
+              <label for="font-family-setting" data-i18n="settings.appearance.typography.fontStyleLabel">Font Style</label>
+              <select id="font-family-setting" class="setting-select">
+                <option value="system-ui" selected data-i18n="settings.appearance.typography.fontOptions.systemUi">System UI</option>
+                <option value="arial" data-i18n="settings.appearance.typography.fontOptions.arial">Arial / Helvetica</option>
+                <option value="atkinson-hyperlegible" data-i18n="settings.appearance.typography.fontOptions.atkinsonHyperlegible">Atkinson Hyperlegible</option>
+                <option value="bitter" data-i18n="settings.appearance.typography.fontOptions.bitter">Bitter</option>
+                <option value="bodoni-moda" data-i18n="settings.appearance.typography.fontOptions.bodoniModa">Bodoni Moda</option>
+                <option value="book-antiqua" data-i18n="settings.appearance.typography.fontOptions.bookAntiqua">Book Antiqua</option>
+                <option value="bricolage-grotesque" data-i18n="settings.appearance.typography.fontOptions.bricolageGrotesque">Bricolage Grotesque</option>
+                <option value="cormorant-garamond" data-i18n="settings.appearance.typography.fontOptions.cormorantGaramond">Cormorant Garamond</option>
+                <option value="courier-prime" data-i18n="settings.appearance.typography.fontOptions.courierPrime">Courier Prime</option>
+                <option value="dm-sans" data-i18n="settings.appearance.typography.fontOptions.dmSans">DM Sans</option>
+                <option value="eb-garamond" data-i18n="settings.appearance.typography.fontOptions.ebGaramond">EB Garamond</option>
+                <option value="fira-sans" data-i18n="settings.appearance.typography.fontOptions.firaSans">Fira Sans</option>
+                <option value="fraunces" data-i18n="settings.appearance.typography.fontOptions.fraunces">Fraunces</option>
+                <option value="georgia" data-i18n="settings.appearance.typography.fontOptions.georgia">Georgia</option>
+                <option value="ibm-plex-mono" data-i18n="settings.appearance.typography.fontOptions.ibmPlexMono">IBM Plex Mono</option>
+                <option value="ibm-plex-sans" data-i18n="settings.appearance.typography.fontOptions.ibmPlexSans">IBM Plex Sans</option>
+                <option value="ibm-plex-serif" data-i18n="settings.appearance.typography.fontOptions.ibmPlexSerif">IBM Plex Serif</option>
+                <option value="instrument-sans" data-i18n="settings.appearance.typography.fontOptions.instrumentSans">Instrument Sans</option>
+                <option value="inter" data-i18n="settings.appearance.typography.fontOptions.inter">Inter</option>
+                <option value="jetbrains-mono" data-i18n="settings.appearance.typography.fontOptions.jetbrainsMono">JetBrains Mono</option>
+                <option value="josefin-sans" data-i18n="settings.appearance.typography.fontOptions.josefinSans">Josefin Sans</option>
+                <option value="libre-baskerville" data-i18n="settings.appearance.typography.fontOptions.libreBaskerville">Libre Baskerville</option>
+                <option value="lora" data-i18n="settings.appearance.typography.fontOptions.lora">Lora</option>
+                <option value="manrope" data-i18n="settings.appearance.typography.fontOptions.manrope">Manrope</option>
+                <option value="merriweather" data-i18n="settings.appearance.typography.fontOptions.merriweather">Merriweather</option>
+                <option value="montserrat" data-i18n="settings.appearance.typography.fontOptions.montserrat">Montserrat</option>
+                <option value="newsreader" data-i18n="settings.appearance.typography.fontOptions.newsreader">Newsreader</option>
+                <option value="noto-sans" data-i18n="settings.appearance.typography.fontOptions.notoSans">Noto Sans</option>
+                <option value="nunito" data-i18n="settings.appearance.typography.fontOptions.nunito">Nunito</option>
+                <option value="open-sans" data-i18n="settings.appearance.typography.fontOptions.openSans">Open Sans</option>
+                <option value="playfair-display" data-i18n="settings.appearance.typography.fontOptions.playfairDisplay">Playfair Display</option>
+                <option value="plus-jakarta-sans" data-i18n="settings.appearance.typography.fontOptions.plusJakartaSans">Plus Jakarta Sans</option>
+                <option value="poppins" data-i18n="settings.appearance.typography.fontOptions.poppins">Poppins</option>
+                <option value="press-start-2p" data-i18n="settings.appearance.typography.fontOptions.pressStart2p">Press Start 2P</option>
+                <option value="raleway" data-i18n="settings.appearance.typography.fontOptions.raleway">Raleway</option>
+                <option value="roboto" data-i18n="settings.appearance.typography.fontOptions.roboto">Roboto</option>
+                <option value="roboto-slab" data-i18n="settings.appearance.typography.fontOptions.robotoSlab">Roboto Slab</option>
+                <option value="sora" data-i18n="settings.appearance.typography.fontOptions.sora">Sora</option>
+                <option value="source-sans-3" data-i18n="settings.appearance.typography.fontOptions.sourceSans3">Source Sans 3</option>
+                <option value="source-serif-4" data-i18n="settings.appearance.typography.fontOptions.sourceSerif4">Source Serif 4</option>
+                <option value="space-grotesk" data-i18n="settings.appearance.typography.fontOptions.spaceGrotesk">Space Grotesk</option>
+                <option value="spectral" data-i18n="settings.appearance.typography.fontOptions.spectral">Spectral</option>
+                <option value="syne" data-i18n="settings.appearance.typography.fontOptions.syne">Syne</option>
+                <option value="vt323" data-i18n="settings.appearance.typography.fontOptions.vt323">VT323</option>
+                <option value="work-sans" data-i18n="settings.appearance.typography.fontOptions.workSans">Work Sans</option>
+              </select>
+            </div>
+            <div class="setting-sub-divider"></div>
+            <div class="setting-control">
+              <label for="font-size-setting" data-i18n="settings.appearance.typography.fontSizeLabel">Font Size</label>
+              <select id="font-size-setting" class="setting-select">
+                <option value="xx-small" data-i18n="settings.appearance.typography.fontSizeOptions.xxSmall">XX-Small</option>
+                <option value="x-small" data-i18n="settings.appearance.typography.fontSizeOptions.xSmall">X-Small</option>
+                <option value="small" data-i18n="settings.appearance.typography.fontSizeOptions.small">Small</option>
+                <option value="normal" selected data-i18n="settings.appearance.typography.fontSizeOptions.normal">Normal (Default)</option>
+                <option value="large" data-i18n="settings.appearance.typography.fontSizeOptions.large">Large</option>
+                <option value="extra-large" data-i18n="settings.appearance.typography.fontSizeOptions.extraLarge">Extra Large</option>
+              </select>
+            </div>
+            <div class="setting-sub-divider"></div>
+            <div class="setting-control">
+              <label for="line-height-setting" data-i18n="settings.appearance.typography.lineHeightLabel">Line Height</label>
+              <select id="line-height-setting" class="setting-select">
+                <option value="compact" data-i18n="settings.appearance.typography.lineHeightOptions.compact">Compact</option>
+                <option value="normal" selected data-i18n="settings.appearance.typography.lineHeightOptions.normal">Normal (Default)</option>
+                <option value="relaxed" data-i18n="settings.appearance.typography.lineHeightOptions.relaxed">Relaxed</option>
+              </select>
+            </div>
+            <p class="setting-description" data-i18n="settings.appearance.typography.perThemeDescription">These settings belong to the theme shown above and apply wherever that theme is used. Line height applies only to gallery notes and image preview notes.</p>
+          </div>
+
+          <div class="setting-item" id="appearance-effects-card">
+            <div class="setting-control">
+              <label for="visual-effects-toggle" data-i18n="settings.appearance.effects.galleryAnimationsLabel">Gallery Animations</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="visual-effects-toggle" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <p class="setting-description" data-i18n="settings.appearance.effects.galleryAnimationsDescription">Confetti, glow, swell, and smoke animations in the gallery. Disable if they affect performance. (Default: On)</p>
+            <div class="setting-sub-divider"></div>
+            <div class="setting-control">
+              <label for="surface-effects-toggle" data-i18n="settings.appearance.effects.surfaceDepthLabel">Surface Depth</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="surface-effects-toggle" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <p class="setting-description" data-i18n="settings.appearance.effects.surfaceDepthDescription">Subtle tree, gallery, and settings-panel background gradients. Disable for flatter surfaces. (Default: On)</p>
+            <div class="setting-sub-divider"></div>
+            <div class="setting-control">
+              <label for="glass-effects-toggle" data-i18n="settings.appearance.effects.modalGlassLabel">Modal Glass</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="glass-effects-toggle" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <p class="setting-description" data-i18n="settings.appearance.effects.modalGlassDescription">Modal transparency and blur. Disable for fully opaque modal surfaces if you are experiencing slowness or lag. (Default: On)</p>
+          </div>
+
+          <div class="setting-item" id="joe-pet-setting">
+            <div class="setting-control">
+              <label for="joe-pet-toggle" data-i18n="settings.appearance.joePet.label">Pet Joe</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="joe-pet-toggle" />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <p class="setting-description" data-i18n="settings.appearance.joePet.description">Show Joe’s animated companion in the gallery status bar. Hidden by default.</p>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-control">
+              <label for="nav-tooltips-toggle" data-i18n="settings.appearance.navTooltips.label">Nav Button Tooltips</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="nav-tooltips-toggle" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <p class="setting-description" data-i18n="settings.appearance.navTooltips.description">Show tooltips on toolbar and nav buttons (trash, search, layout, etc.). Does not affect image gallery tooltips. (Default: On)</p>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-control">
+              <label for="toast-notifications-toggle" data-i18n="settings.appearance.toasts.showToastsLabel">Show Toasts</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="toast-notifications-toggle" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div id="toast-browser-warning" style="display: none; margin-top: 8px; padding: 8px 12px; background: var(--bg-tertiary); border-radius: 6px; font-size: 0.85em; color: var(--text-secondary); align-items: center; gap: 8px;">
+              <i class="fa-solid fa-triangle-exclamation" style="color: var(--accent-color);"></i>
+              <span data-i18n="settings.appearance.toasts.browserWarning">Toast notifications are disabled while the browser view is open.</span>
+            </div>
+            <div class="setting-sub-divider"></div>
+            <div class="setting-control">
+              <label for="toast-theme-match-toggle" data-i18n="settings.appearance.toasts.themeMatchLabel">Theme Match</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="toast-theme-match-toggle" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="setting-sub-divider"></div>
+            <div class="setting-control">
+              <label for="toast-position-select" data-i18n="settings.appearance.toasts.positionLabel">Position</label>
+              <select id="toast-position-select" class="setting-select setting-select-sm">
+                <option value="top-right" data-i18n="settings.appearance.toasts.positionOptions.topRight">Top Right</option>
+                <option value="top-center" data-i18n="settings.appearance.toasts.positionOptions.topCenter">Top Center</option>
+                <option value="bottom-right" selected data-i18n="settings.appearance.toasts.positionOptions.bottomRight">Bottom Right</option>
+              </select>
+            </div>
+            <p class="setting-description" data-i18n="settings.appearance.toasts.description">Control toast visibility, position, and whether they match the current theme.</p>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-control">
+              <label for="status-footer-toggle" data-i18n="settings.appearance.statusBar.label">Status Bar</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="status-footer-toggle" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <p class="setting-description" data-i18n="settings.appearance.statusBar.description">Show the thin status bar at the bottom of the window — active Joe brain, save state, node/slot counts, and a shortcuts link. (Default: On)</p>
+          </div>
+
+        </div>
+
+        <!-- ── Tree ── -->
+        <div class="settings-tab-panel" data-panel="tree">
+          <div class="setting-item" id="tree-branch-toggle-style-setting-card">
+            <div class="setting-control">
+              <label for="tree-resize-toggle" data-i18n="settings.tree.autoResize.label">Auto-resize Tree</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="tree-resize-toggle" />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <p class="setting-description" data-i18n="settings.tree.autoResize.description">When enabled, tree width adjusts automatically based on content length. Disable to preserve more space for the image gallery. (Default: On)</p>
+          </div>
+
+          <div class="setting-item" id="tree-resizer-width-setting-card">
+            <div class="setting-control">
+              <label for="tree-resizer-width-select" data-i18n="settings.tree.resizerWidth.label">Resizer Width</label>
+              <select id="tree-resizer-width-select" class="setting-select setting-select-sm">
+                <option value="small" selected data-i18n="settings.tree.resizerWidth.options.small">Small (8px)</option>
+                <option value="grande" data-i18n="settings.tree.resizerWidth.options.grande">Grande (12px)</option>
+                <option value="venti" data-i18n="settings.tree.resizerWidth.options.venti">Venti (16px)</option>
+              </select>
+            </div>
+            <p class="setting-description" data-i18n="settings.tree.resizerWidth.description">Controls the drag seam width between Tree and Gallery. Larger sizes improve grab area. (Default: Small 8px)</p>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-control">
+              <label for="tree-branch-toggle-style-select" data-i18n="settings.tree.branchToggle.label">Branch Toggle</label>
+              <select id="tree-branch-toggle-style-select" class="setting-select setting-select-sm">
+                <option value="flat" selected data-i18n="settings.tree.branchToggle.options.flat">Flat</option>
+                <option value="themed" data-i18n="settings.tree.branchToggle.options.themed">Themed</option>
+              </select>
+            </div>
+            <p class="setting-description" data-i18n="settings.tree.branchToggle.description">Choose the collapse/expand chevron style used on tree branches. (Default: Flat)</p>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-control">
+              <label for="status-indicators-toggle" data-i18n="settings.tree.statusIndicators.label">Status Indicators</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="status-indicators-toggle" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <p class="setting-description" data-i18n="settings.tree.statusIndicators.description">Show status indicators (red/yellow/green dots) next to nodes. Click to cycle through statuses. (Default: On)</p>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-control">
+              <label for="image-counts-toggle" data-i18n="settings.tree.slotCounts.label">Slot Counts</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="image-counts-toggle" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <p class="setting-description" data-i18n="settings.tree.slotCounts.description">Show slot counts after each node name, e.g. (5)(9). This counts gallery slots, not every media entry inside a stack. (Default: On)</p>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-control">
+              <label for="child-counts-toggle" data-i18n="settings.tree.childCounts.label">Child Counts</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="child-counts-toggle" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <p class="setting-description" data-i18n="settings.tree.childCounts.description">Show child node count after each node name, e.g. [2]. (Default: On)</p>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-control">
+              <label for="open-summary-on-new-node-toggle" data-i18n="settings.tree.openSummaryOnNewNode.label">Open Summary Modal</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="open-summary-on-new-node-toggle" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <p class="setting-description" data-i18n="settings.tree.openSummaryOnNewNode.description">Automatically open the Node Summary modal after creating a new node so you can describe its purpose right away. (Default: On)</p>
+          </div>
+        </div>
+
+        <!-- ── Gallery ── -->
+        <div class="settings-tab-panel" data-panel="gallery">
+          <div class="setting-item">
+            <div class="setting-control">
+              <label for="gallery-scrubber-toggle" data-i18n="settings.gallery.scrubber.label">Gallery Scrubber</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="gallery-scrubber-toggle" />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="setting-sub-divider"></div>
+            <div class="setting-control">
+              <label for="scrubber-location-select" data-i18n="settings.gallery.scrubber.locationLabel">Location</label>
+              <select id="scrubber-location-select" class="setting-select setting-select-sm">
+                <option value="top" selected data-i18n="settings.gallery.scrubber.locationOptions.top">Top + Drag</option>
+                <option value="bottom" data-i18n="settings.gallery.scrubber.locationOptions.bottom">Bottom</option>
+              </select>
+            </div>
+            <div class="setting-sub-divider"></div>
+            <div class="setting-control">
+              <label for="scrubber-style-select" data-i18n="settings.gallery.scrubber.styleLabel">Style</label>
+              <select id="scrubber-style-select" class="setting-select setting-select-sm">
+                <option value="beveled" selected data-i18n="settings.gallery.scrubber.styleOptions.beveled">Beveled</option>
+                <option value="glass" data-i18n="settings.gallery.scrubber.styleOptions.glass">Glass</option>
+                <option value="flat" data-i18n="settings.gallery.scrubber.styleOptions.flat">Flat</option>
+              </select>
+            </div>
+            <div class="setting-sub-divider"></div>
+            <div class="setting-control">
+              <label for="scrubber-fx-toggle" data-i18n="settings.gallery.scrubber.fxLabel">Scrubber FX</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="scrubber-fx-toggle" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="setting-sub-divider"></div>
+            <div class="setting-control">
+              <label for="scrubber-shadow-toggle" data-i18n="settings.gallery.scrubber.shadowLabel">Drop Shadow</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="scrubber-shadow-toggle" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <p class="setting-description" data-i18n="settings.gallery.scrubber.description">When enabled, the gallery scrubber appears for quick mouse navigation and image snapping. Scrubber FX adds subtle spark effects. Shadow casts depth onto the gallery behind the rail. (Default: On, Top, Beveled, FX On, Shadow On)</p>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-control">
+              <label for="embed-virtualization-toggle" data-i18n="settings.gallery.embedPerformance.label">Embed Performance</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="embed-virtualization-toggle" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <p class="setting-description" data-i18n="settings.gallery.embedPerformance.description">Keeps only the URL embeds near your view fully loaded; far-offscreen embeds pause behind a lightweight preview and reload as you scroll toward them. Greatly reduces memory/GPU load (and flickering) in galleries with many embeds. Turn off to keep every embed live at all times. (Default: On)</p>
+          </div>
+
+          <div class="setting-item" id="gallery-slot-actions-location-card">
+            <div class="setting-control">
+              <label for="gallery-slot-actions-rail-mode-select" data-i18n="settings.gallery.slotActions.label">Slot Action Controls</label>
+              <select id="gallery-slot-actions-rail-mode-select" class="setting-select setting-select-sm">
+                <option value="animated" data-i18n="settings.gallery.slotActions.options.animated">Animate on hover</option>
+                <option value="expanded" selected data-i18n="settings.gallery.slotActions.options.expanded">Always expanded</option>
+              </select>
+            </div>
+            <p class="setting-description" data-i18n="settings.gallery.slotActions.description">Controls how the side rail actions appear beside each gallery slot. Animate on hover collapses Stack, Remove, and Joe AI until the rail is hovered or focused. Always expanded keeps those actions visible without reveal animation. (Default: Always expanded)</p>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-control">
+              <label for="slot-scrubber-toggle" data-i18n="settings.gallery.slotScrubber.label">Slot Scrubber</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="slot-scrubber-toggle" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="setting-sub-divider"></div>
+            <div class="setting-control">
+              <label for="slot-scrubber-position-select" data-i18n="settings.gallery.slotScrubber.positionLabel">Position</label>
+              <select id="slot-scrubber-position-select" class="setting-select setting-select-sm">
+                <option value="top" data-i18n="settings.gallery.slotScrubber.positionOptions.top">Top</option>
+                <option value="middle" selected data-i18n="settings.gallery.slotScrubber.positionOptions.middle">Middle</option>
+                <option value="bottom" data-i18n="settings.gallery.slotScrubber.positionOptions.bottom">Bottom</option>
+              </select>
+            </div>
+            <div class="setting-sub-divider"></div>
+            <div class="setting-control">
+              <label for="slot-scrubber-style-select" data-i18n="settings.gallery.slotScrubber.styleLabel">Style</label>
+              <select id="slot-scrubber-style-select" class="setting-select setting-select-sm">
+                <option value="themed" selected data-i18n="settings.gallery.slotScrubber.styleOptions.themed">Themed</option>
+                <option value="original" data-i18n="settings.gallery.slotScrubber.styleOptions.original">Original</option>
+              </select>
+            </div>
+            <div class="setting-sub-divider"></div>
+            <div class="setting-control">
+              <label for="slot-scrubber-thumb-select" data-i18n="settings.gallery.slotScrubber.ballLabel">Ball</label>
+              <select id="slot-scrubber-thumb-select" class="setting-select setting-select-sm">
+                <option value="flat" selected data-i18n="settings.gallery.slotScrubber.ballOptions.flat">Flat</option>
+                <option value="3d" data-i18n="settings.gallery.slotScrubber.ballOptions.threeD">3D</option>
+              </select>
+            </div>
+            <p class="setting-description" data-i18n="settings.gallery.slotScrubber.description">When enabled, stack slots show a small scrubber for choosing the current top item. Position controls placement, Style controls original or active-theme styling, and Ball controls flat or theme-swatch 3D thumb styling. (Default: On, Middle, Themed, Flat)</p>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-header">
+              <h4 data-i18n="settings.gallery.display.heading">Gallery Display</h4>
+            </div>
+            <div class="setting-control">
+              <label for="show-gallery-stack-count-badges-toggle" data-i18n="settings.gallery.display.stackCountBadgesLabel">Stack Count Badges</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="show-gallery-stack-count-badges-toggle" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="setting-sub-divider"></div>
+            <div class="setting-control">
+              <label for="show-gallery-media-labels-toggle" data-i18n="settings.gallery.display.mediaLabelsLabel">Media Labels</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="show-gallery-media-labels-toggle" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="setting-sub-divider"></div>
+            <div class="setting-control">
+              <label for="show-image-metadata-toggle" data-i18n="settings.gallery.display.imageMetadataLedLabel">Image Metadata LED</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="show-image-metadata-toggle" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="setting-sub-divider"></div>
+            <div class="setting-control">
+              <label for="show-slot-media-collapse-toggle" data-i18n="settings.gallery.display.mediaCollapseChevronLabel">Media Collapse Chevron</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="show-slot-media-collapse-toggle" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="setting-sub-divider"></div>
+            <div class="setting-control">
+              <label for="show-scheduler-chip-toggle" data-i18n="settings.gallery.display.schedulerChipLabel">Scheduler Chip</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="show-scheduler-chip-toggle" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="setting-sub-divider"></div>
+            <div class="setting-control">
+              <label for="show-gallery-tags-toggle" data-i18n="settings.gallery.display.tagBinLabel">Tag Bin</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="show-gallery-tags-toggle" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="setting-sub-divider"></div>
+            <div class="setting-control">
+              <label for="show-gallery-notes-titlebar-toggle" data-i18n="settings.gallery.display.notesTitlebarLabel">Notes Titlebar</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="show-gallery-notes-titlebar-toggle" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="setting-sub-divider"></div>
+            <div class="setting-control">
+              <label for="show-gallery-notes-toggle" data-i18n="settings.gallery.display.notesLabel">Notes</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="show-gallery-notes-toggle" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <p class="setting-description" data-i18n="settings.gallery.display.description">Title at Top controls horizontal slot title placement. Stack Count Badges controls the stack count badge. Media Labels controls IMAGE/VIDEO/PDF/WWW pills in the gallery. Image Metadata LED shows the compression/media-status dot. Scheduler Chip controls the "Scheduled" pill on slots targeted by an automation. Tag Bin controls the slot tag bin above gallery notes. Notes Titlebar controls the Slot/Stack notes header above gallery notes. Notes controls the gallery notes fields. (Default: On / On / On / On / On / On / On / On)</p>
+          </div>
+
+          <div class="setting-item" id="custom-placeholder-container">
+            <div class="setting-control">
+              <label for="missing-image-fallback-toggle" data-i18n="settings.gallery.placeholder.missingLabel">Missing Placeholder</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="missing-image-fallback-toggle" />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <p class="setting-description" data-i18n="settings.gallery.placeholder.missingDescription">Show placeholder image when a referenced IndexedDB image is missing. Updates visible gallery items immediately. (Default: Off)</p>
+            <div class="custom-placeholder-subsection" id="custom-placeholder-subsection">
+              <div class="setting-control custom-placeholder-subtoggle-row">
+                <label for="custom-placeholder-toggle" data-i18n="settings.gallery.placeholder.useCustomLabel">Use Custom Placeholder</label>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="custom-placeholder-toggle" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <p class="setting-description custom-placeholder-subdescription" data-i18n="settings.gallery.placeholder.useCustomDescription">Choose whether placeholder fallback uses your saved custom image or the system placeholder. This does not affect intentionally added placeholder items.</p>
+            </div>
+            <div class="setting-control custom-placeholder-control">
+              <div class="custom-placeholder-card">
+                <button id="custom-placeholder-upload" class="custom-placeholder-thumb-shell" type="button" aria-label="Upload custom placeholder" data-i18n-attr="aria-label:settings.gallery.placeholder.uploadAriaLabel">
+                  <img id="custom-placeholder-preview" class="custom-placeholder-preview" alt="Custom placeholder preview" hidden />
+                  <span id="custom-placeholder-empty" class="custom-placeholder-empty" data-i18n="settings.gallery.placeholder.uploadEmpty">Upload</span>
+                </button>
+                <div class="custom-placeholder-meta">
+                  <!-- custom-placeholder-card-caption text is overwritten at runtime by settingsCustomPlaceholderController.js
+                       (updateCustomPlaceholderStatus) based on live upload state — left untranslated, out of scope per the
+                       dynamic-string boundary; the static fallback below is only ever visible for an instant before JS runs. -->
+                  <span id="custom-placeholder-card-caption" class="custom-placeholder-card-caption">Click thumbnail to upload custom placeholder</span>
+                  <div class="custom-placeholder-actions">
+                    <button id="custom-placeholder-replace" class="link-btn custom-placeholder-link hidden" type="button" data-i18n="settings.gallery.placeholder.replace">Replace</button>
+                    <button id="custom-placeholder-remove" class="link-btn custom-placeholder-link custom-placeholder-remove-link hidden" type="button" data-i18n="settings.gallery.placeholder.remove">Remove</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- custom-placeholder-status text is also overwritten at runtime by the same controller — left untranslated
+                 for the same reason as the caption above. -->
+            <span id="custom-placeholder-status" class="visually-hidden">Default placeholder active</span>
+            <p class="setting-description" data-i18n="settings.gallery.placeholder.storageNote">Custom placeholder is stored in IndexedDB and included in full package exports (.fj), even if this toggle is off.</p>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-control">
+              <label for="image-compression-setting" data-i18n="settings.gallery.imageCompression.label">Image Compression</label>
+              <select id="image-compression-setting" class="setting-select">
+                <option value="always" selected data-i18n="settings.gallery.imageCompression.options.always">Always</option>
+                <option value="never" data-i18n="settings.gallery.imageCompression.options.never">Never</option>
+                <option value="ask" data-i18n="settings.gallery.imageCompression.options.ask">Ask</option>
+              </select>
+            </div>
+            <p class="setting-description" data-i18n="settings.gallery.imageCompression.description">Applies only when adding/inserting images or bulk image import. Flow imports (.fj/.json/.zip) preserve image sources exactly as saved. (Default: Always)</p>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-control">
+              <label for="wireframe-button-toggle" data-i18n="settings.gallery.wireframeButtons.label">Wireframe Buttons</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="wireframe-button-toggle" />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <p class="setting-description" data-i18n="settings.gallery.wireframeButtons.description">Show wireframe buttons next to images in the gallery. (Default: Off)</p>
+          </div>
+        </div>
+
+        <!-- ── Audio ── -->
+        <div class="settings-tab-panel" data-panel="audio">
+          <div class="setting-item" id="ui-sounds-setting-card">
+            <div class="setting-header">
+              <h4 data-i18n="settings.audio.uiSounds.heading">Interface Sounds</h4>
+            </div>
+            <div class="setting-control">
+              <label for="ui-sounds-enabled-toggle" data-i18n="settings.audio.uiSounds.enabledLabel">Interface sounds</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="ui-sounds-enabled-toggle" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="setting-sub-divider"></div>
+            <div class="setting-control">
+              <label for="ui-sounds-volume-range" data-i18n="settings.audio.uiSounds.volumeLabel">Volume</label>
+              <input type="range" id="ui-sounds-volume-range" class="setting-input ui-sounds-volume-range" min="0" max="100" step="1" value="100">
+            </div>
+            <div class="setting-sub-divider"></div>
+            <div class="setting-control">
+              <label for="ui-sounds-hover-toggle" data-i18n="settings.audio.uiSounds.hoverLabel">Hover sounds</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="ui-sounds-hover-toggle" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="setting-sub-divider"></div>
+            <div class="setting-control">
+              <label data-i18n="settings.audio.uiSounds.previewLabel">Preview</label>
+              <button type="button" id="ui-sounds-test-btn" class="btn cleanup-button ui-sounds-test-btn" data-no-sound data-i18n="settings.audio.uiSounds.testButton">Play test sound</button>
+            </div>
+            <p class="setting-description" data-i18n="settings.audio.uiSounds.description">Subtle click and hover cues for buttons and controls across the app. Lower the volume or turn off hover cues if they feel too busy. This is the same on/off control as the speaker button in the toolbar. (Default: On)</p>
+          </div>
+
+          <div class="setting-item" id="audio-player-settings-card">
+            <div class="setting-header">
+              <h4 data-i18n="settings.audio.player.heading">Audio Player Settings</h4>
+            </div>
+            <div class="setting-control">
+              <label for="header-audio-player-visible-toggle" data-i18n="settings.audio.player.showPlayerLabel">Show Player</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="header-audio-player-visible-toggle" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="setting-sub-divider"></div>
+            <div class="setting-control">
+              <label for="header-audio-player-mode-select" data-i18n="settings.audio.player.playModeLabel">Play Mode</label>
+              <select id="header-audio-player-mode-select" class="setting-select setting-select-sm">
+                <option value="continuous" selected data-i18n="settings.audio.player.playModeOptions.sequential">Sequential</option>
+                <option value="shuffle" data-i18n="settings.audio.player.playModeOptions.shuffle">Shuffle</option>
+                <option value="repeat-one" data-i18n="settings.audio.player.playModeOptions.repeatOne">Repeat One</option>
+              </select>
+            </div>
+            <div class="setting-sub-divider"></div>
+            <div class="setting-control">
+              <label for="header-audio-player-node-select" data-i18n="settings.audio.player.targetNodeLabel">Target Node</label>
+              <select id="header-audio-player-node-select" class="setting-select">
+                <option value="" data-i18n="settings.audio.player.targetNodeAllOption">All (default)</option>
+              </select>
+            </div>
+            <div class="setting-sub-divider"></div>
+            <div class="setting-control">
+              <label for="header-audio-player-tag-mode-select" data-i18n="settings.audio.player.tagFilterLabel">Tag Filter</label>
+              <select id="header-audio-player-tag-mode-select" class="setting-select setting-select-sm">
+                <option value="all" selected data-i18n="settings.audio.player.tagFilterOptions.all">All slot tags</option>
+                <option value="include" data-i18n="settings.audio.player.tagFilterOptions.include">Include selected tags</option>
+                <option value="exclude" data-i18n="settings.audio.player.tagFilterOptions.exclude">Exclude selected tags</option>
+              </select>
+            </div>
+            <div class="setting-sub-divider"></div>
+            <div class="setting-control audio-player-tag-chip-control">
+              <div class="setting-label" data-i18n="settings.audio.player.selectedTagsLabel">Selected Tags</div>
+              <div id="header-audio-player-selected-tags" class="audio-player-selected-tags" aria-live="polite"></div>
+            </div>
+            <div class="setting-sub-divider"></div>
+            <div class="setting-control audio-player-tag-search-control">
+              <label for="header-audio-player-tag-search" data-i18n="settings.audio.player.findTagsLabel">Find Tags</label>
+              <input type="text" id="header-audio-player-tag-search" class="setting-input audio-player-tag-search-input" placeholder="Filter tags..." autocomplete="off" spellcheck="false" data-i18n-placeholder="settings.audio.player.findTagsPlaceholder">
+            </div>
+            <div class="setting-sub-divider"></div>
+            <div class="setting-control audio-player-tag-select-control">
+              <div class="setting-label" data-i18n="settings.audio.player.availableTagsLabel">Available Tags</div>
+              <div id="header-audio-player-tag-results" class="audio-player-tag-results" role="listbox" aria-label="Available audio filter tags" data-i18n-attr="aria-label:settings.audio.player.availableTagsAriaLabel"></div>
+            </div>
+            <div class="setting-sub-divider"></div>
+            <div class="setting-control">
+              <label for="audio-playback-rate-setting" data-i18n="settings.audio.player.playSpeedLabel">Play Speed</label>
+              <select id="audio-playback-rate-setting" class="setting-select setting-select-sm">
+                <option value="0.5">0.5x</option>
+                <option value="0.75">0.75x</option>
+                <option value="1" selected>1x</option>
+                <option value="1.25">1.25x</option>
+                <option value="1.5">1.5x</option>
+                <option value="2">2x</option>
+                <option value="2.5">2.5x</option>
+                <option value="3">3x</option>
+              </select>
+            </div>
+            <p class="setting-description" data-i18n="settings.audio.player.description">Choose whether the global audio player is visible, how its playlist advances, which node it uses as its default audio feed, and whether slot tags include or exclude audio from that source. Drag audio slots onto the player to create a temporary playlist; only audio files are included.</p>
+          </div>
+
+          <div class="setting-item" id="audio-stack-advance-setting-card">
+            <div class="setting-control">
+              <label for="continue-audio-on-stack-advance-toggle" data-i18n="settings.audio.stackAdvance.label">Auto start</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="continue-audio-on-stack-advance-toggle" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <p class="setting-description" data-i18n="settings.audio.stackAdvance.description">When an audio stack item is playing, Previous/Next starts the next audio item automatically. Non-audio items and non-playing audio do not auto-start. (Default: On)</p>
+          </div>
+        </div>
+
+        <!-- ── Browser ── -->
+        <div class="settings-tab-panel electron-browser-settings-only" data-panel="browser" hidden>
+          <div class="setting-item" id="browser-startup-setting-card">
+            <div class="setting-header">
+              <h4 data-i18n="settings.browser.startup.heading">Startup</h4>
+            </div>
+            <div class="setting-control">
+              <label for="browser-startup-behavior-select" data-i18n="settings.browser.startup.whenOpensLabel">When FlowJoe Opens</label>
+              <select id="browser-startup-behavior-select" class="setting-select">
+                <option value="restore" selected data-i18n="settings.browser.startup.whenOpensOptions.restore">Restore previous tabs</option>
+                <option value="start" data-i18n="settings.browser.startup.whenOpensOptions.start">Open start page</option>
+                <option value="home" data-i18n="settings.browser.startup.whenOpensOptions.home">Open homepage</option>
+                <option value="blank" data-i18n="settings.browser.startup.whenOpensOptions.blank">Open blank tab</option>
+                <option value="gallery" disabled data-i18n="settings.browser.startup.whenOpensOptions.gallery">Open browser gallery (planned)</option>
+              </select>
+            </div>
+            <div class="setting-sub-divider"></div>
+            <div class="setting-control">
+              <label for="browser-restore-tabs-toggle" data-i18n="settings.browser.startup.restoreActiveTabLabel">Restore Active Tab</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="browser-restore-tabs-toggle" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <p class="setting-description" data-i18n="settings.browser.startup.description">Controls how FlowJoe browser tabs are recreated after app restart. Restore uses saved tabs and navigation stacks; homepage and blank start from a clean tab set.</p>
+          </div>
+
+          <div class="setting-item" id="browser-homepage-setting-card">
+            <div class="setting-header">
+              <h4 data-i18n="settings.browser.homepage.heading">Homepage</h4>
+            </div>
+            <div class="setting-control browser-settings-url-row">
+              <label for="browser-home-url-input" data-i18n="settings.browser.homepage.homeUrlLabel">Home URL</label>
+              <input id="browser-home-url-input" class="setting-input" type="url" inputmode="url" autocomplete="off" spellcheck="false" placeholder="https://search.brave.com/" data-i18n-placeholder="settings.browser.homepage.homeUrlPlaceholder" />
+            </div>
+            <div class="browser-settings-action-row">
+              <button id="browser-use-current-page-btn" class="btn cleanup-button" type="button" data-i18n="settings.browser.homepage.useCurrentPageButton">Use Current Page</button>
+              <button id="browser-reset-homepage-btn" class="btn cleanup-button" type="button" data-i18n="settings.browser.homepage.resetHomepageButton">Reset Homepage</button>
+            </div>
+          </div>
+
+          <div class="setting-item" id="browser-search-setting-card">
+            <div class="setting-header">
+              <h4 data-i18n="settings.browser.search.heading">Search</h4>
+            </div>
+            <div class="setting-control">
+              <label for="browser-default-search-engine-select" data-i18n="settings.browser.search.defaultEngineLabel">Default Search Engine</label>
+              <select id="browser-default-search-engine-select" class="setting-select">
+                <option value="brave" selected data-i18n="settings.browser.search.engineOptions.brave">Brave Search</option>
+                <option value="google" data-i18n="settings.browser.search.engineOptions.google">Google</option>
+                <option value="bing" data-i18n="settings.browser.search.engineOptions.bing">Microsoft Bing</option>
+                <option value="duckduckgo" data-i18n="settings.browser.search.engineOptions.duckduckgo">DuckDuckGo</option>
+                <option value="startpage" data-i18n="settings.browser.search.engineOptions.startpage">Startpage</option>
+                <option value="yahoo" data-i18n="settings.browser.search.engineOptions.yahoo">Yahoo</option>
+                <option value="ecosia" data-i18n="settings.browser.search.engineOptions.ecosia">Ecosia</option>
+                <option value="mojeek" data-i18n="settings.browser.search.engineOptions.mojeek">Mojeek</option>
+                <option value="qwant" data-i18n="settings.browser.search.engineOptions.qwant">Qwant</option>
+              </select>
+            </div>
+            <div class="setting-sub-divider"></div>
+            <div class="setting-control browser-settings-url-row">
+              <label for="browser-search-template-input" data-i18n="settings.browser.search.searchTemplateLabel">Search URL Template</label>
+              <input id="browser-search-template-input" class="setting-input" type="text" autocomplete="off" spellcheck="false" value="https://search.brave.com/search?q=%s" disabled />
+            </div>
+            <p class="setting-description" data-i18n-html="settings.browser.search.description">Address bar text that is not clearly a URL searches with Brave Search. The template uses <code>%s</code> for the search terms.</p>
+          </div>
+
+          <div class="setting-item" id="browser-tabs-setting-card">
+            <div class="setting-header">
+              <h4 data-i18n="settings.browser.tabs.heading">Tabs</h4>
+            </div>
+            <div class="setting-control">
+              <label for="browser-new-tab-behavior-select" data-i18n="settings.browser.tabs.newTabOpensLabel">New Tab Opens</label>
+              <select id="browser-new-tab-behavior-select" class="setting-select">
+                <option value="start" selected data-i18n="settings.browser.tabs.newTabOptions.start">Start page</option>
+                <option value="home" data-i18n="settings.browser.tabs.newTabOptions.home">Homepage</option>
+                <option value="blank" data-i18n="settings.browser.tabs.newTabOptions.blank">Blank tab</option>
+                <option value="gallery" disabled data-i18n="settings.browser.tabs.newTabOptions.gallery">Browser gallery (planned)</option>
+              </select>
+            </div>
+            <div class="setting-sub-divider"></div>
+            <div class="setting-control">
+              <label for="browser-link-open-behavior-select" data-i18n="settings.browser.tabs.linkDrawerOpensLabel">Link Drawer Opens</label>
+              <select id="browser-link-open-behavior-select" class="setting-select">
+                <option value="new-tab" selected data-i18n="settings.browser.tabs.linkDrawerOptions.newTab">New tab</option>
+                <option value="current-tab" data-i18n="settings.browser.tabs.linkDrawerOptions.currentTab">Current tab</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="setting-item" id="browser-bookmarks-history-setting-card">
+            <div class="setting-header">
+              <h4 data-i18n="settings.browser.history.heading">History</h4>
+            </div>
+            <div class="setting-control">
+              <label for="browser-save-history-toggle" data-i18n="settings.browser.history.saveHistoryLabel">Save Browsing History</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="browser-save-history-toggle" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="setting-sub-divider"></div>
+            <div class="setting-control">
+              <label for="browser-history-retention-select" data-i18n="settings.browser.history.retentionLabel">History Retention</label>
+              <select id="browser-history-retention-select" class="setting-select setting-select-sm">
+                <option value="30" data-i18n="settings.browser.history.retentionOptions.days30">30 days</option>
+                <option value="90" data-i18n="settings.browser.history.retentionOptions.days90">90 days</option>
+                <option value="365" data-i18n="settings.browser.history.retentionOptions.year1">1 year</option>
+                <option value="forever" selected data-i18n="settings.browser.history.retentionOptions.forever">Forever</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="setting-item" id="browser-downloads-security-setting-card">
+            <div class="setting-header">
+              <h4 data-i18n="settings.browser.downloads.heading">Download Behavior</h4>
+            </div>
+            <div class="setting-control">
+              <label for="browser-downloads-ask-toggle" data-i18n="settings.browser.downloads.askWhereLabel">Ask Where to Save Downloads</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="browser-downloads-ask-toggle" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="setting-sub-divider"></div>
+            <div class="setting-control">
+              <label for="browser-download-shelf-toggle" data-i18n="settings.browser.downloads.showNotificationsLabel">Show Download Notifications</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="browser-download-shelf-toggle" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="setting-sub-divider"></div>
+            <div class="setting-control">
+              <label for="browser-popup-handling-select" data-i18n="settings.browser.downloads.popupHandlingLabel">Popup Handling</label>
+              <select id="browser-popup-handling-select" class="setting-select setting-select-sm">
+                <option value="tab" selected data-i18n="settings.browser.downloads.popupHandlingOptions.tab">Open as tab</option>
+                <option value="block" data-i18n="settings.browser.downloads.popupHandlingOptions.block">Block</option>
+                <option value="external" data-i18n="settings.browser.downloads.popupHandlingOptions.external">External browser</option>
+              </select>
+            </div>
+            <div class="setting-sub-divider"></div>
+            <div class="browser-settings-action-row">
+              <button type="button" id="browser-clear-data-btn" class="btn cleanup-button" data-i18n="settings.browser.downloads.clearDataButton">Clear Browsing Data...</button>
+            </div>
+            <p class="setting-description" data-i18n="settings.browser.downloads.description">Website permissions such as camera, microphone, location, and notifications are blocked by default. Clear Browsing Data lets you remove website cookies/cache/site storage, FlowJoe's saved browser tabs/history/favorites/groups, or both.</p>
+          </div>
+
+          <div class="setting-item setting-card-static" id="browser-roadmap-notes-card">
+            <div class="setting-header">
+              <h4 data-i18n="settings.browser.roadmapNotes.heading">Temporary Browser Roadmap Notes</h4>
+            </div>
+            <p class="setting-description" data-i18n="settings.browser.roadmapNotes.intro">Remove this card before production. These are the known browser-document alignment items that are still planned or intentionally scoped.</p>
+            <div class="setting-sub-divider"></div>
+            <p class="setting-description" data-i18n-html="settings.browser.roadmapNotes.startPage"><strong>Start page / browser gallery dashboard:</strong> The docs describe <code>flowjoe://start</code> style ideas, but code still does not implement a real custom start page. New-tab gallery behavior is effectively placeholder/future.</p>
+            <p class="setting-description" data-i18n-html="settings.browser.roadmapNotes.permissions"><strong>Per-site permission controls:</strong> Remote page permissions are denied by default. There is no UI or allow-list for camera, microphone, location, notifications, etc.</p>
+            <p class="setting-description" data-i18n-html="settings.browser.roadmapNotes.downloadManager"><strong>Full download manager:</strong> Save-location prompting and download notifications exist. A full downloads shelf/manager with progress history, retry, and recent downloads does not.</p>
+            <p class="setting-description" data-i18n-html="settings.browser.roadmapNotes.sessionRestore"><strong>Session restore UI:</strong> Browser sessions are recorded, including crash bookkeeping, but there is no UI to restore a previous session or surface last/crashed sessions.</p>
+            <p class="setting-description" data-i18n-html="settings.browser.roadmapNotes.clearDataScoped"><strong>Clear website data is scoped:</strong> It clears storage for origins FlowJoe knows from saved browser records, plus cache. It does not scan every possible Chromium storage origin that may exist only in Electron's profile.</p>
+            <p class="setting-description" data-i18n-html="settings.browser.roadmapNotes.maxOpenLiveViews"><strong>maxOpenLiveViews is not enforced:</strong> The setting exists conceptually, but there is no automatic cap that unloads or sleeps live browser views once the limit is exceeded.</p>
+            <p class="setting-description" data-i18n-html="settings.browser.roadmapNotes.futureFeatures"><strong>Future browser features remain future:</strong> Private/incognito tabs, extension support, schema migrations, richer browser history/start-page surfaces, and deeper site-data controls are not implemented.</p>
+          </div>
+        </div>
+
+        <!-- ── AI & Data ── -->
+        <!-- ── AI (Joe behavior) ── -->
+        <div class="settings-tab-panel" data-panel="ai">
+          <div class="setting-item electron-mcp-settings-only" id="mcp-bridge-setting-card" hidden>
+            <div class="setting-header">
+              <h4 data-i18n="settings.ai.mcpBridge.heading">Agent Bridge (MCP)</h4>
+            </div>
+            <div class="setting-control">
+              <label for="mcp-bridge-enabled-toggle" data-i18n="settings.ai.mcpBridge.allowAgentsLabel">Allow agents to control FlowJoe</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="mcp-bridge-enabled-toggle" />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <p class="setting-description" data-i18n-html="settings.ai.mcpBridge.description">Lets a coding agent running in the terminal (Claude Code, Codex, Gemini…) read and build your flow through the same actions Joe uses — over a local-only connection on your machine, secured by a secret token. <strong>Off by default. Desktop only.</strong></p>
+            <p class="setting-description" id="mcp-bridge-status-line"></p>
+            <p class="setting-description" id="mcp-bridge-detected" hidden></p>
+            <div class="mcp-bridge-action-row" id="mcp-bridge-connect-actions"></div>
+            <p class="setting-description" id="mcp-bridge-folder-line" hidden></p>
+            <div class="mcp-bridge-action-row" id="mcp-bridge-folder-actions" hidden>
+              <button id="mcp-bridge-change-folder-btn" class="btn cleanup-button" type="button" data-i18n="settings.ai.mcpBridge.changeFolderButton">Change folder…</button>
+            </div>
+            <div id="mcp-bridge-details" hidden>
+              <div class="setting-sub-divider"></div>
+              <div class="setting-control">
+                <label for="mcp-bridge-autoapply-toggle" data-i18n="settings.ai.mcpBridge.autoApplyLabel">Auto-apply agent edits (this session)</label>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="mcp-bridge-autoapply-toggle" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <p class="setting-description" data-i18n="settings.ai.mcpBridge.autoApplyDescription">Off by default: every agent edit waits for your approval. When on, non-destructive edits apply immediately for this session; deletions are always held for review. Resets to off when FlowJoe restarts.</p>
+              <div class="setting-sub-divider"></div>
+              <div class="setting-control mcp-bridge-field-row">
+                <label for="mcp-bridge-snippet" data-i18n="settings.ai.mcpBridge.configLabel">Agent config (.mcp.json)</label>
+                <textarea id="mcp-bridge-snippet" class="setting-input mcp-bridge-snippet" readonly spellcheck="false" rows="9"></textarea>
+              </div>
+              <div class="mcp-bridge-action-row">
+                <button id="mcp-bridge-copy-snippet-btn" class="btn cleanup-button" type="button" data-i18n="settings.ai.mcpBridge.copyConfigButton">Copy Config</button>
+                <button id="mcp-bridge-rotate-token-btn" class="btn cleanup-button" type="button" data-i18n="settings.ai.mcpBridge.rotateTokenButton">Rotate Token</button>
+              </div>
+              <p class="setting-description" data-i18n-html="settings.ai.mcpBridge.configDescription">Paste the config into your agent (e.g. a project <code>.mcp.json</code> for Claude Code) — it already contains the URL and token. Treat the token like a password — anyone with it can control your flow while the bridge is on. <strong>Rotate Token</strong> invalidates the old one.</p>
+            </div>
+            <div class="setting-sub-divider"></div>
+            <div id="agent-bridge-helper-toggle-row" hidden>
+              <div class="setting-control">
+                <label for="agent-bridge-helper-toggle" data-i18n="settings.ai.mcpBridge.helper.toggleLabel">Allow terminal to request bridge enable</label>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="agent-bridge-helper-toggle" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <p class="setting-description" data-i18n="settings.ai.mcpBridge.helper.toggleDescription">Lets an agent already running in your terminal ask FlowJoe to turn the bridge on with one command, instead of you switching back to Settings. You still approve every request.</p>
+            </div>
+            <div id="agent-bridge-helper-details" hidden>
+              <p class="setting-description" data-i18n="settings.ai.mcpBridge.helper.copyCommandDescription">Paste this into the terminal your agent is running in — it can then ask FlowJoe to turn the bridge on. Only works while FlowJoe is running; this does not launch it.</p>
+              <div class="mcp-bridge-action-row">
+                <button id="agent-bridge-helper-copy-btn" class="btn cleanup-button" type="button" data-i18n="settings.ai.mcpBridge.helper.copyCommandLabel">Copy enable command</button>
+              </div>
+            </div>
+            <p class="setting-description" id="agent-bridge-helper-always-allow-note" hidden data-i18n="settings.ai.mcpBridge.helper.alwaysAllowActiveNote">This terminal can enable the bridge without asking.</p>
+            <div class="mcp-bridge-action-row" id="agent-bridge-helper-revoke-row" hidden>
+              <button id="agent-bridge-helper-revoke-btn" class="btn cleanup-button" type="button" data-i18n="settings.ai.mcpBridge.helper.alwaysAllowRevokeLabel">Revoke always-allow</button>
+            </div>
+          </div>
+          <div class="setting-item" id="joe-auto-compact-setting-card">
+            <div class="setting-control">
+              <label for="joe-auto-compact-toggle" data-i18n="settings.ai.autoCompact.label">Auto compact long Joe chats</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="joe-auto-compact-toggle">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <p class="setting-description" data-i18n-html="settings.ai.autoCompact.description">When a Joe chat runs long (context in the red), FlowJoe automatically summarizes the older turns into a local <strong>compacted memory</strong> after Joe replies, so the chat stays affordable and within the model's limit. If a send would exceed the hard model limit, FlowJoe may compact first to protect the request. This memory lives only in FlowJoe — it is <strong>not</strong> OpenAI/ChatGPT memory. Your full conversation stays saved; you can View, Edit, Regenerate, or Delete it. On by default — manual <em>Compact</em> is always available. A summary you've edited is never auto-overwritten.</p>
+          </div>
+
+          <div class="setting-item" id="joe-attachment-memory-setting-card">
+            <div class="setting-control">
+              <label for="joe-attachment-memory-toggle" data-i18n="settings.ai.attachmentMemory.label">Create attachment memories for compaction</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="joe-attachment-memory-toggle">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <p class="setting-description" data-i18n-html="settings.ai.attachmentMemory.description">When you send an image or document to Joe, FlowJoe derives a durable text <strong>memory</strong> of it so its details survive compaction without resending the file. Turning this off only stops <em>new</em> memories from being created — existing memories are kept and still sent with compacted memory. Default on.</p>
+          </div>
+
+          <div class="setting-item" id="joe-link-preview-setting-card">
+            <div class="setting-control">
+              <label for="joe-link-preview-select" data-i18n="settings.ai.joeLinkPreviews.label">Link previews for cards Joe adds</label>
+              <select id="joe-link-preview-select" class="setting-select">
+                <option value="auto" selected data-i18n="settings.ai.joeLinkPreviews.options.auto">Load automatically</option>
+                <option value="click" data-i18n="settings.ai.joeLinkPreviews.options.click">Wait for a click</option>
+              </select>
+            </div>
+            <p class="setting-description" data-i18n-html="settings.ai.joeLinkPreviews.description">A link card shows a preview of its page, which means the page is contacted the moment the card appears. Cards you add yourself always load their preview. For cards added by Joe, a scheduled task or a connected assistant, you can choose to load previews automatically (default) or to wait for a click — those cards then show only their address and a <strong>Load preview</strong> button, and nothing is contacted until you press it.</p>
+          </div>
+
+          <div class="setting-item" id="ai-context-director-setting-card">
+            <div class="setting-control">
+              <label for="ai-context-director-toggle" data-i18n="settings.ai.contextDirector.label">Smart context loading (experimental)</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="ai-context-director-toggle">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <p class="setting-description" data-i18n="settings.ai.contextDirector.description">Before each message, a quick AI read decides what Joe actually needs — so casual chats and questions stay light, while his heavier tools and reference load only when a message calls for them. The trade-off is a short pause before Joe replies, in exchange for a leaner, sharper Joe. If the read fails (or no API key is set) it quietly falls back to a simple word-based check, so nothing breaks. On by default.</p>
+          </div>
+
+          <div class="setting-item" id="joe-voice-setting-card">
+            <div class="setting-control">
+              <label for="joe-voice-auto-read-toggle" data-i18n="settings.ai.voice.autoReadLabel">Auto-read Joe replies aloud</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="joe-voice-auto-read-toggle">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="setting-sub-divider"></div>
+            <div class="setting-control">
+              <label for="joe-voice-select" data-i18n="settings.ai.voice.voiceSelectLabel">Joe voice</label>
+              <span class="joe-voice-select-row">
+                <select id="joe-voice-select" class="setting-select" aria-label="Joe voice" data-i18n-attr="aria-label:settings.ai.voice.voiceSelectAriaLabel">
+                  <option value="alloy">alloy</option>
+                  <option value="ash">ash</option>
+                  <option value="ballad">ballad</option>
+                  <option value="coral">coral</option>
+                  <option value="echo">echo</option>
+                  <option value="fable">fable</option>
+                  <option value="nova">nova</option>
+                  <option value="onyx">onyx</option>
+                  <option value="sage">sage</option>
+                  <option value="shimmer">shimmer</option>
+                  <option value="verse">verse</option>
+                  <option value="marin">marin</option>
+                  <option value="cedar">cedar</option>
+                </select>
+                <button type="button" id="joe-voice-sample-btn" class="joe-voice-sample-btn" aria-label="Play Joe voice sample" title="Play voice sample" data-i18n-attr="aria-label:settings.ai.voice.sampleButtonAriaLabel;title:settings.ai.voice.sampleButtonTitle">
+                  <i class="fas fa-volume-up" aria-hidden="true"></i>
+                </button>
               </span>
             </div>
-            <ul class="cx-status-list">
-              <li class="is-off">
-                <i class="fa-solid fa-link-slash"></i>
-                This link no longer opens the shared Flow
-              </li>
-              <li>
-                <i class="fa-solid fa-check"></i>
-                Nothing you added was lost; it stays in the owner's Flow
-              </li>
-            </ul>
+            <p class="setting-description" data-i18n="settings.ai.voice.description">When enabled, Joe reads new replies with an AI-generated OpenAI text-to-speech voice. Choosing a voice plays a short sample when your OpenAI API key is saved. You can also click the volume button on any Joe reply to read it manually.</p>
           </div>
-        </div>
-        <div class="cx-join-foot">
-          <span class="cx-remember">
-            <i class="fa-regular fa-envelope"></i>
-            Ask the owner for a new invitation link.
-          </span>
-          <button class="ob-btn" type="button" id="cxEndedForget">Forget this invitation</button>
-        </div>
-      </div>
-    </div>
 
-    <script src="/framebust.js"></script>
-    <script type="module" src="/main.js"></script>
+          <div class="setting-item" id="flow-mutations-setting-card">
+            <div class="setting-control">
+              <label for="flow-permission-select" data-i18n="settings.ai.flowMutations.label">Let Joe edit your flow</label>
+              <select id="flow-permission-select" class="setting-select">
+                <option value="off" data-i18n="settings.ai.flowMutations.options.off">Off — can't see or touch</option>
+                <option value="read" data-i18n="settings.ai.flowMutations.options.read">Read-only — sees &amp; suggests</option>
+                <option value="propose" selected data-i18n="settings.ai.flowMutations.options.propose">Propose &amp; modify — asks before changing</option>
+              </select>
+            </div>
+            <p class="setting-description" data-i18n-html="settings.ai.flowMutations.description">Controls how much Joe can do with your flow and gallery. <strong>Propose</strong> (default): Joe proposes add/move/rename/gallery changes and <strong>you approve, revise, or reject</strong> each one before it applies. <strong>Read-only</strong>: Joe can see your flow and suggest ideas in chat but gets no editing tools. <strong>Off</strong>: Joe can't see or change your flow at all.</p>
+          </div>
+
+          <div class="setting-item" id="flow-audit-log-setting-card">
+            <div class="setting-control">
+              <label data-i18n="settings.ai.auditLog.label">Joe's change history</label>
+              <button class="icon-btn" id="flow-audit-log-btn" data-tooltip="View Joe's applied flow changes" data-position="left" style="margin-left: auto;" data-i18n-attr="data-tooltip:settings.ai.auditLog.buttonTooltip">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+              </button>
+            </div>
+            <p class="setting-description" data-i18n="settings.ai.auditLog.description">A running log of every flow change you approved — what changed, when, and that you approved it. Open it to review or clear the history.</p>
+          </div>
+
+          <div class="setting-item" id="joe-context-setting-card">
+            <h4 class="joe-context-title" data-i18n="settings.ai.context.heading">What Joe Sees</h4>
+            <p class="setting-description" data-i18n="settings.ai.context.intro">What Joe gets attached to every message. Sent once, and re-sent only when it changes — never duplicated.</p>
+
+            <div class="joe-context-group-label" data-i18n="settings.ai.context.mapGroupLabel">THE MAP</div>
+            <p class="setting-description" data-i18n="settings.ai.context.mapDescription">Your whole flow's shape: every node, slot, and stack item — names, how they connect, and counts. No content — just the lay of the land, so Joe can find and name anything. Private nodes show name + place only (sealed — Joe can move them, not look inside).</p>
+            <p class="setting-description joe-context-readout" id="joe-ctx-readout"><span id="joe-ctx-count-nodes">—</span> nodes · <span id="joe-ctx-count-slots">—</span> slots · <span id="joe-ctx-count-items">—</span> stack items<span class="joe-context-tokens" id="joe-ctx-tokens"></span></p>
+
+            <div class="joe-context-group-label" data-i18n="settings.ai.context.whereGroupLabel">WHERE YOU ARE AT</div>
+            <p class="setting-description" data-i18n="settings.ai.context.whereDescription">The real content for your current spot: your flow summary, this node's summary, and this slot in full — including every item's notes.</p>
+
+            <div class="joe-context-group-label" data-i18n="settings.ai.context.everythingElseGroupLabel">EVERYTHING ELSE</div>
+            <p class="setting-description" data-i18n="settings.ai.context.everythingElseDescription">Joe fetches on his own, when he needs it.</p>
+
+            <details class="joe-context-how">
+              <summary data-i18n="settings.ai.context.howSummary">How this works</summary>
+              <p class="setting-description" data-i18n-html="settings.ai.context.howDescription">Sent once · re-sent only when it changes · never stored as memory · dropped when the chat compacts. Everything else, Joe pulls on demand. <strong>Hide from Joe</strong> → that summary or note reads "hidden" (the name stays). <strong>Private</strong> → the whole node is sealed; its name shows, its insides don't.</p>
+            </details>
+          </div>
+        </div><!-- /settings-tab-panel ai -->
+
+        <!-- ── APIs (external service credentials) ── -->
+        <div class="settings-tab-panel" data-panel="apis">
+          <div class="setting-item">
+            <div class="setting-control">
+              <label data-i18n="settings.apis.apiSettingsLabel">API Settings</label>
+              <button class="icon-btn" id="ai-settings-btn" data-tooltip="Open API Settings" data-position="left" style="margin-left: auto;" data-i18n-attr="data-tooltip:settings.apis.apiSettingsButtonTooltip">
+                <i class="fa-solid fa-robot"></i>
+              </button>
+            </div>
+            <p class="setting-description" data-i18n="settings.apis.description">Configure your OpenAI API key for FlowJoe features that use OpenAI models, including image analysis, chat, spell check, and image generation.</p>
+          </div>
+          <div class="setting-item">
+            <div class="setting-control">
+              <label data-i18n="settings.apis.typesafeSettingsLabel">TypeSafe API Key</label>
+              <button class="icon-btn" id="typesafe-settings-btn" data-tooltip="Open TypeSafe Settings" data-position="left" style="margin-left: auto;" data-i18n-attr="data-tooltip:settings.apis.typesafeSettingsButtonTooltip">
+                <i class="fa-solid fa-bolt"></i>
+              </button>
+            </div>
+            <p class="setting-description" data-i18n-html="settings.apis.typesafeDescription">Optional. Speeds up how quickly Joe works out what he needs from your flow. <strong>Desktop app only.</strong></p>
+          </div>
+        </div><!-- /settings-tab-panel apis -->
+
+        <!-- ── Data (app data, import/export, resets, stats) ── -->
+        <div class="settings-tab-panel" data-panel="data">
+          <div class="setting-item electron-workspace-only" id="workspace-setting-card" hidden>
+            <div class="setting-header">
+              <h4 data-i18n="settings.data.workspaceFolder.heading">Workspace Folder</h4>
+            </div>
+            <!-- Work-in-progress warning: hidden while workspace folders are usable again. Kept
+                 (not deleted) with its i18n key intact in all 20 languages so it can be restored by
+                 un-commenting if the feature regresses. Nothing in src/ references this element id.
+                 Network/UNC folders are still refused — that is the separate note below, which
+                 stays visible. -->
+            <!-- <p class="setting-description" id="workspace-setting-wip-warning" data-i18n="settings.data.workspaceFolder.wipWarning" style="color: #78350f; background: #fef3c7; border: 1px solid #d97706; border-radius: 6px; padding: 8px 10px; font-weight: 600;">⚠️ Work in progress — please don't use or experiment with Workspace Folders yet. This feature isn't finished and isn't safe to rely on. This warning will be removed once it's ready.</p> -->
+            <p class="setting-description" id="workspace-setting-description" data-i18n="settings.data.workspaceFolder.description">Create a workspace folder for this Flow. The Flow and its media will be copied there. Workspace mode automatically keeps one owner-local Local Recovery Copy in IndexedDB.</p>
+            <p class="setting-description workspace-setting-recovery-facts" id="workspace-setting-recovery-facts" hidden></p>
+            <p class="setting-description workspace-setting-network-note" data-i18n="settings.data.workspaceFolder.networkNote">Network and UNC workspace folders are not supported yet.</p>
+            <div class="workspace-setting-status" id="workspace-setting-status" role="status" aria-live="polite">
+              <span id="workspace-setting-led" class="workspace-setting-led disconnected"></span>
+              <span class="workspace-setting-identity">
+                <strong id="workspace-setting-flow-name" class="workspace-setting-flow-name" hidden></strong>
+                <span id="workspace-setting-status-text" data-i18n="settings.data.workspaceFolder.noFolder">No workspace folder selected</span>
+                <span class="workspace-setting-path" id="workspace-setting-path" hidden>
+                  <span class="workspace-setting-path-label" data-i18n="settings.data.workspaceFolder.heading">Workspace Folder</span>
+                  <code id="workspace-setting-path-text" dir="ltr"></code>
+                </span>
+              </span>
+            </div>
+            <div class="cleanup-button-container workspace-setting-actions">
+              <button id="workspace-open-btn" class="btn cleanup-button" type="button" data-i18n="settings.data.workspaceFolder.connectWorkspace">Connect Workspace</button>
+              <button id="workspace-create-copy-btn" class="btn cleanup-button" type="button" data-i18n="settings.data.workspaceFolder.createCopy">Create Workspace</button>
+              <button id="workspace-cancel-copy-btn" class="btn cleanup-button" type="button" hidden data-i18n="settings.data.workspaceFolder.cancelCopy">Cancel Copy</button>
+              <button id="workspace-close-btn" class="btn cleanup-button" type="button" hidden data-i18n="settings.data.workspaceFolder.switchToLocalStorage">Switch to Local Storage</button>
+              <button id="workspace-disconnect-btn" class="btn cleanup-button" type="button" hidden>Disconnect Workspace</button>
+              <button id="workspace-use-local-copy-btn" class="btn cleanup-button" type="button" hidden>Use Local Copy</button>
+              <button id="workspace-keep-workspace-btn" class="btn cleanup-button" type="button" hidden>Keep Workspace</button>
+              <button id="workspace-rebuild-btn" class="btn cleanup-button" type="button" hidden>Rebuild Workspace</button>
+              <button id="workspace-clear-interrupted-save-btn" class="btn cleanup-button" type="button" data-i18n="settings.data.workspaceFolder.clearInterruptedSave" hidden>Clear Interrupted Save</button>
+              <button id="workspace-delete-btn" class="btn cleanup-button" type="button" hidden>Delete Workspace</button>
+              <button id="workspace-reveal-btn" class="btn cleanup-button" type="button" hidden>Reveal Workspace Folder</button>
+              <button id="workspace-start-local-btn" class="btn cleanup-button" type="button" hidden>Start New Local Project</button>
+              <button id="workspace-reconcile-flows-btn" class="btn cleanup-button" type="button" hidden>Retained Reconcile Flows</button>
+              <button id="workspace-conflict-btn" class="btn cleanup-button" type="button" hidden>Resolve Retained Conflict Copies</button>
+              <button id="workspace-retry-action-btn" class="btn cleanup-button" type="button" hidden>Retry</button>
+              <button id="workspace-cancel-action-btn" class="btn cleanup-button" type="button" hidden>Cancel</button>
+            </div>
+            <p class="setting-description workspace-setting-progress" id="workspace-setting-progress" hidden></p>
+          </div>
+
+          <div class="setting-item" id="delete-undo-setting-card">
+            <div class="setting-control">
+              <label for="delete-undo-toggle" data-i18n="settings.data.deleteUndo.label">Delete Undo (5s)</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="delete-undo-toggle">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <p class="setting-description" data-i18n="settings.data.deleteUndo.description">When enabled, delete actions can be undone for 5 seconds.</p>
+          </div>
+
+          <div class="setting-item" id="anti-nag-prefs-container">
+            <div class="setting-header">
+              <h4 data-i18n="settings.data.antiNag.heading">Anti Nag Preferences</h4>
+            </div>
+            <p class="setting-description anti-nag-intro" data-i18n="settings.data.antiNag.intro">Control save/import prompt behavior. Defaults are conservative: always ask.</p>
+
+            <div class="setting-control anti-nag-row">
+              <label for="save-prompt-policy-setting" data-i18n="settings.data.antiNag.savePromptLabel">Save Prompt Policy</label>
+              <select id="save-prompt-policy-setting" class="setting-select">
+                <option value="always_ask" selected data-i18n="settings.data.antiNag.savePromptOptions.alwaysAsk">Always ask first</option>
+                <option value="dirty_only" data-i18n="settings.data.antiNag.savePromptOptions.dirtyOnly">Ask only when export-impact changes exist</option>
+                <option value="never" data-i18n="settings.data.antiNag.savePromptOptions.never">Never ask (I will manage saves)</option>
+              </select>
+            </div>
+
+            <div class="setting-sub-divider"></div>
+
+            <div class="setting-control anti-nag-row">
+              <label for="import-action-policy-setting" data-i18n="settings.data.antiNag.importActionLabel">Import Placement Policy</label>
+              <select id="import-action-policy-setting" class="setting-select">
+                <option value="always_ask" selected data-i18n="settings.data.antiNag.importActionOptions.alwaysAsk">Always ask where to import</option>
+                <option value="merge_root" data-i18n="settings.data.antiNag.importActionOptions.mergeRoot">Always merge as new root node(s)</option>
+                <option value="overwrite" data-i18n="settings.data.antiNag.importActionOptions.overwrite">Always overwrite current project</option>
+                <option value="merge_selected" data-i18n="settings.data.antiNag.importActionOptions.mergeSelected">Always merge into selected node</option>
+              </select>
+            </div>
+
+            <div class="setting-sub-divider"></div>
+
+            <div class="setting-control anti-nag-row">
+              <label for="import-preferences-policy-setting" data-i18n="settings.data.antiNag.importPrefsLabel">Imported Preferences Policy</label>
+              <select id="import-preferences-policy-setting" class="setting-select">
+                <option value="always_ask" selected data-i18n="settings.data.antiNag.importPrefsOptions.alwaysAsk">Always ask</option>
+                <option value="keep_current" data-i18n="settings.data.antiNag.importPrefsOptions.keepCurrent">Always keep current app settings</option>
+                <option value="apply_imported" data-i18n="settings.data.antiNag.importPrefsOptions.applyImported">Always apply imported app settings</option>
+              </select>
+            </div>
+
+            <div class="setting-sub-divider"></div>
+
+            <div class="setting-control anti-nag-row">
+              <label for="reload-close-warning-policy-setting" data-i18n="settings.data.antiNag.reloadCloseLabel">Reload/Close Warning</label>
+              <select id="reload-close-warning-policy-setting" class="setting-select">
+                <option value="dirty_only" data-i18n="settings.data.antiNag.reloadCloseOptions.dirtyOnly">Warn only if dirty</option>
+                <option value="always" data-i18n="settings.data.antiNag.reloadCloseOptions.always">Always warn</option>
+                <option value="off" selected data-i18n="settings.data.antiNag.reloadCloseOptions.off">Off</option>
+              </select>
+            </div>
+
+            <div class="setting-sub-divider"></div>
+
+            <div class="setting-control anti-nag-row">
+              <label for="save-reminder-setting" data-i18n="settings.data.antiNag.saveReminderLabel">Save Reminder Nag</label>
+              <select id="save-reminder-setting" class="setting-select">
+                <option value="off" data-i18n="settings.data.antiNag.saveReminderOptions.off">Off</option>
+                <option value="0.083" data-i18n="settings.data.antiNag.saveReminderOptions.min5">Remind after 5 minutes (Test)</option>
+                <option value="1" data-i18n="settings.data.antiNag.saveReminderOptions.hour1">Remind after 1 hour</option>
+                <option value="2" data-i18n="settings.data.antiNag.saveReminderOptions.hour2">Remind after 2 hours</option>
+                <option value="4" selected data-i18n="settings.data.antiNag.saveReminderOptions.hour4">Remind after 4 hours (Default)</option>
+                <option value="8" data-i18n="settings.data.antiNag.saveReminderOptions.hour8">Remind after 8 hours</option>
+                <option value="12" data-i18n="settings.data.antiNag.saveReminderOptions.hour12">Remind after 12 hours</option>
+                <option value="24" data-i18n="settings.data.antiNag.saveReminderOptions.hour24">Remind after 24 hours</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="setting-item" id="document-import-policy-setting-card">
+            <div class="setting-header">
+              <h4 data-i18n="settings.data.documentImportPolicy.heading">Document Import Policy</h4>
+            </div>
+
+            <div class="setting-control anti-nag-row">
+              <label for="document-import-discard-markdown-originals-toggle" data-i18n="settings.data.documentImportPolicy.discardOriginalsLabel">Discard originals converted to Markdown (Default: Off)</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="document-import-discard-markdown-originals-toggle" />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <p class="setting-description" data-i18n="settings.data.documentImportPolicy.discardOriginalsDescription">Applies to Markdown-copy imports: .csv, .tsv, .odt, .docx, .epub, .rtf, .ods, .odp, .xlsx, .xls when converted, and .scriv. Hidden search-text formats such as PDF, DOC, PPT, Pages, Numbers, and Keynote keep their originals.</p>
+            <p class="setting-description" data-i18n-html="settings.data.documentImportPolicy.discardOriginalsCaution"><strong>Caution:</strong> discarding originals can lose layout, embedded media, formulas, comments, and other source content that Markdown cannot preserve.</p>
+
+            <div class="setting-sub-divider"></div>
+
+            <div class="setting-control anti-nag-row">
+              <label for="document-import-disable-markdown-copies-toggle" data-i18n="settings.data.documentImportPolicy.disableMarkdownLabel">Do not create Markdown for any file (Default: Off)</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="document-import-disable-markdown-copies-toggle" />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <p class="setting-description" data-i18n="settings.data.documentImportPolicy.disableMarkdownDescription">Keeps imported originals only for files that would otherwise generate a Markdown copy. Existing Markdown and native text files remain editable; non-text originals that still need a Markdown copy cannot use Edit Copy while this is on. Some documents that rely on generated Markdown may not be searchable as document text.</p>
+          </div>
+
+          <div class="setting-item" id="import-prefixes-container">
+          <div class="setting-header">
+            <h4 data-i18n="settings.data.importPrefixes.heading">Import Prefixes</h4>
+            <button id="add-prefix" class="icon-btn small" data-tooltip="Add Prefix" data-position="left" data-i18n-attr="data-tooltip:settings.data.importPrefixes.addButtonTooltip">
+              <i class="fa-solid fa-plus"></i>
+            </button>
+          </div>
+          <p class="setting-description" data-i18n="settings.data.importPrefixes.description">
+            Prefixes to remove from directory names when importing images. Example: "Airbnb iOS " will make "Airbnb iOS Login" match the "Login" node.
+          </p>
+          <div id="prefixes-list" class="prefixes-list">
+            <!-- Prefixes will be added here by JavaScript -->
+          </div>
+          </div><!-- /import-prefixes-container -->
+
+          <div class="setting-item" id="export-prefs-container">
+            <div class="setting-control">
+              <label for="include-prefs-with-export-toggle" data-i18n="settings.data.exportPrefs.label">Save Preferences With Exports</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="include-prefs-with-export-toggle" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div id="export-prefs-groups" class="export-prefs-groups"></div>
+            <p class="setting-description" data-i18n="settings.data.exportPrefs.description">Choose which app preferences are bundled with exported flows and restored on import. Saved audio playlists are filtered to exported nodes when exporting a limited subtree. Note: merged imports will not automatically override user's existing settings.</p>
+          </div>
+
+          <div class="setting-item" id="modal-layout-reset-card">
+            <div class="setting-header">
+              <h4 data-i18n="settings.data.modalLayoutReset.heading">Modal Layout Reset</h4>
+            </div>
+            <div class="cleanup-button-container">
+              <button id="reset-modal-layouts-btn" class="btn cleanup-button" data-i18n="settings.data.modalLayoutReset.button">Reset Modal Positions and Sizes</button>
+            </div>
+            <p class="setting-description" data-i18n="settings.data.modalLayoutReset.description">Restores saved modal and floating panel layouts to their defaults without deleting content, histories, tags, or playlists.</p>
+          </div>
+
+          <div class="setting-item" id="onboarding-setting-card">
+            <div class="setting-header">
+              <h4 data-i18n="settings.data.onboarding.heading">Onboarding</h4>
+            </div>
+            <div class="cleanup-button-container">
+              <button id="replay-onboarding-btn" class="btn cleanup-button" type="button" data-i18n="settings.data.onboarding.button">Replay Onboarding</button>
+            </div>
+            <p class="setting-description" data-i18n="settings.data.onboarding.description">Reset the onboarding state and run the welcome setup plus guided workspace tour again.</p>
+          </div>
+
+          <div class="setting-item" id="factory-reset-prefs-card">
+            <div class="setting-header">
+              <h4 data-i18n="settings.data.factoryReset.heading">Factory Preferences Reset</h4>
+            </div>
+            <div class="cleanup-button-container">
+              <button id="reset-factory-preferences-btn" class="btn cleanup-button" data-i18n="settings.data.factoryReset.button">Reset All Preferences to Factory Defaults</button>
+            </div>
+            <p class="setting-description" data-i18n="settings.data.factoryReset.description">Resets all app preference settings to first-run defaults. This does not delete your flow nodes or image blobs.</p>
+          </div>
+
+          <div class="setting-item" id="library-stats-setting-card">
+            <div class="setting-header">
+              <h4 data-i18n="settings.data.libraryStats.heading">Library Stats</h4>
+              <button id="refresh-library-stats" class="refresh-btn" data-tooltip="Refresh Stats" data-position="left" data-i18n-attr="data-tooltip:settings.data.libraryStats.refreshTooltip">
+                <i class="fa-solid fa-sync"></i>
+              </button>
+            </div>
+            <div id="library-stats-container" class="storage-stats">
+              <div class="stats-row">
+                <span class="stats-label" data-i18n="settings.data.libraryStats.nodesLabel">Nodes:</span>
+                <span id="lib-node-count" class="stats-value" data-i18n="settings.data.libraryStats.calculating">Calculating...</span>
+              </div>
+              <div class="stats-row">
+                <span class="stats-label stats-label-wrap">Gallery <span data-i18n="settings.data.libraryStats.gallerySlotsLabel">Slots:</span></span>
+                <span id="lib-slot-count" class="stats-value" data-i18n="settings.data.libraryStats.calculating">Calculating...</span>
+              </div>
+              <div class="stats-row">
+                <span class="stats-label" data-i18n="settings.data.libraryStats.imagesLabel">Images:</span>
+                <span id="lib-image-count" class="stats-value" data-i18n="settings.data.libraryStats.calculating">Calculating...</span>
+              </div>
+              <div class="stats-row">
+                <span class="stats-label" data-i18n="settings.data.libraryStats.videosLabel">Videos:</span>
+                <span id="lib-video-count" class="stats-value" data-i18n="settings.data.libraryStats.calculating">Calculating...</span>
+              </div>
+              <div class="stats-row">
+                <span class="stats-label" data-i18n="settings.data.libraryStats.audioLabel">Audio:</span>
+                <span id="lib-audio-count" class="stats-value" data-i18n="settings.data.libraryStats.calculating">Calculating...</span>
+              </div>
+              <div class="stats-row">
+                <span class="stats-label" data-i18n="settings.data.libraryStats.urlsLabel">URLs:</span>
+                <span id="lib-url-count" class="stats-value" data-i18n="settings.data.libraryStats.calculating">Calculating...</span>
+              </div>
+              <div class="stats-row">
+                <span class="stats-label" data-i18n="settings.data.libraryStats.documentsLabel">Documents:</span>
+                <span id="lib-doc-count" class="stats-value" data-i18n="settings.data.libraryStats.calculating">Calculating...</span>
+              </div>
+              <div class="stats-row">
+                <span class="stats-label" data-i18n="settings.data.libraryStats.pdfsLabel">PDFs:</span>
+                <span id="lib-pdf-count" class="stats-value" data-i18n="settings.data.libraryStats.calculating">Calculating...</span>
+              </div>
+              <div class="stats-row">
+                <span class="stats-label" data-i18n="settings.data.libraryStats.spreadsheetsLabel">Spreadsheets:</span>
+                <span id="lib-sheet-count" class="stats-value" data-i18n="settings.data.libraryStats.calculating">Calculating...</span>
+              </div>
+              <div class="stats-row">
+                <span class="stats-label" data-i18n="settings.data.libraryStats.calendarsLabel">Calendars:</span>
+                <span id="lib-calendar-count" class="stats-value" data-i18n="settings.data.libraryStats.calculating">Calculating...</span>
+              </div>
+              <div class="stats-row">
+                <span class="stats-label stats-label-wrap">Other <span data-i18n="settings.data.libraryStats.otherFilesLabel">Files:</span></span>
+                <span id="lib-otherfile-count" class="stats-value" data-i18n="settings.data.libraryStats.calculating">Calculating...</span>
+              </div>
+            </div>
+            <p class="setting-description" data-i18n="settings.data.libraryStats.description">A count of everything in your workspace. "Gallery Slots" counts the slots you see (a stack is one slot); the media rows count every item, including those inside stacks. Empty placeholder slots are not counted as media. "Documents" covers markdown, text, Word docs, and similar; PDFs and spreadsheets are listed separately.</p>
+          </div>
+
+          <div class="setting-item" id="boot-profile-setting-card">
+            <div class="setting-control">
+              <label for="boot-profile-toggle" data-i18n="settings.data.bootProfile.label">Boot profiler (diagnostic)</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="boot-profile-toggle">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <p class="setting-description" data-i18n="settings.data.bootProfile.description">A developer diagnostic. When on, FlowJoe prints a startup timing breakdown to the DevTools console on the next reload — how long loading your flow, drawing the tree, and rendering the gallery each take, plus how long media takes to finish loading in. Off by default; turning it on takes effect after a reload. This is a local-only setting and is never included in exported preferences.</p>
+          </div>
+
+          <!-- Restore Points budgets. Placed immediately before Storage Stats because it is the
+               other card about what FlowJoe keeps on disk, and each retained restore point holds one
+               saved copy of the flow back from cleanup. Carries no `setting-card-static` class, so
+               it joins the drag-to-reorder set like any other card and the user can move it.
+               Uses only classes that already exist and are styled (`setting-control`,
+               `setting-select`, `btn cleanup-button`) — an earlier draft invented
+               `setting-number-input` / `setting-description-muted`, neither of which has any CSS
+               anywhere, so the card rendered unstyled among themed neighbours. -->
+          <div class="setting-item" id="version-history-setting-card">
+            <div class="setting-header">
+              <h4 data-i18n="settings.data.versionHistory.heading">Restore Points</h4>
+            </div>
+            <p class="setting-description" data-i18n="settings.data.versionHistory.description">A restore point lets you jump back to how your Flow was at a moment in time. Each one keeps a copy of your Flow, so these limits decide how far back you can go.</p>
+            <div class="setting-control">
+              <label for="vh-enabled" data-i18n="settings.data.versionHistory.enabledLabel">Save restore points automatically</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="vh-enabled" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="setting-control">
+              <label for="vh-cadence" data-i18n="settings.data.versionHistory.cadenceLabel">Save one automatically</label>
+              <select id="vh-cadence" class="setting-select">
+                <option value="900000" data-i18n="settings.data.versionHistory.cadence15m">Every 15 minutes</option>
+                <option value="1800000" data-i18n="settings.data.versionHistory.cadence30m">Every 30 minutes</option>
+                <option value="3600000" data-i18n="settings.data.versionHistory.cadence1h">Every hour</option>
+                <option value="7200000" data-i18n="settings.data.versionHistory.cadence2h">Every 2 hours</option>
+                <option value="14400000" data-i18n="settings.data.versionHistory.cadence4h">Every 4 hours</option>
+                <option value="21600000" data-i18n="settings.data.versionHistory.cadence6h">Every 6 hours</option>
+                <option value="43200000" data-i18n="settings.data.versionHistory.cadence12h">Every 12 hours</option>
+                <option value="86400000" data-i18n="settings.data.versionHistory.cadence24h">Once a day</option>
+              </select>
+            </div>
+            <div class="setting-control">
+              <label for="vh-keep-timer" data-i18n="settings.data.versionHistory.keepTimer">How many timed ones to keep</label>
+              <input type="number" id="vh-keep-timer" class="setting-select" min="0" max="50" step="1" />
+            </div>
+            <div class="setting-control">
+              <label for="vh-keep-risky" data-i18n="settings.data.versionHistory.keepRisky">How many to keep from before a restore</label>
+              <input type="number" id="vh-keep-risky" class="setting-select" min="0" max="50" step="1" />
+            </div>
+            <div class="setting-control">
+              <label for="vh-keep-manual" data-i18n="settings.data.versionHistory.keepManual">How many you saved yourself to keep</label>
+              <input type="number" id="vh-keep-manual" class="setting-select" min="0" max="50" step="1" />
+            </div>
+            <p class="setting-description"><span data-i18n="settings.data.versionHistory.zeroMeansNone">Set any of these to 0 to keep none of that kind.</span> <span id="vh-storage-estimate"></span></p>
+            <div class="setting-control">
+              <button id="vh-clear-checkpoints" class="btn cleanup-button" type="button" data-i18n="settings.data.versionHistory.clearButton">Delete all restore points</button>
+            </div>
+          </div>
+          <div class="setting-item" id="storage-stats-setting-card">
+            <div class="setting-header">
+              <h4 data-i18n="settings.data.storageStats.heading">Storage Stats</h4>
+              <button id="refresh-storage-stats" class="refresh-btn" data-tooltip="Refresh Stats" data-position="left" data-i18n-attr="data-tooltip:settings.data.storageStats.refreshTooltip">
+                <i class="fa-solid fa-sync"></i>
+              </button>
+            </div>
+            <div id="storage-stats-container" class="storage-stats">
+              <div class="stats-row">
+                <span class="stats-label" data-i18n="settings.data.storageStats.localStorageLabel">LocalStorage:</span>
+                <span id="local-storage-usage" class="stats-value" data-i18n="settings.data.storageStats.calculating">Calculating...</span>
+              </div>
+              <div class="stats-progress">
+                <div id="local-storage-progress-bar" class="progress-bar"></div>
+                <span class="progress-label" data-i18n="settings.data.storageStats.localStorageLimit">10MB limit</span>
+              </div>
+              <div class="stats-row">
+                <span class="stats-label" data-i18n="settings.data.storageStats.indexedDbLabel">IndexedDB:</span>
+                <span id="indexed-db-usage" class="stats-value" data-i18n="settings.data.storageStats.calculating">Calculating...</span>
+              </div>
+              <div class="stats-row" id="browser-data-stats-row" hidden>
+                <span class="stats-label stats-label-wrap" data-i18n="settings.data.storageStats.browserDataLabel">Browser Data:</span>
+                <span id="browser-data-usage" class="stats-value" data-i18n="settings.data.storageStats.calculating">Calculating...</span>
+              </div>
+              <div class="stats-row" id="storage-persistence-status-row" hidden>
+                <span id="storage-persistence-status" class="stats-value"></span>
+              </div>
+              <div class="stats-progress">
+                <div id="indexed-db-progress-bar" class="progress-bar"></div>
+                <span class="progress-label" data-i18n="settings.data.storageStats.quotaLabel">Browser-reported quota</span>
+              </div>
+              <div class="stats-row">
+                <span class="stats-label stats-label-wrap" data-i18n="settings.data.storageStats.activeArtifactsLabel">Active Artifacts:</span>
+                <span id="active-images" class="stats-value" data-i18n="settings.data.storageStats.calculating">Calculating...</span>
+              </div>
+              <div class="stats-row">
+                <span class="stats-label stats-label-wrap" data-i18n="settings.data.storageStats.staleReferencesLabel">Stale / Missing References:</span>
+                <span id="stale-media-references" class="stats-value" data-i18n="settings.data.storageStats.calculating">Calculating...</span>
+              </div>
+              <div class="stats-row">
+                <span class="stats-label stats-label-wrap" data-i18n="settings.data.storageStats.placeholderArtifactsLabel">Placeholder Artifacts:</span>
+                <span id="placeholder-images" class="stats-value" data-i18n="settings.data.storageStats.calculating">Calculating...</span>
+              </div>
+              <div class="stats-row">
+                <span class="stats-label stats-label-wrap" data-i18n="settings.data.storageStats.orphanedArtifactsLabel">Orphaned Artifacts:</span>
+                <span id="orphaned-images" class="stats-value" data-i18n="settings.data.storageStats.calculating">Calculating...</span>
+              </div>
+              <div class="stats-row">
+                <span class="stats-label stats-label-wrap" data-i18n="settings.data.storageStats.orphanedPromptsLabel">Orphaned Image Prompts:</span>
+                <span id="orphaned-prompt-history" class="stats-value" data-i18n="settings.data.storageStats.calculating">Calculating...</span>
+              </div>
+              <div class="stats-row">
+                <span class="stats-label stats-label-wrap" data-i18n="settings.data.storageStats.protectedMediaLabel">Protected (AI/Chat History):</span>
+                <span id="protected-media" class="stats-value" data-i18n="settings.data.storageStats.calculating">Calculating...</span>
+              </div>
+              <div class="stats-row" id="repo-history-stats-row" hidden>
+                <span class="stats-label stats-label-wrap" data-i18n="settings.data.storageStats.repoHistoriesLabel">Repository histories:</span>
+                <span id="repo-history-usage" class="stats-value" data-i18n="settings.data.storageStats.calculating">Calculating...</span>
+              </div>
+              <div class="stats-row">
+                <span class="stats-label stats-label-wrap" data-i18n="settings.data.storageStats.totalArtifactsLabel">Total Artifacts:</span>
+                <span id="total-images" class="stats-value" data-i18n="settings.data.storageStats.calculating">Calculating...</span>
+              </div>
+              <div class="cleanup-button-container">
+                <button id="review-orphaned" class="btn cleanup-button orphan-review-button" data-i18n="settings.data.storageStats.inspectOrphanedMediaButton">Inspect Orphaned Media</button>
+              </div>
+              <div class="cleanup-button-container">
+                <button id="review-stale-media-references" class="btn cleanup-button orphan-review-button" data-i18n="settings.data.storageStats.inspectStaleReferencesButton">Inspect Stale References</button>
+              </div>
+              <div class="cleanup-button-container">
+                <button id="review-orphaned-prompt-history" class="btn cleanup-button orphan-review-button" data-i18n="settings.data.storageStats.inspectOrphanedPromptsButton">Inspect Orphaned Image Prompts</button>
+              </div>
+              <div class="cleanup-button-container" id="view-diagnostics-log-container" hidden>
+                <button id="view-diagnostics-log" class="btn cleanup-button orphan-review-button" data-i18n="settings.data.storageStats.viewDiagnosticsLogButton">View Diagnostics Log</button>
+              </div>
+          </div>
+            <p class="setting-description" data-i18n-html="settings.data.storageStats.description">Storage usage for your FlowJoe data. File and media artifacts, tree structure, and growing records are stored in IndexedDB. Small settings stay in LocalStorage. Placeholder shorthand: <code>d</code> = default placeholder, <code>c</code> = custom placeholder. "Protected" media is kept even after you remove it from a slot because it's still shown in Joe's image history or chat history — remove it from the image history drawer, or clear Joe's chat history, to free that space. <span class="diagnostics-log-note">Diagnostics Log records crashes and storage-clear events for troubleshooting (desktop only).</span></p>
+          </div>
+
+          <div class="setting-item setting-card-static" id="app-info-setting-card">
+            <div class="app-info-branding">
+              <img class="app-info-logo" src="src/assets/coffee-mug-logo.svg" alt="" aria-hidden="true" />
+              <div class="app-info-copy">
+                <h4><span data-i18n="settings.data.appInfo.titlePrefix">FlowJoe:</span> <span data-i18n="settings.data.appInfo.tagline">A Local-First Visual Intelligence Workspace</span></h4>
+                <p class="app-info-version">v.<span id="app-info-version-display"></span></p>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /settings-tab-panel data -->
+
+        <!-- ── Automation (scheduler tasks + review inbox; rendered by schedulerPanel.js) ── -->
+        <div class="settings-tab-panel" data-panel="automation">
+          <!-- These cards are STATIC markup so the Automation tab behaves exactly like every other
+               settings tab: the shared settings machinery (settingsPanel.js) tags them with the
+               draggable grip chrome, restores the user's saved order, and persists reordering — once,
+               at boot. schedulerPanel.js only fills in the live bits (the toggle state and the
+               task/review/run lists); it must NEVER rebuild these shells. -->
+          <div class="setting-item scheduler-global-toggle" id="scheduler-runs-toggle-card">
+            <div class="setting-control">
+              <label for="scheduler-runtime-enabled" data-i18n="settings.automation.scheduledRuns.label">Scheduled runs</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="scheduler-runtime-enabled" />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <p class="setting-description" data-i18n="settings.automation.scheduledRuns.description">On by default. When on, scheduled tasks run automatically while FlowJoe is open (desktop or browser). Turn it off to stop all tasks from running on their own — Run Now still works.</p>
+          </div>
+          <div class="setting-item" id="scheduler-tasks-card">
+            <div class="setting-header"><h4 class="scheduler-section-title" data-i18n="settings.automation.tasks.heading">Tasks</h4></div>
+            <p class="setting-description" data-i18n="settings.automation.tasks.description">The recurring jobs scheduled in this flow. Run one immediately, pause it, or delete it here. Ask Joe in chat to create a new one.</p>
+            <!-- Loading… is static markup only for the instant before schedulerPanel.js replaces this container's
+                 contents with live task rows (or its own empty-state copy) — translating it is harmless and covers
+                 that brief window; see schedulerPanel.js renderTaskList(). -->
+            <div id="scheduler-task-list" class="scheduler-task-list"><p class="setting-description" data-i18n="settings.automation.tasks.loading">Loading…</p></div>
+          </div>
+          <div class="setting-item" id="scheduler-review-card">
+            <div class="setting-header"><h4 class="scheduler-section-title" data-i18n="settings.automation.reviewInbox.heading">Review Inbox</h4></div>
+            <p class="setting-description" data-i18n="settings.automation.reviewInbox.description">Changes from "ask-first" tasks wait here for you to approve or reject. Tasks set to apply automatically skip this.</p>
+            <div id="scheduler-review-list" class="scheduler-review-list"><p class="setting-description" data-i18n="settings.automation.reviewInbox.loading">Loading…</p></div>
+          </div>
+          <div class="setting-item" id="scheduler-runs-card">
+            <div class="setting-header scheduler-section-head">
+              <h4 class="scheduler-section-title" data-i18n="settings.automation.recentRuns.heading">Recent Runs</h4>
+              <button type="button" id="scheduler-clear-runs" class="scheduler-btn" hidden data-i18n="settings.automation.recentRuns.clearButton">Clear</button>
+            </div>
+            <p class="setting-description" data-i18n="settings.automation.recentRuns.description">A log of each time a task ran and whether it succeeded — useful for spotting what went wrong. Clearing it only tidies this list; it never changes your tasks or flow.</p>
+            <div id="scheduler-run-list" class="scheduler-run-list"><p class="setting-description" data-i18n="settings.automation.recentRuns.loading">Loading…</p></div>
+          </div>
+        </div><!-- /settings-tab-panel automation -->
+
+        </div><!-- /settings-content -->
+      </div><!-- /settings-body -->
+    </div><!-- /settings-panel -->
+    <script type="module" src="bundle.e51281505e5d5df3.js"></script>
   </body>
 </html>

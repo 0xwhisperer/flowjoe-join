@@ -1,0 +1,1030 @@
+@layer app {
+  /* shareModal.css -- the owner Share button and the Share dialog (built by src/js/shareModalController.js).
+ *
+ * Look = the approved mockup docs/IMPLEMENTATION/mockups/browser-collaboration-share-modal.html. Every colour,
+ * radius and size reads an app token (the avatar marks / --cx-* tokens live in styles-variables.css, the avatar,
+ * "+" seat and presence row in buttons.css). The dialog is the app's shared #modal shell with the Export dialog's
+ * own classes; only the pieces below are new. Keyboard focus is an outline/ring that wins through the cascade alone. */
+
+  /* ---- Share button (the real .icon-btn; only the count badge is new) ---- */
+  .share-btn-wrap[hidden] {
+    display: none;
+  }
+  #share-btn {
+    position: relative;
+    overflow: visible;
+  }
+  #share-btn.is-sharing {
+    background-color: var(--hover-bg);
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+  }
+  /* "Waiting for review" ink: --warning-color is only ~2.3:1 on the light themes, so it is pulled toward the text colour (resolved per
+     element, so every theme and light/dark flip gets its own value). Used by the review dot and the People-row warning icon. */
+  #share-btn,
+  #modal .cx-share {
+    --cx-review: color-mix(in srgb, var(--warning-color) 55%, var(--text-primary));
+  }
+  /* Review dot: nodes are waiting for the owner's confirmation. Top-right, opposite the guest count at the bottom-right. */
+  #share-btn.has-review::after {
+    content: "";
+    position: absolute;
+    inset-block-start: calc(var(--icon-row-gap-dense) * -1);
+    inset-inline-end: calc(var(--icon-row-gap-dense) * -1);
+    width: var(--icon-glyph-sm);
+    height: var(--icon-glyph-sm);
+    border-radius: var(--radius-full);
+    background: var(--cx-review);
+    box-shadow: 0 0 0 2px var(--bg-primary);
+    pointer-events: none;
+  }
+  #share-btn.cx-unset > i {
+    opacity: var(--disabled-opacity-control);
+  }
+  #share-btn:focus-visible {
+    box-shadow:
+      0 0 0 2px var(--bg-primary),
+      0 0 0 4px var(--accent-color);
+  }
+  /* geometry copied from .browser-btn-audio-indicator (16px, -7px / -7px, 2px ring in --bg-primary) */
+  .cx-share-count {
+    position: absolute;
+    right: -7px;
+    bottom: -7px;
+    z-index: 2;
+    box-sizing: border-box;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    border-radius: var(--radius-full);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    /* Success fill nudged toward the theme's text colour so the on-accent ink reads >= 4.5:1 in light and dark themes. */
+    background: color-mix(in srgb, var(--success-color) 85%, var(--text-primary));
+    color: var(--text-on-accent);
+    box-shadow: 0 0 0 2px var(--bg-primary);
+    /* 9px: below the smallest font token (--font-micro, 10px); a corner badge sized to the 16px dot. */
+    font: 700 9px / 1 var(--cx-mono);
+    letter-spacing: 0;
+    pointer-events: none;
+    font-variant-numeric: tabular-nums;
+  }
+  .cx-share-count.is-warn {
+    background: var(--warning-color);
+    color: var(--avatar-ink);
+  }
+  .cx-share-count.is-down {
+    background: var(--danger-color);
+    color: var(--text-on-accent);
+  }
+  .cx-share-count.is-busy {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    box-shadow:
+      0 0 0 2px var(--bg-primary),
+      inset 0 0 0 1px var(--border-color);
+  }
+  .cx-share-count i {
+    font-size: 8px;
+  }
+
+  /* ---- Guest avatars (sizes, ended look, presence dot). The base avatar, marks and the owner's crown live in buttons.css / styles-variables.css. ---- */
+  .cx-av.sz-xs {
+    --size: 16px;
+    font-weight: 750;
+  }
+  .cx-av.sz-sm {
+    --size: 22px;
+  }
+  .cx-av.sz-md {
+    --size: 28px;
+  }
+  .cx-av.is-empty.sz-xs,
+  .cx-av.is-empty.sz-sm,
+  .cx-av.is-empty.sz-md {
+    font-size: calc(var(--size) * 0.38);
+  }
+  .cx-av.is-ended {
+    filter: grayscale(1);
+    opacity: 0.55;
+  }
+  .cx-av .dot {
+    position: absolute;
+    right: -1px;
+    bottom: -1px;
+    width: calc(var(--size) * 0.32);
+    height: calc(var(--size) * 0.32);
+    min-width: 8px;
+    min-height: 8px;
+    border-radius: 50%;
+    background: var(--success-color);
+    box-shadow: 0 0 0 2px var(--ring, var(--cx-ring));
+  }
+  .cx-av .dot.is-away {
+    background: var(--ring, var(--cx-ring));
+    box-shadow:
+      inset 0 0 0 2px var(--text-secondary),
+      0 0 0 2px var(--ring, var(--cx-ring));
+  }
+  .cx-av .dot.is-wait {
+    background: var(--warning-color);
+  }
+
+  /* ---- Dialog shell: the real #modal + #modal > div; only layout additions ---- */
+  #modal > div.cx-share {
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 32px);
+    overflow: hidden;
+  }
+  #modal > div.cx-share #modal-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: none;
+  }
+  #modal > div.cx-share #modal-title .t {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  #modal > div.cx-share #modal-message {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    margin-bottom: 12px;
+  }
+  #modal > div.cx-share #modal-button-container {
+    flex: none;
+  }
+  .cx-live {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  #modal .cx-share :is(button, select, a, input):focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+  }
+  #modal .cx-share :is(input[type="radio"], input[type="checkbox"]):focus-visible {
+    outline-offset: 3px;
+  }
+  #modal .cx-share .toggle-switch input:focus-visible + .toggle-slider {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+  }
+
+  /* Primary footer action: the app's accent fill restated under #modal-button-container, whose own .btn rule flattens every footer button. */
+  #modal-button-container .btn.cx-primary {
+    background: var(--accent-color);
+    border-color: var(--accent-color);
+    color: var(--text-on-accent);
+    font-weight: 600;
+  }
+  #modal-button-container .btn.cx-primary:hover,
+  #modal-button-container .btn.cx-primary:focus-visible {
+    background: var(--accent-hover, var(--accent-color));
+    border-color: var(--accent-hover, var(--accent-color));
+    color: var(--text-on-accent);
+  }
+  #modal-button-container .btn:disabled {
+    opacity: var(--disabled-opacity-control);
+    cursor: not-allowed;
+  }
+  #modal-button-container .cx-foot-note {
+    flex: 1 1 260px;
+    min-width: 0;
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+    margin-right: auto;
+    color: var(--text-secondary);
+    font-size: var(--font-meta);
+    line-height: 1.4;
+  }
+  #modal-button-container .cx-foot-note i {
+    color: var(--text-secondary);
+  }
+
+  /* ---- Connection pill in the title bar (the Changes pill's metrics) ---- */
+  .cx-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 24px;
+    padding: 0 12px;
+    border-radius: var(--radius-full);
+    box-sizing: border-box;
+    flex: none;
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    font-size: var(--font-control);
+    font-family: var(--cx-mono);
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    background: color-mix(in srgb, var(--bg-primary) 50%, transparent);
+  }
+  .cx-pill i.dotx {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--success-color);
+    flex: none;
+  }
+  .cx-pill.live i.dotx {
+    animation: cx-breathe 2.4s ease-in-out infinite;
+  }
+  .cx-pill.warn {
+    border-color: color-mix(in srgb, var(--warning-color) 60%, transparent);
+  }
+  .cx-pill.warn i.dotx {
+    background: var(--warning-color);
+  }
+  .cx-pill.down {
+    border-color: color-mix(in srgb, var(--danger-color) 60%, transparent);
+  }
+  .cx-pill.down i.dotx {
+    background: var(--danger-color);
+  }
+  .cx-pill.idle i.dotx {
+    background: transparent;
+    box-shadow: inset 0 0 0 1.5px var(--text-secondary);
+  }
+  .cx-pill .fa-spin {
+    font-size: 10px;
+    color: var(--text-secondary);
+  }
+  @keyframes cx-breathe {
+    50% {
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--success-color) 25%, transparent);
+    }
+  }
+
+  /* ---- Shared text pieces inside #modal-message ---- */
+  #modal-message .cx-lede {
+    margin: 0 0 12px;
+    color: var(--text-primary);
+    font-size: calc(14px * var(--font-scale));
+    line-height: 1.5;
+    text-wrap: pretty;
+  }
+  #modal-message .cx-id-line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 8px;
+    margin: 0 0 12px;
+    color: var(--text-secondary);
+    font-size: var(--font-control);
+  }
+  #modal-message .cx-id-line b {
+    color: var(--text-primary);
+  }
+  #modal-message .cx-id-line code {
+    font-family: var(--cx-mono);
+    font-size: 0.95em;
+  }
+  #modal-message .cx-linkbtn {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--accent-color);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  #modal-message .cx-sec-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 6px;
+  }
+  #modal-message .cx-sec-head .export-modal-section-title {
+    margin: 0;
+  }
+  #modal-message .cx-sec-head-pad {
+    padding: 8px 12px 0;
+    margin: 0;
+  }
+  #modal-message .cx-count {
+    color: var(--text-secondary);
+    font-size: var(--font-meta);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  #modal-message .cx-points {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 8px;
+  }
+  #modal-message .cx-points li {
+    display: grid;
+    grid-template-columns: 18px minmax(0, 1fr);
+    gap: 8px;
+    align-items: start;
+  }
+  #modal-message .cx-points li > i {
+    margin-top: 3px;
+    color: var(--accent-color);
+    text-align: center;
+    font-size: 12px;
+  }
+  #modal-message .cx-points b {
+    color: var(--text-primary);
+    font-weight: 700;
+  }
+  #modal-message .export-modal-shell + .export-modal-shell,
+  #modal-message .export-modal-shell + .export-modal-warning,
+  #modal-message .export-modal-warning + .export-modal-shell {
+    margin-top: 12px;
+  }
+  #modal-message .export-modal-warning.is-info {
+    border-color: var(--border-light);
+    background: color-mix(in srgb, var(--bg-tertiary) 60%, transparent);
+    color: var(--text-primary);
+  }
+  #modal-message .export-modal-warning.is-info i {
+    color: var(--text-secondary);
+  }
+  #modal-message .export-modal-warning.is-down {
+    border-color: color-mix(in srgb, var(--danger-color) 40%, transparent);
+    background: color-mix(in srgb, var(--danger-color) 10%, transparent);
+    color: var(--text-primary);
+  }
+  #modal-message .export-modal-warning.is-down i {
+    color: var(--danger-color);
+  }
+  #modal-message .export-modal-warning-copy {
+    font-size: var(--font-control);
+    line-height: 1.45;
+  }
+  #modal-message .cx-help {
+    color: var(--text-secondary);
+    font-size: var(--font-meta);
+    line-height: 1.4;
+  }
+  /* Connection banner slot (O4c): the banner's own spacing, plus its inline action button (mockup 7e "Try again"). */
+  #modal-message #cxConn:not(:empty) {
+    margin-bottom: 12px;
+  }
+  #modal-message .cx-warn-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 6px;
+  }
+  #modal-message .cx-inline-btn {
+    margin: 0;
+    min-height: 24px;
+    padding: 2px 12px;
+    border-radius: var(--modal-footer-btn-radius);
+    border: 1px solid var(--border-color);
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    font-weight: 500;
+    font-size: var(--font-control);
+    font-family: inherit;
+    cursor: pointer;
+  }
+  #modal-message .cx-inline-btn:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+    background: var(--hover-bg);
+  }
+  /* A People row whose invitation can't be used right now (its shared part is gone). */
+  #modal-message .cx-inv .cx-inv-problem {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    margin: 0;
+    color: var(--text-primary);
+    font-size: var(--font-meta);
+    line-height: 1.35;
+  }
+  #modal-message .cx-inv .cx-inv-problem i {
+    color: var(--danger-color);
+    margin-top: 2px;
+  }
+  #modal-message .cx-help-top {
+    margin: 8px 0 0;
+  }
+  /* A People row with nodes waiting for the owner's review (same line shape as the problem note, a warning icon instead of danger). */
+  #modal-message .cx-inv .cx-inv-problem.is-review i {
+    color: var(--cx-review);
+  }
+
+  /* ---- 6 · Expansion preview: what becomes visible, and to whom ---- */
+  #modal-message .cx-lede-tight {
+    margin-bottom: 12px;
+  }
+  #modal-message .cx-reveal {
+    display: grid;
+    gap: 6px;
+  }
+  #modal-message .cx-reveal-node {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-primary);
+    font-size: calc(13px * var(--font-scale)); /* the mockup's 13px row size: no token between --font-control (12) and the 14px body */
+  }
+  #modal-message .cx-reveal-node i {
+    color: var(--accent-color);
+    width: var(--icon-glyph);
+    text-align: center;
+    font-size: var(--icon-glyph-sm);
+  }
+  #modal-message .cx-reveal-node small {
+    color: var(--text-secondary);
+    font-size: var(--font-meta);
+  }
+  #modal-message .cx-who-list {
+    display: grid;
+    gap: 8px;
+  }
+  #modal-message .cx-who {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 10px;
+    align-items: center;
+    --ring: color-mix(in srgb, var(--bg-secondary) 72%, var(--bg-tertiary) 28%);
+  }
+  #modal-message .cx-who b {
+    display: block;
+    color: var(--text-primary);
+    font-size: calc(13px * var(--font-scale));
+  }
+  #modal-message .cx-who small {
+    display: block;
+    color: var(--text-secondary);
+    font-size: var(--font-meta);
+  }
+  #modal-message .cx-help-sm {
+    margin: 6px 0 0;
+  }
+  #modal-message .cx-help-pad {
+    margin: 0;
+    padding: 8px 12px;
+  }
+  #modal-message .cx-err {
+    color: var(--danger-color);
+    font-size: var(--font-meta);
+    line-height: 1.4;
+  }
+  #modal-message .danger-confirm-copy {
+    margin: 0;
+  }
+
+  /* ---- Per-share switches (the Settings panel's real .toggle-switch) ---- */
+  #modal-message .cx-switch-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    justify-content: space-between;
+  }
+  #modal-message .cx-switch-row .export-modal-option-copy {
+    flex: 1 1 auto;
+  }
+  #modal-message .cx-switch-row label.export-modal-option-title {
+    cursor: pointer;
+  }
+  #modal-message .cx-switch-row .toggle-switch {
+    margin-top: 2px;
+  }
+  #modal-message .cx-joe-points {
+    margin-top: 8px;
+  }
+  #modal-message .cx-joe-points li > i {
+    color: var(--text-secondary);
+  }
+  #modal-message .cx-joe-state {
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  /* ---- New invitation form ---- */
+  #modal-message .cx-field {
+    display: grid;
+    gap: 6px;
+  }
+  #modal-message .cx-field label.export-modal-section-title {
+    margin: 0;
+  }
+  #modal .cx-share input.cx-text {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 5px 8px;
+    height: var(--dropdown-height);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    background-color: var(--bg-input);
+    color: var(--text-primary);
+    font: inherit;
+    font-size: calc(14px * var(--font-scale));
+  }
+  #modal .cx-share input.cx-text:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: inset 0 0 0 1px var(--accent-color);
+    background-color: var(--bg-tertiary);
+  }
+  #modal .cx-share input.cx-text[aria-invalid="true"] {
+    border-color: var(--danger-color);
+  }
+  #modal-message .cx-two {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 0;
+  }
+  #modal-message .cx-two > .export-modal-section + .export-modal-section {
+    border-left: 1px solid color-mix(in srgb, var(--border-color) 70%, transparent);
+  }
+  #modal-message .cx-two > .export-modal-section {
+    border-bottom: 0;
+  }
+  #modal-message .cx-row-sep {
+    border-bottom: 1px solid color-mix(in srgb, var(--border-color) 70%, transparent);
+  }
+  #modal-message .export-modal-section .setting-select {
+    width: 100%;
+  }
+
+  /* node picker */
+  #modal-message .cx-picker {
+    display: grid;
+    gap: 2px;
+    margin-top: 8px;
+    padding: 6px;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    background: color-mix(in srgb, var(--bg-primary) 35%, transparent);
+  }
+  #modal-message .cx-node {
+    --depth: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 26px;
+    padding: 0 6px 0 calc(6px + var(--depth) * 18px);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-size: calc(13px * var(--font-scale));
+    cursor: pointer;
+  }
+  #modal-message .cx-node:hover {
+    background: var(--hover-bg);
+  }
+  #modal-message .cx-node input {
+    margin: 0;
+    flex: none;
+  }
+  #modal-message .cx-node .nm {
+    flex: 0 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  #modal-message .cx-node .ico {
+    flex: none;
+    width: 14px;
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 11px;
+  }
+  #modal-message .cx-node .grow {
+    flex: 1;
+  }
+  #modal-message .cx-node .tag {
+    flex: none;
+    color: var(--text-secondary);
+    font-size: var(--font-meta);
+    white-space: nowrap;
+  }
+  #modal-message .cx-node.is-out .nm {
+    color: var(--text-secondary);
+    text-decoration: line-through;
+    text-decoration-color: color-mix(in srgb, var(--text-secondary) 60%, transparent);
+  }
+  #modal-message .cx-node.is-private {
+    cursor: help;
+  }
+  #modal-message .cx-node.is-private .nm {
+    color: var(--text-secondary);
+  }
+  #modal-message .cx-node.is-private input {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+  /* 3b: the private row the owner just tried to tick lights up (outline + faint accent wash) and its reason sits under the picker. */
+  #modal-message .cx-node.is-flash {
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent-color) 70%, transparent);
+    background: color-mix(in srgb, var(--accent-color) 8%, transparent);
+  }
+  #modal-message .cx-note-top {
+    margin-top: 8px;
+  }
+  #modal-message .cx-node .node-locked-badge {
+    padding: 2px 8px;
+    font-size: 10px;
+    gap: 5px;
+  }
+  #modal-message .cx-node .node-locked-badge i {
+    font-size: 9px;
+  }
+
+  /* guest-view preview */
+  #modal-message .cx-preview {
+    margin-top: 8px;
+    padding: 8px 10px;
+    border: 1px dashed var(--border-color);
+    border-radius: var(--radius-lg);
+    min-height: 60px;
+  }
+  #modal-message .cx-ptree,
+  #modal-message .cx-ptree ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  #modal-message .cx-ptree ul {
+    margin-left: 7px;
+    padding-left: 12px;
+    border-left: 1px solid var(--border-color);
+  }
+  #modal-message .cx-ptree li {
+    padding: 3px 0;
+    color: var(--text-primary);
+    font-size: calc(13px * var(--font-scale));
+    display: block;
+  }
+  #modal-message .cx-ptree li > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+  }
+  #modal-message .cx-ptree li > span::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--text-secondary);
+    flex: none;
+  }
+  #modal-message .cx-ptree li.is-root > span {
+    font-weight: 600;
+  }
+  #modal-message .cx-ptree li.is-root > span::before {
+    background: var(--accent-color);
+  }
+  #modal-message .cx-ptree .cx-lockmini {
+    color: var(--text-secondary);
+    font-size: 10px;
+  }
+  #modal-message .cx-empty-prev {
+    color: var(--text-secondary);
+    font-size: var(--font-control);
+  }
+
+  /* ---- Invitation created ---- */
+  #modal-message .cx-link-row {
+    display: flex;
+    gap: 8px;
+    align-items: stretch;
+    margin-top: 6px;
+  }
+  #modal .cx-share input.cx-text.cx-link {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-family: var(--cx-mono);
+    font-size: var(--font-control);
+    color: var(--text-primary);
+  }
+  #modal-message .cx-copy {
+    margin: 0;
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    min-height: var(--dropdown-height);
+    padding: 0 14px;
+    border-radius: var(--modal-footer-btn-radius);
+    border: 1px solid var(--accent-color);
+    background: var(--accent-color);
+    color: var(--text-on-accent);
+    font-family: inherit;
+    font-size: var(--font-control);
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  #modal-message .cx-copy.is-done {
+    background: color-mix(in srgb, var(--success-color) 18%, var(--bg-tertiary));
+    border-color: var(--success-color);
+    color: var(--text-primary);
+  }
+  #modal-message .cx-copy.is-done i {
+    color: var(--success-color);
+  }
+  #modal-message .cx-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+    align-items: center;
+    margin-top: 8px;
+    color: var(--text-secondary);
+    font-size: var(--font-control);
+  }
+  #modal-message .cx-guest-line {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    --ring: color-mix(in srgb, var(--bg-secondary) 72%, var(--bg-tertiary) 28%);
+  }
+  #modal-message .cx-guest-line b {
+    color: var(--text-primary);
+    font-size: calc(14px * var(--font-scale));
+  }
+
+  /* role chips */
+  .cx-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 1px 8px;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-size: var(--font-micro);
+    line-height: 1.5;
+    white-space: nowrap;
+  }
+  .cx-chip i {
+    font-size: 9px;
+  }
+  .cx-chip.edit {
+    color: var(--text-primary);
+    border-color: color-mix(in srgb, var(--success-color) 60%, transparent);
+  }
+  .cx-chip.edit i {
+    color: var(--success-color);
+  }
+  .cx-chip.view {
+    color: var(--text-primary);
+  }
+
+  /* ---- People with access ---- */
+  #modal-message .cx-section-flush {
+    padding-bottom: 0;
+  }
+  #modal-message .cx-head-btn {
+    margin: 0;
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    min-height: var(--modal-footer-btn-height);
+    padding: 0 14px;
+    border-radius: var(--modal-footer-btn-radius);
+    border: 1px solid var(--accent-color);
+    background: var(--accent-color);
+    color: var(--text-on-accent);
+    font-family: inherit;
+    font-size: var(--font-control);
+    font-weight: 600;
+    line-height: 1.2;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  #modal-message .cx-head-btn:hover {
+    background: var(--accent-hover, var(--accent-color));
+    border-color: var(--accent-hover, var(--accent-color));
+  }
+  #modal-message .cx-head-left {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    min-width: 0;
+    flex-wrap: wrap;
+  }
+  #modal-message .cx-sec-head.is-tall {
+    align-items: center;
+  }
+  #modal-message .cx-tally {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    margin: 0 0 8px;
+    color: var(--text-secondary);
+    font-size: var(--font-control);
+  }
+  #modal-message .cx-tally span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+  }
+  #modal-message .cx-tally b {
+    color: var(--text-primary);
+    font-variant-numeric: tabular-nums;
+  }
+  .cx-sdot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex: none;
+    background: var(--success-color);
+    display: inline-block;
+  }
+  .cx-sdot.wait {
+    background: var(--warning-color);
+  }
+  .cx-sdot.away {
+    background: transparent;
+    box-shadow: inset 0 0 0 1.5px var(--text-secondary);
+  }
+  .cx-sdot.ended {
+    background: var(--text-secondary);
+    opacity: 0.6;
+  }
+  #modal-message .cx-inv-list {
+    display: grid;
+  }
+  #modal-message .cx-inv {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: 4px 12px;
+    padding: 8px 12px;
+    border-bottom: 1px solid color-mix(in srgb, var(--border-color) 70%, transparent);
+    --ring: color-mix(in srgb, var(--bg-secondary) 72%, var(--bg-tertiary) 28%);
+  }
+  #modal-message .cx-inv:last-child {
+    border-bottom: 0;
+  }
+  #modal-message .cx-inv .who {
+    min-width: 0;
+    display: grid;
+    gap: var(--text-stack-gap);
+  }
+  #modal-message .cx-inv .who b {
+    color: var(--text-primary);
+    font-size: calc(14px * var(--font-scale));
+    font-weight: 700;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  #modal-message .cx-inv .meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    color: var(--text-secondary);
+    font-size: var(--font-control);
+  }
+  #modal-message .cx-inv .meta .sc {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  #modal-message .cx-inv .st {
+    display: grid;
+    justify-items: end;
+    gap: var(--text-stack-gap);
+    text-align: right;
+    white-space: nowrap;
+    font-size: var(--font-control);
+    color: var(--text-primary);
+  }
+  #modal-message .cx-inv .st span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  #modal-message .cx-inv .st small {
+    color: var(--text-secondary);
+    font-size: var(--font-meta);
+    font-variant-numeric: tabular-nums;
+  }
+  #modal-message .cx-inv .acts {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  #modal-message .cx-inv .acts .setting-select {
+    width: 96px;
+    flex: none;
+    height: var(--icon-btn-size-sm);
+    font-size: var(--font-control);
+    padding-left: 8px;
+    padding-right: 24px;
+    background-size: 10px;
+  }
+  #modal-message .cx-inv .acts .icon-btn.small {
+    width: var(--icon-btn-size-sm);
+    height: var(--icon-btn-size-sm);
+    min-width: var(--icon-btn-size-sm);
+  }
+  #modal-message .cx-inv .acts .icon-btn.small i {
+    font-size: 11px;
+  }
+  #modal-message .cx-inv .acts .icon-btn.small[aria-disabled="true"] {
+    opacity: var(--disabled-opacity-control);
+    cursor: not-allowed;
+  }
+  #modal-message .cx-inv .acts .icon-btn.small.is-danger:hover,
+  #modal-message .cx-inv .acts .icon-btn.small.is-danger:focus-visible {
+    color: var(--danger-color);
+    border-color: var(--danger-color);
+  }
+  #modal-message .cx-inv.is-ended .who b,
+  #modal-message .cx-inv.is-ended .st span {
+    color: var(--text-secondary);
+  }
+  #modal-message .cx-inv.is-new {
+    box-shadow: inset 3px 0 0 var(--accent-color);
+  }
+  #modal-message details.cx-ended {
+    border-top: 1px solid color-mix(in srgb, var(--border-color) 70%, transparent);
+  }
+  #modal-message details.cx-ended > summary {
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    color: var(--text-secondary);
+    font-size: var(--font-control);
+  }
+  #modal-message details.cx-ended > summary::-webkit-details-marker {
+    display: none;
+  }
+  #modal-message details.cx-ended > summary i {
+    transition: transform 0.15s;
+    font-size: 10px;
+  }
+  #modal-message details.cx-ended[open] > summary i {
+    transform: rotate(90deg);
+  }
+
+  /* ---- Narrow widths ---- */
+  @media (max-width: 760px) {
+    #modal-message .cx-two {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    #modal-message .cx-two > .export-modal-section + .export-modal-section {
+      border-left: 0;
+      border-top: 1px solid color-mix(in srgb, var(--border-color) 70%, transparent);
+    }
+    #modal-message .cx-inv {
+      grid-template-columns: auto minmax(0, 1fr);
+    }
+    #modal-message .cx-inv .st {
+      grid-column: 2;
+      justify-items: start;
+      text-align: left;
+    }
+    #modal-message .cx-inv .acts {
+      grid-column: 2;
+    }
+    #modal-message .cx-link-row {
+      flex-wrap: wrap;
+    }
+    #modal-message .cx-copy {
+      flex: 1 1 auto;
+      justify-content: center;
+    }
+    #modal-button-container .cx-foot-note {
+      flex-basis: 100%;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cx-pill i,
+    .cx-pill .fa-spin,
+    .cx-share-count .fa-spin,
+    #modal .cx-share .fa-spin {
+      animation: none;
+    }
+    #modal-message details.cx-ended > summary i {
+      transition: none;
+    }
+  }
+}

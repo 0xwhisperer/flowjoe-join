@@ -3407,7 +3407,7 @@ button:focus-visible,
   box-sizing: border-box;
   width: 30px;
   height: 30px;
-  margin: 0 0 0 6px;
+  margin: 0;
   padding: 0;
   border-radius: 50%;
   border: 1.5px dashed var(--border-color);
@@ -3523,9 +3523,34 @@ button:focus-visible,
     inset 0 0 0 2px var(--text-secondary),
     0 0 0 2px var(--ring, var(--cx-ring));
 }
-.cx-stack .cx-member + .cx-member,
-.cx-stack .cx-member + .cx-more {
-  margin-inline-start: -8px; /* overlap: the mockup's 8px, no token fits */
+/* Overlap by narrowing the box of every avatar that another one follows (the avatar itself overflows by the 8px the mockup shows).
+   Not a negative margin: the header's right-side reset (styles-browser.css) zeroes margins on every descendant. */
+.cx-stack .cx-member:has(+ .cx-member),
+.cx-stack .cx-member:has(+ .cx-more) {
+  width: calc(30px - 8px);
+}
+/* The seat's 6px lead-in is an offset, for the same reason. */
+.cx-stack .cx-seat {
+  position: relative;
+  inset-inline-start: 6px;
+}
+/* The role pill on a guest's card is a dropdown trigger; the app-wide [role="button"] focus reset removes outlines, so focus shows as a border and tint. */
+.cx-card .cx-chip[data-role-chip] {
+  cursor: pointer;
+}
+.cx-card .cx-chip[data-role-chip]:hover,
+.cx-card .cx-chip[data-role-chip]:focus-visible {
+  background: var(--hover-bg);
+  border-color: var(--accent-color);
+}
+/* The role menu lives inside the card: same width, anchored to the logical end so it stays inside the card in RTL. */
+.cx-card .file-menu-dropdown {
+  right: auto;
+  inset-inline-end: 0;
+  width: 100%;
+}
+.cx-card .file-menu-item {
+  text-align: start;
 }
 .cx-member .cx-av {
   box-shadow:
@@ -3631,6 +3656,7 @@ button:focus-visible,
 .cx-name {
   display: flex;
   align-items: center;
+  gap: 8px; /* the pill gap is a flex gap: the header's right-side margin reset (styles-browser.css, !important) zeroes margins on every descendant */
   min-width: 0;
   font-weight: 700;
 }
@@ -3642,7 +3668,6 @@ button:focus-visible,
 }
 .cx-you {
   flex: none;
-  margin-inline-start: 6px;
   padding: 1px 6px;
   border-radius: var(--radius-full);
   background: var(--accent-color);
@@ -3742,6 +3767,7 @@ button:focus-visible,
 .cx-prow .who b {
   display: flex;
   align-items: center;
+  gap: 8px;
   min-width: 0;
 }
 .cx-prow .who small {

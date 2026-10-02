@@ -1,0 +1,478 @@
+@layer app {
+  /* guestJoin.css -- R9-lite: the browser guest's join screens, built by src/js/guest/guestJoinScreens.js
+   * (guest real-app plan, docs/IMPLEMENTATION/GUEST_REAL_APP_PLAN.md slice R9).
+   *
+   * Look = the approved presence mockup, docs/IMPLEMENTATION/mockups/browser-collaboration-presence.html
+   * (variants "entry", "unavailable", "ended"). Every colour, radius and size reads an app token: the
+   * first-run (onboarding) tokens and controls (--ob-*, .ob-input, .ob-btn, .ob-field-label) that already
+   * follow the active theme, the avatar marks (.cx-av .mk-N, buttons.css) and the role chips (.cx-chip,
+   * shareModal.css). Only the layout pieces below are new. Classes are gj-* so nothing here can reach the
+   * owner's Share dialog (cx-*). Nothing is shown to an owner: the screens exist only in a guest session. */
+
+  .gj-screen {
+    position: fixed;
+    inset: 0;
+    z-index: var(--flowjoe-z-guest-join-screen);
+    display: grid;
+    place-items: center;
+    padding: 16px;
+    overflow-y: auto;
+    box-sizing: border-box;
+    background: var(--ob-bg-0);
+    font-family: var(--ob-font);
+  }
+  /* The entry dialog sits over the (empty) app like the app's modal overlay; the other screens are solid. */
+  .gj-screen.is-dialog {
+    background: color-mix(in srgb, var(--ob-bg-0) 86%, transparent);
+    -webkit-backdrop-filter: blur(8px) saturate(0.5);
+    backdrop-filter: blur(8px) saturate(0.5);
+  }
+  .gj-panel {
+    position: relative;
+    box-sizing: border-box;
+    width: min(720px, 100%);
+    min-width: 0;
+    padding: 24px;
+    text-align: start;
+    background: var(--ob-bg-1);
+    border: 1px solid var(--ob-line-2);
+    border-radius: var(--modal-panel-radius, 12px);
+    box-shadow: var(--ob-shadow);
+    color: var(--ob-ink);
+  }
+  .gj-top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  /* The real header lockup (.logo-svg, .topbar-brand-stack, .topbar-subtext from buttons.css); the row
+     restates what .topbar gives its children, and the h1 rule is the app's ".topbar h1" (scoped to .topbar). */
+  .gj-brand-row {
+    display: flex;
+    align-items: center;
+    gap: var(--header-gap);
+    font-family: "Fira Mono", "Courier New", Courier, monospace;
+    font-size: 14px;
+    letter-spacing: 0.02em;
+  }
+  .gj-brand-row h1 {
+    font-size: 1.5em;
+    margin: 0;
+    font-weight: 600;
+    color: var(--accent-color);
+    letter-spacing: 0.04em;
+    line-height: 1;
+  }
+  .gj-invite-from {
+    min-width: 0;
+    font-family: var(--cx-mono);
+    font-size: var(--ob-text-xxs);
+    line-height: 16px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ob-ink-2);
+    text-align: end;
+    white-space: nowrap;
+  }
+  .gj-title {
+    margin: 0 0 8px;
+    font-size: var(--ob-title);
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--ob-ink);
+    text-wrap: balance;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+  .gj-lede {
+    margin: 0;
+    font-size: var(--ob-text-base);
+    line-height: 1.6;
+    color: var(--ob-ink-2);
+    text-wrap: pretty;
+  }
+
+  /* ---- entry: who you are ---- */
+  .gj-membercard,
+  .gj-status-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 16px;
+    padding: 16px;
+    border: 1px solid var(--ob-line-2);
+    border-radius: var(--radius-xl, 10px);
+    background: var(--ob-bg-2);
+    --ring: var(--ob-bg-2);
+  }
+  .gj-preview {
+    flex: none;
+  }
+  .gj-preview .cx-av,
+  .gj-status-card .cx-av {
+    --size: 64px;
+  }
+  .gj-member-main,
+  .gj-status-main {
+    flex: 1;
+    min-width: 0;
+  }
+  .gj-field-label.ob-field-label {
+    display: block;
+    margin-bottom: 8px;
+  }
+  .gj-name-wrap {
+    position: relative;
+  }
+  .gj-name-wrap .gj-name-input.ob-input {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: none;
+    height: 44px;
+    margin: 0;
+    padding-block: 0;
+    padding-inline: 14px 80px;
+    font-weight: 700;
+  }
+  .gj-name-input.ob-input::placeholder {
+    color: var(--ob-ink-3);
+    font-weight: 400;
+  }
+  .gj-name-wrap .gj-name-input.ob-input:hover:not(:focus) {
+    border-color: var(--ob-ink-3);
+  }
+  .gj-name-wrap.is-invalid .gj-name-input.ob-input {
+    border-color: var(--danger-color);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--danger-color) 22%, transparent);
+  }
+  .gj-name-count {
+    position: absolute;
+    inset-inline-end: 38px;
+    top: 50%;
+    translate: 0 -50%;
+    color: var(--ob-ink-3);
+    font-family: var(--cx-mono);
+    font-size: var(--ob-text-xs);
+    pointer-events: none;
+  }
+  .gj-name-wrap.is-invalid .gj-name-count {
+    color: var(--danger-color);
+  }
+  .gj-name-pen {
+    position: absolute;
+    inset-inline-end: 14px;
+    top: 50%;
+    translate: 0 -50%;
+    color: var(--ob-ink-3);
+    font-size: var(--ob-text-xs);
+    cursor: text;
+  }
+  .gj-name-wrap.is-edited .gj-name-pen,
+  .gj-name-wrap:focus-within .gj-name-pen {
+    color: var(--ob-amber);
+  }
+  .gj-name-err {
+    margin: 8px 0 0;
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+    color: var(--ob-ink);
+    font-size: var(--ob-text-sm);
+    line-height: 1.45;
+    text-wrap: pretty;
+  }
+  .gj-name-err[hidden] {
+    display: none;
+  }
+  .gj-name-err i {
+    color: var(--danger-color);
+    font-size: var(--ob-text-xs);
+  }
+  .gj-who {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+  .gj-who .cx-chip {
+    font-size: var(--ob-text-sm);
+    padding: 3px 12px;
+    gap: 8px;
+  }
+  .gj-meta {
+    font-size: var(--ob-text-sm);
+    color: var(--ob-ink-2);
+  }
+
+  /* ---- entry: the mark grid (tiles = the first-run .ob-choice look) ---- */
+  .gj-section {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 16px 0 10px;
+  }
+  .gj-section .ob-field-label {
+    margin: 0;
+  }
+  .gj-section-meta {
+    font-size: var(--ob-text-sm);
+    color: var(--ob-ink-2);
+  }
+  .gj-section-meta .fa-star {
+    color: var(--ob-amber);
+    font-size: var(--ob-text-xxs);
+  }
+  .gj-mark-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+  }
+  .gj-mark-opt {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: 8px;
+    margin: 0;
+    padding: 12px 0 10px;
+    border-radius: var(--radius-xl, 10px);
+    cursor: pointer;
+    border: 1px solid var(--ob-line-2);
+    background: var(--ob-bg-2);
+    color: var(--ob-ink-2);
+    font-family: var(--ob-font);
+    font-size: var(--ob-text-base);
+    line-height: 1.2;
+    transition:
+      border-color 0.15s,
+      background 0.15s,
+      transform 0.15s;
+    --ring: var(--ob-bg-2);
+  }
+  .gj-mark-opt:hover {
+    border-color: var(--ob-amber);
+    background: var(--ob-bg-3);
+    color: var(--ob-ink);
+    --ring: var(--ob-bg-3);
+  }
+  .gj-mark-opt:active {
+    transform: translateY(1px);
+  }
+  /* The app-wide button focus reset (buttons.css "Button focus styles") strips a button's own outline and
+     box-shadow and forces its border to the accent, so both rings are drawn on pseudo-elements instead
+     (precedent: .cx-member:focus-visible .cx-av). Selected = inner amber edge + glow + the check badge;
+     keyboard focus = a separate ring 4px outside the tile, so a focused-but-unselected tile is distinct. */
+  .gj-mark-opt[aria-checked="true"] {
+    border-color: var(--ob-amber);
+    background: var(--ob-bg-3);
+    color: var(--ob-ink);
+    --ring: var(--ob-bg-3);
+  }
+  .gj-mark-opt[aria-checked="true"]::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow:
+      inset 0 0 0 1px var(--ob-amber),
+      var(--ob-glow);
+    pointer-events: none;
+  }
+  .gj-mark-opt:focus-visible::after {
+    content: "";
+    position: absolute;
+    inset: -4px;
+    border: 2px solid var(--ob-amber);
+    border-radius: calc(var(--radius-xl, 10px) + 4px);
+    pointer-events: none;
+  }
+  .gj-mark-opt .cx-av {
+    --size: 40px;
+  }
+  .gj-mark-check {
+    position: absolute;
+    top: 6px;
+    inset-inline-end: 6px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--ob-amber);
+    color: var(--ob-on-accent);
+    font-size: 9px;
+    opacity: 0;
+    transform: scale(0.6);
+    transition:
+      opacity 0.15s,
+      transform 0.15s;
+  }
+  .gj-mark-opt[aria-checked="true"] .gj-mark-check {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .gj-mark-sugg {
+    position: absolute;
+    top: 7px;
+    inset-inline-start: 8px;
+    color: var(--ob-amber);
+    font-size: 10px;
+  }
+  .gj-hint {
+    min-height: 22px;
+    margin: 12px 0 0;
+    font-size: var(--ob-text-md);
+    line-height: 22px;
+    color: var(--ob-ink);
+    text-wrap: pretty;
+  }
+  .gj-hint.is-waiting {
+    color: var(--ob-ink-2);
+  }
+
+  /* ---- footer: note at the start, buttons at the end (Cancel last, the app convention) ---- */
+  .gj-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-top: 12px;
+    padding-top: 16px;
+    border-top: 1px solid var(--ob-line);
+  }
+  .gj-note {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    font-size: var(--ob-text-sm);
+    line-height: 1.45;
+    color: var(--ob-ink-2);
+    text-wrap: pretty;
+  }
+  .gj-note i {
+    margin-top: 3px;
+  }
+  .gj-buttons {
+    display: flex;
+    gap: 10px;
+    flex: none;
+  }
+  .gj-buttons .ob-btn {
+    position: relative;
+    margin: 0;
+  }
+  /* Keyboard ring on a pseudo-element: the app-wide button focus reset removes outlines (see the mark tiles). */
+  .gj-buttons .ob-btn:focus-visible::after {
+    content: "";
+    position: absolute;
+    inset: -4px;
+    border: 2px solid var(--ob-amber);
+    border-radius: calc(var(--radius-sm, 4px) + 4px);
+    pointer-events: none;
+  }
+  /* The first-run primary button paints --ob-on-accent (the theme's page colour) on the amber gradient: 6:1 on dark
+     themes but 2.9:1 on light ones (measured on modern-paper). The join dialog's primary uses the theme-invariant dark
+     ink the avatar marks use on their fills instead (6:1 on both), so the owner's onboarding look is untouched. */
+  .gj-buttons .ob-btn.primary:not(:disabled) {
+    color: var(--avatar-ink);
+  }
+  .gj-buttons .ob-btn.primary:disabled {
+    background: var(--ob-bg-3);
+    border-color: var(--ob-line-2);
+    color: var(--ob-ink-3);
+    box-shadow: none;
+    filter: none;
+    cursor: not-allowed;
+  }
+
+  /* ---- status screens (owner offline, invitation ended, link not usable, not joined) ---- */
+  .gj-status-name {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-size: var(--ob-text-md);
+    font-weight: 700;
+    color: var(--ob-ink);
+  }
+  .gj-status-list {
+    margin: 8px 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 4px;
+    font-size: var(--ob-text-sm);
+    line-height: 1.45;
+    color: var(--ob-ink-2);
+  }
+  .gj-status-list li {
+    display: flex;
+    gap: 8px;
+  }
+  .gj-status-list i {
+    width: 14px;
+    margin-top: 3px;
+    color: var(--success-color);
+  }
+  .gj-status-list .is-off i {
+    color: var(--ob-ink-3);
+  }
+
+  @media (max-width: 760px) {
+    .gj-panel {
+      padding: 24px 16px 16px;
+    }
+    .gj-title {
+      font-size: var(--ob-title-mobile);
+    }
+    .gj-invite-from {
+      white-space: normal;
+    }
+    .gj-membercard {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .gj-member-main {
+      width: 100%;
+    }
+    .gj-mark-grid {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+    .gj-preview .cx-av {
+      --size: 48px;
+    }
+    .gj-foot {
+      flex-wrap: wrap;
+    }
+    .gj-buttons {
+      width: 100%;
+    }
+    .gj-buttons .ob-btn {
+      flex: 1;
+    }
+  }
+  @media (max-width: 480px) {
+    .gj-preview {
+      display: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .gj-mark-opt,
+    .gj-mark-check {
+      transition: none;
+    }
+    .gj-mark-opt:active {
+      transform: none;
+    }
+  }
+}
