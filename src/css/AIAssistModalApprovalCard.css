@@ -1,0 +1,306 @@
+@layer app {
+/* Flow-mutations approval card (the "Joe proposes a change → Apply/Reject" gate). */
+.flow-mutation-approval-card {
+  margin: 8px 0;
+  padding: var(--pad-card-compact);
+  border: 1px solid var(--ai-accent);
+  border-radius: var(--radius-lg, 8px);
+  background: color-mix(in srgb, var(--ai-accent) 8%, transparent);
+  font-size: 13px;
+}
+.flow-mutation-approval-card .fm-approval-headline {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.flow-mutation-approval-card .fm-approval-failures {
+  white-space: pre-wrap;
+  color: var(--danger-color, #dc3545);
+  margin-bottom: 6px;
+  font-size: var(--font-approval-card-body);
+}
+/* Jev trust check (Slice 2): "Joe may have included a change you didn't ask for — it affects …". */
+.flow-mutation-approval-card .fm-approval-intent-warning {
+  white-space: pre-wrap;
+  color: var(--warning-color);
+  margin-bottom: 6px;
+  font-size: var(--font-approval-card-body);
+}
+.flow-mutation-approval-card .fm-approval-placement {
+  white-space: pre-wrap;
+  margin-bottom: 6px;
+  font-size: var(--font-approval-card-body);
+  opacity: 0.85;
+}
+/* G3/S38: "jump to node" links for every existing node this change targeted — real flowjoe-node: hrefs,
+   handled by nodeLinkController's document-level click delegate (same navigation select_node uses). */
+.flow-mutation-approval-card .fm-approval-node-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  margin-bottom: 6px;
+}
+.flow-mutation-approval-card .fm-approval-node-link {
+  font-size: var(--font-approval-card-body);
+  color: var(--ai-accent);
+  text-decoration: none;
+  cursor: pointer;
+}
+.flow-mutation-approval-card .fm-approval-node-link:hover {
+  text-decoration: underline;
+}
+/* S1f: every web address the change would store, in full, as TEXT (never a live link); the part after
+   `?` / `#` — what the address sends to the site — is marked. */
+.flow-mutation-approval-card .fm-approval-links {
+  margin-bottom: 6px;
+  font-size: var(--font-approval-card-body);
+  opacity: 0.9;
+}
+.flow-mutation-approval-card .fm-approval-links-label {
+  opacity: 0.75;
+  margin-bottom: 2px;
+}
+.flow-mutation-approval-card .fm-approval-link {
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: var(--font-meta);
+  overflow-wrap: anywhere;
+  padding: 2px 0;
+  user-select: text;
+}
+.flow-mutation-approval-card .fm-approval-link-query {
+  background: color-mix(in srgb, var(--warning-color) 22%, transparent);
+  border-bottom: 1px dashed var(--warning-color);
+  border-radius: 2px;
+}
+.flow-mutation-approval-card.fm-approval-collapsed .fm-approval-links {
+  display: none;
+}
+/* Joe-memory proposal card (propose_memory_change) — the VERBATIM memory text the user is approving. */
+.flow-mutation-approval-card .fm-approval-memory-meta {
+  margin-bottom: 4px;
+  font-size: var(--font-meta);
+  opacity: 0.65;
+}
+.flow-mutation-approval-card .fm-approval-memory-text {
+  white-space: pre-wrap;
+  margin-bottom: 6px;
+  padding: 6px 8px;
+  font-size: var(--font-approval-card-body);
+  border-left: 2px solid var(--ai-accent);
+  border-radius: var(--radius-sm, 4px);
+  background: color-mix(in srgb, var(--ai-accent) 8%, transparent);
+}
+/* 1.2b — thumbnails of NEW images a patch adds (generate_image / stage_media), so the user sees what they approve. */
+.flow-mutation-approval-card .fm-approval-thumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.flow-mutation-approval-card .fm-approval-thumb {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: var(--radius-md, 6px);
+  border: 1px solid var(--border-color);
+  background: var(--bg-tertiary);
+}
+.flow-mutation-approval-card.fm-approval-collapsed .fm-approval-thumbs {
+  display: none;
+}
+
+/* Collapsed (executed) approval card — one-line outcome, expandable on click. */
+.flow-mutation-approval-card .fm-approval-headline-toggle {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+/* The outcome icon (✕/✓/↻) on the left — acts as a close button (removes the card). */
+.flow-mutation-approval-card .fm-approval-headline-close {
+  cursor: pointer;
+  opacity: 0.55;
+  font-size: var(--icon-glyph-sm);
+  padding: 2px 4px;
+  border-radius: var(--radius-sm, 4px);
+  transition: opacity var(--transition-speed), background var(--transition-speed);
+  flex-shrink: 0;
+}
+.flow-mutation-approval-card .fm-approval-headline-close:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.1);
+}
+.flow-mutation-approval-card .fm-approval-headline-label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.flow-mutation-approval-card .fm-approval-headline-toggle::after {
+  content: "▾";
+  font-size: 10px;
+  opacity: 0.6;
+  margin-left: auto;
+}
+.flow-mutation-approval-card.fm-approval-collapsed {
+  padding: 7px 12px;
+}
+.flow-mutation-approval-card.fm-approval-collapsed .fm-approval-headline {
+  margin-bottom: 0;
+}
+.flow-mutation-approval-card.fm-approval-collapsed .fm-approval-headline-toggle::after {
+  content: "▸";
+}
+.flow-mutation-approval-card.fm-approval-collapsed .fm-approval-placement,
+.flow-mutation-approval-card.fm-approval-collapsed .fm-approval-node-links,
+.flow-mutation-approval-card.fm-approval-collapsed .fm-approval-failures,
+.flow-mutation-approval-card.fm-approval-collapsed .fm-approval-intent-warning,
+.flow-mutation-approval-card.fm-approval-collapsed .fm-approval-actions,
+.flow-mutation-approval-card.fm-approval-collapsed .fm-approval-revise-panel,
+.flow-mutation-approval-card.fm-approval-collapsed .fm-approval-revision-note,
+.flow-mutation-approval-card.fm-approval-collapsed .fm-approval-memory-meta,
+.flow-mutation-approval-card.fm-approval-collapsed .fm-approval-memory-text {
+  display: none;
+}
+
+.flow-mutation-approval-card .fm-approval-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--action-row-gap); /* was a drifted 8px; labeled decision rows breathe at 10px */
+}
+.flow-mutation-approval-card .fm-approval-apply,
+.flow-mutation-approval-card .fm-approval-revise,
+.flow-mutation-approval-card .fm-approval-reject {
+  padding: 4px 14px;
+  border-radius: var(--radius-md, 6px);
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-weight: 600;
+}
+.flow-mutation-approval-card .fm-approval-apply {
+  background: var(--ai-accent);
+  color: var(--text-on-ai-accent);
+}
+
+/* "View task JSON" affordance on a scheduler-task proposal card. */
+.fm-approval-json-row {
+  margin-top: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.fm-approval-json-group {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+}
+.fm-approval-view-json {
+  font-size: var(--font-control);
+  padding: 3px 10px;
+  border: 1px solid var(--ai-accent);
+  border-radius: var(--radius-md, 6px);
+  background: transparent;
+  color: var(--ai-accent);
+  cursor: pointer;
+  /* Center the leading notes glyph next to the label. */
+  display: inline-flex;
+  align-items: center;
+  gap: var(--control-icon-gap); /* unified from 5px; matches .scheduler-btn (both on the token — the deliberate pair, restored) */
+}
+.fm-approval-view-json-icon {
+  flex: 0 0 auto;
+  opacity: 0.85;
+}
+.fm-approval-view-json:hover {
+  background: var(--ai-accent);
+  color: var(--text-on-ai-accent);
+}
+/* On the live card, "View task JSON" rides the Apply/Revise/Reject line — pushed to the right edge so the
+   decision buttons stay grouped on the left, and vertically centered against their taller padding. */
+.flow-mutation-approval-card .fm-approval-actions .fm-approval-view-json {
+  margin-left: auto;
+  align-self: center;
+}
+.flow-mutation-approval-card .fm-approval-apply:disabled,
+.flow-mutation-approval-card .fm-approval-revise:disabled,
+.flow-mutation-approval-card .fm-approval-reject:disabled,
+.flow-mutation-approval-card .fm-approval-revise-send:disabled,
+.flow-mutation-approval-card .fm-approval-revise-back:disabled {
+  opacity: var(--disabled-opacity-control);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.flow-mutation-approval-card .fm-approval-revise {
+  background: transparent;
+  border-color: var(--ai-accent);
+  color: var(--ai-accent);
+}
+.flow-mutation-approval-card .fm-approval-reject {
+  background: transparent;
+  border-color: rgba(0, 0, 0, 0.2);
+}
+.flow-mutation-approval-card .fm-approval-revise-panel {
+  margin-top: 8px;
+}
+.flow-mutation-approval-card .fm-approval-revise-input {
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+  border: 1px solid color-mix(in srgb, var(--ai-accent) 40%, transparent);
+  border-radius: var(--radius-md, 6px);
+  padding: 6px 8px;
+  font: inherit;
+  font-size: 12px;
+}
+.flow-mutation-approval-card .fm-approval-revise-actions {
+  display: flex;
+  gap: var(--action-row-gap); /* was a drifted 8px; labeled decision rows breathe at 10px */
+  margin-top: 6px;
+}
+.flow-mutation-approval-card .fm-approval-revise-send {
+  padding: 4px 14px;
+  border-radius: var(--radius-md, 6px);
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-weight: 600;
+  background: var(--ai-accent);
+  color: var(--text-on-ai-accent);
+}
+.flow-mutation-approval-card .fm-approval-revise-back {
+  padding: 4px 14px;
+  border-radius: var(--radius-md, 6px);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  background: transparent;
+  cursor: pointer;
+  font-weight: 600;
+}
+.flow-mutation-approval-card .fm-approval-revision-note {
+  margin-top: 6px;
+  font-size: var(--font-approval-card-body);
+  font-style: italic;
+  opacity: 0.85;
+}
+.flow-mutation-approval-card.fm-approval-settled {
+  opacity: 0.7;
+}
+
+/* Floating host for a NATIVE (OpenAI tool-loop) approval card relocated out of #ai-chat-messages
+   while chat is minimized/hidden/non-chat-mode (AIAssistModal.js's reconcileNativeApprovalCardOnVisibilityChange).
+   Independent of #flowjoe-minimized-pill-tray for the same z-index reason as .mcp-bridge-approvals
+   (mcpBridgeSettings.css) — see that file's comment for the full writeup. The `bottom` below is only
+   the pre-JS fallback; syncFloatingStackPositions (modalUtils.js) overwrites it live so this card and
+   the tray's pills read as one narrowest-on-top-to-widest-on-bottom stack despite living in different
+   DOM subtrees. Same z-index tier as the bridge equivalent — this and that never appear simultaneously
+   (Joe's brain provider is one setting at a time), so tier collision isn't a real concern. */
+#native-approval-floating-host {
+  position: fixed;
+  right: 16px;
+  bottom: calc(16px + var(--status-footer-height, 0px) + 4px);
+  z-index: var(--flowjoe-z-ai-adoption);
+  width: 340px;
+  max-width: calc(100vw - 32px);
+}
+#native-approval-floating-host[hidden] {
+  display: none;
+}
+}

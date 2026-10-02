@@ -1,0 +1,97 @@
+@layer app {
+/* ── Chat image-generation card ──────────────────────────────────────────────
+   Shown in #ai-chat-messages while Joe's generate_image tool runs. The stage
+   reuses the Generate tab's own classes (.ai-generate-preview-card /
+   -placeholder / -progress) so it gets the SAME pixel-wave + static animation
+   and floating phrase box; only chat-layout glue lives here. */
+.ai-chat-image-gen-card {
+  margin: 8px 0;
+  padding: 5px;
+  max-width: 420px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl, 10px);
+  background: var(--bg-secondary);
+}
+/* The tab sizes its preview card to fill the panel; in chat it hugs its content.
+   Padding halved vs the tab's 8px — chat-card scope only. */
+.ai-chat-image-gen-card .ai-chat-image-gen-stage {
+  height: auto;
+  flex: none;
+  padding: 4px;
+}
+.ai-chat-image-gen-card .ai-generate-preview-placeholder {
+  width: 100%;
+  min-height: 140px;
+}
+.ai-chat-image-gen-card .ai-chat-image-gen-img {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  display: block;
+  border-radius: var(--radius-2xl, 12px);
+  transition: opacity var(--transition-speed-slow) ease;
+}
+/* display:block above would override the hidden attribute — without this, an unset/broken img
+   paints its alt icon over the animation (the exact bug from dogfooding screenshots). */
+.ai-chat-image-gen-card .ai-chat-image-gen-img[hidden] {
+  display: none;
+}
+/* Image-only chat item for a generated image — the bubble hugs the image (same footprint as
+   the generating card it replaces), instead of stretching across the chat column. Specificity
+   must beat the assistant-bubble padding/width rules. */
+#ai-spell-check-panel #ai-chat-messages .ai-chat-message.assistant .ai-chat-bubble.ai-chat-bubble--generated-image {
+  width: fit-content;
+  flex: 0 0 auto;
+  max-width: min(420px, 85%);
+  padding: 6px;
+}
+.ai-chat-bubble--generated-image .ai-chat-generated-image {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  border-radius: var(--radius-xl, 10px);
+}
+/* Shown in place of a generated image whose stored picture no longer exists. */
+.ai-chat-bubble--generated-image .ai-chat-generated-image-missing {
+  padding: 10px 12px;
+  font-size: var(--font-meta);
+  line-height: 1.4;
+  color: var(--text-secondary);
+}
+/* Omitted-from-Joe dims text turns; the picture itself stays full-strength (images only —
+   every other omitted message keeps the muted look). */
+.ai-chat-message.is-omitted:has(.ai-chat-bubble--generated-image) .ai-chat-bubble {
+  opacity: 1;
+}
+.ai-chat-image-gen-card.is-failed .ai-generate-placeholder-text {
+  color: var(--danger-color, #dc3545);
+}
+.ai-chat-image-gen-meta {
+  margin-top: 4px;
+  padding: 0 4px 2px;
+  font-size: var(--font-meta);
+  line-height: 1.4;
+  color: var(--text-secondary);
+}
+/* Direct link to the Generate Images tab from the card that used its settings — quality/style/size
+   are invisible while chatting, so a bad result (pixelated, over-stylized) is otherwise a dead end. */
+.ai-chat-image-gen-change-settings {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  font-size: 11px; /* NOT --font-meta: this is a clickable <button>, not passive meta text — see the same miscategorization caught at styles-themes.css:1336 and styles-gallery-vertical.css:3100 */
+  color: var(--accent-color);
+  cursor: pointer;
+  text-decoration: underline;
+}
+.ai-chat-image-gen-change-settings:hover {
+  opacity: 0.8;
+}
+.ai-chat-image-gen-change-settings:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+}

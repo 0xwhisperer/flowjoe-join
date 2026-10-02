@@ -1,0 +1,2550 @@
+@layer app {
+/* ── Settings body: vertical menu (left) + content (right) ── */
+.settings-body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* ── Settings Tabs (vertical sidebar menu) ──
+   Formerly a horizontal tab bar; re-laid-out as a column on the panel's left edge. Same theme
+   tokens as before, so it stays fully themable. The active item shows an accent left-bar + tint
+   (the vertical analogue of the old accent-top-border). */
+.settings-tabs {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  width: var(--settings-nav-width);
+  /* Transparent so the menu shares the same surface as the content area — the cards read as
+     floating on one continuous backdrop, with no divider between menu and content. */
+  background: transparent;
+  padding: var(--rail-menu-pad);
+  gap: var(--rail-menu-row-gap);
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  min-width: 0;
+  transition: width var(--transition-speed) ease;
+}
+
+.settings-tab {
+  display: flex;
+  align-items: center;
+  gap: var(--rail-item-gap);
+  box-sizing: border-box;
+  /* align-self: stretch (not width:100%) fills the column's content box — width:100% in a flex
+     column with overflow makes Chromium over-report scrollWidth by the scrollbar reservation,
+     tripping the no-horizontal-overflow guard (settings-panel-overflow.spec.js). */
+  align-self: stretch;
+  max-width: 100%;
+  flex: 0 0 auto;
+  /* Reset: buttons.css's global `button { margin: 5px; }` base rule (same footgun already
+     documented at statusFooter.css:367, styles-themes.css:1235, styles-gallery-notes.css:824-825)
+     was leaking through unreset — never an intentional design value here, just the global button
+     default stacking on top of .settings-tabs' own `gap: 2px` row spacing. DISCLOSED small visual
+     change: each row tightens from 47px to 37px apart (the 5px top+bottom margin no longer stacks
+     with the gap), so the 9-tab nav column is ~64-80px shorter overall — a minor, deliberate
+     improvement (less wasted vertical space), not a zero-change rename. Found live via the CSS
+     token mapper (Ctrl+Shift+T) flagging every .settings-tab as a "margin-top: 5px (no token)"
+     candidate with zero *type-specific* author CSS rule (buttons.css's `button` type-selector rule
+     was the actual source, at lower specificity than this rule, so it silently won by default). */
+  margin: 0;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm, 4px);
+  color: var(--text-secondary);
+  font-size: var(--rail-item-font-size);
+  font-weight: var(--rail-item-font-weight);
+  text-align: left;
+  padding: var(--rail-item-pad);
+  cursor: pointer;
+  transition: color var(--transition-speed), background var(--transition-speed), border-color var(--transition-speed);
+  letter-spacing: var(--rail-item-letter-spacing);
+  white-space: nowrap;
+  overflow: hidden;
+  position: relative;
+}
+
+.settings-tab-icon {
+  flex: 0 0 auto;
+  width: var(--rail-icon-col);
+  font-size: var(--rail-icon-size);
+  text-align: center;
+  color: inherit;
+  opacity: var(--rail-icon-opacity);
+}
+
+.settings-tab-label {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.settings-tab[hidden],
+.settings-tab-panel[hidden] {
+  display: none !important;
+}
+
+.settings-tab:hover {
+  color: var(--text-primary);
+  background: var(--hover-bg);
+}
+
+.settings-tab.active {
+  background: color-mix(in srgb, var(--accent-color) 12%, transparent);
+  color: var(--accent-color);
+  border-color: color-mix(in srgb, var(--accent-color) 26%, transparent);
+  font-weight: var(--rail-item-font-weight-active);
+}
+
+/* Accent left-bar on the active item — the vertical counterpart of the old accent top-border. */
+.settings-tab.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 60%;
+  border-radius: 0 3px 3px 0;
+  background: var(--accent-color);
+}
+
+.settings-tab.active .settings-tab-icon {
+  opacity: 1;
+}
+
+/* ── Collapse toggle (subtle chevron, pinned at the top of the menu) ── */
+.settings-nav-collapse {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  box-sizing: border-box;
+  align-self: stretch;
+  max-width: 100%;
+  flex: 0 0 auto;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md, 6px);
+  color: var(--text-secondary);
+  padding: var(--rail-collapse-pad);
+  margin: var(--rail-collapse-margin);
+  cursor: pointer;
+  opacity: var(--rail-collapse-opacity);
+  transition: color var(--transition-speed), opacity var(--transition-speed), background var(--transition-speed);
+}
+
+.settings-nav-collapse:hover {
+  color: var(--accent-color);
+  opacity: 1;
+  background: var(--hover-bg);
+}
+
+/* The chevron is the only thing shown — no label text. */
+.settings-nav-collapse .settings-tab-label {
+  display: none;
+}
+
+.settings-nav-collapse-icon {
+  flex: 0 0 auto;
+  font-size: var(--rail-collapse-icon-size);
+  text-align: center;
+  transition: transform var(--transition-speed) ease;
+}
+
+/* ── Collapsed (icon-only rail) state ── */
+.settings-tabs.collapsed {
+  width: var(--settings-nav-rail-width);
+  padding-left: var(--rail-menu-pad-inline-collapsed);
+  padding-right: var(--rail-menu-pad-inline-collapsed);
+}
+
+.settings-tabs.collapsed .settings-tab-label {
+  display: none;
+}
+
+.settings-tabs.collapsed .settings-tab {
+  justify-content: center;
+  gap: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.settings-tabs.collapsed .settings-nav-collapse {
+  justify-content: center;
+}
+
+.settings-tabs.collapsed .settings-nav-collapse-icon {
+  transform: rotate(180deg);
+}
+
+.settings-tab-panel {
+  display: none;
+}
+
+.settings-tab-panel.active {
+  display: block;
+}
+
+.settings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--modal-header-padding);
+  min-height: var(--modal-header-min-height);
+  border-bottom: 1px solid var(--border-light);
+  background-color: var(--bg-secondary);
+  position: sticky;
+  top: 0;
+  z-index: var(--flowjoe-z-surface-above-topbar);
+  /* Higher than topbar's 100000 */
+  flex-shrink: 0;
+  border-top-left-radius: 0;
+}
+
+.settings-header h3 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: calc(18px * var(--font-scale));
+}
+
+/* Breadcrumb in the panel header: "Settings › <Section>". The section crumb updates as you
+   switch menu items, and stays visible even when the menu is collapsed to the icon rail. */
+.settings-breadcrumb {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.settings-breadcrumb-root {
+  color: var(--text-secondary);
+  font-weight: 600;
+  flex: 0 0 auto;
+}
+
+.settings-breadcrumb-sep {
+  color: var(--text-secondary);
+  opacity: 0.7;
+  flex: 0 0 auto;
+}
+
+.settings-breadcrumb-section {
+  color: var(--accent-color);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+/* Before any section is active (shouldn't normally happen), hide the dangling separator + crumb. */
+.settings-breadcrumb:has(.settings-breadcrumb-section:empty) .settings-breadcrumb-sep,
+.settings-breadcrumb-section:empty {
+  display: none;
+}
+
+.settings-header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--header-gap); /* owner call: modal titlebar rows share the app header rhythm */
+  flex: 0 0 auto;
+}
+
+.close-btn {
+  background: none;
+  border: 1px solid var(--border-color);
+  border-radius: var(--icon-btn-radius, 4px); /* unified square-button radius (was radius-md) */
+  color: var(--text-primary);
+  font-size: 18px;
+  width: var(--icon-btn-size) /* was 28px; standard chrome size */;
+  height: var(--icon-btn-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  transition: all var(--transition-speed) ease;
+}
+
+.close-btn:hover {
+  background-color: var(--hover-bg);
+  color: var(--accent-color);
+  border-color: var(--accent-color);
+}
+
+.settings-content {
+  /* Left padding 0 so card content sits flush against the settings menu rail, matching how the
+     app's own left rail sits flush against the tree panel (measured: 0px gap there). */
+  padding: var(--settings-content-pad);
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  contain: paint;
+  flex: 1;
+  min-width: 0;
+  /* Lets the content column scroll inside the .settings-body flex row (vertical-menu layout). */
+  min-height: 0;
+}
+
+.setting-item {
+  margin-bottom: var(--settings-card-gap);
+  padding: var(--pad-card);
+  background-color: var(--bg-tertiary);
+  border-radius: var(--radius-md, 6px);
+  position: relative;
+  box-sizing: border-box;
+  max-width: 100%;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.setting-item.setting-card-static {
+  cursor: default;
+}
+
+#app-info-setting-card {
+  padding: var(--pad-card); /* was a drifted 18px */
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--accent-color) 22%, var(--border-color));
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--bg-tertiary) 92%, var(--accent-color)) 0%,
+      var(--bg-tertiary) 58%,
+      color-mix(in srgb, var(--bg-secondary) 88%, var(--accent-color)) 100%);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--text-primary) 8%, transparent);
+}
+
+.app-info-branding {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  min-width: 0;
+}
+
+.app-info-logo {
+  width: 54px;
+  height: 54px;
+  flex: 0 0 auto;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 10px color-mix(in srgb, var(--text-primary) 18%, transparent));
+}
+
+.app-info-copy {
+  min-width: 0;
+}
+
+.app-info-copy h4 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: calc(16px * var(--font-scale));
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.app-info-copy h4 span {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.app-info-version {
+  color: var(--text-secondary);
+  font-size: calc(12px * var(--font-scale));
+  font-weight: 500;
+  line-height: 1.2;
+  margin: 6px 0 0;
+}
+
+.setting-item.setting-card-draggable {
+  position: relative;
+  padding-top: 18px;
+  cursor: move;
+}
+
+.setting-item.setting-card-draggable:active {
+  cursor: move;
+}
+
+.setting-item.setting-card-draggable button,
+.setting-item.setting-card-draggable input,
+.setting-item.setting-card-draggable select,
+.setting-item.setting-card-draggable textarea,
+.setting-item.setting-card-draggable a,
+.setting-item.setting-card-draggable label {
+  cursor: auto;
+}
+
+.setting-card-grip-row {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  padding: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.setting-card-handle {
+  width: 77px;
+  height: 14px;
+  border-radius: var(--radius-full, 999px);
+  border: 1px solid color-mix(in srgb, var(--border-color) 80%, transparent);
+  background: color-mix(in srgb, var(--bg-input) 78%, transparent);
+  color: transparent;
+  font-size: 0;
+  line-height: 0;
+  cursor: default;
+  display: block;
+  padding: 0;
+  position: relative;
+  pointer-events: none;
+}
+
+.setting-card-handle::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 24px;
+  height: var(--hairline);
+  background: color-mix(in srgb, var(--accent-color) 85%, transparent);
+  transform: translate(-50%, -50%);
+  box-shadow:
+    0 -3px 0 color-mix(in srgb, var(--accent-color) 85%, transparent),
+    0 3px 0 color-mix(in srgb, var(--accent-color) 85%, transparent);
+}
+
+.setting-item.setting-card-dragging .setting-card-handle {
+  border-color: color-mix(in srgb, var(--accent-color) 65%, var(--border-color));
+  box-shadow: 0 0 8px color-mix(in srgb, var(--accent-color) 35%, transparent);
+}
+
+.setting-card-dragging {
+  opacity: 0.72;
+  outline: 1px dashed color-mix(in srgb, var(--accent-color) 70%, var(--border-color));
+  outline-offset: 2px;
+}
+
+.setting-item label,
+.setting-item .setting-label {
+  display: block;
+  margin: 0;
+  font-weight: bold;
+  color: var(--text-primary);
+  font-size: calc(16px * var(--font-scale));
+  white-space: normal;
+  overflow-wrap: anywhere;
+  padding-top: 2px;
+}
+
+.setting-description {
+  font-size: calc(13px * var(--font-scale));
+  color: var(--text-secondary);
+  margin-top: 12px;
+  line-height: var(--notes-line-height);
+}
+
+/* "What Joe Sees" context card — Map controls + live counts. */
+.joe-context-title {
+  margin: 0 0 2px 0;
+  font-size: calc(15px * var(--font-scale));
+  color: var(--text-primary);
+}
+.joe-context-group-label {
+  margin-top: 14px;
+  margin-bottom: 2px;
+  font-size: var(--font-control);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+  opacity: 0.85;
+}
+.joe-context-count {
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary);
+  opacity: 0.8;
+  font-size: calc(12px * var(--font-scale));
+  margin-left: 6px;
+}
+.joe-context-always {
+  font-size: calc(12px * var(--font-scale));
+  color: var(--text-secondary);
+  opacity: 0.7;
+  font-style: italic;
+}
+.joe-context-cap-input {
+  width: 90px;
+  padding: 4px 8px;
+  border-radius: var(--radius-md, 6px);
+  border: 1px solid var(--border-color, #555);
+  background: var(--bg-input);
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+.joe-context-readout {
+  margin-top: 8px;
+  font-variant-numeric: tabular-nums;
+}
+.joe-context-tokens {
+  color: var(--text-secondary, #999);
+  font-size: 0.95em;
+}
+.joe-context-how {
+  margin-top: 12px;
+}
+.joe-context-how > summary {
+  cursor: pointer;
+  font-size: calc(13px * var(--font-scale));
+  color: var(--text-secondary);
+}
+
+/* Hint appended to the Storage Stats description pointing at the diagnostics log. */
+.diagnostics-log-note {
+  display: inline-block;
+  margin-top: 6px;
+  font-style: italic;
+  opacity: 0.85;
+}
+
+/* Setting item flex layout for toggle and label positioning */
+.setting-control {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  gap: 10px;
+}
+
+.setting-control>label:first-child {
+  font-weight: bold;
+  font-size: calc(16px * var(--font-scale));
+  color: var(--text-primary);
+  /* Wrap between words, never mid-word — `overflow-wrap: anywhere` here used to collapse long
+     labels (e.g. "Play Mode") into a one-letter-per-line column once the adjacent control was
+     wide and the panel narrow. The label keeps a sensible floor and the control yields first. */
+  white-space: normal;
+  overflow-wrap: normal;
+  word-break: keep-all;
+  flex: 1 1 auto;
+  min-width: 88px;
+}
+
+.setting-control .toggle-switch {
+  flex-shrink: 0;
+}
+
+.setting-inline-note,
+.setting-badge {
+  color: var(--text-secondary);
+  font-size: calc(13px * var(--font-scale));
+  line-height: 1.2;
+}
+
+.setting-badge {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md, 6px);
+  padding: var(--pad-compact);
+  white-space: nowrap;
+}
+
+.custom-placeholder-control {
+  margin-top: 8px;
+  overflow: visible;
+}
+
+.custom-placeholder-card {
+  width: 100%;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 74px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: var(--panel-card-radius);
+  padding: 10px;
+  min-width: 0;
+}
+
+.custom-placeholder-thumb-shell {
+  width: 74px;
+  height: 74px;
+  border-radius: var(--radius-lg, 8px);
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  background: color-mix(in srgb, var(--bg-tertiary) 70%, var(--bg-primary));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: border-color var(--transition-speed) ease, transform var(--transition-speed) ease;
+  padding: 0;
+  margin: 0;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.custom-placeholder-thumb-shell:hover {
+  border-color: var(--accent-color);
+}
+
+.custom-placeholder-thumb-shell:active {
+  transform: translateY(1px);
+}
+
+.custom-placeholder-thumb-shell:focus-visible {
+  outline: 1px solid var(--accent-color);
+  outline-offset: 1px;
+}
+
+.custom-placeholder-meta {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.custom-placeholder-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.custom-placeholder-preview[hidden] {
+  display: none !important;
+}
+
+.custom-placeholder-empty {
+  font-size: 12px;
+  line-height: 1.25;
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 8px;
+  word-break: break-word;
+}
+
+.custom-placeholder-card-caption {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.3;
+  min-width: 0;
+  word-break: break-word;
+}
+
+.custom-placeholder-actions {
+  display: flex;
+  gap: var(--action-row-gap);
+  align-items: center;
+  min-height: 20px;
+}
+
+.custom-placeholder-link {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font-size: var(--font-control);
+  color: var(--accent-color);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.custom-placeholder-remove-link {
+  color: var(--danger-color);
+}
+
+.custom-placeholder-link:focus-visible {
+  outline: 1px solid var(--accent-color);
+  outline-offset: 1px;
+  border-radius: var(--radius-xs, 2px);
+}
+
+.export-prefs-groups {
+  display: grid;
+  gap: var(--list-row-gap); /* uniform row rhythm (8px) between the toggle, bulk buttons, and every group card */
+  margin-top: 6px;
+}
+
+.browser-settings-url-row {
+  align-items: stretch;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.browser-settings-url-row .setting-input {
+  width: 100%;
+  min-height: var(--text-input-height); /* app-wide input height — was a 38px one-off */
+  padding: 0 12px;
+  font-family: inherit;
+  font-size: calc(14px * var(--font-scale));
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--text-primary);
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm, 4px);
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color var(--transition-speed) var(--transition-timing),
+    background-color var(--transition-speed) var(--transition-timing),
+    box-shadow var(--transition-speed) var(--transition-timing);
+}
+
+.browser-settings-url-row .setting-input::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.78;
+}
+
+.browser-settings-url-row .setting-input:hover,
+.browser-settings-url-row .setting-input:focus,
+.browser-settings-url-row .setting-input:focus-visible {
+  border-color: var(--accent-color);
+  background-color: var(--bg-input);
+}
+
+.browser-settings-url-row .setting-input:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+.browser-settings-url-row .setting-input:disabled {
+  opacity: var(--disabled-opacity-field);
+  cursor: default;
+  color: var(--text-secondary);
+}
+
+.browser-settings-action-row {
+  display: flex;
+  gap: var(--action-row-gap); /* was a drifted 8px; labeled decision rows breathe at 10px */
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.browser-settings-action-row .btn {
+  flex: 1 1 160px;
+}
+
+#settings-panel .settings-tab-panel[data-panel="browser"] option:disabled {
+  color: color-mix(in srgb, var(--text-secondary) 55%, transparent);
+}
+
+.export-prefs-groups.disabled {
+  opacity: var(--disabled-opacity-field);
+}
+
+.export-prefs-group {
+  border: 1px solid color-mix(in srgb, var(--border-color) 70%, transparent);
+  border-radius: var(--radius-lg, 8px);
+  padding: 8px 10px;
+  background: color-mix(in srgb, var(--bg-input) 70%, transparent);
+}
+
+/* Flow Audit Log viewer (G2) — overlay opened from the AI & Data settings tab. Must sit ABOVE the settings
+   panel + its controls (z-index-fix.css forces those to 100100/100101 !important), and below the AI
+   assistant shell (200007+).
+   Mapper pass (css-slice69): .flow-audit-row-meta/-verbs' margin-top:2px adopted var(--text-stack-gap) —
+   a real semantic match (bold summary line -> smaller line directly under it, the token's own doc comment).
+   The overlay's padding:24px, header/footer/row padding:12px/10px/8px, and list padding:6px numerically
+   coincide with other tokens (--header-gap, --cta-row-gap, --modal-row-gap, --modal-row-gap-tight, etc.)
+   but those tokens are predominantly used as GAP between sibling rows (not an absolute rule — e.g.
+   --modal-row-gap is also used as padding in AIAssistModalTranscribeOptions.css:45), while every use here
+   is box PADDING on a single element's own edges. Left hardcoded rather than force-adopted onto a token
+   whose own doc comment describes a different primary use; the numeric match alone isn't enough. */
+.flow-audit-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--flowjoe-z-flow-audit-overlay);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--modal-overlay);
+  padding: 24px;
+}
+.flow-audit-modal {
+  background: var(--bg-secondary, #1e1e1e);
+  color: var(--text-primary, #eee);
+  border: 1px solid var(--border-color, #555);
+  border-radius: var(--radius-xl, 10px);
+  width: min(560px, 100%);
+  max-height: min(70vh, 640px);
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--elev-overlay);
+}
+.flow-audit-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-color, #555);
+}
+.flow-audit-header h3 {
+  margin: 0;
+  font-size: 15px;
+}
+.flow-audit-close {
+  background: transparent;
+  border: none;
+  color: inherit;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 4px;
+}
+.flow-audit-list {
+  overflow-y: auto;
+  padding: 6px 0;
+  flex: 1;
+}
+.flow-audit-empty {
+  padding: 24px 16px;
+  text-align: center;
+  opacity: 0.7;
+  font-size: 13px;
+}
+.flow-audit-row {
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--border-color, #555);
+}
+.flow-audit-row-summary {
+  font-weight: 600;
+  font-size: 13px;
+}
+.flow-audit-row-meta {
+  font-size: var(--font-meta);
+  opacity: 0.7;
+  margin-top: var(--text-stack-gap); /* bold summary line -> smaller meta line directly under it: the canonical text-stack-gap case */
+}
+.flow-audit-row-verbs {
+  font-size: var(--font-meta);
+  opacity: 0.55;
+  margin-top: var(--text-stack-gap); /* meta line -> smaller verbs line directly under it: same text-stack-gap case */
+  font-family: var(--app-font-family);
+}
+.flow-audit-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-top: 1px solid var(--border-color, #555);
+}
+.flow-audit-count {
+  font-size: 12px;
+  opacity: 0.7;
+}
+.flow-audit-clear {
+  padding: 4px 12px;
+  border-radius: var(--radius-md, 6px);
+  border: 1px solid color-mix(in srgb, var(--danger-color, #dc3545) 50%, transparent);
+  background: transparent;
+  color: var(--danger-color, #dc3545);
+  cursor: pointer;
+  font-weight: 600;
+}
+.flow-audit-clear:disabled {
+  opacity: var(--disabled-opacity-control);
+  cursor: not-allowed;
+}
+
+.export-prefs-bulk-controls {
+  display: flex;
+  gap: var(--action-row-gap); /* labeled action pair — the standard action-row rhythm */
+  justify-content: flex-end; /* owner: the bulk buttons sit on the RIGHT */
+  margin-bottom: 0; /* the grid's own gap is the ONE vertical rhythm — this margin doubled it */
+}
+/* Select all / Unselect all — the settings panel's standard rectangular-button recipe
+   (the .cleanup-button / theme-reset family: class-3 rect tokens, bg-input fill, accent hover) —
+   these were a bespoke fifth look (translucent fills, 600 weight, no height token). */
+.export-prefs-bulk-btn {
+  padding: 7px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.2;
+  min-height: var(--rect-btn-height);
+  box-sizing: border-box;
+  border-radius: var(--rect-btn-radius);
+  border: 1px solid color-mix(in srgb, var(--text-secondary) 38%, var(--border-color));
+  background: var(--bg-input);
+  color: var(--text-primary);
+  cursor: pointer;
+}
+.export-prefs-bulk-btn:hover {
+  background-color: var(--hover-bg);
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent-color) 30%, transparent);
+}
+.export-prefs-bulk-btn:disabled {
+  opacity: var(--disabled-opacity-control);
+  cursor: not-allowed;
+}
+
+.export-prefs-group-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.export-prefs-group label.export-prefs-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0;
+  font-size: var(--font-control);
+  font-weight: normal;
+  line-height: 1.3;
+  color: var(--text-primary);
+  cursor: pointer;
+  padding-top: 0;
+}
+
+/* The export-prefs and .themed-checkbox checkboxes are styled by the app-wide
+   input[type="checkbox"] rule (styles-gallery-notes.css, next to the radio rule) — the two
+   byte-identical custom blocks that used to sit here were folded into it. */
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* Thin divider between sub-rows inside a grouped setting-item */
+.setting-sub-divider {
+  height: var(--hairline);
+  background: var(--border-color);
+  opacity: 0.4;
+  margin: 8px 0;
+}
+
+.workspace-setting-status {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin: 8px 0 10px;
+  padding: 8px 10px;
+  border: 1px solid color-mix(in srgb, var(--border-color) 80%, transparent);
+  border-radius: var(--rect-btn-radius);
+  color: var(--text-secondary);
+  font-size: var(--font-control);
+  overflow-wrap: anywhere;
+}
+
+.workspace-setting-led {
+  width: 11px;
+  height: 11px;
+  flex: 0 0 11px;
+  border-radius: 50%;
+  border: 1px solid var(--workspace-led-rim);
+  box-shadow: inset 0 1px 2px var(--workspace-led-sheen), 0 0 5px currentColor;
+  margin-top: 4px;
+}
+
+.workspace-setting-led.connected {
+  color: var(--success-color);
+  background: var(--success-color);
+}
+
+.workspace-setting-led.connected.pulsing {
+  animation: workspace-led-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes workspace-led-pulse {
+  0%, 100% { opacity: 0.72; transform: scale(0.92); }
+  50% { opacity: 1; transform: scale(1.08); }
+}
+
+.workspace-setting-led.disconnected {
+  color: var(--danger-color);
+  background: var(--danger-color);
+  box-shadow: inset 0 1px 2px var(--workspace-led-sheen-muted);
+}
+
+/* Blocked: reconnect failed and every save is refused — urgent, unlike plain disconnected. */
+.workspace-setting-led.blocked {
+  color: var(--danger-color);
+  background: var(--danger-color);
+  box-shadow: inset 0 1px 2px var(--workspace-led-sheen), 0 0 6px currentColor;
+  animation: workspace-led-pulse 1.2s ease-in-out infinite;
+}
+
+.workspace-setting-identity {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.workspace-setting-flow-name {
+  overflow-wrap: anywhere;
+}
+
+.workspace-setting-path {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  color: var(--text-secondary);
+  font-size: 0.85em;
+}
+
+#workspace-setting-card .workspace-setting-path[hidden] {
+  display: none;
+}
+
+.workspace-setting-path code {
+  overflow-wrap: anywhere;
+  unicode-bidi: plaintext;
+}
+
+.workspace-setting-network-note {
+  opacity: 0.8;
+}
+
+.workspace-setting-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--action-row-gap);
+}
+
+/* Restores [hidden] over .cleanup-button-container .btn's display:block (styles-themes.css).
+   The ID selector's specificity already beats every competing class-level display rule, so no
+   high-importance flag is needed. */
+#workspace-setting-card button[hidden],
+#workspace-setting-card p[hidden] {
+  display: none;
+}
+
+.workspace-setting-progress {
+  margin-top: 8px;
+}
+
+/* The Local Recovery Copy has stopped updating while the Workspace itself is healthy. Deliberately
+   --warning-color and not --danger-color: saving still works and the user's work is not at risk, so
+   this must read as "your safety net is degraded", not "something failed". Without a visual change
+   the warning swaps in at the same weight as the ordinary description and is easy to miss entirely,
+   which is the invisibility this warning exists to fix. */
+#workspace-setting-card .workspace-recovery-degraded {
+  color: var(--warning-color);
+  font-weight: 500;
+}
+
+/* Save reminder modal dropdown styling */
+.save-reminder-modal-row {
+  margin-top: 12px;
+  padding: 12px;
+  background: color-mix(in srgb, var(--bg-secondary) 50%, transparent);
+  border-radius: var(--radius-md, 6px);
+  border: 1px solid var(--border-color);
+  position: relative;
+  z-index: 1;
+}
+
+.save-reminder-modal-row label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.save-reminder-modal-select {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  position: relative;
+  z-index: 2;
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+#modal-message select,
+#modal-message .save-reminder-modal-select {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+/* .setting-select-sm's 130px clamp RETIRED (owner directive): the class remains in markup but
+   small selects now share the uniform full-width behavior of .setting-select. */
+
+#joe-voice-setting-card .joe-voice-select-row {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+#joe-voice-select {
+  width: 180px;
+  min-width: 180px;
+  max-width: 180px;
+}
+
+.joe-voice-sample-btn {
+  width: var(--icon-btn-size);
+  height: var(--icon-btn-size);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid var(--border-color);
+  border-radius: var(--icon-btn-radius);
+  background: var(--bg-input);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-speed) var(--transition-timing);
+}
+
+.joe-voice-sample-btn:hover,
+.joe-voice-sample-btn:focus-visible,
+.joe-voice-sample-btn.is-playing {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+  background: color-mix(in srgb, var(--accent-color) 12%, var(--bg-input));
+  outline: none;
+}
+
+.joe-voice-sample-btn:disabled {
+  opacity: var(--disabled-opacity-field);
+  cursor: wait;
+}
+
+.joe-voice-sample-btn i {
+  font-size: var(--icon-glyph);
+  line-height: 1;
+}
+
+/* Selected Tags / Available Tags / Find Tags now flex-fill their row like every other settings
+   control (Play Mode, Target Node, Tag Filter, Play Speed) — see .audio-player-selected-tags,
+   .audio-player-tag-results, #header-audio-player-tag-search below, which own this sizing
+   directly. This card-scoped override is retired now that nothing needs a narrower width. */
+
+/* Select element styling - Match theme dropdown exactly */
+.setting-select {
+  flex: 1 1 auto;
+  width: 100%;
+  max-width: 100%; /* settings dropdowns are UNIFORM and always reach the row's right edge (owner directive) — the old 320px cap left them stopping short when the tab rail is collapsed */
+  padding: 0 12px;
+  font-family: inherit;
+  font-size: calc(14px * var(--font-scale));
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  border: 1px solid var(--border-color);
+  border-radius: var(--dropdown-radius);
+  background-color: var(--dropdown-bg) !important;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all var(--transition-speed) var(--transition-timing);
+  box-sizing: border-box;
+  min-width: 0; /* let it shrink instead of overflowing when the tab rail is expanded */
+  text-align: left;
+  white-space: nowrap;
+  overflow: visible;
+  /* Changed from hidden to visible */
+  text-overflow: clip;
+  /* Changed from ellipsis to clip */
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: var(--dropdown-chevron);
+  background-repeat: no-repeat;
+  background-position: right var(--dropdown-chevron-inset) center;
+  background-size: 12px;
+  padding-right: 32px;
+  height: var(--dropdown-height);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  font-kerning: normal;
+}
+
+/* Per-dropdown fixed widths RETIRED (owner directive): every settings dropdown flex-fills its
+   row uniformly — see .setting-select. */
+
+.audio-player-tag-results {
+  flex: 1 1 auto;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  height: 124px;
+  max-height: 124px;
+  padding: 5px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm, 4px);
+  background-color: var(--bg-input);
+  box-sizing: border-box;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+#header-audio-player-tag-search {
+  flex: 1 1 auto;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  height: var(--text-input-height); /* app-wide input height — was a 38px one-off overriding .setting-input's token by ID specificity */
+  padding: 0 12px;
+  font-family: inherit;
+  font-size: calc(14px * var(--font-scale));
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm, 4px);
+  background-color: var(--bg-input);
+  color: var(--text-primary);
+  box-sizing: border-box;
+  outline: none;
+}
+
+#header-audio-player-tag-search::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.8;
+}
+
+#header-audio-player-tag-search:hover,
+#header-audio-player-tag-search:focus,
+#header-audio-player-tag-search:focus-visible {
+  border-color: var(--accent-color);
+}
+
+#header-audio-player-tag-search:disabled,
+.audio-player-tag-results.is-disabled {
+  opacity: var(--disabled-opacity-field);
+  cursor: default;
+}
+
+.audio-player-tag-result {
+  appearance: none;
+  border: 0;
+  border-radius: var(--icon-btn-radius, 4px);
+  background: transparent;
+  color: var(--text-primary);
+  width: 100%;
+  min-height: var(--control-height-sm);
+  padding: 4px 7px; /* full-width clickable result row — NOT a compact chip; candidate for a future menu-row-family call */
+  margin: 0;
+  font-family: inherit;
+  font-size: calc(13px * var(--font-scale));
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: left;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.audio-player-tag-result:hover,
+.audio-player-tag-result:focus-visible {
+  background: color-mix(in srgb, var(--accent-color) 24%, var(--bg-input));
+  color: var(--text-primary);
+  outline: none;
+}
+
+.audio-player-tag-results-empty {
+  color: var(--text-secondary);
+  font-size: calc(12px * var(--font-scale));
+  font-weight: 500;
+  line-height: 1.25;
+  padding: 4px 6px;
+}
+
+.audio-player-selected-tags {
+  flex: 1 1 auto;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 38px;
+  padding: 5px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm, 4px);
+  background-color: var(--bg-input);
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.audio-player-selected-tags.is-disabled {
+  opacity: 0.55;
+}
+
+.audio-player-selected-tags-empty {
+  color: var(--text-secondary);
+  font-size: var(--font-control);
+  font-weight: 500;
+  line-height: 1.25;
+  padding: 0 6px;
+}
+
+.audio-player-selected-tag-chip {
+  appearance: none;
+  border: 1px solid color-mix(in srgb, var(--accent-color) 58%, var(--border-color));
+  border-radius: var(--tag-chip-radius);
+  background: color-mix(in srgb, var(--accent-color) 18%, var(--bg-input));
+  color: var(--text-primary);
+  height: var(--tag-chip-height);
+  max-width: 100%;
+  padding: 0 calc(var(--tag-chip-pad-x) - 2px); /* the compact ×-side width, both sides — this chip always shows its remove glyph */
+  margin: 0;
+  font-family: inherit;
+  font-size: var(--tag-chip-font-size);
+  font-weight: 700;
+  line-height: 1.15;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.audio-player-selected-tag-chip:hover,
+.audio-player-selected-tag-chip:focus-visible {
+  border-color: var(--accent-color);
+  background: color-mix(in srgb, var(--accent-color) 28%, var(--bg-input));
+  outline: none;
+}
+
+.audio-player-selected-tag-chip span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.audio-player-selected-tag-chip i {
+  flex: 0 0 auto;
+  color: var(--accent-color);
+  font-size: var(--icon-glyph-sm);
+  line-height: 1;
+}
+
+.audio-player-selected-tags-clear {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: var(--accent-color);
+  margin: 0 0 0 auto;
+  padding: 2px 4px;
+  font: inherit;
+  font-size: calc(11px * var(--font-scale));
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.audio-player-selected-tags-clear:hover,
+.audio-player-selected-tags-clear:focus-visible {
+  color: var(--text-primary);
+  outline: none;
+}
+
+.audio-player-tag-chip-control,
+.audio-player-tag-search-control,
+.audio-player-tag-select-control {
+  align-items: flex-start;
+  overflow: visible;
+}
+
+.audio-player-tag-chip-control.is-disabled,
+.audio-player-tag-search-control.is-disabled,
+.audio-player-tag-select-control.is-disabled {
+  opacity: 0.58;
+}
+
+#save-prompt-policy-setting,
+#import-action-policy-setting,
+#import-preferences-policy-setting,
+#reload-close-warning-policy-setting {
+  width: 260px;
+  min-width: 260px;
+}
+
+#confetti-style-selector {
+  width: 100%;
+  min-width: 0;
+}
+
+.theme-default-control {
+  align-items: center;
+}
+
+.theme-default-control > label:first-child {
+  flex: 0 0 70px;
+  max-width: 70px;
+}
+
+/* Typography section - unified label widths for alignment */
+#theme-settings .setting-control > label:first-child {
+  flex: 0 0 110px;
+  max-width: 110px;
+  white-space: nowrap;
+}
+
+/* Effect pulldown - flex to fill remaining space (like Global Theme above) */
+.theme-default-select-container {
+  flex: 1 1 auto;
+  width: auto;
+  max-width: none;
+  min-width: 0;
+}
+
+.setting-control .custom-theme-select,
+.setting-control .custom-font-select {
+  flex: 1 1 auto;
+  width: auto;
+  max-width: none;
+  min-width: 0;
+}
+
+/* Typography pulldowns - flex to fill remaining space, all identical width */
+#theme-settings .setting-control .custom-font-select,
+#theme-settings .setting-control #font-size-setting,
+#theme-settings .setting-control #line-height-setting {
+  flex: 1 1 auto !important;
+  width: auto !important;
+  max-width: none !important;
+  min-width: 0 !important;
+}
+
+.setting-select:hover {
+  border-color: var(--accent-color);
+  background-color: var(--bg-input) !important;
+}
+
+.setting-select:focus,
+.setting-select:active,
+.setting-select:focus-visible {
+  outline: none;
+  border-color: var(--accent-color) !important;
+  background-color: var(--bg-input) !important;
+}
+
+.setting-select option {
+  background-color: var(--bg-input);
+  color: var(--text-primary);
+  padding: 6px 10px;
+  line-height: var(--notes-line-height);
+  font-weight: 500;
+  letter-spacing: 0.005em;
+}
+
+#font-family-setting,
+#font-size-setting {
+  text-rendering: optimizeLegibility;
+  font-kerning: normal;
+}
+
+#anti-nag-prefs-container .anti-nag-row {
+  margin-bottom: 0;
+  display: block;
+  overflow: visible;
+}
+
+#anti-nag-prefs-container .anti-nag-row>label {
+  display: block;
+  font-size: calc(15px * var(--font-scale));
+  line-height: var(--notes-line-height);
+  font-weight: 600;
+  white-space: normal;
+  overflow-wrap: normal;
+  word-break: normal;
+  margin: 0 0 8px 0;
+  min-width: 0;
+  padding-top: 0;
+}
+
+#anti-nag-prefs-container .anti-nag-row .setting-select {
+  width: 100%;
+  min-width: 0;
+  max-width: none;
+}
+
+#anti-nag-prefs-container .anti-nag-intro {
+  margin-top: 8px;
+  margin-bottom: 12px;
+}
+
+/* Override fixed anti-nag select widths so panel can flex without crushing labels. */
+#anti-nag-prefs-container #save-prompt-policy-setting,
+#anti-nag-prefs-container #import-action-policy-setting,
+#anti-nag-prefs-container #import-preferences-policy-setting,
+#anti-nag-prefs-container #reload-close-warning-policy-setting {
+  width: 100%;
+  min-width: 0;
+}
+
+@media (max-width: 900px) {
+  #anti-nag-prefs-container .anti-nag-row {
+    display: block;
+  }
+}
+
+/* Import prefixes section */
+.prefixes-list {
+  margin: 10px 0;
+  max-height: 200px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm, 4px);
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+.prefix-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 6px 8px;
+  margin-bottom: 4px;
+  background-color: var(--bg-tertiary);
+  border-radius: var(--radius-sm, 4px);
+  transition: background-color var(--transition-speed);
+}
+
+.prefix-item:last-child {
+  margin-bottom: 0;
+}
+
+.prefix-item:hover {
+  background-color: var(--hover-bg);
+}
+
+.prefix-item input[type="text"] {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-primary);
+  padding: 4px 8px;
+  border-radius: var(--radius-sm, 4px);
+  font-family: var(--app-font-family);
+  font-size: 13px;
+}
+
+.prefix-item input[type="text"]:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: var(--focus-ring);
+}
+
+.prefix-item .delete-prefix {
+  color: var(--text-primary);
+  background: none;
+  border: 1px solid var(--border-color);
+  border-radius: var(--icon-btn-radius);
+  width: var(--icon-btn-size-sm);
+  height: var(--icon-btn-size-sm);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  transition: all var(--transition-speed) ease;
+  font-size: var(--icon-glyph-sm);
+}
+
+.prefix-item .delete-prefix:hover {
+  color: var(--accent-color);
+  background-color: var(--hover-bg);
+  border-color: var(--accent-color);
+}
+
+.prefix-item .drag-handle {
+  cursor: move;
+  color: var(--text-secondary);
+  padding: 4px;
+  display: flex;
+  flex-direction: row;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  border-radius: var(--radius-sm, 4px);
+}
+
+.prefix-item .drag-handle:hover {
+  background-color: var(--hover-bg);
+  color: var(--text-primary);
+}
+
+/* Theme selector styles */
+.theme-select-container {
+  margin: 15px 0;
+  position: relative;
+  width: 100%;
+}
+
+.custom-select {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  /* Prevent flex items from overflowing */
+  display: flex;
+  flex-direction: column;
+}
+
+
+.select-button {
+  width: 100%;
+  height: var(--dropdown-height);
+  padding: 0 12px;
+  font-family: inherit;
+  font-size: 14px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--dropdown-radius);
+  background-color: var(--dropdown-bg);
+  color: var(--text-primary);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all var(--transition-speed) var(--transition-timing);
+  box-sizing: border-box;
+  min-width: 0;
+  /* Allow text truncation */
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.select-button:hover {
+  border-color: var(--accent-color);
+}
+
+.custom-font-select .select-button:focus,
+.custom-font-select .select-button[aria-expanded="true"],
+.custom-theme-select .select-button:focus,
+.custom-theme-select .select-button[aria-expanded="true"] {
+  outline: none;
+  border-color: var(--accent-color);
+  background: color-mix(in srgb, var(--accent-color) 10%, var(--bg-input));
+  box-shadow: var(--focus-ring);
+}
+
+.custom-font-select .select-button:focus .select-arrow,
+.custom-font-select .select-button[aria-expanded="true"] .select-arrow,
+.custom-theme-select .select-button:focus .select-arrow,
+.custom-theme-select .select-button[aria-expanded="true"] .select-arrow {
+  color: var(--accent-color);
+}
+
+.theme-reset-all-nodes-btn {
+  width: 100%;
+  min-height: var(--rect-btn-height);
+  margin: 4px 0 0 0;
+  padding: 7px 10px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--rect-btn-radius);
+  background: var(--bg-input);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font: inherit;
+  font-size: calc(13px * var(--font-scale));
+  text-align: center;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  box-sizing: border-box;
+}
+
+.theme-reset-all-nodes-btn i {
+  color: var(--accent-color);
+  font-size: var(--icon-glyph);
+  flex: 0 0 auto;
+}
+
+.theme-reset-all-nodes-btn:hover,
+.theme-reset-all-nodes-btn:focus-visible {
+  background: var(--hover-bg);
+  color: var(--accent-color);
+  border-color: var(--accent-color);
+  outline: none;
+}
+
+.select-arrow {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  margin-left: auto;
+  font-size: 0; /* the JS still sets a text glyph for legacy reasons; render the shared chevron instead */
+  color: var(--text-secondary);
+  background-color: currentColor;
+  -webkit-mask-image: var(--dropdown-chevron);
+  mask-image: var(--dropdown-chevron);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: 12px;
+  mask-size: 12px;
+  transition: transform var(--transition-speed) ease;
+}
+
+.select-options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 4px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm, 4px);
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: all var(--transition-speed) ease;
+  box-shadow: var(--elev-floating);
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
+  /* Prevent flex items from overflowing */
+  z-index: 25;
+}
+
+.select-options::-webkit-scrollbar {
+  width: 6px;
+}
+
+.select-options::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.select-options::-webkit-scrollbar-thumb {
+  background-color: var(--border-color);
+  border-radius: var(--icon-btn-radius, 4px);
+}
+
+.select-options.show {
+  opacity: 1;
+  max-height: min(200px, 70vh);
+  /* Use viewport height as a fallback */
+  overflow-y: auto;
+  display: block;
+}
+
+/* Set by flipDropdownIfClipped() (themeManager.js / settingsPanel.js) when the trigger sits near
+   the bottom of a clipped/scrolling ancestor and the panel would otherwise be cut off. */
+.select-options.flip-up {
+  top: auto;
+  bottom: 100%;
+  margin-top: 0;
+  margin-bottom: 4px;
+}
+
+.select-option {
+  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background-color var(--transition-speed) ease;
+  font-size: 0.9em;
+}
+
+.select-option:hover {
+  background-color: var(--hover-bg);
+  color: var(--text-primary);
+}
+
+.select-option.selected {
+  background-color: color-mix(in srgb, var(--accent-color) 24%, var(--bg-input));
+  color: var(--text-primary);
+  font-weight: 700;
+  box-shadow: inset 3px 0 0 var(--accent-color);
+}
+
+.select-option.selected:hover {
+  background-color: color-mix(in srgb, var(--accent-color) 32%, var(--bg-input));
+}
+
+/* Theme swatches in dropdown */
+.theme-swatch {
+  width: 16px;
+  height: 16px;
+  border-radius: var(--radius-full, 999px);
+  border: 1px solid var(--border-color);
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    var(--theme-swatch-bevel-shadow),
+    var(--theme-swatch-outer-shadow);
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.theme-swatch::after {
+  content: "";
+  position: absolute;
+  inset: 2px 7px 8px 3px;
+  border-radius: var(--radius-full, 999px);
+  background: var(--theme-swatch-gloss-shine);
+  filter: blur(0.2px);
+  pointer-events: none;
+}
+
+.select-option:hover .theme-swatch {
+  transform: scale(1.1);
+}
+
+/* Custom font picker — each option rendered in its own typeface */
+.custom-font-select .select-options.show {
+  max-height: min(260px, 70vh);
+}
+
+.font-option-name {
+  font-size: 15px;
+  line-height: 1.3;
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.font-select-label {
+  font-size: 14px;
+}
+
+.theme-default-option {
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-secondary);
+}
+
+/* Theme-swatch preview tiles. The 3-layer gradient recipe (accent glow, neutral sheen, base
+   ramp) is shared — each [data-theme] block below supplies only its palette as tokens (a
+   swatch previews a theme that is NOT live, so it cannot read the live theme's tokens).
+   --theme-swatch-base defaults to the 3-stop linear ramp; the flat-background themes override
+   it with a single color, and retro-space-invaders-claude overrides the whole recipe with a
+   4-layer variant. */
+.theme-swatch[data-theme] {
+  --theme-swatch-accent-end: 58%;
+  --theme-swatch-base: linear-gradient(145deg, var(--theme-swatch-bg-1) 0%, var(--theme-swatch-bg-2) 58%, var(--theme-swatch-bg-3) 100%);
+  --theme-swatch-recipe:
+    radial-gradient(circle at 28% 30%, rgb(var(--theme-swatch-accent) / var(--theme-swatch-accent-alpha)) 0%, rgb(var(--theme-swatch-accent) / 0) var(--theme-swatch-accent-end)),
+    radial-gradient(circle at 75% 68%, rgb(var(--theme-swatch-sheen) / var(--theme-swatch-sheen-alpha)) 0%, rgb(var(--theme-swatch-sheen) / 0) 54%),
+    var(--theme-swatch-base);
+  background: var(--theme-swatch-recipe);
+}
+
+.theme-swatch[data-theme="dark-1"] {
+  --theme-swatch-accent: 255 149 0;
+  --theme-swatch-accent-alpha: 0.82;
+  --theme-swatch-sheen: 153 153 153;
+  --theme-swatch-sheen-alpha: 0.45;
+  --theme-swatch-bg-1: #1a1a1a;
+  --theme-swatch-bg-2: #2a2a2a;
+  --theme-swatch-bg-3: #333333;
+}
+
+.theme-swatch[data-theme="light-1"] {
+  --theme-swatch-accent: 90 103 216;
+  --theme-swatch-accent-alpha: 0.62;
+  --theme-swatch-sheen: 113 128 150;
+  --theme-swatch-sheen-alpha: 0.42;
+  --theme-swatch-bg-1: #f7f9fc;
+  --theme-swatch-bg-2: #edf2f7;
+  --theme-swatch-bg-3: #e2e8f0;
+}
+
+.theme-swatch[data-theme="coffee-mint-mocha"] {
+  --theme-swatch-accent: 150 188 163;
+  --theme-swatch-accent-alpha: 0.82;
+  --theme-swatch-sheen: 184 174 164;
+  --theme-swatch-sheen-alpha: 0.58;
+  --theme-swatch-bg-1: #2c2420;
+  --theme-swatch-bg-2: #3a302a;
+  --theme-swatch-bg-3: #4a3f38;
+}
+
+.theme-swatch[data-theme="coffee-velvet-espresso"] {
+  --theme-swatch-accent: 141 181 166;
+  --theme-swatch-accent-alpha: 0.82;
+  --theme-swatch-sheen: 200 184 168;
+  --theme-swatch-sheen-alpha: 0.58;
+  --theme-swatch-bg-1: #1a1614;
+  --theme-swatch-bg-2: #2a211f;
+  --theme-swatch-bg-3: #3a2f2c;
+}
+
+.theme-swatch[data-theme="retro-8bit-gpt"] {
+  --theme-swatch-accent: 87 255 174;
+  --theme-swatch-accent-alpha: 0.88;
+  --theme-swatch-sheen: 138 199 154;
+  --theme-swatch-sheen-alpha: 0.58;
+  --theme-swatch-bg-1: #060b0b;
+  --theme-swatch-bg-2: #0b1212;
+  --theme-swatch-bg-3: #111b1b;
+}
+
+.theme-retro-8bit-gpt .topbar h1,
+.theme-retro-8bit-gpt #selected-node-name,
+.theme-retro-8bit-gpt .node-name-input {
+  font-family: "Press Start 2P", "VT323", monospace;
+  letter-spacing: 0.04em;
+}
+
+.theme-retro-8bit-gpt .setting-description,
+.theme-retro-8bit-gpt .image-notes,
+.theme-retro-8bit-gpt .node-text,
+.theme-retro-8bit-gpt .image-notes-content {
+  font-family: "VT323", "Courier Prime", monospace;
+  letter-spacing: 0.01em;
+}
+
+.theme-swatch[data-theme="coffee-nightcap-cortado"] {
+  --theme-swatch-accent: 183 157 125;
+  --theme-swatch-accent-alpha: 0.82;
+  --theme-swatch-sheen: 70 58 51;
+  --theme-swatch-sheen-alpha: 0.72;
+  --theme-swatch-bg-1: #1f1815;
+  --theme-swatch-bg-2: #322924;
+  --theme-swatch-bg-3: #463a33;
+}
+
+.theme-swatch[data-theme="coffee-caramel-macchiato"] {
+  --theme-swatch-accent: 212 147 90;
+  --theme-swatch-accent-alpha: 0.86;
+  --theme-swatch-sheen: 196 168 130;
+  --theme-swatch-sheen-alpha: 0.58;
+  --theme-swatch-bg-1: #1c1410;
+  --theme-swatch-bg-2: #2b1f19;
+  --theme-swatch-bg-3: #3c2d25;
+}
+
+.theme-swatch[data-theme="nord-1"] {
+  --theme-swatch-accent: 136 192 208;
+  --theme-swatch-accent-alpha: 0.74;
+  --theme-swatch-sheen: 216 222 233;
+  --theme-swatch-sheen-alpha: 0.42;
+  --theme-swatch-bg-1: #2e3440;
+  --theme-swatch-bg-2: #3b4252;
+  --theme-swatch-bg-3: #434c5e;
+}
+
+.theme-swatch[data-theme="ghibli-1"] {
+  --theme-swatch-accent: 122 163 171;
+  --theme-swatch-accent-alpha: 0.68;
+  --theme-swatch-sheen: 122 135 128;
+  --theme-swatch-sheen-alpha: 0.42;
+  --theme-swatch-bg-1: #f8f6f2;
+  --theme-swatch-bg-2: #efeae0;
+  --theme-swatch-bg-3: #e5dfd2;
+}
+
+.theme-swatch[data-theme="fern-1"] {
+  --theme-swatch-accent: 222 187 121;
+  --theme-swatch-accent-alpha: 0.82;
+  --theme-swatch-sheen: 216 222 233;
+  --theme-swatch-sheen-alpha: 0.38;
+  --theme-swatch-bg-1: #2e403d;
+  --theme-swatch-bg-2: #3b5250;
+  --theme-swatch-bg-3: #435d5e;
+}
+
+.theme-swatch[data-theme="night-1"] {
+  --theme-swatch-accent: 74 144 226;
+  --theme-swatch-accent-alpha: 0.72;
+  --theme-swatch-sheen: 161 181 208;
+  --theme-swatch-sheen-alpha: 0.42;
+  --theme-swatch-bg-1: #0a0f23;
+  --theme-swatch-bg-2: #1a213a;
+  --theme-swatch-bg-3: #2a3350;
+}
+
+.theme-swatch[data-theme="dark-2"] {
+  --theme-swatch-accent: 139 92 246;
+  --theme-swatch-accent-alpha: 0.76;
+  --theme-swatch-sheen: 176 176 176;
+  --theme-swatch-sheen-alpha: 0.42;
+  --theme-swatch-bg-1: #0f0f0f;
+  --theme-swatch-bg-2: #1a1a1a;
+  --theme-swatch-bg-3: #252525;
+}
+
+.theme-swatch[data-theme="light-2"] {
+  --theme-swatch-accent: 100 116 139;
+  --theme-swatch-accent-alpha: 0.58;
+  --theme-swatch-sheen: 148 163 184;
+  --theme-swatch-sheen-alpha: 0.42;
+  --theme-swatch-bg-1: #fafbfc;
+  --theme-swatch-bg-2: #f5f7f9;
+  --theme-swatch-bg-3: #eef2f5;
+}
+
+.theme-swatch[data-theme="nord-2"] {
+  --theme-swatch-accent: 143 188 187;
+  --theme-swatch-accent-alpha: 0.76;
+  --theme-swatch-sheen: 216 222 233;
+  --theme-swatch-sheen-alpha: 0.36;
+  --theme-swatch-bg-1: #242933;
+  --theme-swatch-bg-2: #2e3440;
+  --theme-swatch-bg-3: #3b4252;
+}
+
+.theme-swatch[data-theme="ghibli-2"] {
+  --theme-swatch-accent: 122 154 143;
+  --theme-swatch-accent-alpha: 0.64;
+  --theme-swatch-sheen: 107 117 112;
+  --theme-swatch-sheen-alpha: 0.38;
+  --theme-swatch-bg-1: #f5f3f0;
+  --theme-swatch-bg-2: #ede7e0;
+  --theme-swatch-bg-3: #e4dccf;
+}
+
+.theme-swatch[data-theme="fern-2"] {
+  --theme-swatch-accent: 74 222 128;
+  --theme-swatch-accent-alpha: 0.78;
+  --theme-swatch-sheen: 200 224 213;
+  --theme-swatch-sheen-alpha: 0.34;
+  --theme-swatch-bg-1: #1a2f2a;
+  --theme-swatch-bg-2: #243b35;
+  --theme-swatch-bg-3: #2f4741;
+}
+
+.theme-swatch[data-theme="night-2"] {
+  --theme-swatch-accent: 99 102 241;
+  --theme-swatch-accent-alpha: 0.78;
+  --theme-swatch-sheen: 168 185 213;
+  --theme-swatch-sheen-alpha: 0.36;
+  --theme-swatch-bg-1: #050a1a;
+  --theme-swatch-bg-2: #0f1629;
+  --theme-swatch-bg-3: #1a2341;
+}
+
+.theme-swatch[data-theme="aurora-2"] {
+  --theme-swatch-accent: 6 182 212;
+  --theme-swatch-accent-alpha: 0.82;
+  --theme-swatch-sheen: 186 230 253;
+  --theme-swatch-sheen-alpha: 0.36;
+  --theme-swatch-bg-1: #0a1929;
+  --theme-swatch-bg-2: #132f4c;
+  --theme-swatch-bg-3: #1e3a5f;
+}
+
+.theme-swatch[data-theme="nord-3"] {
+  --theme-swatch-accent: 142 197 212;
+  --theme-swatch-accent-alpha: 0.78;
+  --theme-swatch-sheen: 198 209 222;
+  --theme-swatch-sheen-alpha: 0.36;
+  --theme-swatch-bg-1: #1f2631;
+  --theme-swatch-bg-2: #2b3442;
+  --theme-swatch-bg-3: #3f4d64;
+}
+
+.theme-swatch[data-theme="ghibli-3"] {
+  --theme-swatch-accent: 111 153 134;
+  --theme-swatch-accent-alpha: 0.66;
+  --theme-swatch-sheen: 106 122 114;
+  --theme-swatch-sheen-alpha: 0.38;
+  --theme-swatch-bg-1: #f3efe8;
+  --theme-swatch-bg-2: #e9e1d3;
+  --theme-swatch-bg-3: #dce8df;
+}
+
+.theme-swatch[data-theme="fern-3"] {
+  --theme-swatch-accent: 214 185 117;
+  --theme-swatch-accent-alpha: 0.82;
+  --theme-swatch-sheen: 193 216 205;
+  --theme-swatch-sheen-alpha: 0.34;
+  --theme-swatch-bg-1: #1f312c;
+  --theme-swatch-bg-2: #2d453e;
+  --theme-swatch-bg-3: #3a574e;
+}
+
+.theme-swatch[data-theme="dark-3"] {
+  --theme-swatch-accent: 114 176 255;
+  --theme-swatch-accent-alpha: 0.78;
+  --theme-swatch-sheen: 174 184 196;
+  --theme-swatch-sheen-alpha: 0.38;
+  --theme-swatch-bg-1: #111418;
+  --theme-swatch-bg-2: #1b2026;
+  --theme-swatch-bg-3: #252d36;
+}
+
+.theme-swatch[data-theme="light-3"] {
+  --theme-swatch-accent: 79 125 207;
+  --theme-swatch-accent-alpha: 0.68;
+  --theme-swatch-sheen: 95 114 144;
+  --theme-swatch-sheen-alpha: 0.38;
+  --theme-swatch-bg-1: #f4f7fb;
+  --theme-swatch-bg-2: #e9eef5;
+  --theme-swatch-bg-3: #dde6f1;
+}
+
+.theme-swatch[data-theme="night-3"] {
+  --theme-swatch-accent: 154 140 255;
+  --theme-swatch-accent-alpha: 0.8;
+  --theme-swatch-sheen: 175 192 223;
+  --theme-swatch-sheen-alpha: 0.36;
+  --theme-swatch-bg-1: #070d1f;
+  --theme-swatch-bg-2: #111a33;
+  --theme-swatch-bg-3: #1b2748;
+}
+
+.theme-swatch[data-theme="aurora-3"] {
+  --theme-swatch-accent: 53 216 181;
+  --theme-swatch-accent-alpha: 0.82;
+  --theme-swatch-sheen: 179 219 239;
+  --theme-swatch-sheen-alpha: 0.34;
+  --theme-swatch-bg-1: #071826;
+  --theme-swatch-bg-2: #0f2940;
+  --theme-swatch-bg-3: #183b5c;
+}
+
+.theme-swatch[data-theme="ember-3"] {
+  --theme-swatch-accent: 255 148 99;
+  --theme-swatch-accent-alpha: 0.84;
+  --theme-swatch-sheen: 200 168 154;
+  --theme-swatch-sheen-alpha: 0.38;
+  --theme-swatch-bg-1: #201412;
+  --theme-swatch-bg-2: #2f1d1a;
+  --theme-swatch-bg-3: #412722;
+}
+
+.theme-swatch[data-theme="dark-4"] {
+  --theme-swatch-accent: 192 132 252;
+  --theme-swatch-accent-alpha: 0.82;
+  --theme-swatch-sheen: 160 160 184;
+  --theme-swatch-sheen-alpha: 0.36;
+  --theme-swatch-bg-1: #0c0c0e;
+  --theme-swatch-bg-2: #141418;
+  --theme-swatch-bg-3: #1e1e26;
+}
+
+.theme-swatch[data-theme="nord-4"] {
+  --theme-swatch-accent: 126 207 220;
+  --theme-swatch-accent-alpha: 0.82;
+  --theme-swatch-sheen: 200 212 232;
+  --theme-swatch-sheen-alpha: 0.34;
+  --theme-swatch-bg-1: #1e2430;
+  --theme-swatch-bg-2: #272e3e;
+  --theme-swatch-bg-3: #313b50;
+}
+
+.theme-swatch[data-theme="ghibli-4"] {
+  --theme-swatch-accent: 94 140 110;
+  --theme-swatch-accent-alpha: 0.68;
+  --theme-swatch-sheen: 105 120 96;
+  --theme-swatch-sheen-alpha: 0.38;
+  --theme-swatch-bg-1: #f2ede4;
+  --theme-swatch-bg-2: #e8e0d0;
+  --theme-swatch-bg-3: #dad0bc;
+}
+
+.theme-swatch[data-theme="fern-4"] {
+  --theme-swatch-accent: 201 152 74;
+  --theme-swatch-accent-alpha: 0.82;
+  --theme-swatch-sheen: 184 208 192;
+  --theme-swatch-sheen-alpha: 0.32;
+  --theme-swatch-bg-1: #182420;
+  --theme-swatch-bg-2: #22332e;
+  --theme-swatch-bg-3: #2d4038;
+}
+
+.theme-swatch[data-theme="light-4"] {
+  --theme-swatch-accent: 224 92 122;
+  --theme-swatch-accent-alpha: 0.68;
+  --theme-swatch-sheen: 107 116 144;
+  --theme-swatch-sheen-alpha: 0.34;
+  --theme-swatch-bg-1: #ffffff;
+  --theme-swatch-bg-2: #f5f7fa;
+  --theme-swatch-bg-3: #ebeef4;
+}
+
+.theme-swatch[data-theme="night-4"] {
+  --theme-swatch-accent: 123 143 255;
+  --theme-swatch-accent-alpha: 0.82;
+  --theme-swatch-sheen: 143 168 208;
+  --theme-swatch-sheen-alpha: 0.34;
+  --theme-swatch-bg-1: #06091a;
+  --theme-swatch-bg-2: #0e1530;
+  --theme-swatch-bg-3: #172044;
+}
+
+.theme-swatch[data-theme="aurora-4"] {
+  --theme-swatch-accent: 46 232 192;
+  --theme-swatch-accent-alpha: 0.84;
+  --theme-swatch-sheen: 144 208 232;
+  --theme-swatch-sheen-alpha: 0.34;
+  --theme-swatch-bg-1: #071520;
+  --theme-swatch-bg-2: #0d2438;
+  --theme-swatch-bg-3: #163550;
+}
+
+.theme-swatch[data-theme="ember-4"] {
+  --theme-swatch-accent: 240 123 56;
+  --theme-swatch-accent-alpha: 0.86;
+  --theme-swatch-sheen: 212 168 122;
+  --theme-swatch-sheen-alpha: 0.42;
+  --theme-swatch-bg-1: #1a1008;
+  --theme-swatch-bg-2: #281a0e;
+  --theme-swatch-bg-3: #3a2416;
+}
+
+.theme-swatch[data-theme="dusk-4"] {
+  --theme-swatch-accent: 232 143 192;
+  --theme-swatch-accent-alpha: 0.82;
+  --theme-swatch-sheen: 176 160 200;
+  --theme-swatch-sheen-alpha: 0.36;
+  --theme-swatch-bg-1: #1e1824;
+  --theme-swatch-bg-2: #2a2232;
+  --theme-swatch-bg-3: #362c42;
+}
+
+.theme-swatch[data-theme="slate-4"] {
+  --theme-swatch-accent: 74 158 124;
+  --theme-swatch-accent-alpha: 0.72;
+  --theme-swatch-sheen: 100 112 104;
+  --theme-swatch-sheen-alpha: 0.34;
+  --theme-swatch-bg-1: #f8f9f8;
+  --theme-swatch-bg-2: #eef0ee;
+  --theme-swatch-bg-3: #e2e6e2;
+}
+
+.theme-swatch[data-theme="retro-space-invaders-claude"] {
+  --theme-swatch-accent: 0 229 255;
+  --theme-swatch-accent-alpha: 0.9;
+  --theme-swatch-accent-end: 56%;
+  --theme-swatch-sheen: 106 170 200;
+  --theme-swatch-sheen-alpha: 0.42;
+  --theme-swatch-glow: 255 0 204;
+  --theme-swatch-glow-alpha: 0.48;
+  --theme-swatch-bg-1: #040912;
+  --theme-swatch-bg-2: #080f24;
+  --theme-swatch-bg-3: #0d1836;
+  --theme-swatch-recipe:
+    radial-gradient(circle at 28% 30%, rgb(var(--theme-swatch-accent) / var(--theme-swatch-accent-alpha)) 0%, rgb(var(--theme-swatch-accent) / 0) var(--theme-swatch-accent-end)),
+    radial-gradient(circle at 75% 68%, rgb(var(--theme-swatch-sheen) / var(--theme-swatch-sheen-alpha)) 0%, rgb(var(--theme-swatch-sheen) / 0) 54%),
+    radial-gradient(circle at 56% 44%, rgb(var(--theme-swatch-glow) / var(--theme-swatch-glow-alpha)) 0%, rgb(var(--theme-swatch-glow) / 0) 46%),
+    var(--theme-swatch-base);
+}
+
+/* Space Invaders -Claude theme: pixel-art font overrides */
+.theme-retro-space-invaders-claude .topbar h1,
+.theme-retro-space-invaders-claude #selected-node-name,
+.theme-retro-space-invaders-claude .node-name-input {
+  font-family: "Press Start 2P", "VT323", monospace;
+  letter-spacing: 0.04em;
+}
+
+.theme-retro-space-invaders-claude .setting-description,
+.theme-retro-space-invaders-claude .image-notes,
+.theme-retro-space-invaders-claude .node-text,
+.theme-retro-space-invaders-claude .image-notes-content {
+  font-family: "VT323", "Courier Prime", monospace;
+  font-size: 1.12em;
+  letter-spacing: 0.02em;
+}
+
+/* Arcade glow effect on accent-colored borders/focus */
+.theme-retro-space-invaders-claude :focus-visible,
+.theme-retro-space-invaders-claude button:focus-visible {
+  outline-color: var(--accent-color);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-color) 35%, transparent), 0 0 8px color-mix(in srgb, var(--accent-color) 25%, transparent);
+}
+
+/* CRT scanline topbar feel */
+.theme-retro-space-invaders-claude .topbar {
+  border-bottom: 1px solid var(--border-focus);
+  box-shadow: 0 2px 16px color-mix(in srgb, var(--accent-color) 15%, transparent);
+}
+
+/* Neon selection glow */
+.theme-retro-space-invaders-claude #tree li.selected>.node-content {
+  background: var(--selection-bg);
+  box-shadow: inset 0 0 0 1px var(--accent-color), 0 0 8px color-mix(in srgb, var(--accent-color) 20%, transparent);
+}
+
+/* Magenta shield accent on active/primary buttons */
+.theme-retro-space-invaders-claude .btn-primary,
+.theme-retro-space-invaders-claude .add-root-btn {
+  background: var(--accent-color);
+  color: var(--bg-primary);
+  border-color: var(--accent-color);
+  font-family: "Press Start 2P", monospace;
+  font-size: 0.65em;
+  letter-spacing: 0.06em;
+  text-shadow: none;
+  box-shadow: 0 0 8px color-mix(in srgb, var(--accent-color) 40%, transparent);
+}
+
+.theme-retro-space-invaders-claude .btn-primary:hover,
+.theme-retro-space-invaders-claude .add-root-btn:hover {
+  background: var(--retro-space-invaders-btn-hover);
+  box-shadow: 0 0 14px color-mix(in srgb, var(--accent-color) 60%, transparent);
+}
+
+/* Accessibility / high-contrast theme swatches */
+.theme-swatch[data-theme="high-contrast-dark"] {
+  --theme-swatch-accent: 255 214 10;
+  --theme-swatch-accent-alpha: 0.95;
+  --theme-swatch-accent-end: 56%;
+  --theme-swatch-sheen: 255 255 255;
+  --theme-swatch-sheen-alpha: 0.55;
+  --theme-swatch-base: #000000;
+}
+
+.theme-swatch[data-theme="high-contrast-light"] {
+  --theme-swatch-accent: 55 48 163;
+  --theme-swatch-accent-alpha: 0.95;
+  --theme-swatch-accent-end: 56%;
+  --theme-swatch-sheen: 26 29 46;
+  --theme-swatch-sheen-alpha: 0.55;
+  --theme-swatch-bg-1: #ffffff;
+  --theme-swatch-bg-2: #eef1fb;
+  --theme-swatch-bg-3: #dde3f5;
+}
+
+.theme-swatch[data-theme="high-contrast-yellow"] {
+  --theme-swatch-accent: 255 255 0;
+  --theme-swatch-accent-alpha: 1;
+  --theme-swatch-sheen: 255 225 77;
+  --theme-swatch-sheen-alpha: 0.6;
+  --theme-swatch-base: #000000;
+}
+
+.theme-swatch[data-theme="modern-ember"] {
+  --theme-swatch-accent: 255 149 0;
+  --theme-swatch-accent-alpha: 0.85;
+  --theme-swatch-sheen: 138 138 147;
+  --theme-swatch-sheen-alpha: 0.4;
+  --theme-swatch-bg-1: #121214;
+  --theme-swatch-bg-2: #191a1d;
+  --theme-swatch-bg-3: #212226;
+}
+
+.theme-swatch[data-theme="modern-paper"] {
+  --theme-swatch-accent: 162 83 4;
+  --theme-swatch-accent-alpha: 0.65;
+  --theme-swatch-sheen: 110 107 102;
+  --theme-swatch-sheen-alpha: 0.35;
+  --theme-swatch-bg-1: #ffffff;
+  --theme-swatch-bg-2: #f5f3f0;
+  --theme-swatch-bg-3: #edeae5;
+}
+
+/* ── Theme card scope callout (Theme-Owned Appearance) ─────────────────────── */
+.theme-card-scope-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary, #e0e0e0);
+}
+.theme-card-scope-meta {
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 12px;
+  color: var(--text-secondary, #999);
+}
+.theme-card-scope-meta .theme-card-scope-value {
+  color: var(--text-primary, #e0e0e0);
+  font-weight: 500;
+}
+#node-theme-notice-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+  align-items: center;
+}
+.theme-card-action-chip {
+  padding: 5px 12px;
+  font-size: 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color, #555);
+  background: var(--bg-tertiary, #333);
+  color: var(--text-primary, #e0e0e0);
+  cursor: pointer;
+}
+.theme-card-action-chip:hover {
+  background: var(--hover-bg, #3a3a3a);
+}
+
+/* ── Node theme card: eyebrow + dominant picker + quiet global strip ──────── */
+.theme-card-node-eyebrow-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 2px;
+}
+.theme-card-node-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent-color);
+}
+.theme-card-revert-link {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary, #999);
+  background: none;
+  border: none;
+  padding: 2px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.theme-card-revert-link i {
+  font-size: 11px;
+  opacity: 0.85;
+}
+.theme-card-revert-link:hover,
+.theme-card-revert-link:focus-visible {
+  color: var(--accent-color);
+  outline: none;
+}
+.theme-card-node-name {
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--text-primary, #e0e0e0);
+  margin: 2px 0 10px;
+  word-break: break-word;
+}
+.theme-card-inherited-note {
+  font-size: 12px;
+  color: var(--text-secondary, #999);
+  margin: -8px 0 10px;
+}
+.theme-card-node-picker-wrap.is-inherited .select-button {
+  border-style: dashed;
+}
+.theme-card-node-usage {
+  font-size: 11.5px;
+  color: var(--text-secondary, #999);
+  margin-top: 6px;
+}
+
+.theme-card-divider-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 16px 0 10px;
+}
+.theme-card-divider-row::before,
+.theme-card-divider-row::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border-color, #555);
+  opacity: 0.6;
+}
+.theme-card-divider-word {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary, #999);
+  flex-shrink: 0;
+}
+
+.theme-card-global-area {
+  position: relative;
+}
+.theme-card-global-strip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: var(--rect-btn-radius, 8px);
+  background: var(--bg-tertiary, #333);
+  border: 1px solid var(--border-color, #555);
+}
+.theme-card-global-strip-swatch {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+.theme-card-global-strip-body {
+  flex: 1;
+  min-width: 0;
+}
+.theme-card-global-strip-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-secondary, #999);
+}
+.theme-card-global-strip-value {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary, #e0e0e0);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.theme-card-global-strip-change {
+  flex-shrink: 0;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent-color);
+  background: none;
+  border: none;
+  padding: 4px 2px;
+  cursor: pointer;
+}
+.theme-card-global-strip-change:hover,
+.theme-card-global-strip-change:focus-visible {
+  text-decoration: underline;
+  outline: none;
+}
+/* The rich picker stays mounted so its own open/close + keyboard-nav logic
+   keeps working untouched; only its trigger button is visually collapsed to
+   zero height — "Change" (theme-card-global-strip-change) forwards a click to
+   it, and its options panel still anchors from this same position. */
+.theme-card-global-popover-select.custom-theme-select {
+  position: relative;
+  margin-top: 4px;
+}
+.theme-card-global-popover-select .select-button {
+  height: 0;
+  min-height: 0;
+  padding: 0;
+  border: none;
+  overflow: hidden;
+  opacity: 0;
+}
+
+}

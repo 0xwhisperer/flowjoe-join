@@ -1,0 +1,302 @@
+@layer app {
+#generate-panel {
+  display: none;
+  flex-direction: column;
+  gap: var(--modal-row-gap); /* .ai-generate-mode-heading -> .ai-generate-grid: was deliberately 0 (flush), now matches the same row-gap the sibling Chat/Transcribe mode headers use, for one consistent rhythm across all 4 AI Assistant modes */
+  flex: 0 1 auto;
+  min-height: 0;
+}
+
+#ai-spell-check-panel[data-mode="generate-images"] #generate-panel {
+  display: flex !important;
+}
+
+.ai-generate-prompt,
+.ai-generate-description {
+  margin: 20px 4px 4px 0px;
+  color: var(--text-secondary);
+  font-size: 0.88em;
+}
+
+.ai-generate-mode-heading {
+  max-height: var(--modal-section-header-height);
+}
+
+.ai-generate-mode-label {
+  flex: 0 0 auto;
+}
+
+#ai-generate-options-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ai-generate-grid {
+  display: flex;
+  gap: 12px;
+  flex: 0 0 auto;
+  height: var(--ai-generate-card-height, auto);
+  max-height: none;
+  min-height: 0;
+  align-items: stretch;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.ai-generate-controls,
+.ai-generate-preview-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  min-width: 0;
+  height: var(--ai-generate-card-height, auto);
+  min-height: 0;
+  box-sizing: border-box;
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--bg-secondary) var(--modal-glass-ai-container-secondary-mix), transparent),
+      color-mix(in srgb, var(--bg-primary) var(--modal-glass-ai-container-primary-mix), transparent)
+    );
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-2xl, 12px);
+  padding: 8px;
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--text-primary) 5%, transparent);
+}
+
+.ai-generate-controls {
+  gap: var(--modal-row-gap);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.ai-generate-controls-header {
+  margin-bottom: -2px;
+}
+
+.ai-generate-preview-panel {
+  overflow: visible;
+  gap: var(--modal-row-gap-loose);
+}
+
+.ai-generate-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--modal-row-gap);
+  padding: 8px;
+  background: color-mix(in srgb, var(--bg-secondary) var(--modal-glass-ai-card-mix), transparent);
+  border: 1px solid color-mix(in srgb, var(--border-color) 82%, transparent);
+  border-radius: var(--radius-xl, 10px);
+  min-width: 0;
+}
+
+.ai-generate-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: -2px;
+}
+
+.ai-generate-section-header .ai-spell-check-label {
+  margin: 8px 0 0 6px;
+}
+
+.ai-generate-prompt-card {
+  flex: 1 1 240px;
+  min-height: var(--ai-generate-prompt-card-min-height, 240px);
+  position: relative;
+}
+
+#ai-spell-check-panel:not([data-fullscreen="true"]) .ai-generate-prompt-card {
+  flex: 0 0 var(--ai-generate-prompt-card-min-height, 240px);
+  min-height: var(--ai-generate-prompt-card-min-height, 240px);
+  max-height: none;
+}
+
+#ai-generate-prompt {
+  width: 100%;
+  height: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
+  background: color-mix(in srgb, var(--bg-secondary) var(--modal-glass-ai-field-secondary-mix), transparent);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl, 10px);
+  padding: 10px 50px 66px 12px;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.98em;
+  line-height: 1.5;
+  resize: none;
+  box-sizing: border-box;
+  box-shadow: inset 0 1px 1px color-mix(in srgb, var(--shadow-heavy) 36%, transparent);
+  margin: 0;
+}
+
+body.glass-effects-disabled #ai-spell-check-preview,
+body.glass-effects-disabled #ai-spell-check-result,
+body.glass-effects-disabled #ai-chat-messages,
+body.glass-effects-disabled #ai-chat-input,
+body.glass-effects-disabled #ai-generate-prompt {
+  background: var(--bg-primary);
+}
+
+body.glass-effects-disabled .ai-generate-controls,
+body.glass-effects-disabled .ai-generate-preview-panel,
+body.glass-effects-disabled .ai-generate-card,
+body.glass-effects-disabled .ai-generate-reference-thumb-wrap,
+body.glass-effects-disabled .ai-generate-reference-select,
+body.glass-effects-disabled .ai-generate-prompt-history-chip,
+body.glass-effects-disabled .ai-generate-prompt-spell-check-btn,
+body.glass-effects-disabled .ai-generate-prompt-dictate-btn,
+body.glass-effects-disabled #ai-generate-preview-image,
+body.glass-effects-disabled .ai-generate-save-overlay {
+  background: var(--bg-secondary);
+}
+
+#ai-generate-prompt:focus {
+  outline: none;
+  border-color: color-mix(in srgb, var(--accent-color) 55%, var(--border-color));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-color) 14%, transparent);
+}
+
+.ai-generate-prompt-empty-state {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  top: 58px;
+  color: var(--text-secondary);
+  font-size: 0.88em;
+  line-height: 1.55;
+  pointer-events: none;
+  opacity: 0.9;
+  max-width: none;
+}
+
+.ai-generate-prompt-empty-state strong {
+  color: var(--text-primary);
+}
+
+.ai-generate-prompt-corner-btn,
+.ai-generate-prompt-history-chip {
+  position: absolute;
+  right: 12px;
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--icon-btn-size); /* was a one-off 38px; standard chrome size */
+  height: var(--icon-btn-size);
+  min-width: var(--icon-btn-size);
+  min-height: var(--icon-btn-size);
+  padding: 0;
+  border-radius: var(--icon-btn-radius, 4px); /* unified square-button radius */
+  border: 1px solid var(--border-color);
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  font-size: 0.92em;
+  line-height: 1;
+  box-shadow: none;
+  cursor: pointer;
+  opacity: 0.96;
+  transition: border-color var(--transition-speed) ease, background var(--transition-speed) ease, transform var(--transition-speed) ease;
+}
+
+.ai-generate-prompt-history-chip {
+  bottom: 12px;
+}
+
+.ai-generate-prompt-spell-check-btn {
+  bottom: calc(12px + var(--icon-btn-size) + var(--icon-row-gap)); /* derived stack: tracks button size + standard icon gap */
+}
+
+.ai-generate-prompt-dictate-btn {
+  bottom: calc(12px + 2 * (var(--icon-btn-size) + var(--icon-row-gap))); /* derived stack */
+}
+
+.ai-generate-prompt-corner-btn:hover:not(:disabled),
+.ai-generate-prompt-corner-btn:focus-visible,
+.ai-generate-prompt-history-chip:hover:not(:disabled),
+.ai-generate-prompt-history-chip:focus-visible:not(:disabled) {
+  border-color: var(--accent-color);
+  background: var(--hover-bg);
+  color: var(--accent-color);
+  transform: none;
+  outline: none;
+}
+
+.ai-generate-prompt-corner-btn:active:not(:disabled),
+.ai-generate-prompt-history-chip:active:not(:disabled) {
+  border-color: var(--accent-color);
+  background: color-mix(in srgb, var(--accent-color) 18%, var(--bg-tertiary));
+  color: var(--accent-color);
+  box-shadow:
+    inset var(--focus-ring),
+    inset 0 0 0 3px color-mix(in srgb, var(--accent-color) 24%, transparent);
+}
+
+.ai-generate-prompt-corner-btn:disabled,
+.ai-generate-prompt-history-chip:disabled {
+  border-color: var(--border-color);
+  color: var(--text-muted, #999);
+  cursor: default;
+  opacity: var(--disabled-opacity-field);
+  transform: none;
+}
+
+.ai-generate-prompt-corner-btn i,
+.ai-generate-prompt-history-chip i {
+  color: inherit;
+}
+
+.ai-generate-prompt-corner-btn:disabled i,
+.ai-generate-prompt-history-chip:disabled i {
+  color: var(--text-muted, #999);
+}
+
+.ai-generate-prompt-dictate-btn.is-listening {
+  background: color-mix(in srgb, var(--accent-color) 18%, var(--bg-tertiary) 82%);
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-color) 18%, transparent);
+}
+
+.ai-generate-prompt-hint {
+  position: absolute;
+  left: 16px;
+  right: 58px;
+  bottom: 16px;
+  font-size: 0.88em;
+  line-height: 1.3;
+  color: var(--text-secondary);
+  opacity: 0.6;
+  pointer-events: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#ai-generate-footer {
+  flex: 0 0 auto;
+}
+
+#ai-spell-check-panel:not([data-fullscreen="true"]) #ai-generate-footer {
+  margin-top: -4px;
+  margin-bottom: 4px;
+}
+
+.ai-generate-controls .ai-generate-bottom-row {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: stretch;
+  justify-content: space-between;
+}
+
+.ai-generate-controls .ai-generate-bottom-row #ai-generate-actions {
+  flex: 0 0 auto;
+}
+
+}

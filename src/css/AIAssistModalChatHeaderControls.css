@@ -1,0 +1,45 @@
+@layer app {
+/* G3c — compact per-chat flow-permission selector (chat header, next to Memories so its native menu opens
+   downward rather than up over the response window). */
+.ai-chat-flow-permission-select {
+  font: inherit;
+  font-size: 11px;
+  height: var(--ai-chat-header-control-height); /* unified with this row's other controls (pills, "?" toggle) — see token comment in styles-variables.css */
+  padding: 0 20px 0 6px;
+  border-radius: var(--dropdown-radius);
+  border: 1px solid var(--border-color, #555);
+  background: var(--dropdown-bg);
+  color: var(--text-primary, inherit);
+  cursor: pointer;
+  max-width: 180px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: var(--dropdown-chevron);
+  background-repeat: no-repeat;
+  background-position: right var(--dropdown-chevron-inset) center;
+  background-size: 12px;
+}
+.ai-chat-select-label {
+  font-size: 0.7em;
+  opacity: 0.55;
+  white-space: nowrap;
+  pointer-events: none;
+}
+/* Provider logo beside the Joe-chat model dropdown — reflects the selected brain (same icon as its replies).
+   Native <select> can't render SVG in options, so it sits next to the dropdown. */
+.ai-chat-model-provider-icon {
+  display: inline-flex;
+  align-items: center;
+  opacity: 0.75;
+  flex: 0 0 auto;
+}
+.ai-chat-model-provider-icon:empty {
+  display: none;
+}
+.ai-chat-model-provider-icon svg {
+  display: block;
+  width: 15px;
+  height: 15px;
+}
+}

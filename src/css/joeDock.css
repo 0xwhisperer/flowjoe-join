@@ -1,0 +1,536 @@
+@layer app {
+  /* ── Docked Joe panel (JOE_DOCKED_PANEL_PLAN.md, Step 1: structural dock) ─────────────────────
+     Joe's panel (#ai-spell-check-modal) is re-parented into #joe-dock, the last track of .container
+     (styles-search.css declares the two trailing tracks). Z-INDEX: the dock is in-flow page layout,
+     not a modal surface — it only sits just above page content (--flowjoe-z-joe-dock, see
+     Z-INDEX-HIERARCHY.md §E). Overlay geometry is inline on the floating panel; joeDockLayout.js strips
+     those inline properties while docked, so the rules below need no !important. */
+
+  /* The dock column stays closed at 0px by default. While Joe is docked, keep the divider available
+     at the far-right edge so dragging or double-clicking can reopen the panel. joeDockLayout.js writes the open width. */
+  .container {
+    --joe-dock-width: 0px;
+    --joe-dock-resizer-width: 0px;
+  }
+
+  body.joe-docked-presentation .container {
+    --joe-dock-resizer-width: var(--tree-resizer-width, 8px);
+  }
+
+  body.joe-docked-open .container {
+    --joe-dock-width: var(--joe-dock-open-width, 280px);
+    --joe-dock-resizer-width: var(--tree-resizer-width, 8px);
+  }
+
+  /* Step 4c task C: below the narrow-window threshold, Joe overlays the gallery instead of
+     squeezing it — both trailing tracks go back to 0px so the grid reserves no space for the
+     column (the gallery keeps its natural width) and the column itself becomes a fixed overlay
+     (see the #joe-dock override below). More specific than the rule above (two body classes vs.
+     one), so it wins without !important. */
+  body.joe-docked-open.joe-dock-overlay .container {
+    --joe-dock-width: 0px;
+    --joe-dock-resizer-width: 0px;
+  }
+
+  /* Divider between the gallery and Joe — keep its grip reachable above the docked shell and its
+     header controls, which share the divider's narrow boundary. */
+  .joe-dock-resizer {
+    grid-column: 5;
+    grid-row: 2;
+    display: none;
+    position: relative;
+    width: var(--joe-dock-resizer-width, 8px);
+    background-color: var(--bg-tertiary);
+    cursor: col-resize;
+    touch-action: none;
+    border-radius: var(--radius-lg, 8px);
+    outline: none;
+    /* Sit just above the dock so the handle is not clipped; app modals stay above both. */
+    z-index: 1002;
+  }
+
+  body.joe-docked-presentation .joe-dock-resizer,
+  body.joe-docked-open .joe-dock-resizer {
+    display: block;
+  }
+
+  /* Step 4c task C: below ~1100px window width the dock overlays the gallery instead of squeezing
+     it (plan §6 Risks). While overlaid, --joe-dock-width/-resizer-width stay 0px (their DEFAULT
+     above — this rule intentionally does NOT restate body.joe-docked-open's override) so the grid
+     never reserves a track for Joe and the gallery keeps its natural width; the divider has nothing
+     to size either, so it stays hidden too. */
+  body.joe-docked-open.joe-dock-overlay .joe-dock-resizer {
+    display: none;
+  }
+
+  .joe-dock-resizer::before {
+    content: "";
+    position: absolute;
+    top: var(--grippy-handle-top, 200px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 16px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--border-color) 50%, var(--bg-secondary) 100%);
+    border-radius: var(--radius-lg, 8px);
+    border: 1px solid var(--border-light);
+    box-shadow: var(--grippy-handle-bevel-shadow);
+    cursor: col-resize;
+    z-index: 1;
+    transition:
+      var(--grippy-transition, top 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)),
+      transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55),
+      box-shadow 0.2s ease;
+  }
+
+  .joe-dock-resizer:hover::before,
+  .joe-dock-resizer:focus-visible::before,
+  .joe-dock-resizer.is-dragging::before {
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--accent-color) 50%, var(--bg-secondary) 100%);
+    box-shadow: var(--grippy-handle-bevel-shadow-active);
+  }
+
+  .joe-dock-resizer.is-dragging::before {
+    transform: translateX(-50%) scaleX(1.05);
+    transition: none;
+  }
+
+  body.scrubber-beveled .joe-dock-resizer::before {
+    background: linear-gradient(to right, var(--scrub-handle-beveled-fill-start) 0%, var(--scrub-handle-beveled-fill-end) 100%);
+    border-color: var(--scrub-handle-beveled-border);
+    box-shadow: var(--grippy-handle-beveled-shadow);
+  }
+
+  body.scrubber-flat .joe-dock-resizer::before {
+    background: var(--accent-color);
+    border-color: color-mix(in srgb, var(--accent-color) 36%, var(--border-color));
+    box-shadow: var(--grippy-handle-flat-shadow);
+  }
+
+  body.scrubber-glass .joe-dock-resizer::before {
+    background:
+      linear-gradient(to right, color-mix(in srgb, white 38%, transparent) 0%, transparent 28%),
+      linear-gradient(to right, var(--scrub-handle-glass-fill-start) 0%, var(--scrub-handle-glass-fill-end) 100%);
+    border-color: var(--scrub-handle-glass-border);
+    box-shadow: var(--grippy-handle-glass-shadow);
+  }
+
+  .joe-dock-resizer::after {
+    content: "";
+    position: absolute;
+    top: var(--grippy-dots-top, 215px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 8px;
+    height: 30px;
+    background-image:
+      repeating-linear-gradient(to bottom, transparent 0px, transparent 2px, var(--text-secondary) 2px, var(--text-secondary) 4px),
+      repeating-linear-gradient(to bottom, transparent 0px, transparent 2px, var(--text-secondary) 2px, var(--text-secondary) 4px);
+    background-size: 2px 100%, 2px 100%;
+    background-position: 1px 0, 5px 0;
+    background-repeat: repeat-y, repeat-y;
+    opacity: 0.7;
+    cursor: col-resize;
+    z-index: 2;
+  }
+
+  .joe-dock-resizer:hover::after,
+  .joe-dock-resizer:focus-visible::after,
+  .joe-dock-resizer.is-dragging::after {
+    opacity: 1;
+  }
+
+  body.scrubber-beveled .joe-dock-resizer:hover::before,
+  body.scrubber-flat .joe-dock-resizer:hover::before,
+  body.scrubber-glass .joe-dock-resizer:hover::before,
+  body.scrubber-beveled .joe-dock-resizer:focus-visible::before,
+  body.scrubber-flat .joe-dock-resizer:focus-visible::before,
+  body.scrubber-glass .joe-dock-resizer:focus-visible::before,
+  body.scrubber-beveled .joe-dock-resizer.is-dragging::before,
+  body.scrubber-flat .joe-dock-resizer.is-dragging::before,
+  body.scrubber-glass .joe-dock-resizer.is-dragging::before {
+    filter: brightness(1.03);
+    box-shadow: var(--grippy-handle-variant-hover-shadow);
+  }
+
+  body.joe-dock-resizing {
+    cursor: col-resize;
+    user-select: none;
+  }
+
+  /* The column itself. Full height of the content row, like .content-section. */
+  .joe-dock {
+    grid-column: 6;
+    grid-row: 2;
+    display: none;
+    position: relative;
+    /* Above page content so Joe's own popovers (multi-attach picker, chat selection menu, memory
+       editor) are never painted under the gallery; below the topbar and all modal surfaces, so the
+       preview/summary modal and topbar menus still cover the dock. See Z-INDEX-HIERARCHY.md §E. */
+    z-index: var(--flowjoe-z-joe-dock);
+    min-width: 0;
+    min-height: 0;
+    height: calc(100vh - var(--topbar-height, 56px) - var(--status-footer-height, 0px));
+    overflow: hidden;
+  }
+
+  body.joe-docked-open .joe-dock {
+    display: flex;
+  }
+
+  /* Step 4c task C: below the narrow-window threshold the column stops being a grid track (its
+     tracks are 0px above) and instead floats over the gallery like a drawer — same width family the
+     column would otherwise show (chat/wide/Widen all keep working; --joe-dock-open-width is still
+     the single source of the width, joeDockLayout.js does not fork that logic for overlay mode),
+     right-anchored to the window, above the scrim. `!important`-free: `position:fixed` plus explicit
+     inset properties simply override the grid-column placement's effect (a fixed element leaves flow
+     regardless of its grid-column, so no specificity fight is needed there), and this selector (two
+     body classes) is already more specific than the plain `.joe-dock` rule above for the properties
+     it does restate. */
+  body.joe-docked-open.joe-dock-overlay .joe-dock {
+    position: fixed;
+    inset-block: var(--topbar-height, 56px) calc(var(--status-footer-height, 22px) + var(--joe-pet-safe-space, 0px));
+    height: auto;
+    right: 0;
+    /* In the grid (squeeze) case the track width itself constrains .joe-dock; a position:fixed
+       element has no track to inherit from, so the same --joe-dock-open-width JS already writes
+       (writeDockWidthCss) has to be stated explicitly here, or the flex column (whose child is
+       width:100% of IT) resolves to the full viewport instead of the chosen column width. */
+    width: var(--joe-dock-open-width, 280px);
+    grid-column: auto;
+    grid-row: auto;
+    /* Above the scrim (1000) and everything else in-page; still below the topbar/modal tier so the
+       preview/summary modal and topbar menus still cover an overlaid dock, same as the docked case. */
+    z-index: var(--flowjoe-z-joe-dock);
+  }
+
+  /* Scrim (Step 4c task C): dims the gallery behind an overlaid dock so it reads as "floating over"
+     rather than "part of the layout" — the same visual language the floating overlay's own backdrop
+     uses (JOE_OVERLAY_BACKDROP token, joeDockController.js), reused here rather than inventing a new
+     color. Click collapses the dock (joeDockLayout.js bindOverlayScrim), mirroring a mobile drawer. */
+  .joe-dock-scrim {
+    display: none;
+    position: fixed;
+    top: var(--topbar-height, 56px);
+    bottom: var(--status-footer-height, 0px);
+    right: 0;
+    /* Gallery-only scope (Z-INDEX-HIERARCHY.md §G): the scrim must dim .content-section only, never
+       the app rail or the tree — those stay clickable while Joe overlays the gallery. .joe-dock-scrim
+       is position:fixed (a direct child of .container, which has no transform), so `inset`/`left`
+       resolve against the viewport, not the grid — a bare `left: 0` therefore reached all the way to
+       the window's left edge, covering the rail and tree too and eating their clicks. Left is instead
+       everything left of .content-section: the same three leading grid tracks .container's own
+       grid-template-columns sums (styles-search.css) — app rail + tree + tree's resizer. Track 1
+       (app rail) has no dedicated CSS var of its own on .container the way the tree does, so it's
+       named directly here; --startup-tree-width and --tree-resizer-width are the SAME vars the grid
+       track sizes use, kept in sync automatically. */
+    left: calc(var(--app-rail-width, 52px) + var(--startup-tree-width, 280px) + var(--tree-resizer-width, 8px));
+    /* --modal-overlay is defined in every theme block (themes.css) — no literal fallback needed. */
+    background: var(--modal-overlay);
+    z-index: var(--flowjoe-z-joe-dock-scrim);
+    border: 0;
+    padding: 0;
+    margin: 0;
+    cursor: default;
+  }
+
+  .joe-dock-scrim[hidden] {
+    display: none;
+  }
+
+  body.joe-docked-open.joe-dock-overlay .joe-dock-scrim:not([hidden]) {
+    display: block;
+  }
+
+  /* Outer element: no backdrop, fills the column (display is still owned inline by show/hide). */
+  #joe-dock > #ai-spell-check-modal.joe-docked {
+    position: relative;
+    flex: 1 1 auto;
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
+    background: transparent;
+  }
+
+  /* Open / close motion (Step 4b task A, joeDockLayout.animateJoeDockOpenState). While the transition
+     is running, the panel is pinned at its FINAL width (--joe-dock-final-open-width, set by JS for the
+     duration only) instead of following the host's animating width — so its own internal layout never
+     re-flows through every intermediate width from 0 up. The host (already overflow:hidden) clips it
+     instead, right-anchored, so it reads as a wipe/reveal from the column's edge, not a squeeze. This
+     is scoped to the two body classes only: the steady-state open column and Step 3's auto-widen
+     family-width changes keep their existing 100%-of-host width, unaffected. */
+  body.joe-dock-opening .joe-dock,
+  body.joe-dock-closing .joe-dock {
+    justify-content: flex-end;
+  }
+
+  body.joe-dock-opening #joe-dock > #ai-spell-check-modal.joe-docked,
+  body.joe-dock-closing #joe-dock > #ai-spell-check-modal.joe-docked {
+    flex: 0 0 auto;
+    width: var(--joe-dock-final-open-width, 100%);
+  }
+
+  /* Inner panel: a page column, not a floating window — square corners, no drop shadow, a single
+     hairline on the gallery side. */
+  #ai-spell-check-modal.joe-docked > #ai-spell-check-panel {
+    position: relative;
+    flex: 1 1 auto;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    min-height: 0;
+    margin: 0;
+    border: 0;
+    border-left: 1px solid var(--border-color);
+    border-radius: 0;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    /* A column can be shorter than the floating window's per-mode minimum heights (a 720px-tall
+       window leaves ~640px). Scroll rather than clip, so the composer is never unreachable; the
+       column-specific layout is Step 2's redesign. */
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  /* Overlay-only chrome has no meaning in a column: pin, minimize-to-pill, fullscreen, the drag
+     strip and the eight edge-resize handles. */
+  #ai-spell-check-modal.joe-docked #ai-spell-check-header :is(#ai-spell-check-minimize, #ai-spell-check-pin, #ai-spell-check-fullscreen),
+  #ai-spell-check-modal.joe-docked #ai-spell-check-header > .context-menu-drag-strip,
+  #ai-spell-check-modal.joe-docked .ai-assist-modal-resize-handle {
+    display: none;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-spell-check-header {
+    cursor: default;
+  }
+
+  #ai-spell-check-header #ai-spell-check-dock-toggle {
+    font-size: 14px;
+  }
+
+  /* Widen (Step 4b task C) — the mirror image of the "overlay-only chrome" rule above: this button is
+     meaningless while floating (the floating window already has its own fullscreen), hidden by
+     default and shown only once docked. */
+  #ai-spell-check-widen {
+    display: none;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-spell-check-widen {
+    display: flex;
+    /* Placed last in the shared (both-presentations) markup on purpose (see
+       joeModalInitController.js's comment) so it never renumbers a pre-existing floating sibling.
+       audit MINOR 10: an earlier version used `order: -1` here to draw it before dock-toggle/close
+       while docked WITHOUT moving it in the DOM — but flex/grid `order` never reorders the Tab
+       sequence (by spec), so that left Tab landing on it AFTER dock-toggle/close despite it being
+       drawn before them. joeDockChatLayout.js's applyDockedChatLayout now actually MOVES it there
+       instead (undone on pop-out via the same undo log every other docked-only move already uses),
+       so no `order` override is needed here any more — its DOM position already matches. */
+  }
+
+  #ai-spell-check-widen.is-widened {
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+    background: color-mix(in srgb, var(--accent-color) 12%, var(--bg-tertiary));
+  }
+
+  /* The memory editor is a viewport-centred fixed dialog on the floating window. Docked, centre it over
+     the Joe column instead (the docked panel is position:relative, so it is the containing block). */
+  #ai-spell-check-modal.joe-docked .ai-memory-editor:not(.is-inline) {
+    position: absolute;
+    width: min(720px, calc(100% - 24px));
+    min-width: 0;
+    max-height: calc(100% - 24px);
+  }
+
+  /* Target lock (docked only — joeDockLayout toggles [hidden]). */
+  .ai-assist-target-lock {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--icon-btn-size);
+    height: var(--icon-btn-size);
+    padding: 0;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md, 6px);
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  .ai-assist-target-lock[hidden] {
+    display: none;
+  }
+
+  .ai-assist-target-lock:hover,
+  .ai-assist-target-lock:focus-visible {
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+  }
+
+  /* "Will follow your selection when Joe is done" — a quiet status note, not a control. */
+  .ai-assist-follow-pending {
+    flex: 1 1 100%;
+    font-size: 0.8em;
+    font-weight: 400;
+    color: var(--text-secondary);
+    font-style: italic;
+  }
+
+  .ai-assist-follow-pending[hidden] {
+    display: none;
+  }
+
+  .ai-assist-target-lock.is-locked {
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+    background: color-mix(in srgb, var(--accent-color) 12%, var(--bg-tertiary));
+  }
+
+  /* D11: the image history drawer is a fixed surface on <body> that slides in from the window's right
+     edge. Docked, that edge is Joe's column — keep the drawer inside it (and below the topbar), or
+     its left part would reach over the content area, underneath the embedded browser's native view.
+     --joe-dock-column-width mirrors --joe-dock-open-width onto <body> (joeDockLayout.js). The drawer
+     rests 16px from the right edge (translateX(-16px)); 24px leaves an 8px gap on the column side. */
+  /* The chat / prompt history popups are sized to the Joe column while docked
+     (joeHistoryPopupController getHistoryPopupBounds); their floating minimum widths (400/480px)
+     would push a narrow column's popup past its left edge, over the browser. */
+  body.joe-docked-open :is(.ai-chat-history-popup, .ai-generate-prompt-history-popup) {
+    min-width: 0;
+  }
+
+  body.joe-docked-open .ai-image-history-drawer {
+    top: calc(var(--topbar-height, 56px) + 8px);
+    width: min(520px, calc(var(--joe-dock-column-width, 280px) - 24px));
+    height: calc(100vh - var(--topbar-height, 56px) - var(--status-footer-height, 0px) - 16px);
+  }
+
+  /* These popups' own close buttons otherwise fall through to the app-wide bordered .close-btn
+     (18px glyph, visible border, 4px radius) — a mismatch against the docked panel's own quiet
+     28px icon-button chrome (joeDockChat.css's shared rule for #ai-spell-check-close and friends).
+     Match that same look here so every close control inside the docked column reads consistently.
+     These popups live on <body>, outside #ai-spell-check-modal.joe-docked, so the --jd-* tokens
+     defined there aren't in scope — use the base theme tokens directly instead. */
+  body.joe-docked-open :is(#ai-history-close, #ai-prompt-history-close, #ai-image-history-close) {
+    display: inline-grid;
+    place-items: center;
+    width: 28px;
+    min-width: 28px;
+    height: 28px;
+    min-height: 28px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 13px;
+    line-height: 1;
+    box-shadow: none;
+    transition:
+      background-color var(--transition-speed) ease,
+      color var(--transition-speed) ease;
+  }
+
+  body.joe-docked-open :is(#ai-history-close, #ai-prompt-history-close, #ai-image-history-close):hover,
+  body.joe-docked-open :is(#ai-history-close, #ai-prompt-history-close, #ai-image-history-close):focus-visible {
+    background: var(--hover-bg);
+    color: var(--text-primary);
+    outline: none;
+  }
+
+  /* Rail activity dot (Step 4b task B / plan A6) — while docked Joe is collapsed with a live session,
+     a small dot on the rail robot (#app-rail-joe-btn) replaces the floating minimize pill. State
+     (idle/working/attention) is set as [data-joe-dot-state] by appRailProto.syncJoeRailDot; the
+     attribute is absent entirely when there is nothing to show (not docked, not collapsed, or no
+     live session), so the dot has no footprint the rest of the time. */
+  #app-rail-joe-btn .app-rail-icon {
+    position: relative;
+  }
+
+  #app-rail-joe-btn[data-joe-dot-state] .app-rail-icon::after {
+    content: "";
+    position: absolute;
+    top: -2px;
+    right: -3px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--text-secondary);
+    border: 1.5px solid var(--bg-primary, var(--bg-secondary));
+  }
+
+  #app-rail-joe-btn[data-joe-dot-state="working"] .app-rail-icon::after {
+    background: var(--accent-color);
+    animation: joeDockRailDotPulse 1.1s ease-in-out infinite;
+  }
+
+  #app-rail-joe-btn[data-joe-dot-state="attention"] .app-rail-icon::after {
+    background: var(--danger-color);
+  }
+
+  /* audit MAJOR 5: a finished background reply (worked while collapsed, now idle) — same color the
+     minimized pill already uses for its own "done" state (AIAssistModalPill.css), static (no pulse),
+     cleared on reopen/restore. */
+  #app-rail-joe-btn[data-joe-dot-state="done"] .app-rail-icon::after {
+    background: var(--success-color);
+  }
+
+  @keyframes joeDockRailDotPulse {
+    0%,
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.35);
+      opacity: 0.65;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #app-rail-joe-btn[data-joe-dot-state="working"] .app-rail-icon::after {
+      animation: none;
+    }
+  }
+
+  /* Reachability while docked-collapsed with a live session AND the preview/summary editor is
+     actually covering the rail (audit BLOCKER 2 — narrower than the first pass, which lifted the
+     WHOLE rail's z-index for the entire normal docked-collapsed resting state, not just this one
+     swap case; that put it above #modal confirm/info dialogs, the stack preview, topbar menus and
+     the settings panel app-wide, whenever Joe happened to be docked+collapsed). #image-modal
+     (up to --flowjoe-z-ai-preview 200030) is a full-page overlay that normally sits over the rail
+     (ordinary in-page chrome, --flowjoe-z-joe-dock ~1001) — the pill used to be the escape hatch
+     back to Joe in exactly this state (--flowjoe-z-ai-pill-tray, 200035, specifically ABOVE the
+     preview for this swap case; see Z-INDEX-HIERARCHY.md §D). Removing the pill for docked-collapsed
+     (task B) would otherwise strand the user with no way back to Joe short of closing the preview
+     first — reusing that SAME token (not a new/guessed value), gated on BOTH conditions together, so
+     the rail's z-index is untouched for every other docked-collapsed moment (a confirm dialog, the
+     settings panel, browser chrome, etc. all still correctly cover it). #image-modal's own open/close
+     path (joeImageModalLifecycle.js) toggles its INLINE style.display between "none" and "flex" —
+     there is no dedicated body class for "the preview is open" to key off instead.
+     Bumping the BUTTON alone is not enough: appRail.css gives .app-rail itself `position:relative;
+     z-index:10`, which is a stacking context of its own — a descendant's z-index only orders it
+     among .app-rail's OTHER children, not against elements outside .app-rail (measured live: the
+     button read z-index 200035 in getComputedStyle yet #image-modal — z-index 100010 — still won the
+     hit-test, because the comparison that actually matters is .app-rail's 10 vs image-modal's 100010).
+     .app-rail itself has to carry the elevated value; :has() scopes that to exactly this state.
+     `.joe-dock-preview-open` (not a `[style*="display: flex"]` attribute selector inside :has() —
+     tests/unit/galleryInlineFrameShown.test.js's R8-recalc-tax guard forbids that repo-wide: it
+     makes Blink re-resolve style on every inline-style write in the WHOLE document, not just
+     #image-modal's) is a body class appRailProto.js's ensurePreviewOpenObserver keeps in lockstep
+     with #image-modal's own inline display via a MutationObserver, mirroring
+     galleryInlineFrameShown.js's "derive the class from state" idiom. */
+  #app-rail-joe-btn[data-joe-dot-state] {
+    position: relative;
+    z-index: var(--flowjoe-z-ai-pill-tray);
+  }
+
+  body.joe-dock-preview-open:has(#app-rail-joe-btn[data-joe-dot-state]) .app-rail {
+    z-index: var(--flowjoe-z-ai-pill-tray);
+  }
+}

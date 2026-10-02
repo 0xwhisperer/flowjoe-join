@@ -1,0 +1,85 @@
+@layer tokens {
+/*
+ * Z-Index Tokens — THE single source of truth for FlowJoe's high-tier stacking order.
+ * ============================================================================
+ * Tech-debt plan T3.3. Every modal / overlay / shell / tooltip z-index in the app
+ * (CSS *and* JS-set inline styles) is defined here ONCE and referenced by token.
+ *
+ *  - CSS consumers use `var(--flowjoe-z-<name>)`.
+ *  - JS consumers import `FlowJoeZIndex` from src/js/zIndexTokens.js,
+ *    which MIRRORS these exact values. tests/unit/zIndexTokens.test.js parses this
+ *    file and the JS mirror and fails the build if they ever drift — that parity
+ *    check is what makes "single source of truth" enforceable rather than aspirational.
+ *
+ * SCOPE: only the high tier participates in the modal-inversion bug class, so only
+ * the high tier is tokenized here. Local stacking-context values (z-index: 1/2/3…,
+ * the small per-component values) are intentionally NOT tokenized — they are local
+ * and harmless, and tokenizing them would be noise. See REFERENCE/Z-INDEX-HIERARCHY.md.
+ *
+ * Loaded FIRST among local stylesheets (before styles.css / z-index-fix.css /
+ * AIAssistModal.css) so the custom properties are defined before any consumer.
+ *
+ * The ladder (ascending). Keep the comment in sync when adding a tier.
+ * ============================================================================
+ */
+
+:root {
+  /* In-page layout tier (below all app chrome) */
+  --flowjoe-z-joe-dock-scrim: 1000;        /* narrow-window overlay scrim behind the docked Joe column (Step 4c task C): above page content, below the column itself */
+  --flowjoe-z-joe-dock: 1001;              /* docked Joe column (#joe-dock): above page content (.content-section 10, tree .resizer 1000) so Joe's in-panel popovers clear the gallery; below the topbar and every modal surface */
+
+  /* App chrome + shared-modal tier (~100k) */
+  --flowjoe-z-body-effect: 99990;          /* body-level visual-effect canvases, below modals */
+  --flowjoe-z-topbar: 100000;              /* topbar + settings-overlay dimmer */
+  --flowjoe-z-surface-above-topbar: 100001;   /* settings sticky header, audio playlist popover — above topbar */
+  --flowjoe-z-surface-above-topbar-high: 100002; /* settings panel body, image stack indicator — above surface-above-topbar */
+  --flowjoe-z-stack-indicator-card: 100003;  /* image stack indicator info card */
+  --flowjoe-z-virtual-gallery-modal: 100004; /* virtual gallery mutation modal */
+  --flowjoe-z-gallery-drop-glow: 100011;    /* gallery drop-glow layer (above image-modal, below app-modal) */
+  --flowjoe-z-tag-menu: 100012;             /* tag assignment color/merge menu */
+  --flowjoe-z-tag-submenu: 100013;          /* tag assignment submenu (above tag-menu) */
+  --flowjoe-z-gallery-scrubber: 100015;     /* gallery scrubber fixed positioning */
+  --flowjoe-z-gallery-scrubber-controls: 100016; /* gallery scrubber controls (above scrubber) */
+  --flowjoe-z-tiptap-editor-popup: 100017;  /* tiptap flow-summary editor floating popups (slash menu, bubble menu, emoji picker) */
+  --flowjoe-z-browser-tab-rail: 100030;     /* browser tab strip / group rail / link gallery */
+  --flowjoe-z-browser-drag-lock: 100040;    /* browser chrome drag-lock overlay */
+  --flowjoe-z-browser-controls-active: 100041; /* browser controls + tooltips when browser is active */
+  --flowjoe-z-browser-find-bar: 100045;     /* browser find bar (above controls, below browser-chrome) */
+  --flowjoe-z-image-modal-overlay: 100005; /* fullscreen image-modal backdrop (modalUtils) */
+  --flowjoe-z-app-modal-base: 100008;      /* #modal creation default before layer-aware raise */
+  --flowjoe-z-stack-preview-base: 100009;  /* #stack-preview-modal creation value */
+  --flowjoe-z-image-modal: 100010;         /* #image-modal default */
+  --flowjoe-z-app-modal: 100020;           /* .modal-overlay / #modal / #wireframe-modal / #ai-chat-modal */
+  --flowjoe-z-stack-preview: 100021;       /* stack preview raised above image modal */
+  --flowjoe-z-browser-chrome: 100050;      /* browser tab shell / group rail / link gallery */
+  --flowjoe-z-browser-toolbar: 100060;     /* topbar + browser controls while browsing */
+  --flowjoe-z-browser-tooltip: 100070;     /* browser-chrome tooltips */
+  --flowjoe-z-settings-panel: 100100;      /* settings panel + header/tabs */
+  --flowjoe-z-settings-controls: 100101;   /* settings header actions / close / effect previews */
+  --flowjoe-z-terminal-panel: 100120;       /* terminal panel tab drag ghost (above settings-controls) */
+  --flowjoe-z-flow-audit-overlay: 100200;   /* flow audit overlay (above settings panel) */
+
+  /* AI ("Joe") shell + its leaf overlays (~200k). These stack ABOVE the app-modal tier. */
+  --flowjoe-z-ai-panel: 200007;            /* AI inner panel (#ai-spell-check-panel) */
+  --flowjoe-z-ai-shell: 200008;            /* AI shell container/backdrop */
+  --flowjoe-z-ai-popup-base: 200010;       /* AI floating popup baseline */
+  --flowjoe-z-ai-popup: 200012;            /* AI history / image-history / prompt-history popups */
+  --flowjoe-z-ai-modal-mid: 200015;        /* AI mid-tier modal (modalUtils layered open) */
+  --flowjoe-z-ai-confirm: 200020;          /* confirmation dialogs opened from Joe */
+  --flowjoe-z-ai-preview: 200030;          /* #image-modal preview launched from Joe */
+  --flowjoe-z-ai-pill-tray: 200035;        /* minimized-pill tray (must clear all shells, see hierarchy doc D) */
+  --flowjoe-z-ai-adoption: 200040;         /* adopt-thread / heavy internal confirm */
+  --flowjoe-z-ai-overlay: 200050;          /* AI overlay layer */
+  --flowjoe-z-ai-guide: 200060;            /* compaction guide / coach overlays */
+  --flowjoe-z-ai-destructive: 200080;      /* destructive-edit warning modals */
+  --flowjoe-z-storage-pressure: 200090;    /* storage-almost-full danger banner — must stay visible over AI surfaces */
+  --flowjoe-z-ai-topmost: 300000;          /* topmost AI affordance */
+
+  /* Fallback + tooltip ceiling */
+  --flowjoe-z-fallback-confirm: 999999;    /* #inapp-confirm-overlay fallback (modalUtils) — can outrank modals by design */
+  --flowjoe-z-modal-force-top: 2147483646; /* #modal raised above all app+AI chrome while a save-reminder/prompt modal is active (tooltips still win); shares the tooltip-arrow-underlay value by design */
+  --flowjoe-z-tooltip-low: 2147483646;     /* tooltip arrow underlay */
+  --flowjoe-z-tooltip: 2147483647;         /* tooltips (max safe integer) */
+  --flowjoe-z-tooltip-max: 2147483648;     /* AIAssist tooltip arrow top layer */
+}
+}

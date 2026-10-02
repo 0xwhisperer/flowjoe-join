@@ -1,0 +1,70 @@
+@layer app {
+.ai-transcribe-result-card {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 8px;
+}
+
+#ai-transcribe-result {
+  width: 100%;
+  height: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
+  background: color-mix(in srgb, var(--bg-secondary) var(--modal-glass-ai-field-secondary-mix), transparent);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl, 10px);
+  padding: 12px;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.98em;
+  line-height: 1.5;
+  resize: none;
+  overflow-y: auto;
+  box-sizing: border-box;
+  margin: 0;
+  box-shadow: inset 0 1px 1px color-mix(in srgb, var(--shadow-heavy) 36%, transparent);
+}
+
+#ai-transcribe-result:focus {
+  outline: none;
+  border-color: color-mix(in srgb, var(--accent-color) 55%, var(--border-color));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-color) 14%, transparent);
+}
+
+.ai-transcribe-result-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: var(--cta-btn-height);
+}
+
+.ai-transcribe-result-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--cta-row-gap);
+  flex: 0 0 auto;
+}
+
+.ai-transcribe-result-actions .btn {
+  height: var(--cta-btn-height);
+  min-height: var(--cta-btn-height);
+  min-width: 96px;
+  border-radius: var(--cta-btn-radius);
+  padding: 0 18px;
+}
+
+body.glass-effects-disabled .ai-transcribe-controls,
+body.glass-effects-disabled .ai-transcribe-result-panel,
+body.glass-effects-disabled .ai-transcribe-card,
+body.glass-effects-disabled .ai-transcribe-result-card,
+body.glass-effects-disabled #ai-transcribe-result {
+  background: var(--bg-secondary);
+}
+
+body.glass-effects-disabled #ai-transcribe-result {
+  background: var(--bg-primary);
+}
+
+}

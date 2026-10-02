@@ -1,24 +1,119 @@
 <!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex, nofollow">
-<meta name="referrer" content="no-referrer">
-<title>FlowJoe shared Flows</title>
-<style>
-  html,body{height:100%;margin:0}
-  body{display:flex;align-items:center;justify-content:center;background:#1a1b1e;color:#e8e8ea;font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
-  main{max-width:34rem;padding:2rem}
-  h1{margin:0 0 .5rem;font-size:1.5rem;color:#f29b38}
-  p{margin:.25rem 0;color:#b8b8be}
-</style>
-</head>
-<body>
-<main>
-  <h1>FlowJoe shared Flows</h1>
-  <p>This is where invitations to shared FlowJoe Flows open.</p>
-  <p>Nothing to see here yet.</p>
-</main>
-</body>
+<html lang="en" class="theme-modern-ember">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; media-src https://dvo.flowjoe.app https://shalom.flowjoe.app https://matt.flowjoe.app; font-src 'self'; connect-src 'self' https://dvo.flowjoe.app https://shalom.flowjoe.app https://matt.flowjoe.app; base-uri 'none'; form-action 'none'" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="referrer" content="no-referrer" />
+    <title>FlowJoe</title>
+    <link rel="icon" href="data:," />
+    <!-- G0/T4b-1 PROTOTYPE guest page (throwaway). Plain ES modules, no build step. Markup and styles are the approved
+     mockup's (docs/IMPLEMENTATION/mockups/browser-collaboration-presence.html); the Flow view DOM is the real app's
+     (the mockup's app snapshot) filled with live data. Every owner- or guest-supplied string is written with
+     textContent, never as HTML. -->
+    <!-- The app's own stylesheets, in the order src/preBootstrap.js loads them -->
+    <!-- Self-hosted (T4b-1 loads nothing from a third-party host): the Font Awesome Free icons and the font families the five themes use. See vendor-assets/THIRD_PARTY_NOTICES.md. -->
+    <link rel="stylesheet" href="/vendor-assets/font-awesome/fontawesome-subset.css" />
+    <link rel="stylesheet" href="/vendor-assets/fonts/fonts.css" />
+    <link rel="stylesheet" href="/src/css/00-layer-order.css" />
+    <link rel="stylesheet" href="/src/css/z-index-tokens.css" />
+    <link rel="stylesheet" href="/src/css/themes.css" />
+    <link rel="stylesheet" href="/src/css/node-themes.css" />
+    <link rel="stylesheet" href="/src/css/styles-variables.css" />
+    <link rel="stylesheet" href="/src/css/styles-layout.css" />
+    <link rel="stylesheet" href="/src/css/styles-search.css" />
+    <link rel="stylesheet" href="/src/css/appRail.css" />
+    <link rel="stylesheet" href="/src/css/styles-tree.css" />
+    <link rel="stylesheet" href="/src/css/styles-gallery-horizontal.css" />
+    <link rel="stylesheet" href="/src/css/repoFileExplorerView.css" />
+    <link rel="stylesheet" href="/src/css/sourceControlPanel.css" />
+    <link rel="stylesheet" href="/src/css/repoMergeConflictEditor.css" />
+    <link rel="stylesheet" href="/src/css/styles-gallery-vertical.css" />
+    <link rel="stylesheet" href="/src/css/styles-gallery-notes.css" />
+    <link rel="stylesheet" href="/src/css/styles-settings.css" />
+    <link rel="stylesheet" href="/src/css/styles-themes.css" />
+    <link rel="stylesheet" href="/src/css/styles-browser.css" />
+    <link rel="stylesheet" href="/src/css/tags.css" />
+    <link rel="stylesheet" href="/src/css/gallery-scrubber.css" />
+    <link rel="stylesheet" href="/src/css/stack-styles.css" />
+    <link rel="stylesheet" href="/src/css/buttons.css" />
+    <link rel="stylesheet" href="/src/css/tooltip.css" />
+    <link rel="stylesheet" href="/src/css/confetti.css" />
+    <link rel="stylesheet" href="/src/css/z-index-fix.css" />
+    <link rel="stylesheet" href="/src/css/onboarding.css" />
+    <link rel="stylesheet" href="/src/components/AIComponents.css" />
+    <link rel="stylesheet" href="/src/css/AIAssistModal.css" />
+    <link rel="stylesheet" href="/src/css/AIAssistModalSendToSlot.css" />
+    <link rel="stylesheet" href="/src/css/AIAssistModalSpellCheckShell.css" />
+    <link rel="stylesheet" href="/src/css/AIAssistModalChatImageGenCard.css" />
+    <link rel="stylesheet" href="/src/css/AIAssistModalChatHistoryPopup.css" />
+    <link rel="stylesheet" href="/src/css/AIAssistModalResizeJsonContext.css" />
+    <link rel="stylesheet" href="/src/css/AIAssistModalChatConversationActions.css" />
+    <link rel="stylesheet" href="/src/css/AIAssistModalChatMisc.css" />
+    <link rel="stylesheet" href="/src/css/AIAssistModalChatInput.css" />
+    <link rel="stylesheet" href="/src/css/AIAssistModalJoePet.css" />
+    <link rel="stylesheet" href="/src/css/AIAssistModalPill.css" />
+    <link rel="stylesheet" href="/src/css/AIAssistModalSchedulerRunnow.css" />
+    <link rel="stylesheet" href="/src/css/AIAssistModalImageRedirect.css" />
+    <link rel="stylesheet" href="/src/css/AIAssistModalTreePreview.css" />
+    <link rel="stylesheet" href="/src/css/AIAssistModalChatHeaderControls.css" />
+    <link rel="stylesheet" href="/src/css/AIAssistModalApprovalCard.css" />
+    <link rel="stylesheet" href="/src/css/AIAssistModalFileChips.css" />
+    <link rel="stylesheet" href="/src/css/AIAssistModalMemories.css" />
+    <link rel="stylesheet" href="/src/css/AIAssistModalSpellcheckReview.css" />
+    <link rel="stylesheet" href="/src/css/AIAssistModalImageHistory.css" />
+    <link rel="stylesheet" href="/src/css/AIAssistModalFontScale.css" />
+    <link rel="stylesheet" href="/src/css/AIAssistModalImageModalButtons.css" />
+    <link rel="stylesheet" href="/src/css/AIAssistModalMultiAttach.css" />
+    <link rel="stylesheet" href="/src/css/AIAssistModalChatAttachment.css" />
+    <link rel="stylesheet" href="/src/css/AIAssistModalMessageAttachment.css" />
+    <link rel="stylesheet" href="/src/css/AIAssistModalJsonPreview.css" />
+    <link rel="stylesheet" href="/src/css/AIAssistModalGeneratePrompt.css" />
+    <link rel="stylesheet" href="/src/css/AIAssistModalGenerateOptions.css" />
+    <link rel="stylesheet" href="/src/css/AIAssistModalGenerateReference.css" />
+    <link rel="stylesheet" href="/src/css/AIAssistModalGeneratePreview.css" />
+    <link rel="stylesheet" href="/src/css/AIAssistModalGeneratePromptHistory.css" />
+    <link rel="stylesheet" href="/src/css/AIAssistModalTranscribeSource.css" />
+    <link rel="stylesheet" href="/src/css/AIAssistModalTranscribeOptions.css" />
+    <link rel="stylesheet" href="/src/css/AIAssistModalTranscribeResult.css" />
+    <link rel="stylesheet" href="/src/css/AIAssistModalGenerateTranscribeResponsive.css" />
+    <link rel="stylesheet" href="/src/css/joeDock.css" />
+    <link rel="stylesheet" href="/src/css/joeDockChat.css" />
+    <link rel="stylesheet" href="/src/css/joeDockTabs.css" />
+    <link rel="stylesheet" href="/src/css/tiptap-editor.css" />
+    <link rel="stylesheet" href="/src/css/fj-rail-collapse.css" />
+    <link rel="stylesheet" href="/src/css/terminalPanel.css" />
+    <link rel="stylesheet" href="/src/css/mcpBridgeSettings.css" />
+    <link rel="stylesheet" href="/src/css/statusFooter.css" />
+    <link rel="stylesheet" href="/src/css/fa-interop.css" />
+    <link rel="stylesheet" href="/src/css/activityPanel.css" />
+    <link rel="stylesheet" href="/src/css/dropin/01-density-compact.css" />
+    <link rel="stylesheet" href="/src/css/dropin/02-density-rules.css" />
+    <link rel="stylesheet" href="/src/css/dropin/03-shape-soft.css" />
+    <link rel="stylesheet" href="/src/css/dropin/04-theme-modern.css" />
+    <link rel="stylesheet" href="/src/css/dropin/05-shape-modern-density.css" />
+    <link rel="stylesheet" href="/src/css/dropin/06-joe-dock-density.css" />
+    <link rel="stylesheet" href="/snapshot/snapshot.css" />
+    <link rel="stylesheet" href="/snapshot/snapshot-modals.css" />
+    <link rel="stylesheet" id="collab-style" href="/collab.css" />
+    <link rel="stylesheet" href="/media.css" />
+    <link rel="stylesheet" href="/images.css" />
+  </head>
+  <body>
+    <div class="cx-guest-screen cx-join-modal">
+      <div class="cx-join" role="status">
+        <div class="cx-join-top">
+          <div class="cx-brand-row">
+            <span class="logo-svg"><img src="/src/assets/coffee-mug-logo.svg" alt="" /></span>
+            <div class="topbar-brand-stack">
+              <h1>FlowJoe</h1>
+              <div class="topbar-subtext">Visual Intelligence Workspace</div>
+            </div>
+          </div>
+        </div>
+        <h2 class="cx-join-title">This page isn't available</h2>
+        <p class="cx-join-lede">The link may have ended, or it may be mistyped. Ask the owner for a new invitation link.</p>
+      </div>
+    </div>
+  </body>
 </html>

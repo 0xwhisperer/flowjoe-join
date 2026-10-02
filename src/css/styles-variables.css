@@ -1,0 +1,823 @@
+@layer app {
+/* ── Canonical @media breakpoints ──────────────────────────────────────────
+   CSS custom properties CANNOT be used inside @media query conditions (per
+   spec), so these are documented here as the canonical pixel values. All
+   @media (max-width: …) queries across the codebase MUST use one of these:
+     720px  — small / mobile (onboarding cards, token legend, browser rail)
+     768px  — tablet (modal panels, AI assist targets, memories panel, stack preview)
+     900px  — medium (settings anti-nag rows, AI spell check panel)
+    1180px  — large (AI generate/transcribe grids)
+   prefers-reduced-motion queries are not width-based and are not listed here. */
+:root {
+  --topbar-height: 56px; /* .topbar's real height (buttons.css) — the single source layout-height calcs
+    elsewhere (.container in styles-search.css, #tree in styles-tree.css) subtract to fit under it.
+    Those calcs had drifted to a stale 60px literal, leaving a 4px gap where the boot-time reserved
+    status-footer strip showed through before the footer itself mounted. */
+  --tree-resizer-width: 8px;
+  /* Rich-text editor: code syntax highlighting + search highlight.
+     Deliberately theme-INDEPENDENT. A syntax palette is not app chrome — code should read
+     the same in every theme, the way it does in an IDE — and the search highlight is a
+     find-in-page marker whose whole job is to stay the one unmissable colour on the page.
+     They live here as tokens rather than literals in tiptap-editor.css so the values are
+     nameable and changeable in one place (and so the file meets the no-literals rule that
+     every new stylesheet is held to). Values are byte-identical to the literals they
+     replaced — this is a pure lift, no rendered colour changes.
+     NOTE: these intentionally do NOT follow --accent-color, which varies per theme
+     (#ff9500 in the default and ~40 other values); binding them to it would have
+     re-coloured search highlighting in every theme. */
+  --code-syntax-keyword: #f59e0b;
+  --code-syntax-string: #10b981;
+  --code-syntax-title: #3b82f6;
+  --code-syntax-number: #ec4899;
+  --editor-search-highlight: #f59e0b;
+  --editor-search-highlight-text: #000000;
+  --hairline: 1px; /* the app's 1px divider/rule thickness — separators, borders-as-elements, and any ::before/::after hairline. One value so a future density pass (or a hi-dpi tweak) can move every rule at once instead of chasing 17 literals. */
+  --header-gap: 12px;
+  /* Spacing design categories — role-derived (membership verified per call site),
+     not histogram-derived. See docs/IMPLEMENTATION/CSS_SPACING_SHADOW_DESIGN_EXPLORATION.md §6. */
+  --list-row-gap: 8px; /* vertical gap between repeated rows in a standard row list */
+  --text-stack-gap: 2px; /* vertical gap between a bold primary line and a smaller line directly under it,
+    e.g. the app header title above "Selected node theme", a File menu item's label above its detail line,
+    a playlist track title above its artist/duration, or a scheduler task name above its status line */
+  --icon-row-gap: 12px; /* gap between icon-only buttons in a chrome/actions row */
+  --icon-row-gap-dense: 4px; /* tighter icon strip repeated on every list row */
+  --titlebar-action-gap: 8px; /* gap between chrome/action buttons clustered in a modal or flyout
+    titlebar (collapse/font-size/minimize/pin/fullscreen/close row; context-menu corner pin+close) —
+    owner call: tighter than --icon-row-gap/--header-gap's 12px, matches the app's other 8px section
+    rhythms (--card-title-gap, --modal-row-gap) */
+  --gallery-slot-rail-gap: 12px; /* vertical gap between the gallery slot's side-rail action buttons (+/copy/stack/delete/AI) — was 3 stacked hardcoded values (flex gap + 2 button margins) totaling 10px; consolidated to this one number */
+  --slot-under-stack-gap: 8px; /* the gallery slot's vertical rhythm: media→Tag Bin bar, and between the under-media sections (tag section→notes column, i.e. chips→Notes bar; also the bar→bar gap when a slot has no tags). Promoted from a local def on .slot-under-stack (which would shadow density overrides) so Compact/Dense can step it — Comfy 8 / Compact 6 / Dense 5. */
+  --slot-under-stack-internal-gap: 8px; /* WITHIN a section: Tag Bin bar→its chips, Notes bar→its notes body. Same ladder as --slot-under-stack-gap (8/6/5) so the whole slot stack keeps ONE rhythm. */
+  --action-row-gap: 12px; /* gap between labeled decision buttons in an action/footer row */
+  --control-icon-gap: 6px; /* gap between a control's leading icon and its text label */
+  --settings-card-header-gap: 10px; /* gap below a settings-card header row (.setting-header) before its body content */
+  --card-title-gap: 8px; /* gap below a card/popover's own title line before its body content — distinct from --settings-card-header-gap's row-header shape */
+  --icon-btn-radius: var(--radius-sm, 4px); /* ONE corner radius for every square button, both sizes — owner-anchored to 4px; flip this to retune all */
+  --icon-btn-size: 32px; /* standard square chrome button: headers, modal titlebars, settings (radius: --icon-btn-radius) */
+  --icon-btn-size-sm: 24px; /* small square action button: gallery slot rail, context-menu chrome (radius: --icon-btn-radius) */
+  --icon-btn-size-xs: 22px; /* extra-small square chrome button: the tree header's funnel filter button and flow-summary button (radius: --icon-btn-radius) — a third size class below --icon-btn-size-sm */
+  --search-toolbar-gap: var(--header-gap); /* gap between the search icon/button, the search field, and adjacent toolbar controls in the app's search rows (gallery, tree, audio playlist, browser-link gallery). Length/available width remains local per surface. */
+  --search-bar-height: var(--icon-btn-size); /* shared outer search bar height; matches the standard square toolbar buttons. */
+  --search-bar-gap: 2px; /* inner gap between the search input, clear button, and close chevron inside search bars. */
+  --search-bar-padding: 0 6px 0 5px; /* shared inner padding for search bars, tuned from the gallery toolbar. */
+  --search-bar-bg: var(--bg-tertiary); /* shared outer search bar background. */
+  --search-bar-border: 1px solid var(--border-color); /* shared outer search bar border. */
+  --search-bar-radius: var(--radius-sm, 4px); /* shared outer search bar radius. */
+  --search-bar-hover-bg: var(--hover-bg); /* shared hover/focus background for search bars. */
+  --search-icon-active-color: var(--accent-color); /* shared active/hover color for search opener icons in search rows. */
+  --search-input-bg: color-mix(in srgb, var(--bg-primary) 72%, var(--bg-tertiary)); /* shared inner search input fill. */
+  --search-input-border: 1px solid color-mix(in srgb, var(--border-color) 70%, transparent); /* shared inner search input border. */
+  --search-input-radius: var(--radius-md, 6px); /* shared inner search input radius. */
+  --search-input-padding: 0 0 0 10px; /* shared text inset for search inputs; no top/right/bottom padding. */
+  --search-input-font-size: calc(14px * var(--font-scale, 1)); /* shared search input text size; widths/lengths remain surface-specific. */
+  --search-clear-size: var(--icon-btn-size-xs); /* shared compact clear "x" target size in search bars. */
+  --search-control-color: var(--text-secondary); /* shared color for compact clear/close controls inside search bars. */
+  --search-control-font-size: var(--font-control); /* shared glyph/font size for compact clear/close controls inside search bars. */
+  --search-control-radius: var(--radius-sm, 4px); /* shared compact clear/close control radius inside search bars. */
+  --search-control-opacity: 0.6; /* shared resting opacity for compact clear/close controls inside search bars. */
+  --search-control-hover-bg: var(--hover-bg); /* shared hover background for compact clear/close controls inside search bars. */
+  --search-control-transition: opacity var(--transition-speed); /* shared compact control transition inside search bars. */
+  --search-collapse-padding: 5px 6px; /* shared close-chevron control padding inside search bars. */
+  --search-collapse-divider: 1px solid var(--border-color); /* shared divider before the close-chevron control inside search bars. */
+  --search-collapse-margin-left: 2px; /* shared gap before the close-chevron divider inside search bars. */
+  --search-collapse-padding-left: 6px; /* shared padding after the close-chevron divider inside search bars. */
+  --search-collapse-icon-nudge: 2px; /* glyph-only nudge for close-chevron search controls; direction can still differ in markup. */
+  --breadcrumb-text-gap: var(--control-icon-gap); /* inline gap between breadcrumb segments in the gallery header. */
+  --breadcrumb-edit-text-gap: var(--icon-row-gap-dense); /* tighter inline gap while a breadcrumb segment is being renamed. */
+  --breadcrumb-edit-input-line-height: 1; /* keeps breadcrumb rename inputs from inheriting the taller tree rename input line box. */
+  /* 0, not 10px -- this used to reserve room for the underline (removed, owner call: no visible
+     underline, matching the tree/node rename input). At 0 the input's height now matches
+     .breadcrumb-current-node's own box (line-height:1, no extra height) exactly, so entering/
+     leaving edit mode no longer shifts the surrounding breadcrumb text vertically. */
+  --breadcrumb-edit-input-pad-block-end: 0px; /* no reserved space -- there's no underline to clear anymore. */
+  --breadcrumb-edit-input-height: calc(1em + var(--breadcrumb-edit-input-pad-block-end)); /* matches the one-line breadcrumb label box exactly, without inheriting the taller tree rename line box. */
+  --breadcrumb-edit-input-min-width: 32px; /* same floor as the shared tree/node rename input, scoped here for breadcrumb measurement. */
+  --breadcrumb-edit-input-pad-x: 0px; /* horizontal inset for inline breadcrumb rename inputs. */
+  --breadcrumb-edit-input-padding: 0 var(--breadcrumb-edit-input-pad-x) var(--breadcrumb-edit-input-pad-block-end); /* bottom component is 0 (see -pad-block-end above); top stays zero so the edit field remains vertically stable. */
+  /* No visible underline (owner call, matches the tree/node rename input's own no-underline resting
+     look) -- both kept as a TRANSPARENT 1px border rather than removed outright, so the field's box
+     height/box-sizing math is unchanged and it doesn't shift by 1px entering/leaving edit mode. */
+  --breadcrumb-edit-input-border: 1px solid transparent; /* resting border for inline breadcrumb rename inputs -- transparent, no visible underline. */
+  --breadcrumb-edit-input-focus-border: 1px solid transparent; /* focused border for inline breadcrumb rename inputs -- transparent, no visible underline. */
+  --breadcrumb-edit-input-bg: transparent; /* inline breadcrumb rename input background. */
+  --breadcrumb-edit-input-radius: 0; /* inline breadcrumb rename input radius. */
+  --tree-title-input-bg: var(--bg-secondary); /* flow title input background in the tree header. */
+  --tree-title-input-color: var(--accent-color); /* flow title input text/caret color in the tree header. */
+  --tree-title-input-border: 1px solid var(--border-color); /* flow title input resting underline. */
+  --tree-title-input-focus-border: 1px solid var(--accent-color); /* flow title input focus underline. */
+  --tree-title-input-autofill-shadow: 0 0 0 1000px var(--tree-title-input-bg) inset; /* masks Chromium autocomplete/autofill preview paint on the flow title input. */
+  --gallery-section-header-height: 28px; /* the gallery's Tag Bin and Slot Notes header bars (the clickable collapse rows) — own variable, ONE height for both bars (they were two duplicated literals). Trial bump 26 -> 28px (owner, exploring more breathing room around the Manage/Slot/Stack buttons — --gallery-header-btn-height stays 22px on purpose, so the extra 2px lands as padding, not bigger buttons); this DELIBERATELY no longer equals --collapsed-media-sliver-height (still 26px, untouched) — that equality was a nice-to-have, not a hard constraint. Applies in EVERY density (density files no longer override this). */
+  --gallery-section-header-pad: 1px 4px 1px 8px; /* padding shared by both gallery section header bars — sized so the 22px header buttons fit the 26px bar (26 − 2×1px border − 2×1px pad = 22) */
+  --gallery-section-header-radius: var(--radius-md, 6px); /* gallery section header corner radius — echoes the tree selected-node pill's 6px look (owner-decided); top corners only while expanded, all four when collapsed. Own variable, not shared with --radius-md consumers like --dropdown-radius */
+  --gallery-header-btn-height: 22px; /* the Manage / Slot / Stack buttons inside the gallery section headers — own variable, not shared with --icon-btn-size-sm. 22px = the exact interior of the unified 26px header bar (was 24px when the bar was 32px); Dense still steps to 20px. */
+  --gallery-header-btn-radius: var(--radius-sm, 4px); /* Manage / Slot / Stack corner radius — owner retuned 6px → 4px (2026-07-06); the header BARS stay 6px on their own variable. The sliding pill nests at calc(this - 2px). */
+  --gallery-header-btn-width: 64px; /* Manage / Slot / Stack fixed width — the family's last raw number, tokenized (owner, 2026-07-07); the preview-modal twin overrides to 76px in its scale modifier */
+  --checkbox-size: 16px; /* ONE size for every checkbox app-wide (the custom-drawn themed checkbox); radios have their own 16px in their global rule */
+  /* Tag chips are their OWN object type in this app — they size themselves, they don't borrow
+     the square icon-button's variables (they did until 2026-07-06; values matched by coincidence). */
+  --tag-chip-height: 22px; /* every tag chip/pill: gallery Tag Bin chips, breadcrumb filter chips, assign-tags pills, tree-filter flyout chips and their row controls — own variable, not shared with --icon-btn-size-sm even though the value currently matches */
+  --tag-chip-radius: var(--radius-sm, 4px); /* tag-chip corner radius — own variable, not shared with --icon-btn-radius */
+  --tag-chip-pad-x: 10px; /* chip side padding; removable chips narrow the ×-side to calc(this - 2px) */
+  --tag-chip-font-size: calc(12px * var(--font-scale, 1)); /* chip label size */
+  --tag-chip-remove-size: 14px; /* the round × remove target inside a removable chip */
+  --gallery-tag-chip-pad-y: 3px; /* vertical padding for in-gallery tag chips, which grow with wrapped text instead of using --tag-chip-height directly (see .image-gallery .gallery-tag-chip in tags.css) */
+  --tag-badge-size: 16px; /* the tag object's MINI size level: the square per-tag badge on tree query nodes (owner blessed as the tag type's second tier, 2026-07-07) */
+  --tag-chip-fill-mix: 22%; /* .gallery-tag-chip/.breadcrumb-filter-chip/.assign-tags-tag-pill's resting fill: color-mix(in srgb, var(--tag-accent) N%, var(--bg-tertiary)). Shared with --tag-chip-fill-mix-hover below — same value as of the 2026-07-10 WCAG fix (see that token's comment for why). */
+  --tag-chip-fill-mix-hover: 22%; /* the SAME tag chips' hover/focus-visible fill mix. OWNER-DECIDED FIX (2026-07-10, closing a §9 follow-up flagged 2026-07-09): was 32% (a +10pp bump over the 22% resting mix). CSS_SPACING_SHADOW_DESIGN_EXPLORATION.md §9 proposed ~26-28% would clear all 20 WCAG-AA failures (4 themes x pale swatches, hover state only, near-misses 3.94-4.50:1) — that estimate was WRONG; verified with real browser color-mix() math (Playwright/Chromium, not an approximation) that 28% still leaves 7 failures and 26% leaves 4, with the gap only fully closing at 22%, i.e. the same value as the resting mix. VISIBLE CHANGE disclosed: the hover-state FILL no longer darkens beyond resting — hover intensity now comes entirely from the border (already jumping from the resting 70% mix to full var(--tag-accent) on hover, unchanged by this fix), not from the fill. This was the owner's explicit choice after being shown the real numbers (a partial fix at ~25-26% was also on the table, clearing 16/20 but leaving 4 fern-1 near-misses). */
+  --disabled-opacity-control: 0.45; /* disabled chrome/icon buttons app-wide (playlist chrome, browser chrome, rail toggles, tag-bin chevron, toggle switches) — was 8 drifting values 0.32-0.45 (owner: two tiers, 2026-07-07) */
+  --disabled-opacity-field: 0.55; /* disabled form fields, selects, AND modal/AI action buttons (owner-decided tier) — was 0.5/0.55/0.58/0.6/0.7/0.72 drift */
+  --focus-ring: 0 0 0 1px var(--focus-shadow); /* ONE keyboard-focus ring app-wide — owner-decided 1px (the 2px sites were drift); color stays per-theme via --focus-shadow */
+  --focus-ring-high-contrast: 0 0 0 2px var(--bg-primary), 0 0 0 5px var(--focus-shadow); /* themes.css's high-contrast-dark/-light/-yellow :focus-visible amplified ring — deliberately wider/2-layer (inner bg-primary moat + 5px outer ring) for accessibility, NOT --focus-ring's own 1px geometry. Named per the owner's 2026-07-10 wave-2 closeout review; same exact values, kept its own token rather than merged. */
+  --cta-row-gap: 10px; /* gap between the LARGE action buttons inside the big-button modals (AI Assist chat row AB/mic/Send, spell-check Check/Cancel + review footers, image-gen actions, transcribe rows, preview/summary footers) — own variable, not shared with --action-row-gap even though the value currently matches */
+  --confirm-modal-btn-gap: 8px; /* gap between the confirmation dialogs' footer buttons (#modal Done/Cancel/danger rows) — owner tightened 10px → 8px (2026-07-06); own variable, deliberately separate from --cta-row-gap */
+  --modal-row-gap: 8px; /* ONE vertical rhythm between stacked rows in the preview modal's notes column (title -> tag row -> toolbar) — owner tightened 15px -> 8px (2026-07-06); each row had been doing its own thing */
+  --modal-row-gap-tight: 6px; /* tighter stacked-row rhythm within a modal — a card's internal label/legend rows, a tab-strip subtitle's own internal lines. Own tier below --modal-row-gap, not a fraction of it, so it can be retuned independently */
+  --modal-row-gap-loose: 12px; /* looser stacked-row rhythm within a modal — cards/panels with more visual weight than a plain text row (transcribe/generate result panels, review footers approaching their own section). Own tier above --modal-row-gap */
+  --modal-row-gap-loosest: 10px; /* RESERVED, not yet applied anywhere (owner: holding this slot ahead of a future reskin pass, 2026-07-11) — do not adopt without a real hardcoded value that doesn't cleanly round to -tight/base/-loose */
+  --modal-column-gap: 24px; /* horizontal gap between side-by-side columns inside a modal body (preview media | notes). First live application; density tiers retune this in dropin/01-density-compact.css */
+  --gallery-pack-gap: 24px; /* gap between canvas/gallery pack slots (horizontal row & wrap). Density retunes this so pack spacing tracks the user's density setting. */
+
+  /* ── Infinite canvas chrome (canvasGalleryView reposition mode) ─────────────────
+     Prefer these over literals in the injected canvas style sheet. Density can
+     retune inset/gap; theme owns color mixes via --bg-* / --accent-*. */
+  /* Single density-aware margin used for:
+       • left/right edge inset of toolbar + zoom pill
+       • gap scrubber bottom → toolbar top
+       • gap toolbar bottom → first slot row (Fit safe-rect)
+     Aliases --header-gap so Comfy/Compact/Dense all retune it. */
+  --canvas-chrome-inset: var(--header-gap); /* 12px Comfy / 8 Compact / 6 Dense */
+  --canvas-bc-overlap-fallback: 56px; /* used only until JS measures #selected-node-name */
+  --canvas-scrubber-rail-h: 26px; /* #gallery-top-scrubber height (gallery-scrubber.css) */
+  /* Gap breadcrumb bottom → scrubber top — tracks density with header-gap */
+  --canvas-scrubber-under-bc-gap: calc(var(--header-gap) / 2); /* 6 / 4 / 3 */
+  /* Shared canvas-edge gap for gallery scrubbers:
+       X: distance from top of the canvas chrome band to the horizontal rail
+       Y: distance from right edge of the canvas to the vertical rail
+     Keep these equal by construction — one token, both axes. */
+  --canvas-scrubber-canvas-gap: var(--canvas-scrubber-under-bc-gap);
+  /* Full vertical reserve under breadcrumbs while scrubber is visible:
+       under-bc gap + rail + chrome inset (the scrubber→toolbar gap).
+     Toolbar top = bc-overlap + this band (no extra chrome-inset). */
+  --canvas-scrubber-band: 0px; /* 0 until body.gallery-top-scrubber-visible */
+  --canvas-scrubber-band-visible: calc(
+    var(--canvas-scrubber-under-bc-gap) + var(--canvas-scrubber-rail-h) + var(--canvas-chrome-inset)
+  );
+  /* Y (side) scrubber — right margin band when body.gallery-side-scrubber-visible.
+     Band only shifts zoom/HUD left. X scrubber stays full width (Y starts under X).
+     Band width = canvas-edge gap + rail so HUD clears the inset Y rail. */
+  --canvas-side-scrubber-rail-w: var(--canvas-scrubber-rail-h); /* same cross-size as X rail height */
+  --canvas-side-scrubber-band: 0px; /* 0 until Y rail visible — used by zoom/HUD only */
+  --canvas-side-scrubber-band-visible: calc(
+    var(--canvas-scrubber-canvas-gap) + var(--canvas-side-scrubber-rail-w)
+  );
+  --canvas-slot-radius: var(--radius-2xl, 12px); /* card corner — same family as modal panels */
+  --canvas-viewport-radius: var(--radius-xl, 10px); /* canvas pane's own bottom corners where the grid meets the surrounding chrome (bug report 2026-09-14) — own variable, not shared with --canvas-slot-radius even though both round a large surface, since a viewport edge and a card corner are different roles */
+  --canvas-slot-pad: 2px; /* pad so accent border sits off media edge (was 1px; owner: 2px breathing room) */
+  --canvas-slot-border: 1px solid var(--border-light); /* resting card border */
+  --canvas-slot-shadow: var(--elev-floating); /* resting card elevation */
+  --canvas-slot-hover-glow: 0 0 12px 2px var(--focus-shadow); /* accent bloom on hover (plus elev) */
+  --canvas-slot-drag-glow: 0 0 20px 4px var(--focus-shadow); /* stronger bloom while dragging */
+  --canvas-slot-focus-glow: 0 0 16px 3px var(--focus-shadow); /* front-focused / keyboard focus bloom */
+  /* A dragged card must clear every other slot's stacking context, including
+     temporary merge/drop-glow layers. This is intentionally below the browser
+     maximum but above all canvas chrome and slot-local layers. */
+  --canvas-slot-drag-z: 2147483000;
+  --canvas-slot-chrome-z: 6; /* expand chevron / slot-local chrome above media */
+  --canvas-title-scrim: linear-gradient(to top, rgba(0, 0, 0, 0.72), transparent); /* title bar over media — theme-invariant for legibility */
+  --canvas-title-pad: 6px 10px; /* title bar inset over media */
+  --canvas-badge-bg: var(--stack-overlay-badge-bg-resting); /* stack count pill on clone-mode cards */
+  --canvas-badge-inset: 6px; /* stack badge offset from card corner */
+  --canvas-badge-pad: 2px 8px; /* stack badge padding */
+  --canvas-icon-size: 28px; /* empty-slot glyph size in clone mode */
+  --canvas-notes-selection-bg: color-mix(in srgb, var(--accent-color) 34%, transparent); /* notes text selection fill on canvas */
+  /* Canvas slot-color picker (imageContextMenu.js's "Slot Color" row): a FIXED 6-color palette,
+     deliberately not theme-tokenized like --accent-color — the whole point is a small, stable set
+     of hues a user can tell apart across a dense board and reliably recognize slot-to-slot, which a
+     per-theme-shifting palette would defeat. Chosen to (a) stay clear of the app's amber accent band
+     (~30-40° hue, e.g. default theme's --accent-color: #ff9500) so a colored slot never reads as
+     "the accent", and (b) stay >=30° apart from each other on the hue wheel so no two swatches are
+     confusable at a glance. Consumed by canvasGalleryView.js as entry.canvas.color (a plain color
+     string persisted per gallery-slot entry, not a var() reference) — these tokens are the picker
+     swatch fills only. */
+  --canvas-slot-swatch-red: #f16d75;
+  --canvas-slot-swatch-green: #3ecf8e;
+  --canvas-slot-swatch-blue: #5b8def;
+  --canvas-slot-swatch-violet: #a78bfa;
+  --canvas-slot-swatch-pink: #ec6cb9;
+  --canvas-slot-swatch-cyan: #28d1e8;
+  --canvas-expand-bar-h: 18px; /* collapsed-media expand chevron hit height */
+  --canvas-expand-bar-h-hover: 22px;
+  --canvas-expand-bar-margin: 4px 0 6px 0;
+  --canvas-slot-under-stack-mt: var(--slot-under-stack-gap); /* gap between media tile and title/tags/notes — joins the slot rhythm (was var(--list-row-gap), same 8px at Comfy). DERIVED ON :root, so density body classes can't retune it here — the density blocks RESTATE it (see 01-density-compact.css) to re-derive at the body where the stepped value lives. */
+  --canvas-glass-bg: color-mix(in srgb, var(--bg-primary) 62%, transparent); /* breadcrumb frost over canvas */
+  --canvas-glass-bg-interacting: color-mix(in srgb, var(--bg-primary) 92%, transparent); /* solidify glass while panning */
+  --canvas-glass-blur: var(--modal-glass-blur, 10px);
+  --canvas-glass-saturate: 1.2;
+  --canvas-overlay-bg: color-mix(in srgb, var(--bg-primary) 78%, transparent); /* Fit toolbar / zoom pill fill */
+  --canvas-overlay-bg-soft: color-mix(in srgb, var(--bg-primary) 72%, transparent); /* hint pill */
+  --canvas-overlay-border: 1px solid var(--border-color);
+  --canvas-overlay-radius: var(--radius-md, 6px); /* was --icon-btn-radius (4px); bumped for a softer toolbar/hint-pill corner (bug report 2026-09-14) */
+  --canvas-pill-radius: var(--radius-full, 999px);
+  --canvas-hint-bottom-extra: 6px; /* extra lift of hint pill above chrome inset */
+  --canvas-chrome-z: 40; /* toolbar / zoom under breadcrumbs */
+  --canvas-bc-z: 50; /* glass breadcrumbs above chrome */
+  --canvas-viewport-z: 1; /* clone-mode container baseline */
+  --canvas-overlay-local-z: 2; /* clone-mode toolbar / title z within card */
+  --modal-column-gap-tight: 6px; /* RESERVED tighter column gap — not yet applied */
+  --modal-column-gap-loose: 12px; /* RESERVED looser column gap — not yet applied (base is already the wide media/notes gap) */
+  --icon-glyph: 14px; /* the standard chrome-button glyph size (icon-btn family, file-menu icons, playlist/settings button icons) */
+  --icon-glyph-sm: 11px; /* small badge/status glyphs (node badges, status footer, pin, edit-tags, tag-chip icons) */
+  --font-meta: calc(11px * var(--font-scale, 1)); /* secondary/meta text beside controls: shortcuts, counts, statuses, timestamps, hints, badges — scales with the user font-size setting */
+  --font-micro: calc(10px * var(--font-scale, 1)); /* the smallest legible tier: dense badges/labels (e.g. missing-media badge, micro captions) */
+  --font-control: calc(12px * var(--font-scale, 1)); /* the ONE control-label size: button/menu/chip/tab/toggle labels app-wide — owner folded the 13px drift down to 12px (2026-07-07); scales with the user font-size setting */
+  --font-approval-card-body: calc(12px * var(--font-scale, 1)); /* body/detail text inside Joe's flow-mutation approval card (.flow-mutation-approval-card): failures, placement note, quoted memory text, revision note. Own role — a specific card's content, not the app-wide meta/control tiers. */
+  --font-scheduler-review-body: calc(12px * var(--font-scale, 1)); /* secondary text in the scheduler review card family: task meta/headline, held-state note, warning, review lines, run-history rows. Own role — a specific card family's content. */
+  --font-hover-tooltip-body: 12px; /* body text inside the app's dark hover-reveal info tooltips (.missing-info-card, .image-info-card). NOT scale-aware on purpose: both tooltips' backgrounds are still hardcoded rgba(0,0,0,...) rather than theme tokens — a separate, larger non-themed-surface issue tracked for a future pass; this token only closes the font-size drift between the two, not the color/theming gap. */
+  --tooltip-max-width: 240px; /* the app's ephemeral text-bubble tooltip family (data-tooltip attribute bubbles, the audio-play tooltip, the stack keyboard-help popup, the tree status-filter warning) — dominant existing value; 2 sites drifted to 260px, folded down. Own role, NOT shared with dropdown/menu popovers like .status-footer-brain-menu — a selectable-list menu is a different object than a transient text bubble even where a width coincidentally matches. */
+  --control-height-sm: 28px; /* the SMALL control tier app-wide: chat-header buttons (Memories/Compact/New/History), find/tab-group inputs, PDF toolbar controls, image-history row buttons, assign-tags color editor, audio-player bar, scrub control — owner folded the 30px drift down to the dominant 28px (2026-07-07) */
+  /* Slot title field padding.
+     Top: keep glyphs clear of the card’s top edge (do not under-pad).
+     Bottom: a bit more than the old 4px so the underline isn’t glued to the text.
+     Keep the bottom delta modest — a large jump overgrew the field and clipped
+     ascenders at the card top on canvas. */
+  --gallery-slot-title-pad-top: 8px; /* was 6px — more headroom under card chrome */
+  --gallery-slot-title-pad-x: 8px;
+  --gallery-slot-title-pad-bottom: 8px; /* was 4px; modest air under glyphs (not 10px) */
+  --gallery-slot-title-padding: var(--gallery-slot-title-pad-top) var(--gallery-slot-title-pad-x) var(--gallery-slot-title-pad-bottom);
+  --gallery-tag-row-pad-x: 6px; /* left/right inset for the tags row so chips don't touch the slot's outside border */
+  /* Gap between title field underline and media tile (title-at-top). Density retunes. */
+  --gallery-title-media-gap: 3px; /* Comfy 3 / Compact 2 / Dense 1 */
+  /* Canvas slot enumerator (left of title). Width is overridden per-gallery by JS
+     from measured "N." glyph width so "1." and "1000." both fit without clipping title.
+     OWNER TUNING KNOBS (also applied in canvasGalleryView.js inject CSS):
+       --canvas-slot-enum-width   → reserved gutter (JS sets px; floor here)
+       --canvas-enum-title-gap    → air between enum box RIGHT edge and title field LEFT edge
+       --canvas-title-pad-left    → padding inside the title field before the first glyph
+       --canvas-slot-pad          → unit padding; enum left offset starts from this (1–2px off border)
+       --canvas-enum-offset-x     → EXTRA horizontal nudge of the "N." glyph ALONE (see below)
+       --canvas-enum-offset-y     → EXTRA vertical nudge of the "N." glyph ALONE (see below)
+       --gallery-slot-title-pad-top → title glyph vertical inset (enum should match this) */
+  --canvas-slot-enum-width: 1.25em; /* floor for single-digit "1." — JS sets px from live measure */
+  --canvas-enum-title-gap: 4px; /* small air between the "N." gutter and the title field's left edge — 0px read as crowded against pad-left alone */
+  /* Enumerator-only nudge. These move the "N." glyph WITHOUT touching --canvas-slot-pad
+     (which also pads the card/media) and WITHOUT moving the title field: the title's left
+     edge is computed from slot-pad + enum-width + enum-title-gap, none of which these touch.
+     +x = right, +y = down. Owner knob for optically centering "1." against the title text. */
+  --canvas-enum-offset-x: 5px;
+  --canvas-enum-offset-y: 2px;
+  /* Title text inset inside the field — same as normal title pad-x (was over-padded at 12px) */
+  --canvas-title-pad-left: var(--gallery-slot-title-pad-x, 8px);
+  /* Drag-grip reserved strip in the title band's top-right corner — a place to grab a
+     card that isn't the title field (excluded from card-drag) or the media tile (opens
+     preview). Title field's right inset backs off by this much to make room. */
+  --canvas-slot-drag-grip-width: 20px;
+  --text-input-height: calc(
+    var(--gallery-slot-text-font-size, 14px) * 1.3
+    + var(--gallery-slot-title-pad-top)
+    + var(--gallery-slot-title-pad-bottom)
+  ); /* ONE height for single-line text inputs — anchored on the slot title field */
+  --dropdown-height: 32px; /* ONE height for every select/dropdown app-wide — owner-anchored on the image-gen Format/Background look */
+  --dropdown-radius: var(--radius-md, 6px); /* owner-anchored to 6px — matches the tree's selected-node highlight and the slot notes field */
+  --dropdown-bg: var(--bg-input); /* ONE background for every select/dropdown — owner-anchored on the settings panel's select */
+  --dropdown-chevron-inset: 6px; /* ONE right-edge offset for every dropdown's chevron icon — modeled on the gallery-width (#image-width-select) pulldown */
+  --dropdown-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2.2 4.2 6 8l3.8-3.8' fill='none' stroke='%23999' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); /* ONE chevron icon for every dropdown app-wide — modeled on the gallery-width (#image-width-select) pulldown, NOT the filled-triangle glyph used elsewhere */
+  --rect-btn-height: 32px; /* class-3: rectangular (non-square) buttons app-wide — own variable, not shared with --icon-btn-size/--dropdown-height even though the value currently matches */
+  --rect-btn-radius: var(--radius-md, 6px); /* class-3 rectangular-button radius — own variable, not shared with --dropdown-radius even though the value currently matches */
+  --modal-footer-btn-height: 32px; /* min-height floor for modal FOOTER action buttons: the generic dialog's Done/Cancel (#modal-button-container), the spell-check review footers' Apply/Cancel, the markdown-review Save/Preview — own variable, not shared with --rect-btn-height even though the value currently matches */
+  --modal-footer-btn-radius: var(--radius-md, 6px); /* modal-footer action-button corner radius — own variable, not shared with --rect-btn-radius/--dropdown-radius even though the value currently matches */
+  --cta-btn-height: 44px; /* the LARGE prominent-action tier: chat Send + mic + AB row, spell-check Check/Cancel, image-gen Generate, Transcribe and its Copy/Save/Cancel row — own variable, deliberately taller than --modal-footer-btn-height */
+  --modal-section-header-height: 36px; /* the AI modal's section/mode header rows (spell-check/generate/transcribe headings, review headers, action footer) — one consistent role, named */
+  --browser-tab-height: 46px; /* embedded browser view's tab strip row — own variable, not shared with --modal-section-header-height even though both are header/strip rows, since the browser tab strip carries its own favicon+close-button chrome */
+  --ai-chat-header-control-height: 32px; /* ONE height for every control on the AI Assist modal's "Chat with Joe" rail (Permissions/Model dropdowns, Memories/Compact/New/History pills, the round "?" info toggle) — scoped to this one row only, not shared with --dropdown-height/--control-height-sm even though the value currently matches; those two stay app-wide for every OTHER dropdown/small-control elsewhere */
+  --cta-btn-radius: var(--radius-xl, 10px); /* prominent-CTA corner radius — own variable, not shared with --modal-footer-btn-radius */
+  --toggle-switch-height: 24px; /* pill toggle-switch track height — own variable, not shared with --icon-btn-size/--dropdown-height */
+  --toggle-switch-inset: 4px; /* gap between the track edge and the knob, on every side */
+  --toggle-switch-width: calc(var(--toggle-switch-height) * 11 / 6); /* track width — same proportions as the original 60x28/68x32 tracks (width ≈ 1.83x height) */
+  --toggle-switch-knob-size: calc(var(--toggle-switch-height) - (var(--toggle-switch-inset) * 2)); /* knob diameter fills the track minus the inset on both sides */
+  --toggle-switch-travel: calc(var(--toggle-switch-width) - var(--toggle-switch-knob-size) - (var(--toggle-switch-inset) * 2)); /* distance the knob slides when checked */
+  --panel-card-radius: var(--radius-md, 6px); /* corner radius for chrome/notice/preview cards inside panels: settings warning cards, the settings custom-placeholder preview card, the node-theme notice, and the gallery's locked-node privacy card — own variable, not shared with --dropdown-radius even though the value currently matches */
+  /* Container padding categories (exploration doc §6 — padding consolidation batch). */
+  --pad-compact: 3px 8px; /* compact controls: chips, pills, badges */
+  --pad-menu-item: 8px 12px; /* clickable menu row */
+  --pad-menu: 8px; /* menu/popover container gutter */
+  --pad-card: 15px; /* roomy self-contained card (settings cards) */
+  --pad-card-compact: 10px 12px; /* compact bordered decision card (approval cards) */
+  --pad-modal: 20px; /* shared modal body inset — AI Assist panel, Preview/Summary #image-modal-body, thumbnail #stack-preview-grid-container, generic #modal>div, crop panel body path */
+  /* Viewport edge clearance for floating modal windows (space between modal chrome and the
+     screen edge when clamping/sizing). Density direction matches the rest of the app:
+     Comfy (this base) is roomiest, Compact tighter, Dense tightest — NOT inverted.
+     JS reads this via FlowJoeModalSurfaceState.getViewportMargin(). */
+  --modal-viewport-margin: 16px;
+  /* Vertical icon-menu (rail) family — the app's two collapsible vertical menus: the Settings
+     panel's section menu (.settings-tabs/.settings-tab, styles-settings.css) and the global left
+     app rail (.app-rail/.app-rail-item, appRail.css). Both menus are the SAME component shape
+     (icon + label row, collapses to icon-only), so they share one set of metrics here rather than
+     each carrying its own literals — that pairing is load-bearing: the two are meant to read as
+     dimensionally identical, and duplicated literals silently drift. Values below are the
+     pre-existing .settings-tab/.settings-tabs numbers, lifted verbatim (no visual change). */
+  --rail-menu-pad-block-start: 8px; /* menu container gutter — top */
+  --rail-menu-pad-inline: 8px; /* menu container gutter — left/right, expanded */
+  --rail-menu-pad-inline-collapsed: 6px; /* menu container gutter — left/right, collapsed (icon-only) */
+  --rail-menu-pad-bottom: 10px; /* menu container gutter — bottom (the app rail adds the status-footer height on top of this) */
+  --rail-bottom-group-pad-bottom: 6px; /* app rail ONLY: the exact visible gap between the Storage/Settings group and the status footer (appRail.css no longer adds --status-footer-height on top — .container's height math already stops the rail at the footer's top edge) */
+  --rail-menu-pad: var(--rail-menu-pad-block-start) var(--rail-menu-pad-inline) var(--rail-menu-pad-bottom); /* menu container gutter, composed */
+  --rail-menu-row-gap: 2px; /* vertical gap between menu rows */
+  --rail-item-pad: 9px 10px; /* one clickable menu row */
+  --rail-item-gap: 10px; /* icon -> label gap inside a row */
+  --rail-item-font-size: calc(13px * var(--font-scale)); /* row label size */
+  --rail-item-font-weight: 500; /* row label weight, resting */
+  --rail-item-font-weight-active: 600; /* row label weight, active row */
+  --rail-icon-opacity: 0.85; /* row glyph resting opacity (1 on the active row) */
+  --rail-item-letter-spacing: 0.01em; /* row label tracking */
+  --rail-icon-col: 18px; /* fixed icon column width, so labels align down the column */
+  --rail-icon-size: calc(15px * var(--font-scale)); /* rail glyph size — deliberately its own tier, 1px above --icon-glyph (14px) and scale-aware, matching .settings-tab-icon */
+  --rail-sep-margin: 8px 4px; /* group separator inset within the menu */
+  --rail-sep-opacity: 0.6; /* group separator hairline opacity */
+  --rail-active-bar-width: 3px; /* accent left-bar on the active row */
+  --rail-active-bar-height: 60%; /* accent left-bar height, relative to the row */
+  --rail-collapse-pad: 4px 6px; /* the menu's collapse-chevron button */
+  --rail-collapse-margin: 0 0 4px; /* gap below the collapse chevron, before the first row */
+  --rail-collapse-opacity: 0.55; /* chevron resting opacity (1 on hover) */
+  --rail-collapse-icon-size: calc(13px * var(--font-scale)); /* chevron glyph size */
+  /* Shared modal-shell chrome tokens (docs/REFERENCE — modal-shell spec). Aliases of existing
+     tokens (header background/close-btn-size/body padding/header-gap) are intentionally NOT
+     restated here — reference the originals directly (--modal-glass-titlebar-background,
+     --icon-btn-size, --pad-modal, --header-gap). */
+  --modal-panel-radius: var(--radius-2xl, 12px); /* shared modal/panel outer corner radius — AI Assist, Preview/Summary, thumbnail, crop, generic #modal, playlist */
+  --modal-panel-border: 1px solid var(--border-color); /* shared modal/panel border — same shells as --modal-panel-radius */
+  --modal-header-padding: 8px 12px 8px 12px; /* shared modal titlebar padding (AI Assist / Preview / Summary / thumbnail / playlist) */
+  --modal-header-min-height: var(--modal-section-header-height); /* shared modal titlebar min-height (aliases --modal-section-header-height, currently 36px) */
+  --modal-title-font-size: 1.1rem; /* shared modal title font size */
+  --modal-title-font-weight: 600; /* shared modal title font weight */
+  /* Shadow elevation ladder — four deliberate levels (exploration doc §6 slice 3). Each level's
+     color derives from the per-theme shadow tokens (themes.css core set), so light themes soften
+     automatically instead of inheriting dark-theme blacks. */
+  --elev-resting: 0 1px 3px color-mix(in srgb, var(--shadow-heavy) 35%, transparent); /* chat bubbles, resting cards */
+  --elev-raised: 0 2.5px 10px var(--shadow-medium); /* tooltips and raised hints (today's tooltip, kept) */
+  --elev-floating: 0 8px 24px color-mix(in srgb, var(--shadow-heavy) 60%, transparent); /* menus, popovers, dropdowns, drag ghosts */
+  --elev-overlay: 0 18px 48px var(--shadow-heavy); /* modals, floating panels, the terminal */
+  --confirm-btn-shadow: var(--elev-floating); /* raised modal-footer confirm buttons: spell-check review Save/Apply (.confirm-button), the generic #modal confirm, the danger-confirm drop layer. OWNER OVERRIDE (2026-07-09 taste-call review): a prior slice kept this its own role, "buttons cast differently from surfaces" — owner said fold it into the ladder anyway, snapped onto the nearest rung (--elev-floating shares this token's 60% shadow-heavy alpha). VISIBLE CHANGE disclosed: shadow grows from 0 4px 12px to 0 8px 24px (softer, wider spread). */
+  --media-shadow: var(--elev-overlay); /* the picture itself inside the preview modal (#image-modal-img) AND wireframeModal.js's inline .wireframe-reference-image style — a media drop shadow, not a surface. OWNER OVERRIDE (2026-07-09 taste-call review): a prior slice kept this its own role — owner said fold it into the ladder anyway, snapped onto the nearest rung (--elev-overlay shares this token's 100% shadow-heavy alpha). VISIBLE CHANGE disclosed at both sites: shadow grows from 0 10px 40px to 0 18px 48px (larger Y-offset, larger blur — same overall weight class, a marginally heavier look). */
+  --gallery-slot-hover-lift-shadow: var(--elev-overlay); /* the gallery slot's own hover-lift (styles-gallery-notes.css's .image-frame:hover/.add-image-slot:hover translateY(-2px) family, 6 sites incl. the :has()-unsupported fallback). OWNER OVERRIDE (2026-07-09 taste-call review): a prior slice kept this its own role, "tied to a hover TRANSFORM, not a resting/floating/overlay surface state" — owner said fold it into the ladder anyway; --elev-overlay is the nearest rung by spread magnitude (its 100% alpha is heavier than this token's original 80%, the next rung down --elev-floating's 60% is further off in the other direction). VISIBLE CHANGE disclosed: shadow grows from 0 10px 30px/80% to 0 18px 48px/100% — a noticeably heavier, darker hover-lift shadow on gallery slots. */
+  --tree-focus-accent-color: #ffb164; /* styles-gallery-notes.css's .tree-has-focus::after sweep bar — "the tree sidebar currently owns focus" transient cue (imageStackListeners.js). Deliberately its OWN token, distinct from --badge-locked-gold/--warning-color: neither existing gold/amber token shares this role (a transient focus-follow indicator, not a protective-state badge or a warning). Its cyan sibling concept, .gallery-has-focus (same file), was found to have ZERO live callers anywhere in the codebase (only a .remove(), no .add()) — left untokenized as confirmed-dead CSS, not adopted here. */
+  --gallery-warm-highlight-tint: #f7ebd9; /* the gallery "glass media-control" icon tint (styles-gallery-vertical.css + stack-styles.css, both consuming the shared --gallery-glass-control-border-active recipe) and its 2 near-identical siblings, consolidated onto ONE base value: #f7ebd9/#fff4de/#f5e8cc were all within ~10-13 RGB points of the chosen base value (a warm cream/parchment tone), confirmed genuine drift from separate authorship, not 3 deliberately distinct hues — each site KEEPS its own existing mix percentage (12%/18%/4%), only the base hue is now shared. Theme-invariant by design (same shape of reasoning as --stack-nav-active-color/--ai-accent): a fixed warm highlight, not per-theme. */
+  --gallery-embed-poster-caption-text: #e7eaf0; /* styles-gallery-vertical.css's .gallery-embed-virtual-poster-caption — text drawn over a dark scrim atop a parked/virtualized embed's poster image. Deliberately theme-invariant, same reasoning already established for urlMediaView.js's text-on-photo-scrim literals: --text-primary varies per theme and would be unreadable on some themes' near-white values over a dark scrim. Sole occurrence in this file; named for discoverability, not because of cross-file duplication (embedPayloadResolver.js's 4 sites sharing this exact hex are isolated iframe srcdoc documents with no access to app custom properties, a separate, already-disclosed non-bug). */
+  --white-overlay-hover: rgba(255, 255, 255, 0.1); /* buttons.css's .copy-notes-btn:hover background tint — a translucent-white "lighten whatever's beneath it" hover overlay, theme-invariant by construction (unlike --hover-bg, which is a solid per-theme color; these compose additively over any background). This EXACT literal (rgba(255,255,255,0.1)) also appears at 11+ more sites across AIAssistModal.css/stack-styles.css/styles-gallery-notes.css/styles-gallery-horizontal.css/AIComponents.css as the same hover/overlay background use, plus 1 more site in styles-tree.css inside a multi-layer inset box-shadow (same literal, different role — a highlight edge, not a hover background) — a real, widespread, pre-existing idiom, not coincidence. Only the buttons.css site (this campaign's specifically-named deferred item) is adopted here; the wider cross-file consolidation is real future work, not attempted in this slice to avoid uncontrolled scope creep. */
+  --browser-tab-shadow: 0 -1px 8px rgba(0, 0, 0, 0.18); /* styles-browser.css's universal tab-strip bottom-edge shadow (8 byte-identical sites: plain/grouped/audible/active/selected tabs, tab-group-label pills resting+hover). Upward-cast (-1px Y-offset), NOT a downward surface shadow, so it doesn't match any --elev-* rung's shape (all 4 rungs cast down); a structurally distinct role, same class of "own token, not a ladder rung" as --confirm-btn-shadow/--gallery-slot-hover-lift-shadow. Flat black regardless of theme (not derived from --shadow-heavy) — preserves the exact prior literal, zero visual change; making it per-theme would be a separate, undisclosed design decision not made here. */
+  --lasso-border: 1px solid color-mix(in srgb, var(--selection-bg) 85%, #ffffff 15%); /* styles-browser.css's .gallery-lasso-rect/.tree-lasso-rect selection-drag rectangle border — byte-identical at both sites. Already fully theme-derived (a color-mix on the per-theme --selection-bg token); only the recipe itself was repeated verbatim, not a raw hex. Named for dedup, zero visual change. */
+  --lasso-glow: 0 0 0 1px color-mix(in srgb, var(--selection-bg) 45%, transparent); /* styles-browser.css's .gallery-lasso-rect/.tree-lasso-rect outer glow ring — byte-identical at both sites, same reasoning as --lasso-border. */
+  --lasso-fill: color-mix(in srgb, var(--selection-bg) 28%, transparent); /* styles-browser.css's .gallery-lasso-rect/.tree-lasso-rect fill. OWNER DECISION (2026-07-09 taste-call review): a prior slice left these as 2 separate literals (28% gallery vs 22% tree) as an unreviewed judgment call — owner reviewed and said unify to one value, using the gallery rect's 28%. VISIBLE CHANGE: the tree lasso rect's fill opacity increases from 22% to 28% of --selection-bg (6 percentage points more opaque during tree drag-select). */
+  --text-on-danger: #fff; /* text/icon color for content drawn on a var(--danger-color) fill (styles-browser.css's .storage-pressure-banner). Same SHAPE of reasoning as --text-on-accent (a per-theme token in themes.css, since --accent-color varies per theme) but this one is a single GLOBAL token here, not 40 per-theme entries — --danger-color itself is defined ONCE, globally, with no per-theme overrides anywhere in themes.css, so there is no live contrast risk today; this is a naming/consistency improvement, not a bug fix. If --danger-color is ever made per-theme, this token would need the same per-theme treatment as --text-on-accent got. */
+  --stack-overlay-badge-bg-resting: rgba(0, 0, 0, 0.6); /* stack-styles.css's .image-stack-indicator (gallery thumbnail) + .image-modal-stack-chip (preview-modal twin) — the "N images" stack-count pill badge, duplicated across 2 contexts. Deliberately theme-invariant (a fixed dark scrim that must stay legible over unpredictable media regardless of theme), same rationale as --gallery-meta-text-color — NOT a safe adopt of --shadow-heavy/-medium (those swing per-theme, would visibly change this badge's look, a real regression not a merge). OWNER OVERRIDE (2026-07-09 taste-call review): .image-move-indicator's own rgba(0,0,0,0.4) scrim (same file, a full-frame darkening overlay behind the giant move-position number, structurally different from this small pill badge) is now ALSO routed through this token despite the role difference — a real, disclosed VISIBLE CHANGE (0.4 -> 0.6 alpha, a darker overlay). */
+  --stack-overlay-badge-bg-hover: rgba(0, 0, 0, 0.7); /* the hover-state twin of --stack-overlay-badge-bg-resting, same 2 sites. */
+  --stack-scrub-thumb-shadow: 0 3px 10px rgba(0, 0, 0, 0.38); /* stack-styles.css's non-legacy .stack-scrub-thumb drop shadow, repeated at 3 sites (resting + 2 theme-swatch variants). The .slot-scrubber-original LEGACY skin's 2 sites sharing this exact number are deliberately NOT folded in here — that skin is a separate, intentionally-fixed visual mode (toggled via a real settings-panel dropdown, same "distinct mode" rationale as the .notification/body.toast-theme-match dual-mode pattern elsewhere in the app) and should get its own token if ever named, to avoid coupling the two skins even where a value coincides today. */
+  /* "Accent lightened toward white" recipe family, cross-file cluster A: the beveled/glass THEME-SKIN variants of two genuinely-equivalent "themed draggable handle" controls — gallery-scrubber.css's #gallery-top-scrubber-inner (top gallery-scrub thumb) and styles-tree.css's .resizer::before (tree/content-pane splitter grippy). Confirmed byte-identical recipes gated by the same body.scrubber-beveled/body.scrubber-glass classes across both files before this token existed — a real cross-file duplication, not a coincidental value match. */
+  --scrub-handle-beveled-fill-start: color-mix(in srgb, var(--accent-color) 48%, white);
+  --scrub-handle-beveled-fill-end: color-mix(in srgb, var(--accent-color) 84%, var(--bg-primary));
+  --scrub-handle-beveled-border: color-mix(in srgb, var(--accent-color) 62%, var(--border-color));
+  --scrub-handle-glass-fill-start: color-mix(in srgb, var(--accent-color) 40%, white);
+  --scrub-handle-glass-fill-end: color-mix(in srgb, var(--accent-color) 76%, var(--bg-secondary));
+  --scrub-handle-glass-border: color-mix(in srgb, white 30%, var(--accent-color));
+  --external-import-hover-border: 2px solid color-mix(in srgb, var(--accent-color) 68%, white 8%); /* "Accent lightened toward white" cluster B: styles-search.css's drag-and-drop "external file import" hover-highlight border, byte-identical across its 2 drop targets (.tree-section.external-import-root-hover::after — tree sidebar; .content-section.external-import-gallery-hover::after — gallery content pane). Same file, same UI concept, genuinely the same border treatment for two different drop zones. */
+  --gallery-loader-ring-color: color-mix(in srgb, var(--accent-color) 80%, white 20%); /* "Accent lightened toward white" cluster D: the circular loading-spinner ring's border-top-color, shared by styles-gallery-vertical.css's .gallery-inline-blank-loader-ring::before (78%/22%) and styles-gallery-notes.css's .gallery-inline-link-card[data-link-state="loading"] (82%/18%) — both consume the SAME @keyframes link-loader-spin (defined once, styles-gallery-vertical.css), confirming this is genuinely one shared "loading spinner" concept applied to 2 different placeholder/card types, not coincidence. No functional reason found for the 4-percentage-point drift (same animation, same geometry, same role) — same class of resolved drift as the earlier header-seek/gallery-media-slider merge this phase. Consolidated on the midpoint (80%/20%). VISIBLE CHANGE disclosed: imperceptible in isolation on a small spinning ring, though the per-side shift (2 points on each of 78/82) is roughly DOUBLE the header-seek/gallery-media-slider merge's already-shipped precedent (which was a 1-point shift per side) — a larger nudge than that precedent, not a smaller one, still judged negligible for a 14px ring. */
+  /* .slot-scrubber-original legacy skin (stack-styles.css) — a real, live, user-toggleable
+     "classic" visual mode (settingsPanel.js's #slot-scrubber-style-select dropdown), deliberately
+     fixed and NOT theme-following, same shape as the app's .notification/toast-theme-match
+     dual-mode precedent. Named here for discoverability/consistency only — zero visual change,
+     pure naming, no consolidation for the non-cyan values (nothing else in the app shares these;
+     kept deliberately decoupled from the theme-following --gallery-glass-control-* family even
+     where a value coincides, e.g. --stack-scrub-thumb-shadow). OWNER OVERRIDE (2026-07-09
+     taste-call review): the legacy skin's CYAN sites specifically (control-border-active,
+     fill-bg's first stop, thumb-border) now alias var(--stack-nav-active-color) instead of
+     restating #64d8ff independently — same value today, but now a real merge, not a coincidence;
+     if --stack-nav-active-color's hex ever changes, this legacy skin's cyan will follow it. */
+  --slot-scrubber-legacy-control-border: rgba(255, 255, 255, 0.18);
+  --slot-scrubber-legacy-control-bg: linear-gradient(135deg, rgba(18, 24, 32, 0.72), rgba(39, 47, 58, 0.54));
+  --slot-scrubber-legacy-control-shadow: 0 10px 22px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  --slot-scrubber-legacy-control-border-active: color-mix(in srgb, var(--stack-nav-active-color) 62%, transparent);
+  --slot-scrubber-legacy-track-bg: rgba(255, 255, 255, 0.16);
+  --slot-scrubber-legacy-track-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.45);
+  --slot-scrubber-legacy-fill-bg: linear-gradient(90deg, var(--stack-nav-active-color), #ffd166);
+  --slot-scrubber-legacy-fill-shadow: 0 0 14px color-mix(in srgb, var(--stack-nav-active-color) 34%, transparent);
+  --slot-scrubber-legacy-thumb-bg: #f8fbff;
+  --slot-scrubber-legacy-thumb-border: var(--stack-nav-active-color);
+  --slot-scrubber-legacy-thumb-shadow: 0 3px 10px rgba(0, 0, 0, 0.38); /* deliberately its OWN token, NOT var(--stack-scrub-thumb-shadow), even though the value coincides today — coupling the legacy skin to the theme-following token's future changes would violate the whole point of keeping the two modes decoupled. */
+  --slot-scrubber-legacy-thumb-3d-bg: radial-gradient(circle at 30% 24%, rgba(255, 255, 255, 0.96) 0%, rgba(255, 255, 255, 0.88) 19%, rgba(255, 255, 255, 0) 34%), radial-gradient(circle at 38% 36%, #f8fbff 0%, #eef9ff 34%, color-mix(in srgb, var(--stack-nav-active-color) 76%, transparent) 62%, rgba(255, 209, 102, 0.72) 100%);
+  --slot-scrubber-legacy-thumb-3d-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.72), inset 0 -3px 5px rgba(0, 0, 0, 0.22), 0 3px 10px rgba(0, 0, 0, 0.38), 0 0 12px color-mix(in srgb, var(--stack-nav-active-color) 46%, transparent);
+  --slot-scrubber-legacy-readout-color: rgba(255, 255, 255, 0.92);
+  --soft-drop-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* DEPRECATED, no remaining call sites — kept defined only in case something outside this sweep still resolves it at runtime; see --elev-floating for the token that replaced it. Formerly shared by styles-settings.css's .select-options (custom-select dropdown panel) + AIComponents.css's .preview-image (a generated/uploaded image preview). OWNER OVERRIDE (2026-07-09 taste-call review): a prior slice explicitly declined to migrate these onto --elev-floating, citing a real geometry mismatch (0 2px 8px flat black vs. --elev-floating's 0 8px 24px themed color) as an undisclosed rendering change — the owner reviewed and said migrate anyway. Both call sites now use var(--elev-floating) directly. VISIBLE CHANGE disclosed: both shadows grow larger/softer (2px/8px blur → 8px/24px) and become theme-derived instead of flat black. */
+  /* urlMediaView.js's url-media-card: text/scrim drawn over an unpredictable photo/embed thumbnail, same "theme-invariant text-on-photo" role already established for --gallery-embed-poster-caption-text (a DIFFERENT, slightly warmer text color at a different site — not reused here, since these values genuinely differ and serve a different card component). --text-primary would be unreadable on some themes' near-white values composited over an arbitrary photo; named here for discoverability (JS inline-style consumer), sole occurrence, no cross-file duplicate. */
+  --url-media-card-text: #fff;
+  --url-media-card-scrim: linear-gradient(180deg, rgba(0, 0, 0, 0) 35%, rgba(0, 0, 0, 0.75) 100%);
+  --url-media-card-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+  --theme-swatch-bevel-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.34), inset 0 -2px 4px rgba(0, 0, 0, 0.24); /* the "glass" bevel-highlight recipe shared by styles-settings.css's .theme-swatch (settings theme-picker dropdown) and stack-styles.css's body.slot-scrubber-thumb-3d .stack-scrub-thumb.theme-swatch (gallery scrubber-thumb rendered as a theme swatch) — confirmed the SAME shared `.theme-swatch` class applied to 2 different host elements via real JS call sites (themeManager.js/nodeContextMenu.js vs. imageGallery.js/joeImageModalLifecycle.js), not a coincidence. Only this 2-layer inset pair is byte-identical at both sites — each site's OWN 3rd/outer shadow layer (a flat resting-shadow at the settings dropdown vs. var(--stack-scrub-thumb-shadow) at the gallery thumb) and the settings-only ::after gloss-shine ellipse are deliberately NOT folded in, since those serve different structural roles per site. */
+  --theme-swatch-outer-shadow: 0 1px 2px rgba(0, 0, 0, 0.18); /* styles-settings.css's .theme-swatch 3rd/outer shadow layer, paired with --theme-swatch-bevel-shadow's 2-layer inset pair. Same-file-only (the gallery scrubber-thumb sibling uses its own var(--stack-scrub-thumb-shadow) for this role, a deliberately different value). Named per the owner's 2026-07-09 taste-call review. Zero visual change. */
+  --theme-swatch-gloss-shine: rgba(255, 255, 255, 0.45); /* styles-settings.css's .theme-swatch::after gloss-shine ellipse — settings-only, no gallery-thumb equivalent. Named per the owner's 2026-07-09 taste-call review. Zero visual change. */
+  --workspace-led-rim: rgba(255, 255, 255, 0.45); /* styles-settings.css's .workspace-setting-led border ring — the LED's glass rim. Same numeric value as --theme-swatch-gloss-shine, deliberately NOT reused: a status-LED rim and a theme-swatch gloss ellipse are unrelated roles that merely coincide today. Zero visual change, exact value match. */
+  --workspace-led-sheen: rgba(255, 255, 255, 0.35); /* styles-settings.css's .workspace-setting-led inset top-sheen highlight (the "lit glass" look, paired with a currentColor glow). Zero visual change, exact value match. */
+  --workspace-led-sheen-muted: rgba(255, 255, 255, 0.25); /* styles-settings.css's .workspace-setting-led.disconnected inset top-sheen — a dimmer sheen (and no glow) for the unlit LED. Deliberately a separate token from --workspace-led-sheen: the two alphas are a lit/unlit intensity ramp, not drift. Zero visual change, exact value match. */
+  --retro-space-invaders-btn-hover: #33eeff; /* styles-settings.css's .theme-retro-space-invaders-claude .btn-primary/.add-root-btn :hover background — this theme's own fixed cyan identity color (deliberately NOT var(--accent-color), which is the theme's magenta), same shape as the file's other theme-identity literals. Named to finish converting this theme block to 100% tokens, per the owner's 2026-07-09 taste-call review. Zero visual change. */
+  --storage-pressure-banner-border: 1px solid rgba(0, 0, 0, 0.35); /* styles-browser.css's .storage-pressure-banner bottom divider line — a flat-black hairline distinct in role from the banner's own box-shadow (now var(--elev-floating), see that token's comment). Named, not merged with anything. Zero visual change. */
+  --ai-media-preview-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* AIComponents.css's .generated-image and .preview-image (the first rule, ~line 173/246 — NOT the second .preview-image at ~line 415, which already uses var(--elev-floating)) share this byte-identical shadow. Owner-flagged same-file dedup, 2026-07-09 taste-call review. Zero visual change. */
+  /* AIAssistModal.css's conversation-action glass-chrome pair (.ai-chat-clear-all-btn's border +
+     .ai-chat-conversation-action-btn's bg/border) — a "translucent white glass button" recipe at
+     2 related sites in the same component group, owner-decided (2026-07-09 taste-call review) to
+     be named rather than left bare. Distinct from --white-overlay-hover (0.1) — that token IS
+     reused for .ai-chat-clear-all-btn's own background (exact match), but these 3 remaining
+     values (border 0.2, action-btn bg 0.08, action-btn border 0.18) don't match it or any other
+     existing token, so named as their own small family instead of forced onto --white-overlay-hover. */
+  --ai-chat-action-btn-border: rgba(255, 255, 255, 0.2);
+  --ai-chat-action-btn-bg: rgba(255, 255, 255, 0.08);
+  --ai-chat-action-btn-border-soft: rgba(255, 255, 255, 0.18);
+  /* .ai-generate-preview-card.is-generating's "pixel wave" scanning-gradient shimmer effect (2
+     sites, AIAssistModal.css) — a decorative, bespoke multi-stop gradient; named its 2 non-accent
+     stop colors for discoverability per the owner's 2026-07-09 taste-call review, without forcing
+     the whole gradient into a shared token (the other stops already use var(--accent-color)/white,
+     and the specific multi-stop shape itself is unique to this one effect). */
+  --generate-shimmer-cyan: #41d6ff;
+  --generate-shimmer-amber: #ff9d00;
+  --ai-generate-save-overlay-border: color-mix(in srgb, var(--accent-color) 52%, white 10%); /* AIAssistModal.css's .ai-generate-save-overlay pill border (the save-confirmation chip on the AI image-generation overlay) — a single-site "accent lightened toward white" recipe with a bare white mix-partner, named per the owner's 2026-07-09 taste-call review rather than left bare. */
+  /* styles-themes.css's DEFAULT (non-theme-following) toast notification look — a deliberately
+     fixed dark-glass surface, confirmed intentional by the owner (2026-07-09 taste-call review):
+     a real opt-in `body.toast-theme-match` variant already exists right alongside it, so the
+     default staying fixed is the design, not an oversight. Named for discoverability, zero visual
+     change — this is the toast's OWN identity, not merged with any app-wide bg/text/shadow token. */
+  --toast-default-bg: rgba(51, 51, 51, 0.95);
+  --toast-default-text: #fff;
+  --toast-default-shadow: 0 2px 15px rgba(0, 0, 0, 0.4);
+  --toast-default-close-color: #fff;
+  --toast-severity-success: #34c759;
+  --toast-severity-error: #ff3b30;
+  --toast-severity-info: #007aff;
+  --toast-severity-warning: #f5a623;
+  /* styles-themes.css's image-info hover-icon + its tooltip card — a small "i" badge on a gallery
+     thumbnail plus its expand-on-hover info card. Named per the owner's 2026-07-09 taste-call
+     review; deliberately theme-invariant fixed-black/white (must stay legible over unpredictable
+     photo/video content, same rationale as --gallery-meta-text-color). */
+  --image-info-icon-color: rgba(255, 255, 255, 0.8);
+  --image-info-icon-bg: rgba(0, 0, 0, 0.5);
+  --image-info-icon-hover-bg: rgba(0, 0, 0, 0.7);
+  --image-info-card-bg: rgba(0, 0, 0, 0.85);
+  --image-info-card-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  /* The image-info-icon's loading-spinner conic-gradient (3 stop colors) — a decorative, bespoke
+     tri-color spin effect, named for discoverability, not merged with any semantic token (these
+     aren't warning/info/success colors, just a visually distinct 3-color spinner palette). */
+  --image-info-spinner-orange: #ff9800;
+  --image-info-spinner-white: #fff;
+  --image-info-spinner-blue: #2196f3;
+  /* styles-themes.css's glowSwell keyframe — the white drop-flash on .image-item img.drop-glow
+     (an image-drop-landed animation). Named per the owner's 2026-07-09 taste-call review; kept
+     as its own theme-invariant white-flash family, not merged with any other token (a bright
+     white pulse is the whole point of the effect, regardless of theme). */
+  --drop-glow-flash-0: rgba(255, 255, 255, 0);
+  --drop-glow-flash-inset-mid: rgba(255, 255, 255, 0.5);
+  --drop-glow-flash-outer-peak: rgba(255, 255, 255, 0.85);
+  --drop-glow-flash-inset-peak: rgba(255, 255, 255, 0.8);
+  --toast-theme-match-shadow: 0 2px 12px rgba(0, 0, 0, 0.25); /* body.toast-theme-match .notification's own shadow — a distinct alpha/geometry from --toast-default-shadow (this variant follows the theme, the default doesn't), named per the owner's 2026-07-09 taste-call review. */
+  /* terminalPanel.css's self-contained dark slate-blue panel-chrome palette — named per the
+     owner's 2026-07-09 taste-call review. This file had ZERO custom properties before this;
+     the whole panel is a deliberately fixed-look surface (Electron-only, "Forge" terminal),
+     confirmed to have no cross-file duplicates anywhere in src/ (grep-verified). Pure naming,
+     zero visual change — EXCEPT --terminal-body-bg, which MUST stay byte-identical to
+     src/js/terminalPanel.js's own xterm.js `theme: {background: "#10131a"}` config (a hard
+     technical requirement, not a design choice — the CSS chrome and the canvas-rendered
+     terminal surface must match exactly or a visible seam appears at their border). */
+  --terminal-body-bg: #10131a;
+  --terminal-panel-bg: #0d1017;
+  --terminal-drag-strip-bg: #161b25;
+  --terminal-drag-strip-border: #232a36;
+  --terminal-title-text: #aeb6c2;
+  --terminal-tab-text: #9aa3b2;
+  --terminal-tab-hover-bg: #2a3340;
+  --terminal-tab-active-bg: #273141;
+  --terminal-icon-color: #8a93a3;
+  --terminal-icon-hover-bg: #313c4d;
+  --terminal-icon-hover-color: #fff;
+  --stack-navigation-scrim: rgba(40, 44, 52, 0.50); /* .stack-navigation's own fixed dark scrim (stack-styles.css) — named per the owner's 2026-07-09 taste-call review. Deliberately theme-invariant (must stay legible over unpredictable media, same rationale as --gallery-meta-text-color). Zero visual change. */
+  /* Stack nav bar sizing — tracks density + container queries on actual slot/media width
+     (not only the global gallery-width body classes, which ignore Fit/canvas card width). */
+  --stack-nav-pad-y: 5px;
+  --stack-nav-pad-x: 4px;
+  --stack-nav-pad: var(--stack-nav-pad-y) var(--stack-nav-pad-x);
+  --stack-nav-gap: 1px;
+  --stack-nav-btn-pad-y: 3px;
+  --stack-nav-btn-pad-x: 5px;
+  --stack-nav-btn-pad: var(--stack-nav-btn-pad-y) var(--stack-nav-btn-pad-x);
+  --stack-nav-btn-font: var(--icon-glyph, 14px);
+  --stack-nav-counter-font: var(--font-control);
+  --stack-nav-counter-min: 2.5em; /* fits "99 of 99" without a fixed px floor that forces overflow */
+  --stack-nav-counter-margin: 0 1px;
+  /* Container breakpoints (inline media width) — progressive control shedding.
+     Medium (320) Fit cards used to clip; compact kicks in below ~340. */
+  --stack-audio-mode-tooltip-bg-start: rgba(34, 24, 16, 0.42); /* .stack-audio-mode-btn::after's sepia-tooltip gradient (stack-styles.css) — a genuine one-off dark-brown glass background, no cross-file/same-file twin. Named per the owner's 2026-07-09 taste-call review. Zero visual change. */
+  --stack-audio-mode-tooltip-bg-end: rgba(75, 54, 35, 0.3);
+  --stack-audio-mode-tooltip-shadow: 0 8px 18px rgba(0, 0, 0, 0.16), inset 0 0 0 1px rgba(255, 255, 255, 0.04); /* the same tooltip's own drop shadow, paired with -bg-start/-end above. Genuine one-off, no cross-file/same-file twin. */
+  --stack-audio-mode-icon-shadow: 0 1px 2px rgba(0, 0, 0, 0.4); /* .stack-audio-mode-btn i's icon text-shadow. Genuine one-off. */
+  --stack-help-kbd-shadow: 0 1px 1px rgba(0, 0, 0, 0.2); /* the stack keyboard-help HUD's <kbd> key shadow. Genuine one-off. */
+  --preview-surface-lighten-color: #fff; /* styles-gallery-vertical.css's preview-card "lightened surface" recipe (7 sites) — the mix-partner color-mix()'d toward, alongside the already-tokenized --preview-surface-lighten-mix percentage. Named per the owner's 2026-07-09 taste-call review (a prior slice called minting this "over-engineering" for a single-value literal — overturned). Zero visual change. */
+  /* .flowjoe-pdfjs-* family (styles-gallery-vertical.css) — the inline PDF viewer's chrome, fixed
+     dark regardless of theme, plus the page "paper" background (white, same reasoning as the
+     spreadsheet/rich-document workbenches' own #fff paper backgrounds). Named per the owner's
+     2026-07-09 taste-call review. Zero visual change. */
+  --pdfjs-viewer-bg: #22262b;
+  --pdfjs-page-bg: #fff;
+  --embed-preview-host-bg: #fff; /* joeImageModalLifecycle.js's #image-modal-spreadsheet-host/#image-modal-rich-document-host inline preview-shell backgrounds — the "white paper" behind an embedded spreadsheet/rich-document, deliberately theme-invariant, same established pattern as --pdfjs-page-bg (a different embed) and spreadsheet-workbench/workbench.css + rich-document-workbench/workbench.css's own identical #fff (2026-07-10 inline style="..." sweep). Named separately from --pdfjs-page-bg since these are a different pair of embeds, not the PDF viewer. Zero visual change. */
+  --compress-spinner-track: rgba(255, 255, 255, 0.3); /* imageCompression.js's inline compression-progress spinner — a multi-line style="..." attribute the initial 2026-07-10 sweep's single-line regex missed, found on re-audit. Own recipe, deliberately NOT merged with AIComponents.css's differently-shaped .spinner (rgba(255,255,255,0.1) track + border-left-color:var(--ai-primary) accent) — different track alpha, different accent mechanism (border-top vs border-left), a coincidentally-similar idea not the same component. Theme-invariant by design, same reasoning as the other spinner tokens above (--gallery-loader-ring-color, --image-info-spinner-*). Zero visual change. */
+  --compress-spinner-accent: #fff; /* imageCompression.js's inline compression-progress spinner border-top-color — paired with --compress-spinner-track above. Zero visual change. */
+  --pdfjs-status-bg: rgba(0, 0, 0, 0.68);
+  --pdfjs-status-text: #f4f6fb;
+  --gallery-embed-poster-caption-scrim: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.72) 100%); /* styles-gallery-vertical.css's .gallery-embed-virtual-poster-caption scrim, paired with --gallery-embed-poster-caption-text (same site). Named per the owner's 2026-07-09 taste-call review — a prior slice noted no --scrim-* ladder was ever shipped and left this as a bare literal; named as its own single-site token instead of waiting for a broader scrim system. Zero visual change. */
+  --accent-lightened-86-14: color-mix(in srgb, var(--accent-color) 86%, white 14%); /* "Accent lightened toward white" cross-file cluster: styles-search.css's checkbox checked-state gradient midpoint AND styles-gallery-notes.css's .settings-panel::before glow-bar midpoint share this exact recipe. OWNER OVERRIDE (2026-07-09 taste-call review): a prior slice called this a "textbook false-friend, same value different role" and left them separate — the owner reviewed both sites directly and said merge them. Zero visual change (both already rendered this exact color; only the recipe is now shared, not restated twice). */
+  --tag-chip-search-match-border: color-mix(in srgb, var(--accent-color) 80%, white 20%); /* styles-tree.css's .gallery-tag-chip.gallery-search-tag-match border — same-file-only, no cross-file twin at these exact numbers. Named per the owner's 2026-07-09 taste-call review. Zero visual change. */
+  --import-slot-plus-bg: color-mix(in srgb, var(--accent-color) 82%, white 12%); /* styles-gallery-vertical.css's .external-import-slot-plus::before/::after background. Part of the "accent lightened toward white" cluster investigated in the 2026-07-09 taste-call review — the 4 real sites in that cluster (this one, the 2 empty-disc hover borders, and the audio-rate-btn border) range 35%-82% accent, too wide a spread to merge into one token; owner decided to name each separately instead. Zero visual change. */
+  --gallery-empty-disc-hover-border-compound: color-mix(in srgb, var(--accent-color) 62%, rgba(255, 255, 255, 0.35)); /* styles-gallery-vertical.css's compound-hover .gallery-inline-empty-disc border-color (image-frame/add-image-slot hover reaching into the disc). Sibling of --gallery-empty-disc-hover-border-direct (76%) — kept as a separate, lower-intensity token per the owner's 2026-07-09 taste-call review; the two are a deliberate 2-step hover-intensity ramp, not drift. Zero visual change. */
+  --gallery-empty-disc-hover-border-direct: color-mix(in srgb, var(--accent-color) 76%, rgba(255, 255, 255, 0.35)); /* styles-gallery-vertical.css's .gallery-inline-empty-disc:hover border-color (direct hover on the disc itself). Sibling of --gallery-empty-disc-hover-border-compound (62%) — see that token's comment. Named per the owner's 2026-07-09 taste-call review. Zero visual change. */
+  --audio-rate-btn-border: color-mix(in srgb, var(--accent-color) 35%, rgba(255, 255, 255, 0.2)); /* styles-gallery-vertical.css's .gallery-inline-audio-rate-btn border — the lightest member of the "accent lightened toward white" cluster (35% accent), named separately rather than merged per the owner's 2026-07-09 taste-call review. Zero visual change. */
+  --drop-indicator-tick-bg: color-mix(in srgb, white 10%, var(--accent-color)); /* styles-themes.css's .add-image-position.drop-target::after tick-mark background. Argument order is reversed vs. the codebase's usual accent-first idiom (still resolves to ~90% accent/10% white) — preserved as-is, just named. Named per the owner's 2026-07-09 taste-call review. Zero visual change. */
+  --browser-audio-badge-border-tab: color-mix(in srgb, var(--accent-color) 74%, rgba(255, 255, 255, 0.18)); /* styles-browser.css's .browser-tab-audio-indicator border — tab-strip-context tier of the audio-indicator badge family (~74-76%), distinct from the browser-chrome-button tier (~84-86%, see --browser-audio-badge-border-chrome). Owner reviewed the 2-tier split in the 2026-07-09 taste-call review and confirmed merge-within-tier, not across. Zero visual change. */
+  --browser-audio-badge-border-chrome: color-mix(in srgb, var(--accent-color) 84%, #ffffff 16%); /* styles-browser.css's #browser-btn.is-browser-audible border-color — browser-chrome-button-context tier (~84-86%) of the audio-indicator badge family, distinct from the tab-strip tier (~74-76%, see --browser-audio-badge-border-tab). Owner-confirmed 2-tier merge, 2026-07-09 taste-call review. Zero visual change. */
+  --browser-audio-badge-glyph-tab: color-mix(in srgb, var(--accent-color) 78%, #ffffff 22%); /* styles-browser.css's .browser-tab-audio-indicator icon-glyph color — tab-strip-context tier, kept separate from the border-tier tokens and from the toolbar-button glyph tier (72%, see --browser-audio-badge-glyph-chrome) since glyph and border are different visual roles. Named per the owner's 2026-07-09 taste-call review. Zero visual change. */
+  --browser-audio-badge-glyph-chrome: color-mix(in srgb, var(--accent-color) 72%, #ffffff 28%); /* styles-browser.css's .browser-btn-audio-indicator icon-glyph color — toolbar-button-context tier, sibling of --browser-audio-badge-glyph-tab (78%). Named per the owner's 2026-07-09 taste-call review. Zero visual change. */
+  --grippy-handle-bevel-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.1), inset 0 -2px 4px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.25), 0 2px 6px rgba(0, 0, 0, 0.15); /* styles-tree.css's .resizer::before (the tree/gallery split-pane resizer's "grippy handle") default 4-layer bevel shadow. Named per the owner's 2026-07-09 taste-call review. Zero visual change. */
+  --grippy-handle-bevel-shadow-active: inset 0 2px 4px rgba(255, 255, 255, 0.2), inset 0 -2px 4px rgba(0, 0, 0, 0.3), 0 6px 16px rgba(0, 0, 0, 0.35), 0 3px 8px rgba(0, 0, 0, 0.2); /* styles-tree.css's grippy handle active/dragging state — shared byte-identical between body.resizing .resizer::before, .resizer.grippy-active::before, and .resizer.grippy-lit::before. Named per the owner's 2026-07-09 taste-call review. Zero visual change. */
+  --grippy-handle-beveled-shadow: inset 1px 0 0 color-mix(in srgb, white 24%, transparent), inset -1px 0 0 color-mix(in srgb, black 24%, transparent), 0 1px 2px color-mix(in srgb, black 24%, transparent); /* styles-tree.css's body.scrubber-beveled .resizer::before shadow, one of 3 grippy-handle theme variants (beveled/flat/glass). Named per the owner's 2026-07-09 taste-call review. Zero visual change. */
+  --grippy-handle-flat-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 1px 3px color-mix(in srgb, black 20%, transparent), 0 0 8px color-mix(in srgb, var(--accent-color) 18%, transparent); /* styles-tree.css's body.scrubber-flat .resizer::before shadow, one of 3 grippy-handle theme variants. Named per the owner's 2026-07-09 taste-call review. Zero visual change. */
+  --grippy-handle-glass-shadow: inset 1px 0 0 color-mix(in srgb, white 38%, transparent), inset -1px 0 0 color-mix(in srgb, black 18%, transparent), 0 1px 4px color-mix(in srgb, black 20%, transparent), 0 0 14px color-mix(in srgb, var(--accent-color) 44%, transparent); /* styles-tree.css's body.scrubber-glass .resizer::before shadow, one of 3 grippy-handle theme variants. Named per the owner's 2026-07-09 taste-call review. Zero visual change. */
+  --grippy-handle-variant-hover-shadow: 0 0 0 1px color-mix(in srgb, var(--accent-color) 52%, var(--border-color)), inset 1px 0 0 color-mix(in srgb, white 32%, transparent), 0 1px 4px color-mix(in srgb, black 18%, transparent), 0 0 12px color-mix(in srgb, var(--accent-color) 34%, transparent); /* styles-tree.css's shared hover/active shadow override across all 3 grippy-handle theme variants (beveled/flat/glass) — byte-identical at all 12 selector combinations. Named per the owner's 2026-07-09 taste-call review. Zero visual change. */
+  --tree-nav-left: 0px;
+  --tree-nav-vertical-gap: 10px;
+  --gallery-hidden-scrubber-display-offset: -8px;
+  --app-font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --notes-line-height: 1.35;
+  --image-gallery-slot-width: 320px;
+  /* Ratio of the current slot size to the 320px default, so in-slot chrome (title/notes text,
+     tag chips, media corner radius) scales proportionally with the slot instead of staying a
+     fixed size while only the media resizes. Clamped so text/chips stay legible at the 160px
+     floor and don't blow up past the 480px ceiling. Revert: drop this var and its 6 call sites —
+     --gallery-slot-text-font-size below; .image-gallery .gallery-tag-chip* in tags.css;
+     .image-gallery .image-stack-container img border-radius in stack-styles.css; the two
+     #image-display:is(.flowjoe-font-scale-*) rules in styles-themes.css (the accessibility
+     "Larger text" font-size overrides, which fold this scale in on top of --flowjoe-surface-font-scale);
+     and .image-gallery .image-notes padding in styles-gallery-notes.css. */
+  --gallery-slot-scale: clamp(0.72, calc(var(--image-gallery-slot-width, 320px) / 320px), 1.4);
+  --gallery-slot-text-font-size: calc(14px * var(--font-scale, 1) * var(--gallery-slot-scale, 1));
+  /* Modal glass controls. To make modal surfaces opaque, set mix values to 100% and blur values to 0px. */
+  --modal-glass-surface-mix: 82%;
+  --settings-glass-surface-mix: var(--modal-glass-surface-mix);
+  --modal-glass-panel-mix: var(--modal-glass-surface-mix);
+  --modal-glass-preview-panel-mix: var(--modal-glass-surface-mix);
+  --modal-glass-preview-overlay: 0.38;
+  --modal-glass-titlebar-primary-mix: 60%;
+  --modal-glass-titlebar-secondary-mix: 52%;
+  --modal-glass-content-mix: 44%;
+  --modal-glass-body-mix: var(--modal-glass-content-mix);
+  --modal-glass-summary-panel-mix: var(--modal-glass-surface-mix);
+  --modal-glass-preview-title-focus-mix: 52%;
+  --modal-glass-preview-field-mix: 42%;
+  --modal-glass-ai-panel-mix: var(--modal-glass-surface-mix);
+  --modal-glass-ai-field-primary-mix: 48%;
+  --modal-glass-ai-chat-messages-mix: var(--modal-glass-content-mix);
+  --modal-glass-ai-field-secondary-mix: 54%;
+  --modal-glass-ai-container-secondary-mix: 42%;
+  --modal-glass-ai-container-primary-mix: 32%;
+  --modal-glass-ai-card-mix: 34%;
+  --modal-glass-ai-select-mix: 48%;
+  --modal-glass-ai-image-frame-mix: 36%;
+  --modal-glass-ai-overlay-mix: 58%;
+  --modal-glass-blur: 10px;
+  --modal-glass-saturate: 1.08;
+  --modal-glass-strong-blur: 14px;
+  --modal-glass-strong-saturate: 1.16;
+  --modal-glass-floating-surface-mix: 88%;
+  --modal-glass-floating-surface-background:
+    radial-gradient(
+      ellipse at 14% 0%,
+      color-mix(in srgb, var(--accent-color) 5%, transparent) 0%,
+      transparent 34%
+    ),
+    color-mix(in srgb, var(--bg-secondary) var(--modal-glass-floating-surface-mix), transparent);
+  --modal-glass-surface-background:
+    radial-gradient(
+      ellipse at 14% 0%,
+      color-mix(in srgb, var(--accent-color) 6%, transparent) 0%,
+      transparent 36%
+    ),
+    radial-gradient(
+      ellipse at 92% 92%,
+      color-mix(in srgb, var(--text-primary) 4%, transparent) 0%,
+      transparent 40%
+    ),
+    color-mix(in srgb, var(--bg-secondary) var(--modal-glass-surface-mix), transparent);
+  --settings-glass-surface-background:
+    radial-gradient(
+      ellipse 115% 80% at 108% -8%,
+      color-mix(in srgb, var(--accent-color) 8%, transparent) 0%,
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 115% 80% at -8% 96%,
+      color-mix(in srgb, var(--text-primary) 4%, transparent) 0%,
+      transparent 70%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--bg-primary) 10%, transparent) 0%,
+      transparent 55%,
+      color-mix(in srgb, var(--bg-tertiary) 12%, transparent) 100%
+    ),
+    color-mix(in srgb, var(--bg-secondary) var(--settings-glass-surface-mix), transparent);
+  --modal-glass-titlebar-background:
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--bg-primary) var(--modal-glass-titlebar-primary-mix), transparent) 0%,
+      color-mix(in srgb, var(--bg-secondary) var(--modal-glass-titlebar-secondary-mix), transparent) 100%
+    );
+
+  /* Joe/AI's identity purple — deliberately theme-invariant (Joe reads the same everywhere,
+     independent of the active theme's accent color). Was a phantom token: 20 sites referenced
+     var(--ai-accent, #6c5ce7) but nothing ever defined it, so every usage silently fell back to
+     its own repeated literal. */
+  --ai-accent: #6c5ce7;
+  --text-on-ai-accent: #fff; /* text/icon color for content drawn on a var(--ai-accent) fill (AIAssistModal.css's Joe-scheduler/flow-mutation-approval buttons, 5 sites). Same shape as --text-on-danger: --ai-accent is theme-invariant (a fixed purple, not per-theme), so a single global token suffices — no 40-theme WCAG pass needed like --text-on-accent got, since the fill color never changes. */
+
+  /* Flow-mutation tree-preview tint family (#tree li.flow-preview-N, .flow-ghost-node) — Joe's
+     proposed delete/create/move on a tree row. OWNER-DECIDED (2026-07-09 taste-call review):
+     -delete/-create now ALIAS --danger-color/--success-color (the app's real error/confirm colors)
+     instead of keeping their own distinct flat-UI-palette hex — overturns an earlier session's
+     "deliberately distinct diff semantic" framing. VISIBLE CHANGE disclosed: the tree-preview
+     delete tint shifts from #e74c3c to #dc3545 (slightly darker/less orange red), and the create
+     tint shifts from #2ecc71 to #2f9e44 (a duller green) — a real, intentional hue change on every
+     row Joe proposes deleting/creating. -move has no danger/success counterpart to merge into and
+     stays its own literal. */
+  --flow-preview-delete: var(--danger-color);
+  --flow-preview-create: var(--success-color);
+  --flow-preview-move: #3498db;
+
+  /* Small overlay-badge text (e.g. a scheduler card's status labels) rendered directly on top of
+     arbitrary media-thumbnail art. Deliberately fixed near-white, NOT theme-following, since it
+     must stay legible against unpredictable photo/video backgrounds, not the app's own surfaces. */
+  --gallery-meta-text-color: rgba(255, 255, 255, 0.75);
+
+  /* Preview-card "lightened surface" mix — a slightly-lifted card background distinguishing gallery
+     preview cards (spreadsheet, rich-document, calendar) from the flat app background beneath them.
+     Same recipe (color-mix toward #fff) reused across ~6 sites at drifting 88–94% base-color shares;
+     folded onto one shared percentage — the base token itself (--bg-primary/-secondary/-tertiary)
+     stays per-element since those are genuinely different surfaces, only the MIX AMOUNT is shared. */
+  --preview-surface-lighten-mix: 92%;
+
+  /* Stack-navigation "active/hover" identity cyan — the consistent hover color for every stack-nav
+     button (prev/next/move-up/move-down/help/flatten) plus the image-counter's pulse-highlight
+     state. Deliberately its own bright accent (not --accent-color, which is per-theme and orange by
+     default) — a fixed, recognizable "you're interacting with stack controls" color, same shape of
+     reasoning as --ai-accent's theme-invariant identity. DISCRETE, interaction-driven: fires on
+     hover/keyboard-focus, momentary. Was 9 scattered raw literals. Intentionally decoupled from its
+     sibling --virtual-gallery-accent-color below (same hex today, different token, different role —
+     don't "fix" one to match the other if a future edit changes just one of them). */
+  --stack-nav-active-color: #64d8ff;
+
+  /* Virtual-gallery "computed/tag-query view" identity cyan — the persistent ambient indicator
+     (outline glow, rotated chip, breadcrumb pill, all continuously pulsing) shown when the gallery
+     is viewing a synthetic tag-query-generated set rather than a real tree node's own images.
+     Numerically identical to --stack-nav-active-color (same house-style "bright cyan = special
+     mode" accent) but a DIFFERENT semantic role — verified NOT the same UI concept (this file has
+     no image-stack/stack-navigation code at all). CONTINUOUS, state-driven: `animation: ...infinite`
+     for as long as the view is active, independent of any interaction — a real axis a future skin
+     could plausibly want to diverge on (crisp high-contrast for momentary interaction feedback vs.
+     calmer for an always-on ambient indicator), which is why this stays its own token rather than
+     reusing --stack-nav-active-color. Was 30 scattered raw rgba literals. */
+  --virtual-gallery-accent-color: #64d8ff;
+
+  /* Protective-state badge family — Locked (gold) and Hidden-from-Joe (orange) node badges, plus
+     the Locked-node "virtual gallery edit" notice. Deliberately two distinct hues, confirmed by an
+     existing code comment on the Hidden-from-Joe badge: "Orange accent, deliberately distinct from
+     the gold Locked pill so both can show at once without visual confusion." Each hue has a base
+     tone (borders/backgrounds/icons) and gold has a lighter tone (readable text ON a gold-tinted
+     surface — orange's badges don't need this since they only ever use --text-primary for text).
+     Was 15 scattered raw literals across 4 components in one file (locked badge, hidden-from-Joe
+     badge, both modal-pill variants, the virtual-gallery-edit-notice). */
+  --badge-locked-gold: #d8b24a;
+  --badge-locked-gold-light: #f3d98f;
+  --badge-locked-gold-lighter: #f8e4aa;
+  --badge-hidden-orange: #e0893c;
+
+  /* Gallery media-card "glass edge highlight" — a subtle inset white rim-light on the empty/
+     loading/failed media-card surfaces, giving them a faint glass-like edge. Was 3 byte-identical
+     rgba pairs (no drift at all — exact repetition), used at the URL-card blank state, the
+     document-card blank state, and the URL loading/failed variant. */
+  --gallery-media-card-edge-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.06), inset 0 0 0 1px rgba(255, 255, 255, 0.025);
+
+  /* Media-overlay text-shadow family — dark shadows behind light text/icons rendered directly on
+     top of arbitrary photo/video art, for legibility (same rationale as --gallery-meta-text-color).
+     Two REAL duplicated roles found (not a full-cluster fold — the file's other, non-duplicated
+     text-shadow sites at 0.4/0.28/0.32/0.52 stay their own one-off literals, nothing to
+     deduplicate there): a large timestamp readout (video/audio time counters, 2 already-identical
+     sites) and an empty-media-slot disc icon (3 already-identical sites across different card
+     kinds). */
+  --gallery-media-timestamp-shadow: 0 2px 8px rgba(0, 0, 0, 0.58), 0 0 1px rgba(0, 0, 0, 0.82);
+  --gallery-media-empty-icon-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
+
+  /* "Glass media-control button" resting/hover shadow pair — a small floating control (video
+     fullscreen/menu toggles, stack-view audio playback buttons) that sits on top of media, with a
+     blurred glass background and a matching 2-layer shadow. A PM audit caught that this pair is
+     NOT single-use as first assumed — it's byte-identical across 2 files (styles-gallery-
+     vertical.css's video controls, stack-styles.css's audio playback controls), same UI role (same
+     border-radius/border/background-gradient/backdrop-filter recipe), 5 sites total. */
+  --gallery-glass-control-shadow-resting: 0 8px 22px rgba(0, 0, 0, 0.18), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+  --gallery-glass-control-shadow-hover: 0 10px 26px rgba(0, 0, 0, 0.22), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+
+  /* Same "glass media-control button" family's BORDER recipes — byte-identical across the same 2
+     files/component (styles-gallery-vertical.css's video fullscreen/menu buttons, stack-styles.css's
+     audio playback buttons/mode-btn/tooltip/scrub-control), each a color-mix(accent, translucent
+     white) tint at a role-specific intensity. Was 8 scattered raw color-mix() declarations. */
+  --gallery-glass-control-border-resting: color-mix(in srgb, var(--accent-color) 34%, rgba(255, 255, 255, 0.12));
+  --gallery-glass-control-border-active: color-mix(in srgb, var(--accent-color) 36%, rgba(255, 255, 255, 0.12));
+  --gallery-glass-control-border-hover: color-mix(in srgb, var(--accent-color) 48%, rgba(255, 255, 255, 0.18));
+
+  /* Header audio-player seek-range slider (`buttons.css`'s `.header-audio-seek-range`, the top-bar
+     media transport) — "accent lightened toward white" recipe. Was 6 scattered raw color-mix()
+     declarations, each duplicated once for the -webkit-/-moz- vendor-prefix twin. */
+  --header-seek-track-border: color-mix(in srgb, var(--accent-color) 30%, rgba(255, 255, 255, 0.16));
+  --header-seek-progress-fill: color-mix(in srgb, var(--accent-color) 72%, #ffffff 16%);
+  --header-seek-thumb-border: color-mix(in srgb, var(--accent-color) 84%, #ffffff 16%);
+  --header-seek-thumb-fill: color-mix(in srgb, var(--accent-color) 76%, #ffffff 24%);
+
+  /* Inline gallery audio/video player's slider (`styles-gallery-vertical.css`'s progress + volume
+     sliders, 4 selectors: audio/video progress + audio/video volume). Same recipe shape as
+     --header-seek-* above; previously carried its own values 1 percentage point off in each of the
+     3 shared sub-roles (30/0.15 vs 30/0.16 track-border, 85/15 vs 84/16 thumb-border, 75/25 vs
+     76/24 thumb-fill) — confirmed via DOM trace this was incidental drift from separate authorship,
+     not a functional requirement (no property here — background/backdrop-filter/geometry — depends
+     on the exact mix ratio), so normalized onto the header family's values (the singleton,
+     canonical instance) rather than kept as a second near-duplicate family. VISIBLE CHANGE
+     disclosed: imperceptible in isolation (1 percentage point in a color-mix ratio) but real — the
+     gallery slider's track border and thumb are now fractionally different from before. No
+     --gallery-media-slider-progress-fill token exists because these sliders have no played/unplayed
+     gradient visual at all (flat track background, not a linear-gradient) — nothing to normalize
+     there. Was 6 scattered raw color-mix() declarations, each duplicated once for the vendor-prefix
+     twin. */
+  --gallery-media-slider-track-border: var(--header-seek-track-border);
+  --gallery-media-slider-thumb-border: var(--header-seek-thumb-border);
+  --gallery-media-slider-thumb-fill: var(--header-seek-thumb-fill);
+
+  /* Hover state for elements whose resting state is --accent-color (AIComponents.css's
+     .btn-primary/.btn-text). Was a phantom token: 4 sites referenced bare var(--accent-hover)
+     with NO fallback, rendering with no color/background at all on hover. No dedicated hover
+     token existed anywhere in the app — other accent-hover treatments use an inline
+     color-mix(in srgb, var(--accent-color) N%, ...) at each call site instead — so this defines
+     the same darken-toward-black recipe once, theme-invariant by construction since it derives
+     from whatever the active theme's --accent-color already is. */
+  --accent-hover: color-mix(in srgb, var(--accent-color) 82%, black);
+
+  /* ── Density-reachable literals (density pass, Phase 2, 2026-07-29) ──────────────────────────
+     These were hardcoded numbers inside component sheets, unreachable by any token, which forced
+     src/css/dropin/02-density-rules.css to re-declare whole rules from outside just to retune them.
+     Each one is named here at its EXACT prior value (zero visual change on adoption) so the density
+     tiers in src/css/dropin/01-density-compact.css can move it by overriding one custom property
+     instead of duplicating a selector. Names follow the suggestions recorded in 02-density-rules.css. */
+  /* The Joe transcript's own gutter (AIAssistModal.css's #ai-chat-messages) — the single
+     largest contributor to how roomy the chat reads. Deliberately TWO per-axis tokens rather
+     than one shorthand, for two reasons: (1) AIAssistModalFontScale.css multiplies this inset
+     by a factor as the AI modal's text scale grows, and calc() cannot scale a multi-value
+     shorthand — it silently computes to 0px; (2) a composed `var(--block) var(--inline)`
+     convenience token would be a DERIVED token declared on :root, so it would keep resolving
+     against :root even when a body.density-* block overrides the axes (see the derived-token
+     hazard in the density brief §1.2). Call sites therefore consume the two axes directly. */
+  --ai-chat-messages-pad-block: 20px;
+  --ai-chat-messages-pad-inline: 20px;
+  --ai-chat-messages-gap: 12px; /* vertical gap between turns in that same transcript (#ai-chat-messages is a flex column) */
+  --ai-chat-messages-tail: 12px; /* the #ai-chat-messages::after flex spacer's basis — a scroll tail so the last turn never sits flush against the bottom edge */
+  --chat-bubble-pad: 12px 16px; /* AIAssistModal.css's .ai-chat-message.user/.assistant .ai-chat-bubble inset — both speakers share one inset by design */
+  --chat-bubble-pad-x: 16px; /* --chat-bubble-pad's horizontal component, restated as its own token (CSS can't extract one value out of a shorthand custom property) — AIAssistModal.css's .ai-chat-message-state uses this to align the Omit/Pin/Delete strip with the bubble's own text inset instead of the row's edge. Every override of --chat-bubble-pad below MUST restate this alongside it, or the strip drifts out of alignment again at that density/shape tier. */
+  --chat-bubble-measure: 85%; /* the same bubbles' max-width, i.e. the transcript's measure: how much of the modal one turn may span before wrapping */
+  --chat-msg-state-reserve: 30px; /* AIAssistModal.css's .ai-chat-message.has-message-state-controls padding-top. The Omit/Pin strip (.ai-chat-message-state) is ABSOLUTELY positioned above the bubble, so this row padding is what reserves room for it. Do NOT set this to 0 without first making .ai-chat-message-state static — that is a layout change, not a density one. Retune it together with the three tokens below, which set the strip's own height and offset. */
+  --chat-msg-state-btn-pad: 4px 8px; /* the Omit/Pin pills' own inset (.ai-chat-msg-state-btn). Paired with --chat-msg-state-reserve: shrinking the reserve without shrinking these pills pushes the strip further over the turn above it. */
+  --chat-msg-state-offset: 6px; /* how far the strip floats above the bubble — .ai-chat-message-state's bottom is calc(100% + this) */
+  --chat-msg-state-gap: 4px; /* gap between the pills inside that strip */
+  --chat-input-pad: 12px; /* AIAssistModalChatInput.css's #ai-chat-input (the prompt textarea) inset */
+  --chat-panel-pad-bottom: 6px; /* AIAssistModal.css's #chat-panel bottom breathing room, so the token/meters footer is never clipped flush against the panel edge */
+  --ai-mode-tab-pad: 10px 4px 11px; /* AIAssistModalSpellCheckShell.css's .ai-mode-tab inset (Spelling & Grammar / Chat with Joe / Transcribe Audio / Image Generation). Asymmetric block padding is deliberate — the strip sits 1px low (bottom:-1px) so the active tab's border merges with the panel below it. */
+  --modal-footer-btn-min-height: 40px; /* min-height for the Save/Done + Cancel row built as INLINE styles by joeImageModalLifecycle.js — one shared template serving the Node Summary editor, the Flow Summary editor (which reuses this same modal, see flowSummaryModal.js) and the preview modal. Deliberately its own token rather than --modal-footer-btn-height: that one is a 32px CSS-class tier for the generic dialog/spell-check footers, whereas this row is a taller inline-styled variant. */
+  --modal-footer-btn-pad: 10px 18px; /* the same inline-styled Save/Done + Cancel row's inset */
+  --settings-content-pad: 15px 15px 0px 0px; /* styles-settings.css's .settings-content inset. Left padding is 0 on purpose so card content sits flush against the settings menu rail — keep the 4th component at 0 when retuning. */
+  --settings-card-gap: 15px; /* styles-settings.css's .setting-item bottom margin — the vertical rhythm between settings cards */
+  /* Presence/owner avatar palette: copied unchanged from the approved browser-collaboration presence mockup.
+     Theme-invariant on purpose (a person keeps one colour in every theme); --avatar-ink is the dark text drawn on any mark. */
+  --avatar-ink: #17130e;
+  --mark-away: #cfccc6; /* neutral the mark is washed toward for an away guest, so --avatar-ink stays readable (>= 4.5:1) in every theme */
+  --mark-1: #ff9f2e;
+  --mark-2: #f47c68;
+  --mark-3: #f088b0;
+  --mark-4: #cf97f2;
+  --mark-5: #a49cff;
+  --mark-6: #66b2ff;
+  --mark-7: #43c7db;
+  --mark-8: #3cc6a4;
+  --mark-9: #76d690;
+  --mark-10: #b9d95e;
+  --mark-11: #f2cd4f;
+  --mark-12: #dbad7d;
+  --cx-edge: color-mix(in srgb, var(--text-primary) 18%, transparent);
+  --cx-ring: var(--bg-secondary);
+  --cx-mono: "JetBrains Mono", "SF Mono", ui-monospace, Menlo, monospace;
+}
+}

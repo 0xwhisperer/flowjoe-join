@@ -1,0 +1,193 @@
+@layer overrides {
+/* ============================================================
+   fj-rail-collapse.css  ·  ADDITIVE, no markup changes
+   ------------------------------------------------------------
+   Collapses the per-slot side rail (.add-image-position) down to
+   just the + (.add-image-btn). The rest — copy / stack / delete /
+   Joe AI / wireframe — reveal speed-dial style when the thin
+   full-height rail strip is hovered (or a rail button is keyboard
+   focused), then fade back out on mouse-out.
+
+   It does NOT restyle, rename, retitle or re-icon any button.
+   Every .add-image-btn / .copy-image-btn / .stack-image-btn /
+   .delete-image-btn / .ai-query-btn / .wireframe-btn keeps its
+   existing size, border, colour, tooltip (title=) and handlers —
+   this sheet only animates collapse/reveal of the existing buttons.
+
+   Scope notes:
+   - Applies in ALL gallery layouts (horizontal, vertical, tiled):
+     .add-image-position is a vertical column in every layout, and
+     .image-number is absolutely positioned (out of flow), so the
+     only flowing children are the action buttons.
+   - Excluded from the "actions above/below" layouts — there the
+     rail buttons are display:none and the bar lives in
+     .image-controls instead; nothing to collapse.
+   - Excluded from multi-select mode, where the rail is intentionally
+     muted-but-visible.
+   - .is-pinned / .is-open are inert reveal hooks left for future
+     use (e.g. an onboarding tour holding the rail open); nothing
+     toggles them today.
+
+   Loaded after styles.css + buttons.css so it wins on the few
+   declarations it overrides (min-height, gap).
+   ============================================================ */
+
+/* the action buttons we collapse — everything in the rail except the + */
+/* (kept as a shared selector list; copy is conditional, the rest are stable) */
+
+/* ----- resting state: collapse the rail down to just the + ----- */
+body.gallery-slot-actions-rail-expanded:not(.gallery-slot-actions-above):not(.gallery-slot-actions-below):not(.image-selection-mode)
+  .image-gallery .enum-image-unit .add-image-position {
+  gap: var(--gallery-slot-rail-gap);
+  transition: none !important;
+}
+
+body.gallery-slot-actions-rail-expanded:not(.gallery-slot-actions-above):not(.gallery-slot-actions-below):not(.image-selection-mode)
+  .image-gallery .enum-image-unit .add-image-position
+  > :is(.copy-image-btn, .edit-tags-btn, .stack-image-btn, .replace-image-btn, .delete-image-btn, .ai-query-btn, .wireframe-btn) {
+  max-height: var(--icon-btn-size-sm);
+  min-height: var(--icon-btn-size-sm) !important;
+  opacity: 0.8;
+  transform: none !important;
+  pointer-events: auto;
+  transition: none !important;
+}
+
+body.gallery-slot-actions-rail-animated:not(.gallery-slot-actions-above):not(.gallery-slot-actions-below):not(.image-selection-mode)
+  .image-gallery .enum-image-unit .add-image-position {
+  gap: 0;
+  transition: gap var(--transition-speed-slow) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body.gallery-slot-actions-rail-animated:not(.gallery-slot-actions-above):not(.gallery-slot-actions-below):not(.image-selection-mode)
+  .image-gallery .enum-image-unit .add-image-position
+  > :is(.copy-image-btn, .edit-tags-btn, .stack-image-btn, .replace-image-btn, .delete-image-btn, .ai-query-btn, .wireframe-btn) {
+  max-height: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  border-top-width: 0;
+  border-bottom-width: 0;
+  opacity: 0;
+  transform: translateY(-6px) scale(0.92);
+  transform-origin: top center;
+  overflow: hidden;
+  pointer-events: none;
+  transition: max-height 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.18s ease,
+    transform 0.24s cubic-bezier(0.34, 1.45, 0.5, 1),
+    margin 0.24s ease,
+    padding 0.2s ease,
+    border-width 0.2s ease;
+}
+}
+
+/* This one rule block (plus its reveal-state counterpart below) is split into its own EARLIER
+   layer (`rail-fix`, before `app` in 00-layer-order.css): under the CSS cascade's importance-
+   inversion rule, an earlier layer's high-importance declaration beats a later layer's — needed
+   here because buttons.css (the `app` layer) sets `height`/`min-height: var(--icon-btn-size-sm)`
+   with the same high-importance flag on this exact selector, and the resting rule must collapse
+   it to 0 instead. Every OTHER declaration in this file (including the two `min-height:
+   var(--icon-btn-size-sm)` restores, which already match buttons.css's own value and so need no
+   such override) stays in `overrides` (after `app`), relying on ordinary layer order + this
+   file's very high selector specificity — moving them here too would be unnecessary and would
+   lose that specificity-based win for its non-important declarations.
+   ⚠️ The reveal-state rule below MUST also live here, restoring `height` on hover/focus/pinned/
+   open: `rail-fix`'s resting rule has no `:hover` etc. condition in its selector, so it applies
+   UNCONDITIONALLY (there's no competing more-specific `rail-fix` rule to override it on hover) —
+   without a `rail-fix`-layer (or earlier) high-importance `height: var(--icon-btn-size-sm)`
+   restore for the reveal states, the resting collapse's high-importance `height: 0` wins even
+   while hovering, and the rail never re-expands. This was caught by a css-pm audit that live-
+   probed the hover state (the automated computed-style gates don't drive `:hover`, so this class
+   of bug is invisible to them). All four `24px` literals in this file (resting max/min-height,
+   reveal height, reveal max/min-height) were converted to `var(--icon-btn-size-sm)` so the rail's
+   collapse/reveal sizing tracks the same token buttons.css uses instead of a second hardcoded
+   copy of the value. */
+@layer rail-fix {
+body.gallery-slot-actions-rail-animated:not(.gallery-slot-actions-above):not(.gallery-slot-actions-below):not(.image-selection-mode)
+  .image-gallery .enum-image-unit .add-image-position
+  > :is(.copy-image-btn, .edit-tags-btn, .stack-image-btn, .replace-image-btn, .delete-image-btn, .ai-query-btn, .wireframe-btn) {
+  height: 0 !important; /* beats buttons.css's height: var(--icon-btn-size-sm) so no space is reserved */
+  min-height: 0 !important; /* beats buttons.css's min-height: var(--icon-btn-size-sm) so it can fully collapse */
+}
+
+body.gallery-slot-actions-rail-animated:not(.gallery-slot-actions-above):not(.gallery-slot-actions-below):not(.image-selection-mode)
+  .image-gallery .enum-image-unit .add-image-position:hover
+  > :is(.copy-image-btn, .edit-tags-btn, .stack-image-btn, .replace-image-btn, .delete-image-btn, .ai-query-btn, .wireframe-btn),
+body.gallery-slot-actions-rail-animated:not(.gallery-slot-actions-above):not(.gallery-slot-actions-below):not(.image-selection-mode)
+  .image-gallery .enum-image-unit .add-image-position:focus-within
+  > :is(.copy-image-btn, .edit-tags-btn, .stack-image-btn, .replace-image-btn, .delete-image-btn, .ai-query-btn, .wireframe-btn),
+body.gallery-slot-actions-rail-animated:not(.gallery-slot-actions-above):not(.gallery-slot-actions-below):not(.image-selection-mode)
+  .image-gallery .enum-image-unit .add-image-position.is-pinned
+  > :is(.copy-image-btn, .edit-tags-btn, .stack-image-btn, .replace-image-btn, .delete-image-btn, .ai-query-btn, .wireframe-btn),
+body.gallery-slot-actions-rail-animated:not(.gallery-slot-actions-above):not(.gallery-slot-actions-below):not(.image-selection-mode)
+  .image-gallery .enum-image-unit .add-image-position.is-open
+  > :is(.copy-image-btn, .edit-tags-btn, .stack-image-btn, .replace-image-btn, .delete-image-btn, .ai-query-btn, .wireframe-btn) {
+  height: var(--icon-btn-size-sm) !important; /* restore the buttons.css square size — see note above */
+}
+}
+
+@layer overrides {
+
+/* ----- reveal: hover the rail strip, focus a rail button, or a held-open hook ----- */
+body.gallery-slot-actions-rail-animated:not(.gallery-slot-actions-above):not(.gallery-slot-actions-below):not(.image-selection-mode)
+  .image-gallery .enum-image-unit .add-image-position:hover,
+body.gallery-slot-actions-rail-animated:not(.gallery-slot-actions-above):not(.gallery-slot-actions-below):not(.image-selection-mode)
+  .image-gallery .enum-image-unit .add-image-position:focus-within,
+body.gallery-slot-actions-rail-animated:not(.gallery-slot-actions-above):not(.gallery-slot-actions-below):not(.image-selection-mode)
+  .image-gallery .enum-image-unit .add-image-position.is-pinned,
+body.gallery-slot-actions-rail-animated:not(.gallery-slot-actions-above):not(.gallery-slot-actions-below):not(.image-selection-mode)
+  .image-gallery .enum-image-unit .add-image-position.is-open {
+  gap: var(--gallery-slot-rail-gap); /* restore the original rail rhythm while open */
+}
+
+body.gallery-slot-actions-rail-animated:not(.gallery-slot-actions-above):not(.gallery-slot-actions-below):not(.image-selection-mode)
+  .image-gallery .enum-image-unit .add-image-position:hover
+  > :is(.copy-image-btn, .edit-tags-btn, .stack-image-btn, .replace-image-btn, .delete-image-btn, .ai-query-btn, .wireframe-btn),
+body.gallery-slot-actions-rail-animated:not(.gallery-slot-actions-above):not(.gallery-slot-actions-below):not(.image-selection-mode)
+  .image-gallery .enum-image-unit .add-image-position:focus-within
+  > :is(.copy-image-btn, .edit-tags-btn, .stack-image-btn, .replace-image-btn, .delete-image-btn, .ai-query-btn, .wireframe-btn),
+body.gallery-slot-actions-rail-animated:not(.gallery-slot-actions-above):not(.gallery-slot-actions-below):not(.image-selection-mode)
+  .image-gallery .enum-image-unit .add-image-position.is-pinned
+  > :is(.copy-image-btn, .edit-tags-btn, .stack-image-btn, .replace-image-btn, .delete-image-btn, .ai-query-btn, .wireframe-btn),
+body.gallery-slot-actions-rail-animated:not(.gallery-slot-actions-above):not(.gallery-slot-actions-below):not(.image-selection-mode)
+  .image-gallery .enum-image-unit .add-image-position.is-open
+  > :is(.copy-image-btn, .edit-tags-btn, .stack-image-btn, .replace-image-btn, .delete-image-btn, .ai-query-btn, .wireframe-btn) {
+  max-height: var(--icon-btn-size-sm);
+  min-height: var(--icon-btn-size-sm) !important; /* restore the buttons.css square size */
+  margin: 0; /* spacing comes from the rail's own gap (--gallery-slot-rail-gap), not per-button margins */
+  padding-top: 2px;
+  padding-bottom: 2px;
+  border-top-width: 1px;
+  border-bottom-width: 1px;
+  opacity: 0.8; /* matches the buttons' original resting opacity (buttons.css) */
+  transform: none;
+  pointer-events: auto;
+}
+
+/* per-button speed-dial stagger on reveal (order: copy → stack → delete → Joe → wireframe).
+   Uses class-based delays so the conditional copy button doesn't shift the sequence. */
+body.gallery-slot-actions-rail-animated:not(.gallery-slot-actions-above):not(.gallery-slot-actions-below):not(.image-selection-mode) .image-gallery .enum-image-unit .add-image-position:hover > .copy-image-btn,
+body.gallery-slot-actions-rail-animated:not(.gallery-slot-actions-above):not(.gallery-slot-actions-below):not(.image-selection-mode) .image-gallery .enum-image-unit .add-image-position:focus-within > .copy-image-btn { transition-delay: 0.03s; }
+body.gallery-slot-actions-rail-animated:not(.gallery-slot-actions-above):not(.gallery-slot-actions-below):not(.image-selection-mode) .image-gallery .enum-image-unit .add-image-position:hover > .stack-image-btn,
+body.gallery-slot-actions-rail-animated:not(.gallery-slot-actions-above):not(.gallery-slot-actions-below):not(.image-selection-mode) .image-gallery .enum-image-unit .add-image-position:focus-within > .stack-image-btn { transition-delay: 0.06s; }
+body.gallery-slot-actions-rail-animated:not(.gallery-slot-actions-above):not(.gallery-slot-actions-below):not(.image-selection-mode) .image-gallery .enum-image-unit .add-image-position:hover > .delete-image-btn,
+body.gallery-slot-actions-rail-animated:not(.gallery-slot-actions-above):not(.gallery-slot-actions-below):not(.image-selection-mode) .image-gallery .enum-image-unit .add-image-position:focus-within > .delete-image-btn { transition-delay: 0.09s; }
+body.gallery-slot-actions-rail-animated:not(.gallery-slot-actions-above):not(.gallery-slot-actions-below):not(.image-selection-mode) .image-gallery .enum-image-unit .add-image-position:hover > .ai-query-btn,
+body.gallery-slot-actions-rail-animated:not(.gallery-slot-actions-above):not(.gallery-slot-actions-below):not(.image-selection-mode) .image-gallery .enum-image-unit .add-image-position:focus-within > .ai-query-btn { transition-delay: 0.12s; }
+body.gallery-slot-actions-rail-animated:not(.gallery-slot-actions-above):not(.gallery-slot-actions-below):not(.image-selection-mode) .image-gallery .enum-image-unit .add-image-position:hover > .wireframe-btn,
+body.gallery-slot-actions-rail-animated:not(.gallery-slot-actions-above):not(.gallery-slot-actions-below):not(.image-selection-mode) .image-gallery .enum-image-unit .add-image-position:focus-within > .wireframe-btn { transition-delay: 0.15s; }
+
+/* respect reduced-motion: reveal instantly, no slide */
+@media (prefers-reduced-motion: reduce) {
+  body.gallery-slot-actions-rail-animated:not(.gallery-slot-actions-above):not(.gallery-slot-actions-below):not(.image-selection-mode)
+    .image-gallery .enum-image-unit .add-image-position,
+  body.gallery-slot-actions-rail-animated:not(.gallery-slot-actions-above):not(.gallery-slot-actions-below):not(.image-selection-mode)
+    .image-gallery .enum-image-unit .add-image-position
+    > :is(.copy-image-btn, .edit-tags-btn, .stack-image-btn, .replace-image-btn, .delete-image-btn, .ai-query-btn, .wireframe-btn) {
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+  }
+}
+}

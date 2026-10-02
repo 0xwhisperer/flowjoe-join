@@ -1,0 +1,203 @@
+/* FlowJoe · 01 · density-compact  —  UNLAYERED ON PURPOSE: kept outside @layer app so it always
+   outranks the app's own layered rules regardless of selector specificity — the same mechanism
+   every density/shape drop-in in this folder relies on (see 00-layer-order.css for the layer
+   model itself, and DESIGN_TOKEN_CONTRACT.md for the equivalent unlayered mechanism a skin uses).
+   Toggle: <body class="density-compact">.  Colors, fonts and layout untouched.
+   Every value here has a matching declaration in src/css/styles-variables.css. */
+
+body.density-compact {
+
+  /* ── Container padding categories ─────────────────────────────── */
+  --pad-modal:          12px;    /* was 20px — modal body inset */
+  --modal-viewport-margin: 12px; /* was 16px — screen-edge clearance for floating modals (tighter than Comfy) */
+  --modal-column-gap:   16px;    /* was 24px — media|notes and other multi-column modal bodies */
+  --gallery-pack-gap:   16px;    /* was 24px — canvas pack spacing tracks density */
+  /* canvas chrome margins (toolbar above/below, edge insets) follow header-gap */
+  --canvas-chrome-inset: var(--header-gap); /* 8px compact */
+  --canvas-scrubber-under-bc-gap: calc(var(--header-gap) / 2); /* 4px compact */
+  --pad-card:           10px;    /* was 15px — settings cards */
+  --pad-card-compact:   8px 10px;/* was 10px 12px — approval cards */
+  --pad-menu-item:      5px 10px;/* was 8px 12px */
+  --pad-menu:           5px;     /* was 8px */
+  --pad-compact:        2px 7px; /* was 3px 8px — chips, pills, badges */
+
+  /* ── Gap rhythm ───────────────────────────────────────────────── */
+  --header-gap:         8px;     /* was 12px */
+  --icon-row-gap:       6px;     /* was 12px */
+  --icon-row-gap-dense: 3px;     /* was 4px */
+  --list-row-gap:       3px;     /* was 8px */
+  --text-stack-gap:     2px;     /* unchanged, listed for completeness */
+  --action-row-gap:     8px;     /* was 12px */
+  --cta-row-gap:        6px;     /* was 10px */
+  --confirm-modal-btn-gap: 6px;  /* was 8px */
+  --titlebar-action-gap:   4px;  /* was 8px */
+  --gallery-slot-rail-gap: 6px;  /* was 12px */
+  --slot-under-stack-gap: 6px;   /* was 8px — slot rhythm: media→Tag Bin, chips→Notes bar, bar→bar */
+  --slot-under-stack-internal-gap: 6px; /* was 8px — Tag Bin bar→chips, Notes bar→notes body; tracks --slot-under-stack-gap */
+  --canvas-slot-under-stack-mt: var(--slot-under-stack-gap); /* DERIVED — must be restated in every tier (a token derived from another token freezes at whichever tier last declared the one it derives from unless each tier restates it): the :root derivation freezes at Comfy's 8px; restating here re-derives against this tier's 6px */
+  --modal-row-gap:         6px;  /* was 8px */
+  --modal-row-gap-tight:   4px;  /* was 6px */
+  --modal-row-gap-loose:   8px;  /* was 12px */
+  --settings-card-header-gap: 7px; /* was 10px */
+  --card-title-gap:        6px;  /* was 8px */
+  --control-icon-gap:      5px;  /* was 6px */
+
+  /* ── Control size ladder ──────────────────────────────────────── */
+  --icon-btn-size:        26px;  /* was 32px */
+  --icon-btn-size-sm:     22px;  /* was 24px */
+  --icon-btn-size-xs:     20px;  /* was 22px */
+  --control-height-sm:    24px;  /* was 28px */
+  --dropdown-height:      26px;  /* was 32px */
+  --rect-btn-height:      26px;  /* was 32px */
+  --modal-footer-btn-height: 28px;  /* was 32px */
+  --cta-btn-height:       32px;  /* was 44px — Send / mic / spell-check */
+  --ai-chat-header-control-height: 24px; /* was 32px — Joe's rail */
+  --modal-section-header-height:   26px; /* was 36px */
+  --browser-tab-height:   34px; /* was 46px */
+  --modal-header-padding: 4px 8px 4px 12px; /* was 8px 12px 8px 12px */
+  --toggle-switch-height: 20px;  /* was 24px */
+  --toggle-switch-inset:  3px;   /* was 4px */
+  --tag-chip-height:      18px;  /* was 22px — bigger step so chips read as visibly denser, matching Manage/Slot-Stack's shrink */
+  --tag-chip-pad-x:       7px;   /* was 10px */
+  --gallery-tag-chip-pad-y: 2px; /* was 3px — in-gallery chips (auto-height) shrink via this, not --tag-chip-height */
+  /* --gallery-section-header-height / -pad / --gallery-header-btn-height: no longer
+     overridden here — the base values were unified at THIS tier's numbers (26px bar =
+     the collapsed-media sliver, see styles-variables.css) so all densities match. */
+  --gallery-slot-title-pad-top: 7px;
+  --gallery-slot-title-pad-bottom: 7px;
+  --gallery-title-media-gap: 2px;
+  /* Stack nav chrome tracks density */
+  --stack-nav-pad-y: 5px;
+  --stack-nav-pad-x: 5px;
+  --stack-nav-gap: 1px;
+  --stack-nav-btn-pad-y: 3px;
+  --stack-nav-btn-pad-x: 5px;
+  --stack-nav-btn-font: 12px;
+
+  /* ── Phase-2 tokens (formerly 02-density-rules.css overrides) ─── */
+  --ai-chat-messages-pad-block:  12px; /* was 20px — Joe transcript gutter (per-axis: see the token's comment in styles-variables.css) */
+  --ai-chat-messages-pad-inline: 12px; /* was 20px */
+  --ai-chat-messages-gap:   8px;       /* was 12px — gap between turns */
+  --ai-chat-messages-tail:  6px;       /* was 12px — scroll tail spacer */
+  --chat-bubble-pad:        7px 11px;  /* was 12px 16px */
+  --chat-bubble-pad-x:      11px;      /* --chat-bubble-pad's horizontal value, restated (see styles-variables.css) */
+  --chat-bubble-measure:    92%;       /* was 85% */
+  /* The Omit/Pin strip is absolutely positioned ABOVE the bubble and the row
+     reserves padding-top to make room. .ai-chat-message-state is a flex row
+     (align-items:center), so its height comes from its own line box — a constant
+     ~31px at every --font-scale, not from either child's font-size. The reserve is
+     therefore PARTIAL in both tiers (30px baseline, 26px here): the strip already
+     reaches slightly into the space above it at every scale, a pre-existing
+     condition this file inherits rather than introduces — and compact's smaller
+     offset below makes that encroachment marginally smaller, not larger.
+     Do NOT take the reserve to 0 without making .ai-chat-message-state static;
+     that's the structural fix, not this one. */
+  --chat-msg-state-reserve: 26px;      /* was 30px */
+  --chat-msg-state-btn-pad: 4px 7px;   /* was 4px 8px — vertical unchanged: 11px text + 2×4px pad + 2×1px border = 21px, clears the 20px interactive-target floor */
+  --chat-msg-state-offset:  4px;       /* was 6px */
+  --chat-msg-state-gap:     3px;       /* was 4px */
+  --chat-input-pad:         7px 10px;  /* was 12px — prompt field */
+  --chat-panel-pad-bottom:  4px;       /* was 6px */
+  --ai-mode-tab-pad:        6px 4px 7px; /* was 10px 4px 11px — the mode tabs read taller than they need to once the rest of the modal tightened up (owner, 2026-07-29) */
+  --modal-footer-btn-min-height: 28px; /* was 40px — Save/Done + Cancel row */
+  --modal-footer-btn-pad:   5px 12px;  /* was 10px 18px */
+  --settings-content-pad:   9px 10px 0 0; /* was 15px 15px 0px 0px — 4th component stays 0 (flush against the settings rail) */
+  --settings-card-gap:      8px;       /* was 15px — between settings cards */
+
+  /* ── DERIVED TOKENS — must be restated in every tier (see the --canvas-slot-under-stack-mt
+     comment above for why: a token derived from another token freezes at whichever tier last
+     declared the one it derives from unless each tier restates it) ───────────── */
+  --modal-header-min-height: 30px;                 /* was var(--modal-section-header-height) */
+  --search-toolbar-gap:      var(--header-gap);
+  --search-bar-height:       var(--icon-btn-size);
+  --search-clear-size:       var(--icon-btn-size-xs);
+  --breadcrumb-text-gap:     var(--control-icon-gap);
+  --breadcrumb-edit-text-gap: var(--icon-row-gap-dense);
+  --toggle-switch-width:     calc(var(--toggle-switch-height) * 11 / 6);
+  --toggle-switch-knob-size: calc(var(--toggle-switch-height) - (var(--toggle-switch-inset) * 2));
+  --toggle-switch-travel:    calc(var(--toggle-switch-width) - var(--toggle-switch-knob-size) - (var(--toggle-switch-inset) * 2));
+}
+
+/* A third step, if Compact isn't enough. Same tokens, one notch further.
+   Nothing drops below a 22px target. */
+body.density-dense {
+  --pad-modal:          9px;
+  --modal-viewport-margin: 8px;  /* tightest screen-edge clearance (Comfy 16 → Compact 12 → Dense 8) */
+  --modal-column-gap:   12px;    /* was 24px at Comfy / 16px at Compact */
+  --gallery-pack-gap:   12px;    /* was 24px at Comfy / 16px at Compact */
+  /* canvas chrome margins follow dense header-gap */
+  --canvas-chrome-inset: var(--header-gap); /* 6px dense */
+  --canvas-scrubber-under-bc-gap: calc(var(--header-gap) / 2); /* 3px dense */
+  --pad-card:           8px;
+  --pad-card-compact:   6px 8px;
+  --pad-menu-item:      4px 8px;
+  --pad-menu:           4px;
+  --header-gap:         6px;
+  --icon-row-gap:       4px;
+  --list-row-gap:       1px;
+  --action-row-gap:     6px;
+  --cta-row-gap:        5px;
+  --modal-row-gap:      5px;
+  --icon-btn-size:      24px;
+  --icon-btn-size-sm:   20px;
+  --icon-btn-size-xs:   18px;
+  --gallery-header-btn-height: 20px; /* base is 22px (unified across Comfy/Compact) — Dense steps one notch inside the same 26px bar */
+  --slot-under-stack-gap: 5px;   /* was 8px at Comfy / 6px at Compact — slot rhythm one notch further */
+  --slot-under-stack-internal-gap: 5px; /* tracks --slot-under-stack-gap */
+  --canvas-slot-under-stack-mt: var(--slot-under-stack-gap); /* DERIVED — must be restated in every tier, see the Compact block's comment above; re-derives at this tier's 5px */
+  --control-height-sm:  22px;
+  --dropdown-height:    24px;
+  --rect-btn-height:    24px;
+  --cta-btn-height:     28px;
+  --ai-chat-header-control-height: 22px;
+  --modal-section-header-height:   22px;
+  --browser-tab-height:   30px;
+  --modal-header-min-height:       26px;
+  --toggle-switch-height: 18px;
+  --toggle-switch-inset:  3px;
+  --tag-chip-height:      16px;  /* was 22px at Comfy / 18px at Compact */
+  --tag-chip-pad-x:       6px;   /* was 10px at Comfy / 7px at Compact */
+  --gallery-tag-chip-pad-y: 1px; /* was 3px at Comfy / 2px at Compact */
+  --gallery-slot-title-pad-top: 6px;
+  --gallery-slot-title-pad-bottom: 6px;
+  --gallery-title-media-gap: 1px;
+  --stack-nav-pad-y: 4px;
+  --stack-nav-pad-x: 4px;
+  --stack-nav-gap: 0px;
+  --stack-nav-btn-pad-y: 2px;
+  --stack-nav-btn-pad-x: 4px;
+  --stack-nav-btn-font: 11px;
+
+  /* Phase-2 tokens, one notch past compact. Three are held AT the compact value
+     on purpose rather than stepped again:
+       --chat-msg-state-btn-pad  — 11px text + 2×4px pad + 2×1px border = 21px,
+         already only 1px over the brief's 20px interactive-target floor.
+       --chat-msg-state-reserve / --chat-msg-state-offset — the Omit/Pin strip's
+         own height is font-scale-independent (~31px, see the compact block), so
+         shrinking the reserve further only deepens the partial-overlap this file
+         already inherits. It buys ~4px and costs legibility on the turn above. */
+  --ai-chat-messages-pad-block:  9px;
+  --ai-chat-messages-pad-inline: 9px;
+  --ai-chat-messages-gap:   6px;
+  --ai-chat-messages-tail:  4px;
+  --chat-bubble-pad:        5px 9px;
+  --chat-bubble-pad-x:      9px;       /* --chat-bubble-pad's horizontal value, restated (see styles-variables.css) */
+  --chat-bubble-measure:    96%;
+  --chat-msg-state-reserve: 26px;      /* held — see above */
+  --chat-msg-state-btn-pad: 4px 7px;   /* held — see above */
+  --chat-msg-state-offset:  4px;       /* held — see above */
+  --chat-msg-state-gap:     2px;
+  --chat-input-pad:         5px 8px;
+  --chat-panel-pad-bottom:  3px;
+  --ai-mode-tab-pad:        4px 4px 5px;
+  --modal-footer-btn-min-height: 24px;
+  --modal-footer-btn-pad:   4px 10px;
+  --settings-content-pad:   6px 8px 0 0; /* 4th component stays 0 (flush against the settings rail) */
+  --settings-card-gap:      6px;
+
+  --search-bar-height:       var(--icon-btn-size);
+  --search-clear-size:       var(--icon-btn-size-xs);
+  --toggle-switch-width:     calc(var(--toggle-switch-height) * 11 / 6);
+  --toggle-switch-knob-size: calc(var(--toggle-switch-height) - (var(--toggle-switch-inset) * 2));
+  --toggle-switch-travel:    calc(var(--toggle-switch-width) - var(--toggle-switch-knob-size) - (var(--toggle-switch-inset) * 2));
+}

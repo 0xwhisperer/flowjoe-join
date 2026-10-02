@@ -1,0 +1,185 @@
+@layer app {
+#ai-chat-input-area {
+  /* Vertical rhythm between the prompt field, the counter rail, and the segmented bar. */
+  --ai-meter-gap: 10px;
+  /* Gap from the segmented bar down to the legend row — tuned independently of --ai-meter-gap. */
+  --ai-legend-gap: 6px;
+  /* The whole meters block (rail + bar + legend) as a unit: gap from the prompt above it,
+     and space below it. Tune these two to move/space the block independently. */
+  --ai-meters-top: var(--ai-meter-gap, 10px);
+  --ai-meters-bottom: 6px;
+  padding: 0 0 var(--ai-meters-bottom, 6px) 2px;
+  margin: 0;
+  flex: 0 0 auto;
+  min-height: 0;
+
+  /* Only the prompt row gets the horizontal flex layout for textarea + buttons. */
+  > .ai-chat-input-row {
+    display: flex;
+    gap: var(--cta-row-gap); /* was a stray 12px — joins the big-button modal row rhythm */
+    /* Top-align so the spell-check + mic buttons sit level with Send. (With `stretch`, their tooltip-wrapper
+       spans stretched to the full textarea height and the 44px buttons floated to the middle; the textarea
+       still defines the row height, so flex-start doesn't shrink it.) */
+    align-items: flex-start;
+    /* Narrow window: instead of squeezing the textarea to nothing, let the spell/mic/Send buttons WRAP to a
+       line below it (right-aligned). The textarea keeps a usable min-width (or the full width if the modal is
+       even narrower). On wide windows nothing wraps — the flex:1 textarea pushes the buttons to the right. */
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+}
+
+#ai-chat-input-area.ai-tokens-collapsed {
+  padding-bottom: 0;
+}
+
+/* Wrapper for everything beneath the prompt row — positioned/spaced as one unit. */
+.ai-chat-meters {
+  margin-top: var(--ai-meters-top, 10px);
+  margin-bottom: 0;
+}
+
+/* Wraps the prompt textarea so the "show/hide tokens" link can be overlaid at its
+   bottom-right edge and ride down as the field grows. */
+.ai-chat-input-field-wrap {
+  position: relative;
+  flex: 1 1 auto;
+  /* Keep the textarea usably wide; when the row can't fit this + the buttons, they wrap below it. Caps at
+     100% so a very narrow modal never forces horizontal overflow. */
+  min-width: min(180px, 100%);
+  display: flex;
+}
+
+.ai-chat-input-field-wrap > #ai-chat-input {
+  flex: 1 1 auto;
+}
+
+#ai-chat-input {
+  flex: 1;
+  min-height: var(--cta-btn-height);
+  max-height: min(34vh, 220px);
+  overflow-y: auto;
+  resize: none;
+  padding: var(--chat-input-pad);
+  margin: 0;
+  border-radius: var(--radius-md, 6px);
+  border: 1px solid var(--border-color);
+  background: color-mix(in srgb, var(--bg-primary) var(--modal-glass-ai-field-primary-mix), transparent);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.95em;
+  line-height: 1.5;
+  box-sizing: border-box;
+}
+
+#ai-chat-send {
+  padding: 0 18px;
+  margin: 0;
+  min-height: var(--cta-btn-height);
+  height: var(--cta-btn-height);
+  border-radius: var(--cta-btn-radius);
+  display: flex;
+  align-items: center;
+  gap: var(--control-icon-gap);
+  white-space: nowrap;
+}
+
+/* Send is a silent no-op while a turn is in flight (incl. parked on an approval card) — show it.
+   The tooltip (button title) names the reason; typing stays enabled for drafting. */
+#ai-chat-send:disabled {
+  opacity: var(--disabled-opacity-control);
+  cursor: not-allowed;
+}
+
+.ai-chat-input-spell-check-btn,
+.ai-chat-input-mic-btn {
+  flex: 0 0 var(--cta-btn-height);
+  width: var(--cta-btn-height);
+  min-width: var(--cta-btn-height);
+  height: var(--cta-btn-height);
+  min-height: var(--cta-btn-height);
+  margin: 0;
+  padding: 0;
+  border-radius: var(--cta-btn-radius); /* full CTA-family recipe parity with the Send button beside them */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-color);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  font-size: 14px;
+  transition: all var(--transition-speed) ease;
+}
+
+.ai-chat-input-spell-check-btn:hover:not(:disabled),
+.ai-chat-input-spell-check-btn:focus-visible,
+.ai-chat-input-mic-btn:hover:not(:disabled),
+.ai-chat-input-mic-btn:focus-visible {
+  background-color: var(--hover-bg);
+  color: var(--accent-color);
+  border-color: var(--accent-color);
+}
+
+.ai-chat-input-spell-check-btn:disabled,
+.ai-chat-input-mic-btn:disabled {
+  color: var(--text-muted, #999);
+  cursor: not-allowed;
+}
+
+.ai-chat-input-mic-btn.is-listening {
+  background: color-mix(in srgb, var(--accent-color) 18%, var(--bg-tertiary) 82%);
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-color) 18%, transparent);
+}
+
+/* Stop mode — the SEND button morphs into Stop while Joe is thinking (and abortable). The ring spins
+   the whole time the mode is active: the animation IS the "Joe is working" signal, and the button
+   morphing back to Send (on click or completion) is what stops it. One moded control = no layout
+   shift in the prompt row and the standard chat-UI pattern. */
+#ai-chat-send.ai-chat-send-stop-mode,
+#ai-generate-submit.ai-chat-send-stop-mode {
+  background: color-mix(in srgb, var(--danger-color) 22%, var(--bg-tertiary) 78%);
+  border-color: var(--danger-color);
+  color: var(--danger-color);
+}
+
+#ai-chat-send.ai-chat-send-stop-mode:hover,
+#ai-chat-send.ai-chat-send-stop-mode:focus-visible,
+#ai-generate-submit.ai-chat-send-stop-mode:hover,
+#ai-generate-submit.ai-chat-send-stop-mode:focus-visible {
+  background: color-mix(in srgb, var(--danger-color) 34%, var(--bg-tertiary) 66%);
+}
+
+.ai-chat-send-stop-glyph {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  font-size: 9px;
+}
+
+.ai-chat-stop-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-full, 999px);
+  border: 2px solid color-mix(in srgb, currentColor 25%, transparent);
+  border-top-color: currentColor;
+  animation: ai-chat-stop-ring-spin 0.9s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes ai-chat-stop-ring-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ai-chat-stop-ring {
+    animation: none;
+  }
+}
+}

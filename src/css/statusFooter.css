@@ -1,0 +1,571 @@
+@layer app {
+/* statusFooter.css — the thin IDE-style status bar pinned to the bottom of the FlowJoe window.
+ *
+ * Built + wired by src/js/statusFooter.js. All colors use theme tokens (themes.css) so it follows every
+ * theme. The bar is a fixed-height strip; index.html's layout math reserves --status-footer-height below the
+ * topbar (the .container height becomes calc(100vh - var(--topbar-height) - var(--status-footer-height))) so
+ * it never overlaps the gallery. When hidden via the Settings toggle, body.hide-status-footer collapses the reserve
+ * back to 0 and removes the bar. Sits below modals (uses the topbar z tier minus a hair) so dialogs cover it.
+ */
+
+:root {
+  --status-footer-height: 22px; /* owner call: own literal value, not shared with --icon-btn-size-sm even though the value currently matches (was 26px, then 24px) */
+}
+
+body.hide-status-footer {
+  --status-footer-height: 0px;
+}
+
+/* Pure-CSS placeholder for the reserved footer strip, painted from first stylesheet parse — before
+   statusFooter.js runs on DOMContentLoaded and builds the real #flowjoe-status-footer element. Without
+   this, the strip .container/#tree's height math reserves at the bottom of the window briefly shows
+   through as bare body background (a different color, and not covered by the two 8px edge fill strips
+   in buttons.css, which only paint the outermost 8px on each side) until the real footer mounts — read
+   as a "phantom" bar that doesn't match the final one. Sits one z-index below the real footer so it's
+   fully covered and inert the instant the real footer exists; body.hide-status-footer collapses it too.
+   */
+body:not(.hide-status-footer)::after {
+  content: "";
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--status-footer-height);
+  background: var(--bg-secondary, #2a2a2a);
+  z-index: calc(var(--flowjoe-z-topbar, 100000) - 2);
+  pointer-events: none;
+}
+
+.status-footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--status-footer-height);
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 8px;
+  /* Extra right padding so the last segment never sits flush against the window edge. */
+  padding: 0 14px 0 10px;
+  box-sizing: border-box;
+  font-family: var(--app-font-family, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+  font-size: var(--font-meta);
+  line-height: 1;
+  color: var(--text-secondary, #999);
+  background: var(--bg-secondary, #2a2a2a);
+  /* One below the topbar tier so app modals/overlays still cover the bar. */
+  z-index: calc(var(--flowjoe-z-topbar, 100000) - 1);
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* The top edge line is drawn as its own full-bleed layer, not a box border, so nothing painted by a
+   neighboring panel (rounded corners, corner fillers, etc.) can ever cover its left/right ends. */
+.status-footer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--border-color, #555);
+  pointer-events: none;
+}
+
+body.hide-status-footer .status-footer {
+  display: none;
+}
+
+.status-footer-group {
+  display: flex;
+  align-items: stretch;
+  gap: 2px;
+  min-width: 0;
+}
+
+/* Left group may shrink and clip its overflow so the stats text truncates BEFORE colliding with the
+   right group — never pushing the right group (Shortcuts) off-screen or past the padding. */
+.status-footer-left {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* Right group is fixed-size and never shrinks, so Shortcuts always stays fully visible with its margin. */
+.status-footer-right {
+  flex: 0 0 auto;
+  /* When the settings panel slides out from the right, shift the right group left by the panel
+     width so it stays clear of the panel — mirrors the header's right group (buttons.css). */
+  transition: transform var(--transition-speed-slow) ease-in-out;
+}
+
+body.settings-panel-open .status-footer-right {
+  transform: translateX(calc(-1 * var(--settings-panel-width, min(460px, 100vw))));
+}
+
+.status-footer-segment {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--control-icon-gap); /* icon/glyph <-> label gap inside a segment, matches the token's stated purpose */
+  height: 100%;
+  padding: 0 9px;
+  margin: 0;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.status-footer-segment .status-footer-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.status-footer-stats {
+  /* Do NOT grow — the left-cluster items (stats · save · model · scheduler) pack together on the left.
+     A growing stats would shove save/model to the right edge of the group. min-width:0 still lets it
+     truncate under pressure. */
+  flex: 0 1 auto;
+  min-width: 0;
+  color: var(--text-muted, var(--text-secondary, #999));
+}
+
+.status-footer-segment i {
+  font-size: var(--icon-glyph-sm);
+  opacity: 0.85;
+}
+
+/* Keyboard-shortcut hint badge inside a segment (e.g. "⌘S", "K"). */
+.status-footer-kbd {
+  font-family: inherit;
+  font-size: 9px;
+  line-height: 1;
+  padding: 2px 4px;
+  margin-left: 1px;
+  border-radius: var(--radius-xs, 2px);
+  background: color-mix(in srgb, var(--text-secondary, #999) 18%, transparent);
+  color: var(--text-secondary, #999);
+  opacity: 0.85;
+  white-space: nowrap;
+}
+
+.status-footer-segment-interactive:hover .status-footer-kbd {
+  color: var(--text-primary, #e0e0e0);
+}
+
+/* Interactive segments (model, save, shortcuts) get a button affordance. */
+.status-footer-segment-interactive {
+  cursor: pointer;
+  border-radius: var(--radius-sm, 4px);
+  transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+}
+
+.status-footer-segment-interactive:hover {
+  background: var(--hover-bg, #444);
+  color: var(--text-primary, #e0e0e0);
+}
+
+.status-footer-segment-interactive:focus-visible {
+  outline: 1px solid var(--border-focus, var(--accent-color, #ff9500));
+  outline-offset: -1px;
+}
+
+/* Active brain's brand mark in the bar. The SVG inherits currentColor for monochrome marks (OpenAI/Grok)
+   and keeps its own brand color otherwise (Claude/Gemini). */
+.status-footer-model-icon {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+.status-footer-model-icon svg {
+  width: 13px;
+  height: 13px;
+  display: block;
+}
+
+/* Scheduler segment — always visible; dims (is-empty) and reads "No tasks" when nothing is scheduled. */
+/* Always visible (per user). At zero tasks it just dims to read as "nothing scheduled yet". */
+.status-footer-scheduler.is-empty {
+  opacity: 0.55;
+}
+
+.status-footer-scheduler i {
+  color: var(--accent-color, #ff9500);
+}
+
+/* Theme segment (far right, next to Shortcuts). The palette icon uses the live theme accent so it RECOLORS
+   when the (global) theme changes — it tracks --accent-color, which every theme redefines. */
+.status-footer-theme i {
+  color: var(--accent-color, #ff9500);
+}
+
+/* Language segment (between Theme and Shortcuts). The globe icon uses the same accent as the theme
+   icon. No hex fallback: --accent-color is defined at :root and in every theme block (a core theme
+   token), so the fallback could never be reached. */
+.status-footer-language i {
+  color: var(--accent-color);
+}
+
+/* Language picker reuses the brain-menu chrome; its rows are label-only (no glyph column). */
+.status-footer-brain-menu.status-footer-language-menu {
+  /* The shared brain/theme menu caps itself at 60vh. The language list is fixed and benefits from using
+     the full space above the footer: show every language when it fits, then scroll only on short windows.
+     Keep a 16px viewport safety margin; the vh fallback covers engines without dynamic viewport units. */
+  max-height: calc(100vh - var(--status-footer-height) - 16px);
+  max-height: calc(100dvh - var(--status-footer-height) - 16px);
+  box-sizing: border-box;
+}
+
+.status-footer-language-menu .status-footer-brain-label-wrap {
+  flex-direction: row;
+  align-items: center;
+}
+
+/* Theme picker reuses the brain-menu chrome; its rows add a swatch column the brain
+   menu doesn't have (see .status-footer-theme-menu .theme-swatch below). */
+.status-footer-theme-menu .status-footer-brain-label-wrap {
+  flex-direction: row;
+  align-items: center;
+}
+
+/* Color swatch per theme row — same swatch component the Settings-panel picker and
+   the tree-view Theme Manager use, scaled down for the footer's compact rows. */
+.status-footer-theme-menu .theme-swatch {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  margin-right: 8px;
+}
+
+/* A small NEUTRAL dot after the label marks that the selected node is on the GLOBAL theme (no custom
+   override). Its absence means the node has its own theme. The palette icon stays theme-reactive. */
+.status-footer-theme.is-global-theme .status-footer-text::after {
+  content: "";
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin-left: 5px;
+  border-radius: var(--radius-full, 999px);
+  background: var(--text-secondary, #999);
+  opacity: 0.7;
+  vertical-align: middle;
+}
+
+/* Section headers inside the theme menu (Favorites / All Themes) — reuse the heading style but inset. */
+.status-footer-theme-section {
+  padding-top: 8px;
+}
+
+/* Favorite star toggle on a theme row — a real button, matching the tree-view Theme
+   Manager's clickable star (not just a decorative marker). */
+.status-footer-theme-star {
+  flex: 0 0 auto;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--warning-color, #e0a046);
+  font-size: var(--font-meta);
+  line-height: 1;
+  margin-left: 8px;
+  padding: 4px;
+  border-radius: var(--radius-sm, 4px);
+}
+
+.status-footer-theme-star.is-empty {
+  color: var(--text-secondary, #999);
+  opacity: 0.7;
+}
+
+.status-footer-theme-star:hover {
+  background: var(--hover-bg);
+  opacity: 1;
+}
+
+/* When there's no global dot, the star is the first marker → it pushes the marker group to the right. */
+.status-footer-brain-item:not(.status-footer-theme-globalmark) .status-footer-theme-star {
+  margin-left: auto;
+}
+
+/* Neutral dot on the row that IS the global theme — same look as the bar's "on global" dot, so the user
+   can self-correlate the two. */
+/* Neutral global dot is rendered BEFORE the label in the row, so it reads as a leading bullet to the left
+   of the theme name (labelWrap absorbs the slack). */
+.status-footer-theme-global-dot {
+  flex: 0 0 auto;
+  width: 5px;
+  height: 5px;
+  border-radius: var(--radius-full, 999px);
+  background: var(--text-secondary, #999);
+  opacity: 0.7;
+  margin-left: auto;
+}
+
+/* "Restore Global Theme" row reads as an action, not a theme choice. */
+.status-footer-theme-restore .status-footer-brain-label {
+  color: var(--text-secondary, #999);
+}
+
+.status-footer-theme-restore:hover .status-footer-brain-label {
+  color: var(--text-primary, #e0e0e0);
+}
+
+/* Thin divider in the popover menus. */
+/* The divider must CONTRAST with the menu background on every theme — on some themes --border-color is
+   nearly the same as --bg-secondary (invisible). Mix the text color into it so it's always perceptible.
+   CRITICAL: the menu is a flex column, which crushes a plain `height:1px` child to 0 — `flex:0 0 1px`
+   (+min-height) keeps the line from being shrunk away. */
+.status-footer-menu-separator {
+  flex: 0 0 1px;
+  min-height: var(--hairline);
+  height: var(--hairline);
+  margin: 7px 6px;
+  background: color-mix(in srgb, var(--text-secondary, #999) 38%, transparent);
+  opacity: 1;
+}
+
+/* Caret hints the click opens a menu; dims until hover/open. */
+.status-footer-model-caret {
+  font-size: 9px;
+  opacity: 0.5;
+  margin-left: 1px;
+}
+
+.status-footer-model:hover .status-footer-model-caret,
+.status-footer-model[aria-expanded="true"] .status-footer-model-caret {
+  opacity: 0.9;
+}
+
+/* Save state dot mirrors the header unsaved indicator's traffic-light semantics. */
+.status-footer-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full, 999px);
+  background: var(--status-neutral, #999);
+  flex: 0 0 auto;
+}
+
+.status-footer-save.is-clean .status-footer-dot {
+  background: var(--success-color, #2f9e44);
+}
+
+.status-footer-save.is-clean .status-footer-text {
+  color: var(--success-color, #2f9e44);
+}
+
+.status-footer-save.is-dirty .status-footer-dot {
+  background: var(--warning-color, #e0a046);
+  box-shadow: 0 0 7px color-mix(in srgb, var(--warning-color, #e0a046) 45%, transparent);
+}
+
+.status-footer-save.is-dirty .status-footer-text {
+  color: var(--warning-color, #e0a046);
+}
+
+.status-footer-save.is-pending {
+  opacity: 0.6;
+}
+
+/* Slice 3c: blocked mode — reuses the existing --danger-color token (themes.css), the same one
+   the Workspace card's own blocked-status LED already uses, so a blocked save state reads
+   consistently with every other blocked-state indicator in the app. */
+.status-footer-save.is-blocked .status-footer-dot {
+  background: var(--danger-color, #dc3545);
+  box-shadow: 0 0 7px color-mix(in srgb, var(--danger-color, #dc3545) 45%, transparent);
+}
+
+.status-footer-save.is-blocked .status-footer-text {
+  color: var(--danger-color, #dc3545);
+}
+
+/* ── Brain picker popover ─────────────────────────────────────────────────────
+   Anchored above the brain segment by statusFooter.js (fixed position). Sits one
+   tier above the footer so it's never clipped, below app modals. */
+.status-footer-brain-menu {
+  position: fixed;
+  /* Must outrank the browser tab strip/chrome tiers (100030-100060, z-index-tokens.css) — the
+     embedded browser's native content is ducked out of the way while this is open (statusFooter.js
+     duckBrowserForModalSurface), but the browser's own DOM chrome (tab strip, group rail) is NOT,
+     and sits above the plain topbar tier this used to use. Reuse the same "beat all app+AI chrome"
+     tier the save-reminder/prompt modals already rely on for this identical problem. */
+  z-index: var(--flowjoe-z-modal-force-top, 2147483646);
+  min-width: 240px;
+  max-width: min(360px, 92vw);
+  max-height: 60vh;
+  overflow-y: auto;
+  /* Flex column with a gap so rows are evenly spaced apart (not abutting). */
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  /* Uniform inner gutter so each row's highlight is inset from the card border on ALL sides. */
+  padding: 6px;
+  /* Share the app's Modal Glass + Surface Depth treatment: the same translucent gradient surface + backdrop
+     blur the modals use, driven by the SAME tokens. The body.glass-effects-disabled / surface-effects-disabled
+     opt-outs below mirror the modal behavior so these popovers follow those Settings toggles. */
+  background: var(--modal-glass-surface-background, var(--bg-secondary, #2a2a2a));
+  backdrop-filter: blur(var(--modal-glass-blur, 10px)) saturate(var(--modal-glass-saturate, 1.08));
+  -webkit-backdrop-filter: blur(var(--modal-glass-blur, 10px)) saturate(var(--modal-glass-saturate, 1.08));
+  border: 1px solid var(--border-color, #555);
+  border-radius: var(--radius-xl, 10px);
+  box-shadow: var(--elev-floating);
+  font-family: var(--app-font-family, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+  font-size: var(--font-control);
+  color: var(--text-primary, #e0e0e0);
+  /* Base opacity is NOT left to the animation. body.fj-ambient-freeze /
+     body.fj-bg-idle set `animation-play-state: paused !important` on every element
+     (styles-gallery-horizontal.css), which pins a fade-in at its `from` frame — the
+     menu then opens, positions and hit-tests correctly but renders at opacity 0, so
+     it reads as "the footer menus stopped working". The animation is decoration; the
+     visible state must not depend on it running. */
+  opacity: 1;
+  animation: status-footer-brain-menu-in 0.1s ease-out;
+}
+/* Ambient freeze pauses all animations — make sure a frozen fade-in can never leave
+   these popovers invisible. */
+body.fj-ambient-freeze .status-footer-brain-menu,
+body.fj-bg-idle .status-footer-brain-menu {
+  /* stylelint-disable declaration-no-important -- the freeze rule this counters is itself
+     `animation-play-state: paused !important` on the universal selector
+     (styles-gallery-horizontal.css). Only !important can win against it, and losing means
+     the Brain/Theme/Language menus render invisible. */
+  animation: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+  /* stylelint-enable declaration-no-important */
+}
+
+/* Glass OFF → opaque surface + no blur (mirrors the modals' glass-effects-disabled rule). */
+body.glass-effects-disabled .status-footer-brain-menu {
+  background: var(--bg-secondary, #2a2a2a);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* Surface depth OFF → drop the gradient layers (fall back to the flat secondary surface). */
+body.surface-effects-disabled .status-footer-brain-menu {
+  background: var(--bg-secondary, #2a2a2a);
+}
+
+@keyframes status-footer-brain-menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.status-footer-brain-menu-heading {
+  padding: 4px 10px 7px;
+  font-size: var(--font-micro);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary, #999);
+}
+
+.status-footer-brain-menu-empty {
+  padding: 6px 10px 8px;
+  color: var(--text-secondary, #999);
+}
+
+.status-footer-brain-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  /* Full-width row (every row identical) with border-box so its padding (the shared menu-row
+     token, symmetric) stays INSIDE the box — the highlight then spans the menu's content width
+     uniformly, inset from the card by the menu's gutter on every side.
+     margin:0 is REQUIRED — a global `button { margin }` base rule otherwise adds 5px L/R, which pushed the
+     row right and ate the right gutter (asymmetric highlight). box-sizing+width:100% alone don't beat it. */
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding: var(--pad-menu-item); /* was 8px 12px 8px 10px */
+  border: 0;
+  border-radius: var(--radius-sm, 4px);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.status-footer-brain-item:hover:not(:disabled) {
+  background: var(--hover-bg, #444);
+}
+
+.status-footer-brain-item.is-active {
+  background: color-mix(in srgb, var(--accent-color, #ff9500) 16%, transparent);
+}
+
+.status-footer-brain-item:disabled,
+.status-footer-brain-item.is-unavailable {
+  opacity: var(--disabled-opacity-field);
+  cursor: not-allowed;
+}
+
+.status-footer-brain-glyph {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  line-height: 1;
+}
+
+.status-footer-brain-glyph svg {
+  width: 15px;
+  height: 15px;
+  display: block;
+}
+
+/* Fallback neutral dot when a brand mark is unavailable. */
+.status-footer-brain-glyph-dot::before {
+  content: "";
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: var(--radius-full, 999px);
+  background: var(--text-secondary, #999);
+}
+
+.status-footer-brain-label-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--text-stack-gap);
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.status-footer-brain-label {
+  color: var(--text-primary, #e0e0e0);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.status-footer-brain-hint {
+  font-size: var(--font-micro);
+  color: var(--text-secondary, #999);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.status-footer-brain-hint.is-hidden {
+  display: none;
+}
+
+.status-footer-brain-check {
+  flex: 0 0 auto;
+  color: var(--accent-color, #ff9500);
+  font-weight: 700;
+}
+}

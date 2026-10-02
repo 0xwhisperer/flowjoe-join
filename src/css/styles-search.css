@@ -1,0 +1,675 @@
+@layer app {
+/* When tree is collapsed, set body background to match topbar for pillar effect */
+body:has(.container.tree-collapsed) {
+  background-color: var(--bg-tertiary) !important;
+}
+
+.container {
+  display: grid;
+  /* PROTOTYPE (left-rail): a leading fixed track hosts the global app rail. Its width reuses the
+     Settings menu's own collapse pair (--settings-nav-rail-width / --settings-nav-width) rather
+     than introducing a new size token, so the two vertical icon menus stay dimensionally identical.
+     --startup-tree-width is now the SINGLE live source of truth for the tree track (previously an
+     inert CSS-only fallback — every resize/collapse/restore call site in eventListeners.js used to
+     rewrite the whole gridTemplateColumns string instead of this one property; that's fixed below,
+     which is what makes adding this 4th track safe instead of something those writes clobber). */
+  /* --app-rail-width itself is declared once, in appRail.css (default + .app-rail-expanded
+     override) — this only consumes it. */
+  /* Docked Joe (joeDock.css): two trailing tracks — its divider and its column. The divider remains
+     visible while Joe is docked even when closed, so it can be double-clicked to reopen. JS writes
+     only --joe-dock-open-width, never this string. */
+  grid-template-columns: var(--app-rail-width, 52px) var(--startup-tree-width, 280px) var(--tree-resizer-width, 8px) 1fr var(--joe-dock-resizer-width, 0px) var(--joe-dock-width, 0px);
+  grid-template-rows: auto 1fr;
+  min-height: calc(100vh - var(--topbar-height, 56px) - var(--status-footer-height, 0px));
+  /* Subtract topbar height + the IDE-style status footer's reserved height (statusFooter.css;
+     0px when the footer is hidden via body.hide-status-footer, so this collapses back). */
+  height: calc(100vh - var(--topbar-height, 56px) - var(--status-footer-height, 0px));
+  /* Fixed height to prevent overflow */
+  margin: 0;
+  padding: 0;
+  position: relative;
+  /* CSS variable to track tree panel width for responsive pillar effect */
+  --tree-width: var(--startup-tree-width, 280px);
+  overflow: hidden;
+}
+
+/* Synchronous FOUC guard: preBootstrap stamps this class from the persisted tree state before
+   the body exists. Keep the tree and its navigation hidden until the runtime restores the same
+   state, so a collapsed tree never flashes open during reload. */
+html.tree-collapsed-startup .container {
+  --startup-tree-width: 0px;
+}
+
+html.tree-collapsed-startup .tree-section {
+  visibility: hidden;
+  overflow: hidden !important;
+}
+
+html.tree-collapsed-startup .tree-section * {
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+html.tree-collapsed-startup .tree-section .tree-toolbar {
+  display: none !important;
+}
+
+/* Allow tooltips to escape grid container. Scoped to :hover/:focus-within so this only fires
+   while a tooltip is actually visible — .image-info-card exists in the DOM (opacity:0,
+   visibility:hidden) for every rendered gallery image regardless of hover state, so matching on
+   its bare presence (rather than its visible state) permanently disabled the grid's height
+   containment for the rest of the session the moment any image slot rendered, letting grid
+   content overflow .container's bottom edge uncontained (visible as app-rail items sinking below
+   the viewport once the gallery had real content). */
+.container:has(.image-info-icon-wrapper:hover .image-info-card),
+.container:has(.image-stack-indicator:hover .image-info-card),
+.container:has(.tree-status-filter-warning.tooltip-wrapper:hover),
+.container:has(.tree-status-filter-warning.tooltip-wrapper:focus-within) {
+  overflow: visible;
+}
+
+/* Background elements for header corners */
+.container {
+  position: relative;
+  overflow: hidden;
+}
+
+/* App rail background (matches the tree/resizer/content corner fillers below).
+   Width transitions in step with .app-rail's own width (appRail.css) so the fill doesn't
+   snap ahead of/behind the rail's animated edge during expand/collapse. */
+.app-rail::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  /* Match border radius */
+  left: 0;
+  width: var(--app-rail-width, 52px);
+  height: 8px;
+  background: var(--bg-secondary);
+  z-index: 2;
+  pointer-events: none;
+  transition: background var(--transition-speed) ease-in-out, width var(--transition-speed) ease;
+}
+
+/* Left background (tree) */
+.tree-section {
+  position: relative;
+}
+
+.tree-section::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  /* Match border radius */
+  left: 0;
+  width: var(--tree-width, var(--startup-tree-width, 280px));
+  height: 8px;
+  background: var(--bg-secondary);
+  z-index: 2;
+  pointer-events: none;
+  transition: background var(--transition-speed) ease-in-out;
+}
+
+/* Update color when tree is collapsed */
+.tree-section.collapsed::before {
+  background: var(--bg-tertiary);
+}
+
+/* Resizer background */
+.resizer {
+  position: relative;
+}
+
+.resizer::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  /* Match border radius */
+  left: 0;
+  width: var(--tree-resizer-width, 8px);
+  height: 8px;
+  background: var(--bg-tertiary);
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* Right background (content) */
+.content-section {
+  position: relative;
+}
+
+.content-section::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  /* Match border radius */
+  left: 0;
+  right: 0;
+  height: 8px;
+  background: var(--bg-primary);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* When tree is collapsed, hide the background element that was creating the brown line */
+.container.tree-collapsed::before {
+  display: none !important;
+  /* Remove the problematic background element */
+}
+
+/* Remove the problematic ::after pseudo-element that was creating the brown line */
+
+#tree {
+  --tree-scroll-end-padding: calc(96px + var(--status-footer-height, 0px));
+  max-height: calc(100vh - 100px - var(--status-footer-height, 0px)) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding: 0 0 var(--tree-scroll-end-padding) 0 !important;
+  margin: 0 !important;
+  position: relative !important;
+  z-index: 1 !important;
+  box-sizing: border-box !important;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-color) transparent;
+  width: calc(100% + 5px) !important;
+  margin-right: -5px !important;
+}
+
+/* Make scrollbar flush with resizer */
+#tree::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+}
+
+/* Position scrollbar track */
+#tree::-webkit-scrollbar-track {
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent;
+}
+
+/* Style scrollbar thumb */
+#tree::-webkit-scrollbar-thumb {
+  margin: 0 !important;
+  padding: 0 !important;
+  border-left: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+/* Webkit (Chrome, Safari, etc) scrollbar */
+#tree::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+#tree::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: var(--radius-xs, 2px);
+}
+
+#tree::-webkit-scrollbar-thumb {
+  background-color: var(--border-color);
+  border-radius: var(--radius-xs, 2px);
+}
+
+#tree::-webkit-scrollbar-thumb:hover {
+  background-color: var(--accent-color);
+}
+
+.tree-section {
+  /* PROTOTYPE (left-rail): column 1 is now the app rail; tree moves to track 2. */
+  grid-column: 2;
+  grid-row: 2;
+  /* min-height: 0 overrides the grid-item default of min-height: auto, which lets an
+     unconstrained descendant's intrinsic content size inflate this track. #tree itself is
+     already correctly self-scrolling (overflow-y: auto; max-height: calc(...) above), but
+     without this, a long/expanded tree still grew .tree-section's own implicit content-based
+     floor past .container's fixed height, stretching the shared grid row's 1fr track (and
+     every OTHER item spanning it, including .app-rail) taller than the app frame — pushing
+     the rail's bottom-pinned items (Storage/Settings) below the visible window. */
+  min-height: 0;
+  /* The ambient gradient surface lives on ::after (compositor-only opacity breathe).
+     Animating background-position here forced a full-pane repaint every frame and was the
+     top idle-CPU cost on Intel iGPUs (2026-06 resource report). */
+  background: var(--bg-secondary);
+  background-color: var(--bg-secondary);
+  padding: 10px 5px 20px 10px;
+  overflow: visible !important;
+  font-family: var(--app-font-family);
+  font-size: calc(14px * var(--font-scale));
+  position: relative;
+  z-index: 10;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  transition: background-color var(--transition-speed) ease-in-out;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.tree-section.external-import-root-hover {
+  background:
+    radial-gradient(
+      circle at 18% 10%,
+      color-mix(in srgb, var(--accent-color) 7%, transparent) 0%,
+      transparent 34%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--accent-color) 5%, transparent),
+      color-mix(in srgb, var(--accent-color) 2%, transparent)
+    ),
+    var(--bg-secondary);
+}
+
+/* Ambient "surface depth" layer — static gradients painted once, with only OPACITY animated
+   (compositor-only, zero repaint). Replaces the old tree-surface-roam background-position
+   animation. z-index -1 keeps it behind tree content inside .tree-section's stacking context. */
+.tree-section:not(.external-import-root-hover):not(.collapsed)::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  pointer-events: none;
+  z-index: -1;
+  /* Large, soft, edge-free corner wash — the glow center sits off the top-left corner so
+     only the gentle falloff shows inside the panel (no visible blob/edge = smooth depth). */
+  background:
+    radial-gradient(
+      ellipse 130% 115% at 10% -12%,
+      color-mix(in srgb, var(--accent-color) 8%, transparent) 0%,
+      transparent 72%
+    ),
+    linear-gradient(
+      160deg,
+      color-mix(in srgb, var(--text-primary) 3%, transparent) 0%,
+      transparent 55%,
+      color-mix(in srgb, var(--bg-primary) 10%, transparent) 100%
+    );
+  background-size: 100% 100%;
+  background-position: 0% 0%;
+  /* Static surface depth — no animation. */
+}
+
+body.surface-effects-disabled .tree-section {
+  background: var(--bg-secondary);
+  animation: none;
+}
+
+/* Must out-specify the :not()-qualified generator above. */
+body.surface-effects-disabled .tree-section:not(.external-import-root-hover):not(.collapsed)::after {
+  content: none;
+}
+
+body.surface-effects-disabled .tree-section.collapsed {
+  background: var(--bg-tertiary);
+}
+
+body.surface-effects-disabled .tree-section.external-import-root-hover {
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--accent-color) 5%, transparent),
+      color-mix(in srgb, var(--accent-color) 2%, transparent)
+    ),
+    var(--bg-secondary);
+}
+
+.tree-section.external-import-root-hover::after {
+  content: "";
+  position: absolute;
+  top: var(--tree-import-overlay-top, 0px);
+  left: 0;
+  width: 100%;
+  height: var(--tree-import-visible-height, 0px);
+  box-sizing: border-box;
+  border: var(--external-import-hover-border);
+  border-radius: var(--radius-lg, 8px);
+  pointer-events: none;
+  z-index: 12;
+}
+
+.content-section.external-import-gallery-hover {
+  position: relative;
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--accent-color) 7%, transparent),
+      color-mix(in srgb, var(--accent-color) 3%, transparent)
+    ),
+    var(--bg-primary);
+}
+
+.content-section.external-import-gallery-hover::after {
+  content: "";
+  position: fixed;
+  top: var(--gallery-import-visible-top, 0px);
+  left: var(--gallery-import-visible-left, 0px);
+  width: var(--gallery-import-visible-width, 100%);
+  height: var(--gallery-import-visible-height, 0px);
+  box-sizing: border-box;
+  border: var(--external-import-hover-border);
+  border-radius: var(--radius-lg, 8px);
+  pointer-events: none;
+  z-index: var(--flowjoe-z-stack-preview);
+}
+
+/* Change background to tertiary when collapsed */
+.tree-section.collapsed {
+  background-color: var(--bg-tertiary);
+}
+
+/* Hide all content and lower z-index */
+.tree-section.collapsed {
+  overflow: hidden !important;
+  z-index: 1 !important;
+  /* Put it behind everything so curved edge doesn't show */
+  visibility: hidden;
+}
+
+/* Hide all tree content when collapsed */
+.tree-section.collapsed * {
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+/* Also hide the tree toolbar specifically */
+.tree-section.collapsed .tree-toolbar {
+  display: none !important;
+}
+
+/* ── Tree Search Bar ─────────────────────────────────────────────────────── */
+
+.tree-search-bar {
+  display: none;
+  height: var(--search-bar-height);
+  align-items: center;
+  gap: var(--search-bar-gap);
+  /* Full width of the toolbar content box — same left edge as the info button
+     and same right edge as the trash button. (Was `8px 5px 1px 5px`, which inset
+     the bar 5px on both sides inside a toolbar that already only pads the right.) */
+  margin: 8px 0 1px var(--tree-nav-left, 0px);
+  width: calc(100% - var(--tree-nav-left, 0px));
+  padding: var(--search-bar-padding);
+  background: var(--search-bar-bg);
+  border: var(--search-bar-border);
+  border-radius: var(--search-bar-radius);
+  box-sizing: border-box;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.tree-search-bar:hover {
+  background: var(--search-bar-hover-bg);
+  border-color: var(--accent-color);
+}
+
+.tree-search-bar.visible {
+  display: flex;
+}
+
+.tree-search-bar:focus-within {
+  background: var(--search-bar-hover-bg);
+  border-color: var(--accent-color);
+  box-shadow: var(--focus-ring);
+}
+
+.tree-search-input {
+  flex: 1;
+  min-width: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  align-self: stretch;
+  background: var(--search-input-bg);
+  border: var(--search-input-border);
+  border-radius: var(--search-input-radius);
+  outline: none;
+  color: var(--text-primary);
+  font-family: var(--app-font-family);
+  font-size: var(--search-input-font-size);
+  padding: var(--search-input-padding);
+  box-sizing: border-box;
+}
+
+.tree-search-input::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.6;
+}
+
+.tree-search-clear {
+  all: unset;
+  cursor: pointer;
+  color: var(--search-control-color);
+  font-size: var(--search-control-font-size);
+  width: var(--search-clear-size);
+  min-width: var(--search-clear-size);
+  padding: 0;
+  border-radius: var(--search-control-radius);
+  line-height: 1;
+  opacity: var(--search-control-opacity);
+  transition: var(--search-control-transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.tree-search-clear:hover {
+  opacity: 1;
+  color: var(--accent-color);
+  background: var(--search-control-hover-bg);
+}
+
+.tree-search-collapse {
+  all: unset;
+  cursor: pointer;
+  color: var(--search-control-color);
+  font-size: var(--search-control-font-size);
+  padding: var(--search-collapse-padding);
+  border-radius: var(--search-control-radius);
+  line-height: 1;
+  opacity: var(--search-control-opacity);
+  transition: var(--search-control-transition);
+  border-left: var(--search-collapse-divider);
+  margin-left: var(--search-collapse-margin-left);
+  padding-left: var(--search-collapse-padding-left);
+  flex-shrink: 0;
+}
+
+.tree-search-collapse:hover {
+  opacity: 1;
+  color: var(--accent-color);
+  background: var(--search-control-hover-bg);
+}
+
+/* Active state for search button */
+#tree-search-btn.active {
+  color: var(--accent-color) !important;
+}
+
+/* ── Gallery Search Bar ──────────────────────────────────────────────────── */
+
+.gallery-search-wrap {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  gap: var(--search-toolbar-gap);
+  min-width: 0;
+  position: relative;
+  overflow: visible;
+}
+
+.gallery-search-bar {
+  display: flex;
+  height: var(--search-bar-height);
+  align-items: center;
+  gap: var(--search-bar-gap);
+  overflow: hidden;
+  max-width: 0;
+  opacity: 0;
+  transition: max-width var(--transition-speed-slow) ease, opacity var(--transition-speed) ease, margin-left var(--transition-speed-slow) ease, padding var(--transition-speed) ease, border-width var(--transition-speed) ease;
+  padding: 0;
+  border: var(--search-bar-border);
+  border-width: 0;
+  border-radius: var(--search-bar-radius);
+  background: var(--search-bar-bg);
+  box-sizing: border-box;
+  white-space: nowrap;
+  margin-left: calc(-1 * var(--header-gap));
+  flex: 1;
+  min-width: 0;
+}
+
+.gallery-search-options-popover {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  right: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 196px;
+  max-width: min(260px, calc(100vw - 24px));
+  padding: 10px 12px;
+  border-radius: var(--radius-sm, 4px);
+  background: var(--tooltip-bg);
+  /* Same bubble recipe as .flowjoe-tooltip (tooltip.css) — bg/border/ink must track it
+     together, so this reads --tooltip-text with the same --accent-color fallback. */
+  color: var(--tooltip-text, var(--accent-color));
+  border: 1.5px solid var(--tooltip-border);
+  box-shadow: var(--elev-raised);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-4px);
+  transition:
+    opacity var(--transition-speed) ease,
+    visibility var(--transition-speed) ease,
+    transform var(--transition-speed) ease;
+  z-index: var(--flowjoe-z-tooltip);
+  box-sizing: border-box;
+}
+
+.gallery-search-options-popover::before {
+  content: "";
+  position: absolute;
+  top: -12px;
+  left: 28px;
+  right: auto;
+  width: 20px;
+  height: 12px;
+  background: var(--tooltip-border);
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  transform: none;
+}
+
+.gallery-search-options-popover::after {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 30px;
+  right: auto;
+  width: 16px;
+  height: 10px;
+  background: var(--tooltip-bg);
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  transform: none;
+}
+
+.gallery-search-options-popover.open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.gallery-search-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.gallery-search-checkbox {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 24px;
+  /* Label text sitting on .gallery-search-options-popover's --tooltip-bg, so it takes the
+     same ink as its parent bubble rather than accent. */
+  color: var(--tooltip-text, var(--accent-color));
+  font-size: calc(12px * var(--font-scale, 1));
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* specificity (0,2,1): must beat the app-wide input[type="checkbox"] rule (0,1,1) — this is an
+   invisible full-label click overlay, not a visible checkbox (the .gallery-search-checkbox-ui box
+   below is the visual). */
+.gallery-search-checkbox input[type="checkbox"] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.gallery-search-checkbox-ui {
+  width: 15px;
+  height: 15px;
+  border-radius: var(--radius-sm, 4px);
+  border: 1px solid color-mix(in srgb, var(--accent-color) 55%, var(--tooltip-border));
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--tooltip-bg) 86%, white 14%),
+      color-mix(in srgb, var(--tooltip-bg) 92%, black 8%));
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, white 22%, transparent),
+    0 1px 1px color-mix(in srgb, black 18%, transparent);
+  transition: border-color var(--transition-speed) ease, background var(--transition-speed) ease, box-shadow var(--transition-speed) ease, transform var(--transition-speed) ease;
+  position: relative;
+  flex: 0 0 auto;
+  pointer-events: none;
+}
+
+.gallery-search-checkbox-ui::after {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 1px;
+  width: 4px;
+  height: 8px;
+  border-right: 2px solid transparent;
+  border-bottom: 2px solid transparent;
+  transform: rotate(45deg) scale(0.7);
+  opacity: 0;
+  transition: opacity var(--transition-speed) ease, border-color var(--transition-speed) ease, transform var(--transition-speed) ease;
+}
+
+.gallery-search-checkbox-label {
+  line-height: 1.15;
+  pointer-events: none;
+}
+
+.gallery-search-checkbox:hover .gallery-search-checkbox-ui {
+  border-color: var(--accent-color);
+}
+
+.gallery-search-checkbox input:checked+.gallery-search-checkbox-ui {
+  border-color: color-mix(in srgb, var(--accent-color) 92%, white 8%);
+  background:
+    linear-gradient(180deg,
+      var(--accent-lightened-86-14),
+      color-mix(in srgb, var(--accent-color) 68%, black 32%));
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, white 24%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--accent-color) 28%, transparent);
+}
+
+}

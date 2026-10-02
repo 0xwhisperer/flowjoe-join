@@ -1,0 +1,2608 @@
+@layer app {
+
+/* Count indicators with tooltips */
+.image-count,
+.child-count {
+  color: var(--text-secondary);
+  font-size: 0.9em;
+  cursor: inherit;
+  transition: color var(--transition-speed) ease;
+  margin-left: 3px;
+  /* Add space between indicators */
+  flex: 0 0 auto;
+}
+
+.image-count:hover,
+.child-count:hover {
+  color: var(--accent-color);
+}
+
+.self-count {
+  color: var(--accent-color);
+}
+
+.descendants-count {
+  color: var(--text-secondary);
+}
+
+.child-count.collapsed {
+  color: var(--text-primary);
+  /* Make brackets count not faded */
+  margin-left: 5px;
+  /* Extra space before brackets */
+}
+
+.child-count.expanded {
+  color: var(--text-primary);
+  /* Make brackets count not faded */
+  margin-left: 5px;
+  /* Extra space before brackets */
+}
+
+#node-info {
+  display: none;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+  position: relative;
+  padding-bottom: 0;
+  gap: 6px;
+}
+
+#node-details {
+  /* min-height: 0; */
+  /* height: 100%; */
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+}
+
+#selected-node-name {
+  position: sticky;
+  top: 0;
+  z-index: var(--flowjoe-z-app-modal);
+  /* Allow overflow so child animations like drop-glow don't get clipped */
+  overflow: visible;
+  background-color: color-mix(in srgb, var(--bg-primary) 75%, transparent);
+  backdrop-filter: blur(10px) saturate(1.2);
+  -webkit-backdrop-filter: blur(10px) saturate(1.2);
+  margin: 0 0 0 0;
+  padding: 10px 0 12px 0;
+  font-size: 1.2em;
+  color: var(--text-primary);
+  font-weight: normal;
+  overflow: visible;
+}
+
+/* The search flyout lives in the content pane, whose normal stacking context is below the
+   fixed scrubber. Raise that pane only while the flyout is open so the search card remains
+   clickable instead of painting behind the scrubber rail. */
+.content-section:has(.gallery-search-options-popover.open) {
+  z-index: var(--flowjoe-z-app-modal) !important;
+}
+
+#selected-node-name:has(.gallery-search-options-popover.open) {
+  z-index: var(--flowjoe-z-app-modal) !important;
+}
+
+.gallery-color-filter-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+#gallery-color-filter-btn.active {
+  color: var(--accent-color);
+  border-color: var(--accent-color);
+  background: color-mix(in srgb, var(--accent-color) 18%, transparent);
+}
+
+.gallery-color-filter-popover {
+  position: absolute;
+  top: calc(100% + 6px);
+  bottom: auto;
+  left: 0;
+  z-index: var(--flowjoe-z-tooltip, 2147483647);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--control-icon-gap, 6px);
+  min-width: max-content;
+  padding: 7px 8px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm, 4px);
+  background: var(--bg-secondary);
+  box-shadow: var(--shadow-lg, 0 8px 24px rgba(0, 0, 0, 0.28));
+}
+
+.canvas-overlay-ui.canvas-toolbar .gallery-color-filter-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  align-self: stretch;
+}
+
+.canvas-overlay-ui.canvas-toolbar .gallery-color-filter-popover {
+  top: calc(100% - 1px);
+  left: -1px;
+  width: calc(var(--font-control, 16px) + (4 * var(--pad-compact, 6px)) + 2px);
+  min-width: 0;
+  padding: 0;
+  gap: 0;
+  border: var(--canvas-overlay-border);
+  border-top: 0;
+  border-radius: 0 0 var(--canvas-overlay-radius, 8px) var(--canvas-overlay-radius, 8px);
+  background: var(--canvas-overlay-bg);
+  box-shadow: var(--canvas-overlay-shadow, 0 8px 18px rgba(0, 0, 0, 0.28));
+  box-sizing: border-box;
+}
+
+/* The canvas toolbar has a broad button reset injected by canvasGalleryView.js. Keep the
+   filter dots on the context-menu geometry: 16px square, no toolbar padding, no scaling. */
+.canvas-overlay-ui.canvas-toolbar .gallery-color-filter-swatch {
+  width: var(--checkbox-size, 16px) !important;
+  min-width: var(--checkbox-size, 16px) !important;
+  height: var(--checkbox-size, 16px) !important;
+  min-height: var(--checkbox-size, 16px) !important;
+  flex: 0 0 var(--checkbox-size, 16px) !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: var(--radius-full, 999px) !important;
+  box-sizing: border-box !important;
+}
+
+.canvas-overlay-ui.canvas-toolbar .gallery-color-filter-swatch > span:first-child {
+  display: block !important;
+  width: var(--checkbox-size, 16px) !important;
+  height: var(--checkbox-size, 16px) !important;
+  flex: 0 0 var(--checkbox-size, 16px) !important;
+  border-radius: inherit;
+}
+
+.canvas-overlay-ui.canvas-toolbar .gallery-color-filter-swatch-all > span:first-child {
+  border: 1px dashed var(--text-secondary) !important;
+  box-sizing: border-box !important;
+}
+
+.canvas-overlay-ui.canvas-toolbar .gallery-color-filter-swatch.is-active {
+  border-width: 1px !important;
+  outline: 2px solid var(--accent-color) !important;
+  outline-offset: 2px;
+  box-shadow: none !important;
+}
+
+.gallery-color-filter-popover.is-open {
+  display: flex;
+}
+
+.gallery-color-filter-popover-label {
+  color: var(--text-secondary);
+  font-size: calc(11px * var(--font-scale));
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.gallery-color-filter-swatch-list {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--control-icon-gap, 6px);
+}
+
+.canvas-overlay-ui.canvas-toolbar .gallery-color-filter-swatch-list {
+  gap: 16px;
+  padding: 12px 0;
+}
+
+.gallery-color-filter-swatch {
+  position: relative;
+  width: var(--checkbox-size, 16px);
+  height: var(--checkbox-size, 16px);
+  padding: 0;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-full, 999px);
+  background: transparent;
+  box-sizing: border-box;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease, border-color var(--transition-speed) ease;
+}
+
+.gallery-color-filter-swatch > span:first-child {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  display: block;
+  background: transparent;
+}
+
+.gallery-color-filter-swatch-all > span:first-child {
+  border: 1px dashed var(--text-secondary);
+  box-sizing: border-box;
+  position: relative;
+}
+
+.gallery-color-filter-swatch-all > span:first-child::after {
+  content: "";
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  top: 50%;
+  height: 1px;
+  background: var(--text-secondary);
+  transform: rotate(-45deg);
+}
+
+.gallery-color-filter-count {
+  display: none;
+}
+
+.gallery-color-filter-swatch:hover,
+.gallery-color-filter-swatch:focus-visible {
+  border-color: var(--accent-color);
+  outline: none;
+}
+
+.gallery-color-filter-swatch.is-active {
+  border-color: var(--accent-color);
+  border-width: 2px;
+  box-shadow: none;
+}
+
+#image-display .enum-image-unit.gallery-color-filter-hidden {
+  display: none !important;
+}
+
+/* Extend sticky header glass down to the divider line without changing layout spacing. */
+/* #selected-node-name::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 2px;
+  background-color: color-mix(in srgb, var(--bg-primary) 75%, transparent);
+  backdrop-filter: blur(10px) saturate(1.2);
+  -webkit-backdrop-filter: blur(10px) saturate(1.2);
+  pointer-events: none;
+  z-index: -1;
+} */
+
+/* image-display {
+  padding: 0;
+  overflow: visible;
+} */
+
+#image-display {
+  width: 100%;
+  min-width: 0;
+  margin-top: 12px;
+  padding-left: 0;
+  padding-right: 0;
+  padding-bottom: calc(34px + (var(--gallery-slot-text-font-size) * var(--notes-line-height) * 2));
+  flex: 1 1 auto;
+  min-height: 0;
+  border-radius: var(--radius-lg, 8px);
+  /* Ambient gradient surface moved to ::after with compositor-only opacity animation —
+     see .tree-section note. position/z-index establish the stacking context the negative-z
+     pseudo paints into (behind gallery content, above the page background). */
+  position: relative;
+  z-index: 0;
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--text-primary) 5%, transparent);
+}
+
+#image-display::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: -1;
+  /* Two large, soft corner washes (centers off-canvas) + a gentle diagonal tint — smooth
+     ambient depth with no hard gradient edge. */
+  background:
+    radial-gradient(
+      ellipse 120% 115% at 90% -12%,
+      color-mix(in srgb, var(--accent-color) 9%, transparent) 0%,
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 120% 115% at 2% 112%,
+      color-mix(in srgb, var(--text-primary) 5%, transparent) 0%,
+      transparent 68%
+    ),
+    linear-gradient(
+      150deg,
+      transparent 0%,
+      color-mix(in srgb, var(--bg-secondary) 14%, transparent) 60%,
+      color-mix(in srgb, var(--bg-tertiary) 10%, transparent) 100%
+    );
+  background-size: 100% 100%;
+  background-position: 0% 0%;
+  /* Static surface depth — no animation. */
+}
+
+body.gallery-top-scrubber-hidden #image-display {
+  margin-top: calc(12px + var(--gallery-hidden-scrubber-display-offset, 0px));
+}
+
+body.surface-effects-disabled #image-display {
+  background: transparent;
+  box-shadow: none;
+  animation: none;
+}
+
+body.surface-effects-disabled #image-display::after {
+  content: none;
+}
+
+#node-info:has(#image-display[data-gallery-source-type="tag-query"])::after {
+  content: none;
+  position: fixed;
+  left: var(--gallery-scrubber-fixed-left, calc(var(--tree-width, 280px) + 20px));
+  right: var(--gallery-scrubber-fixed-right, 20px);
+  top: var(--gallery-viewport-fixed-top, var(--gallery-scrubber-fixed-top, 92px));
+  bottom: max(8px, var(--gallery-viewport-fixed-bottom, 0px));
+  z-index: var(--flowjoe-z-gallery-scrubber);
+  pointer-events: none;
+  border: 1px solid color-mix(in srgb, var(--virtual-gallery-accent-color) 80%, transparent);
+  border-radius: var(--radius-lg, 8px);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--virtual-gallery-accent-color) 32%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--virtual-gallery-accent-color) 22%, transparent),
+    0 0 18px color-mix(in srgb, var(--virtual-gallery-accent-color) 26%, transparent);
+  animation: virtual-gallery-outline-pulse 2s infinite ease-in-out;
+}
+
+#node-info:has(#image-display[data-gallery-source-type="tag-query"])::before {
+  content: none;
+  position: fixed;
+  left: calc(var(--gallery-scrubber-fixed-left, calc(var(--tree-width, 280px) + 20px)) + 34px);
+  top: calc(
+    var(--gallery-viewport-fixed-top, var(--gallery-scrubber-fixed-top, 92px)) +
+    (
+      100vh -
+      var(--gallery-viewport-fixed-top, var(--gallery-scrubber-fixed-top, 92px)) -
+      max(8px, var(--gallery-viewport-fixed-bottom, 0px))
+    ) - 8px
+  );
+  z-index: var(--flowjoe-z-gallery-scrubber-controls);
+  width: auto;
+  height: 24px;
+  min-height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 0 10px;
+  pointer-events: none;
+  border: 1px solid color-mix(in srgb, var(--virtual-gallery-accent-color) 72%, transparent);
+  border-radius: var(--radius-sm, 4px);
+  background: color-mix(in srgb, var(--virtual-gallery-accent-color) 12%, transparent);
+  color: color-mix(in srgb, var(--virtual-gallery-accent-color) 95%, transparent);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--virtual-gallery-accent-color) 18%, transparent),
+    0 0 14px color-mix(in srgb, var(--virtual-gallery-accent-color) 22%, transparent);
+  font-size: calc(12px * var(--font-scale));
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transform: translateY(-100%) rotate(-90deg);
+  transform-origin: left bottom;
+  animation: virtual-gallery-chip-pulse 2s infinite ease-in-out;
+}
+
+.virtual-gallery-breadcrumb-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  height: 24px;
+  min-height: 24px;
+  padding: 0 10px;
+  border: 1px solid color-mix(in srgb, var(--virtual-gallery-accent-color) 72%, transparent);
+  border-radius: var(--radius-sm, 4px);
+  background: color-mix(in srgb, var(--virtual-gallery-accent-color) 12%, transparent);
+  color: color-mix(in srgb, var(--virtual-gallery-accent-color) 95%, transparent);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--virtual-gallery-accent-color) 18%, transparent),
+    0 0 14px color-mix(in srgb, var(--virtual-gallery-accent-color) 18%, transparent);
+  font-size: calc(12px * var(--font-scale));
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  animation: virtual-gallery-chip-pulse 2s infinite ease-in-out;
+}
+
+@keyframes virtual-gallery-outline-pulse {
+  0% {
+    opacity: 0.45;
+    box-shadow:
+      inset 0 0 0 1px color-mix(in srgb, var(--virtual-gallery-accent-color) 22%, transparent),
+      0 0 0 1px color-mix(in srgb, var(--virtual-gallery-accent-color) 14%, transparent),
+      0 0 10px color-mix(in srgb, var(--virtual-gallery-accent-color) 16%, transparent);
+  }
+
+  50% {
+    opacity: 1;
+    box-shadow:
+      inset 0 0 0 1px color-mix(in srgb, var(--virtual-gallery-accent-color) 42%, transparent),
+      0 0 0 1px color-mix(in srgb, var(--virtual-gallery-accent-color) 30%, transparent),
+      0 0 22px color-mix(in srgb, var(--virtual-gallery-accent-color) 32%, transparent);
+  }
+
+  100% {
+    opacity: 0.45;
+    box-shadow:
+      inset 0 0 0 1px color-mix(in srgb, var(--virtual-gallery-accent-color) 22%, transparent),
+      0 0 0 1px color-mix(in srgb, var(--virtual-gallery-accent-color) 14%, transparent),
+      0 0 10px color-mix(in srgb, var(--virtual-gallery-accent-color) 16%, transparent);
+  }
+}
+
+@keyframes virtual-gallery-chip-pulse {
+  0% {
+    opacity: 0.58;
+    background: color-mix(in srgb, var(--virtual-gallery-accent-color) 8%, transparent);
+    box-shadow:
+      inset 0 0 0 1px color-mix(in srgb, var(--virtual-gallery-accent-color) 14%, transparent),
+      0 0 8px color-mix(in srgb, var(--virtual-gallery-accent-color) 14%, transparent);
+  }
+
+  50% {
+    opacity: 1;
+    background: color-mix(in srgb, var(--virtual-gallery-accent-color) 16%, transparent);
+    box-shadow:
+      inset 0 0 0 1px color-mix(in srgb, var(--virtual-gallery-accent-color) 24%, transparent),
+      0 0 16px color-mix(in srgb, var(--virtual-gallery-accent-color) 26%, transparent);
+  }
+
+  100% {
+    opacity: 0.58;
+    background: color-mix(in srgb, var(--virtual-gallery-accent-color) 8%, transparent);
+    box-shadow:
+      inset 0 0 0 1px color-mix(in srgb, var(--virtual-gallery-accent-color) 14%, transparent),
+      0 0 8px color-mix(in srgb, var(--virtual-gallery-accent-color) 14%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tree-section,
+  #image-display,
+  .tree-section::after,
+  #image-display::after,
+  .status-in-progress::after {
+    animation: none;
+  }
+}
+
+/* Freeze every running animation while the window is hidden/backgrounded — the ambient
+   ripples and surface "breathe" composite on the GPU every frame for no benefit when nobody
+   is looking. Universal + !important so it wins over high-specificity animation selectors
+   wherever they live (incl. buttons.css); animation-play-state is compositor-only, so the
+   toggle itself is cheap and everything resumes intact on return. Body class set by the
+   visibilitychange handler in eventListeners.js. */
+body.fj-bg-idle *,
+body.fj-bg-idle *::before,
+body.fj-bg-idle *::after {
+  animation-play-state: paused !important;
+}
+
+/* Alias for the freeze above — set together by ambientAnimationFreeze.js so
+   new call sites can read as "ambient freeze" while CSS stays one rule family.
+   Prefer body.fj-bg-idle in selectors (original); both classes are toggled. */
+body.fj-ambient-freeze *,
+body.fj-ambient-freeze *::before,
+body.fj-ambient-freeze *::after {
+  animation-play-state: paused !important;
+}
+
+/* Functional progress indicators are EXEMPT from the ambient freeze above.
+   The freeze exists to stop decorative compositing (ripples, LEDs, "breathe").
+   A spinner is not decoration — it is the only signal that in-flight work is
+   still running, and a frozen spinner reads as a hung app. These must keep
+   animating whenever they are on screen, including while a long-lived ambient
+   hold (canvas reposition session, backgrounded window) is active. Same
+   !important weight as the pause rule and later in the cascade, so it wins.
+   Covers the functional-progress families, each verified as never
+   decorative: the chat/generate stop ring (only while its button is in active stop mode),
+   .ai-spell-check-spinner (spell-check + TipTap AI action cards),
+   .fa-spin (Font Awesome busy icons on Joe compaction/generate/dictation),
+   .spinner (shared AI component + compress button), and the Generate tab's
+   pixel-wave/static shimmer on .ai-generate-preview-card/.ai-generate-preview-
+   placeholder while .is-generating (the only signal an image generation is
+   still running — same "frozen reads as hung" reasoning as a spinner; it was
+   left off this list when first built, so canvas sessions silently killed it).
+   Add any new functional/progress animation to this list. Keep this comment
+   block's markers balanced: an early close swallows the selectors below into
+   an invalid prelude and silently disables the whole rule, with no build
+   warning (the CSS analogue of the i18n wrong-parent hazard). */
+body.fj-bg-idle #ai-chat-send.ai-chat-send-stop-mode .ai-chat-stop-ring,
+body.fj-bg-idle #ai-generate-submit.ai-chat-send-stop-mode .ai-chat-stop-ring,
+body.fj-bg-idle .ai-spell-check-spinner,
+body.fj-bg-idle .ai-spell-check-spinner::before,
+body.fj-bg-idle .ai-spell-check-spinner::after,
+body.fj-bg-idle .fa-spin,
+body.fj-bg-idle .fa-spin::before,
+body.fj-bg-idle .fa-spin::after,
+body.fj-bg-idle .spinner,
+body.fj-bg-idle .spinner::before,
+body.fj-bg-idle .spinner::after,
+body.fj-bg-idle .ai-generate-preview-card.is-generating::before,
+body.fj-bg-idle .ai-generate-preview-card.is-generating::after,
+body.fj-bg-idle .ai-generate-preview-placeholder.is-generating::before,
+body.fj-bg-idle .ai-generate-preview-placeholder.is-generating::after,
+body.fj-ambient-freeze #ai-chat-send.ai-chat-send-stop-mode .ai-chat-stop-ring,
+body.fj-ambient-freeze #ai-generate-submit.ai-chat-send-stop-mode .ai-chat-stop-ring,
+body.fj-ambient-freeze .ai-spell-check-spinner,
+body.fj-ambient-freeze .ai-spell-check-spinner::before,
+body.fj-ambient-freeze .ai-spell-check-spinner::after,
+body.fj-ambient-freeze .fa-spin,
+body.fj-ambient-freeze .fa-spin::before,
+body.fj-ambient-freeze .fa-spin::after,
+body.fj-ambient-freeze .spinner,
+body.fj-ambient-freeze .spinner::before,
+body.fj-ambient-freeze .spinner::after,
+body.fj-ambient-freeze .ai-generate-preview-card.is-generating::before,
+body.fj-ambient-freeze .ai-generate-preview-card.is-generating::after,
+body.fj-ambient-freeze .ai-generate-preview-placeholder.is-generating::before,
+body.fj-ambient-freeze .ai-generate-preview-placeholder.is-generating::after {
+  animation-play-state: running !important;
+}
+
+
+#node-info {
+  width: 100%;
+  min-width: 0;
+}
+
+#image-display img {
+  max-width: 100%;
+  /* max-height: 500px; */
+  border: none;
+  /* Remove border */
+  display: block;
+  /* Compression UI Components */
+}
+
+/* Compress button styles */
+.image-info-card .image-info-compress-btn,
+.image-info-card .image-info-compress-btn * {
+  all: unset;
+}
+
+.image-info-card .image-info-compress-btn.hidden {
+  display: none !important;
+}
+
+.image-info-card .image-info-compress-btn {
+  background-color: var(--success-color, #2f9e44) !important;
+  color: white !important;
+  border: none !important;
+  border-radius: var(--radius-xl, 10px) !important;
+  padding: 0 6px !important;
+  font-size: 10px !important;
+  font-family: inherit !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  height: 16px !important;
+  line-height: 1 !important;
+  margin-left: 8px !important;
+  text-decoration: none !important;
+  white-space: nowrap !important;
+  width: auto !important;
+  min-width: 0 !important;
+  flex-shrink: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+  text-transform: uppercase !important;
+}
+
+/* Spinner styles */
+.image-info-card .image-info-compress-btn .spinner {
+  width: 8px !important;
+  height: 8px !important;
+  border: 2px solid rgba(255, 255, 255, 0.3) !important;
+  border-radius: var(--radius-full, 999px) !important;
+  border-top-color: white !important;
+  animation: spin 1s ease-in-out infinite !important;
+  margin-right: 4px !important;
+  display: none !important;
+}
+
+.image-info-card .image-info-compress-btn.loading .spinner {
+  display: inline-block !important;
+}
+
+/* Animation for spinner */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+#modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: var(--flowjoe-z-app-modal-base);
+  background: var(--modal-overlay);
+}
+
+#modal.virtual-gallery-mutation-modal {
+  z-index: var(--flowjoe-z-virtual-gallery-modal) !important;
+}
+
+#modal>div {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background:
+    radial-gradient(
+      ellipse at 12% 0%,
+      color-mix(in srgb, var(--accent-color) 7%, transparent) 0%,
+      transparent 34%
+    ),
+    radial-gradient(
+      ellipse at 100% 88%,
+      color-mix(in srgb, var(--text-primary) 4%, transparent) 0%,
+      transparent 38%
+    ),
+    color-mix(in srgb, var(--modal-bg) var(--modal-glass-panel-mix), transparent);
+  padding: var(--pad-modal);
+  border: 1px solid var(--border-light);
+  /* Shared modal/panel outer corner radius — DRY rename onto the shared token (styles-variables.css).
+     Zero visual change: --modal-panel-radius is itself defined as var(--radius-2xl, 12px), the exact
+     same value chain this rule used inline, in every theme. */
+  border-radius: var(--modal-panel-radius);
+  box-shadow: 0 2px 10px var(--shadow-heavy);
+  backdrop-filter: blur(var(--modal-glass-blur)) saturate(var(--modal-glass-saturate));
+  -webkit-backdrop-filter: blur(var(--modal-glass-blur)) saturate(var(--modal-glass-saturate));
+  box-sizing: border-box;
+  width: min(620px, 90vw);
+  min-width: min(320px, 88vw);
+  max-width: min(720px, 90vw);
+}
+
+body.glass-effects-disabled #modal>div {
+  background: color-mix(in srgb, var(--modal-bg) var(--modal-glass-panel-mix), transparent);
+}
+
+#image-modal-content,
+#stack-preview-content {
+  background:
+    radial-gradient(
+      ellipse at 14% 0%,
+      color-mix(in srgb, var(--accent-color) 6%, transparent) 0%,
+      transparent 36%
+    ),
+    radial-gradient(
+      ellipse at 92% 92%,
+      color-mix(in srgb, var(--text-primary) 4%, transparent) 0%,
+      transparent 40%
+    ),
+    color-mix(in srgb, var(--bg-secondary) var(--modal-glass-preview-panel-mix), transparent) !important;
+  backdrop-filter: blur(var(--modal-glass-blur)) saturate(var(--modal-glass-saturate));
+  -webkit-backdrop-filter: blur(var(--modal-glass-blur)) saturate(var(--modal-glass-saturate));
+}
+
+/* Shared modal-shell chrome (docs/REFERENCE — modal-shell spec): moved off #image-modal-content's
+   inline style so the panel radius/border converge with the rest of the app's modals from one
+   place. Real, intentional value change vs. the modal's old inline literals (12px radius stayed
+   the same; the border tightens from a 2px hardcoded line to the shared 1px --modal-panel-border)
+   — that's the point of unification, not a DRY-only refactor. */
+#image-modal-content,
+#stack-preview-content {
+  border-radius: var(--modal-panel-radius);
+  border: var(--modal-panel-border);
+}
+
+/* Fullscreen strips the panel's corner/border entirely — was previously set as an inline style
+   write alongside the JS toggle; converted to an attribute-selector rule so it can't fight the
+   base rule above (inline styles always win over external CSS regardless of specificity, so the
+   old JS-set inline border/radius silently reverted the shared token every time fullscreen was
+   toggled). joeImageModalLifecycle.js and stackPreviewModal.js both already set data-fullscreen
+   at every toggle site — this just lets CSS react to that instead of JS re-declaring the border
+   itself. */
+#image-modal-content[data-fullscreen="true"],
+#stack-preview-content[data-fullscreen="true"] {
+  border-radius: 0;
+  border-width: 0;
+}
+
+#image-modal,
+#stack-preview-modal {
+  background: rgba(0, 0, 0, var(--modal-glass-preview-overlay)) !important;
+}
+
+#image-modal-titlebar,
+#stack-preview-titlebar {
+  background: var(--modal-glass-titlebar-background) !important;
+  backdrop-filter: blur(var(--modal-glass-blur)) saturate(var(--modal-glass-saturate));
+  -webkit-backdrop-filter: blur(var(--modal-glass-blur)) saturate(var(--modal-glass-saturate));
+  /* Shared modal-shell header chrome — same tokens as AI Assist / generic #modal. */
+  padding: var(--modal-header-padding);
+  min-height: var(--modal-header-min-height);
+  box-sizing: border-box;
+}
+
+/* Body inset shares --pad-modal with AI Assist / generic #modal / crop shell. */
+#image-modal-body,
+#stack-preview-grid-container {
+  padding: var(--pad-modal);
+  box-sizing: border-box;
+}
+
+#image-modal-heading,
+#stack-preview-titlebar > div:first-child > span {
+  /* Shared modal title weight — moved off the inline style. Real value change: 500 -> 600
+     (the shared token; Preview/Summary/stack-preview's 500 was the one outlier the spec's own
+     comment calls out). Font-size stays inline (1.1rem via var(--modal-title-font-size)) since
+     it was already byte-identical to the shared token; only the weight actually changes here.
+     Scoped to the title's own wrapper div (not a bare "#stack-preview-titlebar span") so it
+     can't also match the 3 empty decorative spans in .floating-inline-grip's drag-strip, which
+     sits as a later sibling in the same titlebar. */
+  font-weight: var(--modal-title-font-weight);
+}
+
+#image-modal-view-controls,
+#image-modal-window-controls {
+  z-index: 40 !important;
+}
+
+#image-modal-content[data-fullscreen="true"] .image-modal-resize-handle {
+  display: none;
+}
+
+.image-modal-resize-handle {
+  position: absolute;
+  z-index: 120;
+  display: block;
+  pointer-events: auto;
+}
+
+.image-modal-resize-handle[data-modal-resize-edge="n"],
+.image-modal-resize-handle[data-modal-resize-edge="s"] {
+  left: 14px;
+  right: 14px;
+  height: 10px;
+  cursor: ns-resize;
+}
+
+.image-modal-resize-handle[data-modal-resize-edge="n"] {
+  top: -5px;
+}
+
+.image-modal-resize-handle[data-modal-resize-edge="s"] {
+  bottom: -5px;
+}
+
+.image-modal-resize-handle[data-modal-resize-edge="e"],
+.image-modal-resize-handle[data-modal-resize-edge="w"] {
+  top: 14px;
+  bottom: 14px;
+  width: 10px;
+  cursor: ew-resize;
+}
+
+.image-modal-resize-handle[data-modal-resize-edge="e"] {
+  right: -5px;
+}
+
+.image-modal-resize-handle[data-modal-resize-edge="w"] {
+  left: -5px;
+}
+
+.image-modal-resize-handle[data-modal-resize-edge="ne"],
+.image-modal-resize-handle[data-modal-resize-edge="nw"],
+.image-modal-resize-handle[data-modal-resize-edge="se"],
+.image-modal-resize-handle[data-modal-resize-edge="sw"] {
+  width: 18px;
+  height: 18px;
+}
+
+.image-modal-resize-handle[data-modal-resize-edge="ne"] {
+  top: -7px;
+  right: -7px;
+  cursor: nesw-resize;
+}
+
+.image-modal-resize-handle[data-modal-resize-edge="nw"] {
+  top: -7px;
+  left: -7px;
+  cursor: nwse-resize;
+}
+
+.image-modal-resize-handle[data-modal-resize-edge="se"] {
+  right: -7px;
+  bottom: -7px;
+  cursor: nwse-resize;
+}
+
+.image-modal-resize-handle[data-modal-resize-edge="sw"] {
+  left: -7px;
+  bottom: -7px;
+  cursor: nesw-resize;
+}
+
+#image-modal-content.is-modal-resizing,
+#image-modal-content.is-modal-dragging,
+#stack-preview-content.is-modal-dragging,
+.stack-preview-content.is-modal-dragging {
+  transition: none !important;
+}
+
+#image-modal-body {
+  /* padding comes from the shared #image-modal-body, #stack-preview-grid-container rule above */
+  background: transparent !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  /* URL MEDIA V2: theme-bind the component's panel background — the view's inline style reads
+     this var with a hardcoded dark fallback (used only by the standalone harness). Same
+     gradient the clone-era frame backdrop used, so every URL shape keeps the themed panel. */
+  --url-media-panel-bg: linear-gradient(135deg, var(--bg-primary, #1a1a1a) 0%, var(--bg-secondary, #2a2a2a) 100%);
+}
+
+#modal-notes-wrapper {
+  background: transparent !important;
+}
+
+body.glass-effects-disabled #image-modal-content,
+body.glass-effects-disabled #stack-preview-content,
+body.glass-effects-disabled #flowjoe-crop-modal-panel {
+  background: var(--bg-secondary) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+body.glass-effects-disabled #image-modal,
+body.glass-effects-disabled #stack-preview-modal,
+body.glass-effects-disabled #flowjoe-crop-modal-overlay {
+  background: rgba(0, 0, 0, 0.8) !important;
+}
+
+body.glass-effects-disabled #image-modal-titlebar,
+body.glass-effects-disabled #stack-preview-titlebar {
+  background: var(--modal-glass-titlebar-background) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+body.glass-effects-disabled #image-modal-body {
+  background: transparent !important;
+}
+
+/* Surface effects off: drop decorative radial washes; keep elevation via the shared overlay shadow. */
+body.surface-effects-disabled #image-modal-content,
+body.surface-effects-disabled #stack-preview-content,
+body.surface-effects-disabled #flowjoe-crop-modal-panel,
+body.surface-effects-disabled #modal > div {
+  background: var(--bg-secondary) !important;
+  box-shadow: var(--elev-overlay) !important;
+}
+
+#nsm-modal,
+#node-summary-modal {
+  background: rgba(0, 0, 0, var(--modal-glass-preview-overlay)) !important;
+}
+
+#nsm-content,
+#nsm-panel,
+.nsm-panel,
+.node-summary-modal-content {
+  background:
+    radial-gradient(
+      ellipse at 14% 0%,
+      color-mix(in srgb, var(--accent-color) 8%, transparent) 0%,
+      transparent 36%
+    ),
+    color-mix(in srgb, var(--bg-secondary) var(--modal-glass-summary-panel-mix), transparent) !important;
+  backdrop-filter: blur(var(--modal-glass-blur)) saturate(var(--modal-glass-saturate));
+  -webkit-backdrop-filter: blur(var(--modal-glass-blur)) saturate(var(--modal-glass-saturate));
+}
+
+#modal>div,
+#image-modal-content,
+#stack-preview-content,
+#nsm-content,
+#nsm-panel,
+.nsm-panel,
+.node-summary-modal-content,
+#ai-spell-check-panel,
+.stack-preview-content {
+  background: var(--modal-glass-surface-background) !important;
+  backdrop-filter: blur(var(--modal-glass-blur)) saturate(var(--modal-glass-saturate));
+  -webkit-backdrop-filter: blur(var(--modal-glass-blur)) saturate(var(--modal-glass-saturate));
+}
+
+#image-modal.image-modal-pdf-active #image-modal-content,
+#image-modal.image-modal-pdf-active #image-modal-titlebar {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+#image-modal.image-modal-pdf-active #image-modal-content {
+  background: var(--bg-secondary) !important;
+  contain: none !important;
+}
+
+#image-modal.image-modal-pdf-active #image-modal-titlebar {
+  background: linear-gradient(90deg, var(--bg-primary) 0%, var(--bg-secondary) 100%) !important;
+}
+
+#image-modal.image-modal-pdf-active #image-container,
+#image-modal.image-modal-pdf-active #image-modal-layout-row {
+  contain: none !important;
+}
+
+#image-modal.image-modal-pdf-active #image-container {
+  overflow: hidden !important;
+  overscroll-behavior: contain;
+}
+
+#image-modal-pdf-frame {
+  display: contents;
+}
+
+#image-modal.image-modal-pdf-active #image-modal-pdf-frame {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0%;
+  align-self: stretch;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  max-width: 100%;
+  max-height: 100%;
+  aspect-ratio: auto;
+  overflow: hidden;
+  border-radius: var(--radius-lg, 8px);
+  background: var(--bg-tertiary, #18191a);
+  box-shadow: none !important;
+  contain: none !important;
+  transition: none !important;
+  --gallery-inline-scroll-lane-width: 36px;
+}
+
+.image-modal-pdf-header {
+  box-sizing: border-box;
+  position: relative;
+  flex: 0 0 55px;
+  height: 55px;
+  min-height: 55px;
+  width: 100%;
+  display: none;
+  align-items: center;
+  gap: 7px;
+  padding: 0 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  background: #3b3b3b;
+  color: #f4f4f4;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  line-height: 1;
+}
+
+#image-modal.image-modal-pdf-active .image-modal-pdf-header {
+  display: flex;
+}
+
+.image-modal-pdf-tool {
+  box-sizing: border-box;
+  width: 28px;
+  height: var(--control-height-sm);
+  min-width: 28px;
+  min-height: var(--control-height-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm, 4px);
+  background: transparent;
+  color: #e8eaed;
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.image-modal-pdf-tool:hover,
+.image-modal-pdf-tool.is-active {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.image-modal-pdf-tool:disabled {
+  color: rgba(232, 234, 237, 0.45);
+  cursor: default;
+}
+
+.image-modal-pdf-page-number,
+.image-modal-pdf-zoom-readout {
+  box-sizing: border-box;
+  height: var(--control-height-sm);
+  min-width: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 0;
+  background: #202124;
+  color: #fff;
+  font: inherit;
+  font-size: 14px;
+  text-align: center;
+}
+
+.image-modal-pdf-page-number {
+  width: 38px;
+  padding: 0 3px;
+}
+
+.image-modal-pdf-page-total {
+  min-width: 44px;
+  color: #fff;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.image-modal-pdf-zoom-readout {
+  min-width: 50px;
+  padding: 0 7px;
+}
+
+.image-modal-pdf-separator {
+  width: 1px;
+  height: 28px;
+  margin: 0 6px;
+  background: rgba(255, 255, 255, 0.24);
+}
+
+#image-modal.image-modal-pdf-active .image-modal-pdf-header .image-modal-pdf-tool {
+  width: 28px;
+  height: var(--control-height-sm);
+  min-width: 28px;
+  min-height: var(--control-height-sm);
+  padding: 0;
+  margin: 0;
+  font-size: 15px;
+  line-height: 1 !important;
+}
+
+#image-modal.image-modal-pdf-active .image-modal-pdf-header .image-modal-pdf-page-number {
+  width: 38px;
+  min-width: 38px;
+  max-width: 38px !important;
+  height: var(--control-height-sm);
+  min-height: var(--control-height-sm) !important;
+  padding: 0 3px;
+  margin: 0 !important;
+  border: 0;
+  border-radius: var(--radius-sm, 4px) !important;
+  font: 14px/28px Arial, Helvetica, sans-serif !important;
+  text-align: center;
+}
+
+#image-modal.image-modal-pdf-active .image-modal-pdf-header .image-modal-pdf-zoom-readout {
+  height: var(--control-height-sm);
+  min-height: var(--control-height-sm) !important;
+  min-width: 50px;
+  padding: 0 7px;
+  margin: 0 !important;
+  font: 14px/28px Arial, Helvetica, sans-serif !important;
+}
+
+#image-modal.image-modal-pdf-active #image-modal-pdf-download {
+  margin-left: auto !important;
+}
+
+.image-modal-pdf-more-menu {
+  position: absolute;
+  right: 18px;
+  top: 50px;
+  z-index: 2;
+  min-width: 138px;
+  padding: 6px 0;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: var(--icon-btn-radius, 4px);
+  background: #303134;
+  box-shadow: var(--elev-floating);
+}
+
+.image-modal-pdf-more-menu button {
+  display: block;
+  width: 100%;
+  padding: 8px 14px;
+  border: 0;
+  background: transparent;
+  color: #f1f3f4;
+  font: 13px/1.3 Arial, Helvetica, sans-serif;
+  text-align: left;
+  cursor: pointer;
+}
+
+.image-modal-pdf-more-menu button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.image-modal-pdf-body {
+  box-sizing: border-box;
+  flex: 1 1 0%;
+  min-height: 0;
+  width: 100%;
+  overflow: hidden;
+}
+
+.image-modal-pdf-sidebar-panel {
+  box-sizing: border-box;
+  flex: 0 0 0;
+  width: 0;
+  min-width: 0;
+  overflow: hidden auto;
+  background: #2b2c2f;
+  border-right: 1px solid rgba(255, 255, 255, 0.14);
+  transition: flex-basis var(--transition-speed) ease, width var(--transition-speed) ease;
+}
+
+.image-modal-pdf-body[data-sidebar-open="true"] .image-modal-pdf-sidebar-panel {
+  flex-basis: 148px;
+  width: 148px;
+  padding: 12px 10px;
+}
+
+.image-modal-pdf-thumbnail {
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  margin: 0 0 12px;
+  padding: 6px;
+  border: 2px solid transparent;
+  border-radius: var(--icon-btn-radius, 4px);
+  background: transparent;
+  color: #e8eaed;
+  font: 12px/1.2 Arial, Helvetica, sans-serif;
+  text-align: center;
+  cursor: pointer;
+}
+
+.image-modal-pdf-thumbnail:hover,
+.image-modal-pdf-thumbnail.is-active {
+  border-color: #8ab4f8;
+  background: rgba(138, 180, 248, 0.12);
+}
+
+.image-modal-pdf-thumbnail-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #fff;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.45);
+}
+
+.image-modal-pdf-thumbnail-label {
+  display: block;
+  margin-top: 5px;
+}
+
+#image-modal.image-modal-pdf-active #image-modal-pdf-frame.has-inline-scroll-lane > .gallery-inline-scroll-shield {
+  display: block;
+}
+
+#image-modal.image-modal-pdf-active #image-modal-pdf-frame[data-inline-scroll-lane="doc"] > .gallery-inline-scroll-shield {
+  top: 55px;
+}
+
+#image-modal.image-modal-pdf-active #image-modal-doc-frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  max-height: 100%;
+  box-shadow: none !important;
+  transition: none !important;
+  transform: none !important;
+  will-change: auto !important;
+  pointer-events: auto;
+}
+
+#image-modal.image-modal-pdf-active #image-modal-pdf-viewer {
+  display: block;
+  flex: 1 1 0%;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  max-height: 100%;
+  overflow: auto;
+  border: 0;
+  border-radius: 0;
+  background: #202124;
+  box-shadow: none !important;
+  transition: none !important;
+  transform: none !important;
+  will-change: auto !important;
+  pointer-events: auto;
+  scrollbar-gutter: stable;
+}
+
+#image-modal.image-modal-pdf-active #image-modal-pdf-viewer .flowjoe-pdfjs-pages {
+  padding: 0;
+}
+
+#image-modal.image-modal-pdf-active #image-modal-pdf-viewer .flowjoe-pdfjs-page {
+  margin: 0 auto 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+}
+
+#image-modal.image-modal-pdf-active #image-modal-doc-frame[data-bound-preview-mode="modal-pdf"] {
+  margin-top: 0 !important;
+  clip-path: none !important;
+  contain: none !important;
+  overflow: visible !important;
+  flex: 1 1 auto !important;
+}
+
+#image-modal.image-modal-pdf-active #image-modal-doc-frame[data-bound-preview-mode="slot-pdf"] {
+  height: calc(100% + 55px) !important;
+  min-height: calc(100% + 55px) !important;
+  max-height: none !important;
+  margin-top: -55px !important;
+  clip-path: inset(55px 0 0 0 round 8px 8px 0 0) !important;
+  contain: none !important;
+  overflow: visible !important;
+  flex: 0 0 auto !important;
+  pointer-events: auto;
+}
+
+#modal>div.modal-panel-compact {
+  width: auto;
+  min-width: min(320px, 90vw);
+  max-width: min(600px, 90vw);
+}
+
+#modal>div.modal-panel-auto {
+  width: auto;
+  min-width: min(320px, 90vw);
+  max-width: min(600px, 90vw);
+}
+
+#modal>div.modal-panel-alert {
+  width: min(560px, calc(100vw - 48px));
+  min-width: min(320px, calc(100vw - 32px));
+  max-width: min(560px, calc(100vw - 48px));
+  padding: var(--pad-modal); /* was a drifted 20px 22px 18px */
+}
+
+#modal>div.modal-panel-add-node {
+  width: auto;
+  min-width: min(320px, 90vw);
+  max-width: min(600px, 90vw);
+}
+
+#modal > div.modal-panel-export {
+  width: min(760px, 92vw);
+  min-width: min(320px, 90vw);
+  max-width: min(760px, 92vw);
+  max-height: calc(100vh - 32px);
+  padding: var(--pad-modal); /* was a drifted 18px 18px 14px */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+#modal > div.modal-panel-orphan-media {
+  width: min(760px, calc(100vw - (2 * var(--modal-viewport-margin))));
+  min-width: min(320px, calc(100vw - (2 * var(--modal-viewport-margin))));
+  max-width: calc(100vw - (2 * var(--modal-viewport-margin)));
+  max-height: calc(100vh - (2 * var(--modal-viewport-margin)));
+  height: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+}
+
+.orphan-media-modal-toolbar {
+  position: relative;
+  flex: 0 0 auto;
+  min-height: var(--modal-header-min-height);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--header-gap);
+  padding: var(--modal-header-padding);
+  border-bottom: var(--modal-panel-border);
+  border-radius: var(--modal-panel-radius) var(--modal-panel-radius) 0 0;
+  box-sizing: border-box;
+  cursor: grab;
+  user-select: none;
+}
+
+.orphan-media-modal-toolbar.is-dragging {
+  cursor: grabbing;
+}
+
+/* #modal-title id selector beats a plain .orphan-media-modal-heading class on specificity, so
+   every property the base #modal-title rule sets must be explicitly re-declared here (not just
+   the ones this variant cares about) — this title lives inside .orphan-media-modal-toolbar, whose
+   own chrome bar supplies the visual titlebar; the base rule's full-bleed bar must not also apply. */
+#modal-title.orphan-media-modal-heading {
+  display: block;
+  flex: 1 1 0;
+  min-width: 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  background: none;
+  border-radius: 0;
+  border-bottom: none;
+  color: var(--text-primary);
+  font-size: var(--modal-title-font-size);
+  font-weight: var(--modal-title-font-weight);
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  text-align: left;
+}
+
+.orphan-media-modal-drag {
+  pointer-events: auto;
+}
+
+.orphan-media-modal-close {
+  pointer-events: auto;
+}
+
+.orphan-media-modal-window-controls {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: var(--header-gap);
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 0;
+}
+
+.orphan-media-modal-window-controls > button {
+  width: var(--icon-btn-size);
+  min-width: var(--icon-btn-size);
+  height: var(--icon-btn-size);
+  min-height: var(--icon-btn-size);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--border-color);
+  border-radius: var(--icon-btn-radius, 4px);
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1;
+  transition: all 0.2s ease;
+}
+
+.orphan-media-modal-window-controls > button:hover,
+.orphan-media-modal-window-controls > button:focus-visible {
+  border-color: var(--accent-color);
+  background: var(--hover-bg);
+  color: var(--accent-color);
+}
+
+.orphan-media-modal-window-controls > button.orphan-media-modal-close {
+  font-size: 18px;
+}
+
+#modal > div.modal-panel-orphan-media.is-fullscreen,
+#modal > div.modal-panel-orphan-media[data-fullscreen="true"] {
+  width: 100vw;
+  min-width: 0;
+  max-width: 100vw;
+  height: 100vh;
+  min-height: 0;
+  max-height: 100vh;
+  border-radius: 0;
+}
+
+#modal > div.modal-panel-orphan-media.is-fullscreen .orphan-media-modal-toolbar,
+#modal > div.modal-panel-orphan-media[data-fullscreen="true"] .orphan-media-modal-toolbar {
+  border-radius: 0;
+}
+/* Owner rule: MODAL corner closes are class-1 chrome (32) even when they reuse the
+   context-menu corner class — this is a modal, not a floating menu. */
+button.orphan-media-modal-close.context-menu-corner-close {
+  position: relative;
+  top: auto;
+  right: auto;
+  z-index: 1;
+  width: var(--icon-btn-size);
+  min-width: var(--icon-btn-size);
+  height: var(--icon-btn-size);
+  min-height: var(--icon-btn-size);
+}
+
+#modal > div.modal-panel-orphan-media .orphan-media-modal-drag {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin: 0;
+  transform: translate(-50%, -50%);
+}
+
+#modal > div.modal-panel-orphan-media > #modal-message {
+  flex: 0 0 auto;
+  margin: 0;
+  padding: var(--pad-modal) var(--pad-modal) 0;
+  box-sizing: border-box;
+}
+
+#modal > div.modal-panel-orphan-media > #modal-extra-controls {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  margin: 0;
+  padding: var(--modal-row-gap) var(--pad-modal) 0;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+#modal > div.modal-panel-orphan-media .orphan-media-summary {
+  flex: 0 0 auto;
+  margin: 0 0 var(--modal-row-gap);
+  font-size: var(--font-control);
+  line-height: 1.4;
+}
+
+#modal > div.modal-panel-orphan-media .orphan-media-report {
+  flex: 0 1 auto;
+  min-height: 0;
+  max-height: min(52vh, 520px);
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  gap: var(--modal-row-gap);
+  padding: var(--hairline);
+  box-sizing: border-box;
+}
+
+#modal > div.modal-panel-orphan-media.is-fullscreen .orphan-media-report,
+#modal > div.modal-panel-orphan-media[data-fullscreen="true"] .orphan-media-report {
+  flex: 1 1 auto;
+  max-height: none;
+}
+
+#modal > div.modal-panel-orphan-media .orphan-media-meta {
+  padding: var(--modal-row-gap);
+}
+
+#modal > div.modal-panel-orphan-media .orphan-media-key {
+  margin-bottom: var(--modal-row-gap-tight);
+}
+
+#modal > div.modal-panel-orphan-media > #modal-button-container {
+  flex: 0 0 auto;
+  margin: 0;
+  padding: var(--pad-modal);
+  border-top: var(--modal-panel-border);
+  box-sizing: border-box;
+}
+
+#modal > div.modal-panel-add-item {
+  width: fit-content;
+  min-width: 0;
+  max-width: min(760px, calc(100vw - 32px));
+}
+
+#modal > div.modal-panel-url-input {
+  width: min(720px, 92vw);
+  min-width: min(640px, 90vw);
+  max-width: min(720px, 92vw);
+}
+
+#modal > div.modal-panel-url-input #modal-input {
+  width: calc(100% - 10px);
+  max-width: calc(100% - 10px);
+  margin: 0 5px 16px;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md, 6px);
+  box-sizing: border-box;
+}
+
+#modal > div.modal-panel-url-input #modal-input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: inset 0 0 0 1px var(--accent-color);
+}
+
+#modal > div.modal-panel-url-input #modal-button-container {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+}
+
+#modal > div.modal-panel-url-input #modal-button-container > button,
+#modal > div.modal-panel-url-input #modal-button-container button.btn,
+#modal > div.modal-panel-url-input #modal-button-container .btn {
+  max-width: none;
+  min-width: 0;
+}
+
+#modal > div.modal-panel-keyboard-shortcuts {
+  position: relative;
+  /* Size to the two-column shortcut grid's own content instead of a fixed 900-1120px minimum —
+     the grid's rows (a short kbd chip + a short label) never come close to needing that much
+     width, so a hardcoded wide panel left a large empty gap to the right of both columns. */
+  width: fit-content;
+  min-width: min(640px, calc(100vw - 32px));
+  max-width: calc(100vw - 32px);
+  height: auto;
+  min-height: 0;
+  max-height: calc(100vh - 32px);
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
+}
+
+#modal > div.modal-panel-keyboard-shortcuts .keyboard-shortcuts-modal-titlebar {
+  position: relative;
+  min-height: var(--modal-header-min-height);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--header-gap);
+  flex: 0 0 auto;
+  margin: calc(-1 * var(--pad-modal)) calc(-1 * var(--pad-modal)) 12px;
+  padding: var(--modal-header-padding);
+  border-bottom: 1px solid #333;
+  cursor: grab;
+  border-radius: var(--modal-panel-radius) var(--modal-panel-radius) 0 0;
+  box-sizing: border-box;
+}
+
+#modal > div.modal-panel-keyboard-shortcuts.is-fullscreen .keyboard-shortcuts-modal-titlebar,
+#modal > div.modal-panel-keyboard-shortcuts[data-fullscreen="true"] .keyboard-shortcuts-modal-titlebar {
+  border-radius: 0;
+}
+
+#modal > div.modal-panel-keyboard-shortcuts.is-modal-dragging .keyboard-shortcuts-modal-titlebar,
+#modal > div.modal-panel-keyboard-shortcuts.is-floating-surface-dragging .keyboard-shortcuts-modal-titlebar {
+  cursor: grabbing;
+}
+
+#modal > div.modal-panel-keyboard-shortcuts .keyboard-shortcuts-modal-title-wrap {
+  display: flex;
+  align-items: center;
+  flex: 1 1 0;
+  min-width: 0;
+  position: relative;
+  z-index: 1;
+}
+
+#modal > div.modal-panel-keyboard-shortcuts #modal-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: var(--modal-title-font-size);
+  font-weight: var(--modal-title-font-weight);
+  letter-spacing: 0.01em;
+  line-height: 1.2;
+  margin: 0;
+  padding: 0;
+  /* This title lives inside its own .keyboard-shortcuts-modal-titlebar wrapper (which supplies
+     the real chrome bar below), so the base #modal-title rule's own bar styling must not leak in. */
+  background: none;
+  border-radius: 0;
+  border-bottom: none;
+}
+
+#modal > div.modal-panel-keyboard-shortcuts .keyboard-shortcuts-modal-drag-strip {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 0;
+  margin: 0;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+#modal > div.modal-panel-keyboard-shortcuts .keyboard-shortcuts-modal-window-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--header-gap); /* owner call: modal titlebar rows share the app header rhythm */
+  position: relative;
+  z-index: 10;
+  flex: 0 0 auto;
+}
+
+#modal > div.modal-panel-keyboard-shortcuts #modal-message {
+  flex: 1 1 auto;
+  overflow: auto;
+  padding-right: 4px;
+  margin-bottom: 10px;
+  min-height: 0;
+}
+
+#modal > div.modal-panel-keyboard-shortcuts #modal-button-container {
+  display: none;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  row-gap: 8px;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  min-width: 0;
+  margin-top: 0;
+  padding-top: 10px;
+}
+
+#modal > div.modal-panel-keyboard-shortcuts .keyboard-shortcuts-modal-close {
+  width: var(--icon-btn-size); /* was a drifted 40px; standard chrome size */
+  height: var(--icon-btn-size);
+  min-width: var(--icon-btn-size);
+  min-height: var(--icon-btn-size);
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-color);
+  border-radius: var(--icon-btn-radius, 4px); /* unified square-button radius */
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  transition: border-color var(--transition-speed) ease, background var(--transition-speed) ease, color var(--transition-speed) ease;
+}
+
+#modal > div.modal-panel-keyboard-shortcuts .keyboard-shortcuts-modal-fullscreen {
+  width: var(--icon-btn-size);
+  height: var(--icon-btn-size);
+  min-width: var(--icon-btn-size);
+  min-height: var(--icon-btn-size);
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-color);
+  border-radius: var(--icon-btn-radius, 4px); /* unified square-button radius */
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  transition: border-color var(--transition-speed) ease, background var(--transition-speed) ease, color var(--transition-speed) ease;
+}
+
+#modal > div.modal-panel-keyboard-shortcuts .keyboard-shortcuts-modal-close:hover,
+#modal > div.modal-panel-keyboard-shortcuts .keyboard-shortcuts-modal-close:focus-visible,
+#modal > div.modal-panel-keyboard-shortcuts .keyboard-shortcuts-modal-fullscreen:hover,
+#modal > div.modal-panel-keyboard-shortcuts .keyboard-shortcuts-modal-fullscreen:focus-visible {
+  outline: none;
+  border-color: var(--accent-color);
+  background: var(--hover-bg);
+  color: var(--accent-color);
+}
+
+#modal-message .keyboard-shortcuts-legend {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  align-items: start;
+}
+
+#modal-message .keyboard-shortcuts-legend-column {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+  min-width: 0;
+}
+
+#modal-message .keyboard-shortcuts-legend-section {
+  box-sizing: border-box;
+  min-width: 0;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md, 6px);
+  background: color-mix(in srgb, var(--bg-secondary) 90%, transparent);
+  padding: 10px;
+}
+
+#modal-message .keyboard-shortcuts-legend-section h3 {
+  margin: 0 0 var(--card-title-gap);
+  color: var(--accent-color);
+  font-size: calc(15px * var(--font-scale));
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+#modal-message .keyboard-shortcuts-legend-rows {
+  display: grid;
+  gap: 6px;
+}
+
+#modal-message .keyboard-shortcuts-legend-row {
+  display: grid;
+  grid-template-columns: minmax(92px, max-content) minmax(0, 1fr);
+  gap: 10px;
+  align-items: baseline;
+  min-width: 0;
+}
+
+#modal-message .keyboard-shortcuts-legend-row kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 22px;
+  padding: 2px 7px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm, 4px);
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  font-family: var(--app-font-family);
+  font-size: calc(12px * var(--font-scale));
+  line-height: 1.15;
+  white-space: nowrap;
+}
+
+#modal-message .keyboard-shortcuts-legend-row kbd.keyboard-shortcuts-stack-mode-badge {
+  color: var(--text-primary);
+}
+
+#modal-message .keyboard-shortcuts-legend-row kbd.keyboard-shortcuts-stack-mode-badge i {
+  color: #48c7df;
+  font-size: calc(11px * var(--font-scale));
+}
+
+#modal-message .keyboard-shortcuts-legend-row span {
+  min-width: 0;
+  color: var(--text-primary);
+  font-size: calc(13px * var(--font-scale));
+  line-height: 1.35;
+  white-space: nowrap;
+}
+
+@media (max-width: 720px) {
+  #modal-message .keyboard-shortcuts-legend {
+    grid-template-columns: 1fr;
+  }
+
+  #modal-message .keyboard-shortcuts-legend-other {
+    grid-column: auto;
+  }
+
+  #modal-message .keyboard-shortcuts-legend-row {
+    grid-template-columns: minmax(78px, max-content) minmax(0, 1fr);
+  }
+
+  #modal-message .keyboard-shortcuts-legend-row span {
+    white-space: normal;
+  }
+}
+
+#modal-message {
+  text-align: left;
+  margin: 0 0 16px;
+  line-height: 1.5;
+  font-size: calc(13px * var(--font-scale));
+  color: var(--text-secondary);
+}
+
+#modal-message .unsaved-confirm-copy,
+#modal-message .unsaved-confirm-question {
+  margin: 0;
+}
+
+#modal-message .unsaved-confirm-list {
+  margin: 8px 0 12px 18px;
+  padding: 0;
+}
+
+#modal-message .unsaved-confirm-list li {
+  margin: 4px 0;
+}
+
+#modal-message .unsaved-confirm-question {
+  color: var(--text-primary);
+}
+
+#modal-message .modal-mixed-intro {
+  margin-bottom: 12px;
+}
+
+#modal-message .modal-choice {
+  padding: 8px 10px;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg, 8px);
+  background: color-mix(in srgb, var(--bg-secondary) 92%, transparent);
+  margin-bottom: 10px;
+}
+
+#modal-message .modal-choice:last-child {
+  margin-bottom: 0;
+}
+
+#modal-message .modal-choice-title {
+  font-weight: 700;
+  color: var(--text-primary);
+  font-size: calc(16px * var(--font-scale));
+}
+
+#modal-message .modal-choice-impact {
+  margin-top: 4px;
+  color: var(--text-secondary);
+  font-size: calc(13px * var(--font-scale));
+  line-height: 1.45;
+}
+
+#modal > div.modal-panel-alert #modal-title {
+  display: block;
+  /* Resets the base #modal-title rule's full-bleed titlebar (margin/padding/background/
+     border-radius) back to an in-flow heading with its own bottom-rule: alert's own icon+copy
+     shell (.gallery-alert-shell below) already reads as the dialog's visual focus, and a second
+     full-bleed bar above it would compete rather than introduce hierarchy. */
+  margin: 0 0 12px;
+  padding: 0 0 10px;
+  border-bottom: 1px solid color-mix(in srgb, var(--border-light) 76%, transparent);
+  border-radius: 0;
+  background: none;
+  color: var(--text-primary);
+  font-size: calc(18px * var(--font-scale));
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+#modal > div.modal-panel-alert #modal-message {
+  margin-bottom: 18px;
+}
+
+#modal-message .gallery-alert-shell {
+  --gallery-alert-color: #ff9800;
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+  padding: 14px;
+  border: 1px solid color-mix(in srgb, var(--gallery-alert-color) 32%, var(--border-light));
+  border-radius: var(--radius-lg, 8px);
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--gallery-alert-color) 10%, var(--bg-secondary)),
+      color-mix(in srgb, var(--bg-primary) 84%, transparent)
+    );
+}
+
+#modal-message .gallery-alert-icon {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-full, 999px);
+  border: 1px solid color-mix(in srgb, var(--gallery-alert-color) 68%, #ffffff 12%);
+  background:
+    radial-gradient(circle at 35% 28%, rgba(255, 255, 255, 0.28), transparent 34%),
+    color-mix(in srgb, var(--gallery-alert-color) 24%, var(--bg-tertiary));
+  box-shadow: 0 0 18px color-mix(in srgb, var(--gallery-alert-color) 18%, transparent);
+}
+
+#modal-message .gallery-alert-icon::before {
+  content: "!";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: color-mix(in srgb, var(--gallery-alert-color) 82%, #ffffff);
+  font-size: calc(24px * var(--font-scale));
+  font-weight: 800;
+  line-height: 1;
+}
+
+#modal-message .gallery-alert-copy {
+  min-width: 0;
+  padding-top: 1px;
+}
+
+#modal-message .gallery-alert-primary {
+  color: var(--text-primary);
+  font-size: calc(15px * var(--font-scale));
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+#modal-message .gallery-alert-secondary {
+  margin-top: 5px;
+  color: var(--text-secondary);
+  font-size: calc(13px * var(--font-scale));
+  line-height: 1.45;
+}
+
+#modal > div.modal-panel-alert #modal-button-container {
+  justify-content: flex-end;
+}
+
+#modal.modal-add-node #modal-message {
+  max-width: 100%;
+}
+
+#modal-button-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--confirm-modal-btn-gap);
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 4px;
+  max-width: 100%;
+  overflow: visible;
+  scrollbar-width: none;
+}
+
+#modal-button-container::-webkit-scrollbar {
+  display: none;
+}
+
+.modal-panel-add-item #modal-button-container {
+  display: grid;
+  grid-template-columns: repeat(4, 156px);
+  align-items: stretch;
+  justify-content: center;
+}
+
+.modal-panel-add-item.modal-panel-add-item-electron #modal-button-container {
+  grid-template-columns: repeat(4, 156px);
+}
+
+#modal-button-container > button,
+#modal-button-container button.btn,
+#modal-button-container .btn {
+  flex: 0 1 auto;
+  max-width: min(100%, 320px);
+  white-space: normal;
+  text-align: center;
+  line-height: 1.2;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  border-radius: var(--modal-footer-btn-radius);
+  min-height: var(--modal-footer-btn-height);
+  padding: 8px 18px;
+  /* Shared type: .btn (AIComponents.css) is 0.9em/500; .confirm-button/.cancel-button
+     were left on the UA button face (13.3px/400). Same family/size/weight for every
+     prompt-footer label, regardless of which class a caller passed. */
+  font-family: inherit;
+  font-size: var(--font-control);
+  font-weight: 500;
+  letter-spacing: inherit;
+}
+
+/* Special styling for add-item modal buttons with icons */
+.modal-panel-add-item #modal-button-container .add-item-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 80px;
+  width: 156px;
+  max-width: none;
+  padding: 12px 8px;
+  text-align: center;
+}
+
+.modal-panel-add-item #modal-button-container .add-item-btn i {
+  font-size: 24px;
+  margin: 0;
+}
+
+.modal-panel-add-item #modal-button-container .cancel-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  grid-column: 4;
+  width: 156px;
+  max-width: none;
+  min-height: 80px;
+  padding: 12px 8px;
+}
+
+@media (max-width: 768px) {
+  #modal > div.modal-panel-add-item {
+    width: min(360px, calc(100vw - 32px));
+  }
+
+  .modal-panel-add-item #modal-button-container,
+  .modal-panel-add-item.modal-panel-add-item-electron #modal-button-container {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .modal-panel-add-item #modal-button-container .add-item-btn,
+  .modal-panel-add-item #modal-button-container .cancel-btn {
+    width: 100%;
+  }
+
+  .modal-panel-add-item #modal-button-container .cancel-btn {
+    grid-column: 2;
+  }
+}
+
+:is(.theme-dark-1, .theme-dark-2, .theme-dark-3, .theme-dark-4) #modal-button-container > button,
+:is(.theme-dark-1, .theme-dark-2, .theme-dark-3, .theme-dark-4) #modal-button-container button.btn,
+:is(.theme-dark-1, .theme-dark-2, .theme-dark-3, .theme-dark-4) #modal-button-container .btn {
+  background: var(--bg-secondary);
+  border-color: var(--border-light);
+}
+
+#modal-button-container > button:hover,
+#modal-button-container > button:focus-visible,
+#modal-button-container button.btn:hover,
+#modal-button-container button.btn:focus-visible,
+#modal-button-container .btn:hover,
+#modal-button-container .btn:focus-visible {
+  background: var(--hover-bg);
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+
+#modal-message .danger-confirm-shell {
+  --danger-confirm-color: var(--danger-color, #dc3545);
+  --danger-confirm-warning: #f5b642;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 13px;
+  border: 1px solid color-mix(in srgb, var(--danger-confirm-color) 42%, var(--border-color));
+  border-left-color: color-mix(in srgb, var(--danger-confirm-color) 80%, var(--border-color));
+  border-radius: var(--radius-lg, 8px);
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--danger-confirm-warning) 13%, var(--bg-secondary)),
+      color-mix(in srgb, var(--danger-confirm-color) 8%, var(--bg-secondary)));
+  box-shadow:
+    inset 3px 0 0 color-mix(in srgb, var(--danger-confirm-color) 78%, var(--danger-confirm-warning)),
+    0 10px 24px rgba(0, 0, 0, 0.18);
+  color: var(--text-primary);
+}
+
+#modal-message .danger-confirm-icon {
+  position: relative;
+  flex: 0 0 32px;
+  width: 32px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0;
+  background: transparent;
+  color: #241500;
+  font-size: 0;
+}
+
+#modal-message .danger-confirm-icon::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--danger-confirm-warning, #f5b642) 88%, var(--accent-color));
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  filter:
+    drop-shadow(0 0 1px color-mix(in srgb, var(--danger-confirm-warning, #f5b642) 82%, var(--border-color)))
+    drop-shadow(0 0 12px color-mix(in srgb, var(--danger-confirm-warning, #f5b642) 24%, transparent));
+}
+
+#modal-message .danger-confirm-icon::after {
+  content: "!";
+  position: absolute;
+  top: 8px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  color: #241500;
+  font-size: 15px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+#modal-message .danger-confirm-body {
+  min-width: 0;
+}
+
+#modal-message .danger-confirm-eyebrow {
+  margin: 0 0 4px;
+  color: color-mix(in srgb, var(--danger-confirm-warning, #f5b642) 72%, var(--text-primary));
+  font-weight: 800;
+}
+
+#modal-message .danger-confirm-copy {
+  color: var(--text-primary);
+}
+
+#modal-button-container .danger-confirm-button {
+  --danger-confirm-color: var(--danger-color, #dc3545);
+  border-color: color-mix(in srgb, var(--danger-confirm-color) 74%, var(--border-color));
+  background: color-mix(in srgb, var(--danger-confirm-color) 10%, var(--bg-tertiary));
+  color: color-mix(in srgb, var(--danger-confirm-color) 88%, var(--text-primary));
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--danger-confirm-color) 28%, transparent),
+    var(--confirm-btn-shadow);
+}
+
+#modal-button-container .danger-confirm-button:hover,
+#modal-button-container .danger-confirm-button:focus-visible {
+  border-color: color-mix(in srgb, var(--danger-confirm-color, #dc3545) 92%, white 8%);
+  background: color-mix(in srgb, var(--danger-confirm-color, #dc3545) 17%, var(--bg-tertiary));
+  color: color-mix(in srgb, var(--danger-confirm-color, #dc3545) 84%, white 16%);
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--danger-confirm-color, #dc3545) 22%, transparent),
+    0 4px 14px rgba(0, 0, 0, 0.34);
+}
+
+
+.modal-extra-controls {
+  margin: -4px 0 16px;
+}
+
+.virtual-gallery-mutation-remember-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+#modal-title {
+  /* Bug report 2026-09-14: on the DEFAULT (unclassed) shared shell — Export/Save, the generic
+     confirm/prompt dialog, add-node, rename-style prompts — this heading rendered as a plain bold
+     line with no visual separation from the body, reading as "no title bar" next to variants like
+     .modal-panel-alert (border-bottom treatment below) and .modal-panel-keyboard-shortcuts (a full
+     chrome bar). Full-bleeds out to the panel's own edges via negative margins against the shared
+     --pad-modal inset (the same technique .modal-panel-keyboard-shortcuts's titlebar already uses),
+     rather than restructuring the DOM: this selector has no header wrapper element (see
+     prepareSharedPromptModalPanel/showModal in modalUtils.js) and 52+/89+ direct callers reach it,
+     so adding a wrapper element would mean touching every caller instead of one shared rule. Top
+     corners match the panel's own radius so the bar's fill doesn't square off the panel's rounded
+     top edge; only applies to the DEFAULT shell — a more specific `.modal-panel-*` variant's own
+     #modal-title rule (alert, keyboard-shortcuts) still wins by selector specificity and is
+     untouched. An empty title contributes none of this bar's chrome: showModal/prepareSharedPrompt
+     ModalPanel's own `modalTitle.style.display = "none"` toggle (an inline style) already wins over
+     this rule's `display: block` regardless of specificity, so a titleless confirm dialog stays
+     bare with no dead strip above the message — no extra selector needed to enforce that. font-size
+     intentionally stays its own literal below — it scales with the user's font-size preference
+     (--font-scale), unlike the shared --modal-title-font-size (a fixed 1.1rem the other modal-shell
+     surfaces use). */
+  display: block;
+  text-align: left;
+  box-sizing: border-box;
+  margin: calc(-1 * var(--pad-modal)) calc(-1 * var(--pad-modal)) 14px;
+  padding: var(--modal-header-padding, 12px 16px);
+  border-bottom: 1px solid color-mix(in srgb, var(--border-light) 76%, transparent);
+  border-radius: var(--modal-panel-radius) var(--modal-panel-radius) 0 0;
+  background: color-mix(in srgb, var(--bg-primary) 38%, transparent);
+  font-weight: 600;
+  font-size: calc(18px * var(--font-scale));
+  color: var(--text-primary);
+}
+
+#modal-message .export-modal-shell {
+  display: grid;
+  gap: 0;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  border: 1px solid color-mix(in srgb, var(--border-color) 85%, transparent);
+  border-radius: var(--radius-xl, 10px);
+  overflow: hidden;
+  background: color-mix(in srgb, var(--bg-secondary) 72%, var(--bg-tertiary) 28%);
+}
+
+#modal-message .export-modal-section {
+  min-width: 0;
+  padding: 8px 12px;
+  border: 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--border-color) 70%, transparent);
+  border-radius: 0;
+  background: transparent;
+}
+
+#modal-message .export-modal-section-format {
+  padding: 8px 12px;
+  border: 0;
+}
+
+#modal > div.modal-panel-export #modal-message {
+  max-width: 100%;
+  min-width: 0;
+  overflow: visible;
+  padding-right: 0;
+}
+
+#modal > div.modal-panel-export.is-export-scrollable #modal-message {
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+#modal-message .export-modal-section-title {
+  margin-bottom: 6px;
+  font-size: calc(14px * var(--font-scale));
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--text-primary);
+}
+
+#modal-message .export-modal-option,
+#modal-message .export-modal-api-toggle {
+  display: flex;
+  align-items: flex-start;
+  /* gap: 10px — investigated, correctly declined tokenization (found live via the CSS token
+     mapper). No existing token cleanly fits this checkbox-to-label role at 10px: --cta-row-gap
+     (10px) is explicitly marked "own variable, not shared... even though the value currently
+     matches" (styles-variables.css:93); --modal-row-gap-loosest (10px) is explicitly marked
+     RESERVED, not to be adopted without owner review (styles-variables.css:98). Left as a bespoke,
+     untokenized value rather than force a semantic mismatch. */
+  gap: 10px;
+  min-width: 0;
+  max-width: 100%;
+  cursor: pointer;
+  margin: 0;
+}
+
+#modal-message .export-modal-option + .export-modal-option,
+#modal-message .export-modal-option + .export-modal-api-toggle {
+  margin-top: 6px;
+}
+
+#modal-message .export-modal-descendants-toggle {
+  margin-top: 6px;
+  padding-left: 30px;
+}
+
+#modal-message .export-modal-descendants-toggle.is-disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+#modal-message .export-modal-option input,
+#modal-message .export-modal-api-toggle input {
+  margin: 2px 0 0;
+  flex-shrink: 0;
+}
+
+#modal-message .export-modal-option-copy {
+  display: flex;
+  flex-direction: column;
+  row-gap: var(--text-stack-gap); /* .export-modal-option-title (bold primary line) directly
+     above .export-modal-option-meta (smaller secondary line) — exactly --text-stack-gap's
+     documented role (styles-variables.css:17), zero-change rename (was a literal 2px). */
+  min-width: 0;
+  max-width: 100%;
+}
+
+#modal-message .export-modal-option-title {
+  font-size: calc(14px * var(--font-scale));
+  font-weight: 700;
+  color: var(--text-primary);
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+#modal-message .export-modal-option-meta,
+#modal-message .export-modal-flow-label {
+  font-size: var(--font-control);
+  line-height: 1.25;
+  color: var(--text-secondary);
+}
+
+#modal-message .export-modal-option-meta {
+  min-width: 0;
+}
+
+#modal-message .export-modal-warning {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px;
+  align-items: start;
+  min-width: 0;
+  margin-top: 7px;
+  padding: 7px 10px;
+  border: 1px solid color-mix(in srgb, var(--warning-color) 28%, transparent);
+  border-radius: var(--radius-lg, 8px);
+  background: color-mix(in srgb, var(--warning-color) 10%, transparent);
+  color: color-mix(in srgb, var(--text-primary) 78%, var(--warning-color) 22%);
+}
+
+#modal-message .export-modal-warning i {
+  margin-top: 2px;
+  color: var(--warning-color);
+}
+
+#modal-message .export-modal-warning-copy {
+  font-size: calc(12px * var(--font-scale));
+  line-height: 1.25;
+}
+
+#modal-message .export-modal-warning-copy strong {
+  color: var(--text-primary);
+}
+
+#modal-message .export-modal-flow-label strong {
+  color: var(--text-primary);
+}
+
+#modal-export-btn-row.export-modal-button-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  width: 100%;
+  margin-top: 0;
+}
+
+/* Simple right-aligned OK button for import results modal */
+/* #modal #modal-confirm.import-results-ok {
+  margin-left: auto;
+  display: block;
+  margin-top: 15px;
+  float: none;
+} */
+
+input[type="text"] {
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 8px;
+  border-radius: var(--radius-md, 6px);
+  width: 200px;
+}
+
+#modal-input {
+  display: none;
+  /* Default state, will be toggled by JS */
+}
+
+#modal input[type="text"],
+#modal input[type="password"] {
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 5px;
+  border-radius: var(--radius-md, 6px);
+  width: 200px;
+  margin: 8px 0;
+}
+
+input[type="file"] {
+  margin-top: 10px;
+}
+
+.drag-over {
+  border: 2px dashed var(--border-color);
+  background-color: var(--bg-tertiary);
+  opacity: 0.5;
+}
+
+#tree li {
+  cursor: grab;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: flex;
+  flex-direction: column;
+}
+
+#tree li.dragging {
+  cursor: grabbing;
+}
+
+/* Existing styles for drop-above and drop-below */
+.drop-above {
+  border-top: 3px solid var(--accent-color);
+  background-color: var(--drop-highlight);
+}
+
+.drop-below {
+  border-bottom: 3px solid var(--accent-color);
+  background-color: var(--drop-highlight);
+}
+
+/* Updated style for drop-on */
+li.drop-on {
+  border: 2px dashed var(--accent-color);
+  /* Dashed border in accent color */
+  background-color: var(--selection-bg);
+  /* Selection background */
+}
+
+/* Row-only highlight for gallery image/stack drops onto tree nodes.
+   Do not style the full li (which includes child branches). */
+#tree .flex-container.image-drop-on-row {
+  outline: 1px dashed var(--accent-color);
+  outline-offset: -1px;
+  background-color: var(--selection-bg);
+  border-radius: var(--radius-md, 6px);
+  padding: 3px 8px;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  width: calc(100% - var(--tree-row-right-gutter));
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent-color) 22%, transparent);
+}
+
+#tree li:has(> .flex-container.image-drop-on-row) {
+  --tree-line-height-middle-padding: 7px;
+}
+
+/* Style for the tree title input */
+.tree-title-input {
+  background-color: var(--tree-title-input-bg);
+  border: none;
+  border-top: 0 !important;
+  border-right: 0 !important;
+  border-left: 0 !important;
+  margin: 0 0 -15px 0;
+  border-bottom: var(--tree-title-input-border);
+  color: var(--tree-title-input-color);
+  -webkit-text-fill-color: var(--tree-title-input-color);
+  caret-color: var(--tree-title-input-color);
+  padding: 0 4px 0 0;
+  font-family: var(--app-font-family);
+  font-size: 1.2em;
+  font-weight: 600;
+  opacity: 1;
+  min-width: 60px;
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  transition: opacity var(--transition-speed);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  flex-shrink: 1;
+  flex: 1 1 100%;
+  margin-top: 4px;
+}
+
+.tree-title-input:focus {
+  opacity: 1;
+  outline: none;
+  border-top: 0;
+  border-right: 0;
+  border-left: 0;
+  border-bottom: var(--tree-title-input-focus-border);
+  color: var(--tree-title-input-color);
+  -webkit-text-fill-color: var(--tree-title-input-color);
+  caret-color: var(--tree-title-input-color);
+}
+
+/* No high-importance flags needed here: these selectors already out-rank the file's own
+   .tree-title-input / :focus rules by specificity, no other author rule sets (-webkit-)box-shadow
+   on this input, and Chromium's internal autofill paint is masked by the inset shadow itself (the
+   UA sheet never sets box-shadow, and its own important background rule can't be beaten by an
+   author flag anyway). */
+.tree-title-input:-webkit-autofill,
+.tree-title-input:-webkit-autofill:hover,
+.tree-title-input:-webkit-autofill:focus,
+.tree-title-input:-webkit-autofill:active {
+  -webkit-box-shadow: var(--tree-title-input-autofill-shadow);
+  -webkit-text-fill-color: var(--tree-title-input-color);
+  caret-color: var(--tree-title-input-color);
+  border-bottom: var(--tree-title-input-focus-border);
+}
+
+.tree-filter-indicator-btn {
+  margin-left: 2px;
+  margin-right: 6px;
+  margin-top: 5px;
+  margin-bottom: -12px !important;
+  opacity: 0.72;
+  transition: opacity var(--transition-speed) ease, transform var(--transition-speed) ease, background-color var(--transition-speed) ease;
+  flex-shrink: 0;
+}
+
+.tree-filter-indicator-btn:hover,
+.tree-filter-indicator-btn:focus {
+  opacity: 1;
+}
+
+.tree-filter-indicator-btn.active {
+  opacity: 1;
+  background: color-mix(in srgb, var(--accent-color) 22%, transparent);
+  border-color: color-mix(in srgb, var(--accent-color) 58%, var(--border-color));
+  color: var(--accent-color);
+}
+
+.tree-filter-indicator-btn.active i {
+  color: var(--accent-color);
+}
+
+#tree-alpha-sort-btn.active {
+  background: color-mix(in srgb, var(--accent-color) 22%, transparent);
+  border-color: color-mix(in srgb, var(--accent-color) 58%, var(--border-color));
+  color: var(--accent-color);
+}
+
+#tree-alpha-sort-btn.active i {
+  color: var(--accent-color);
+}
+
+.tree-tag-match-status {
+  display: block;
+  margin: 10px 6px 16px var(--tree-nav-left, 6px) !important;
+}
+
+.tree-tag-match-status .breadcrumb-filter-row {
+  position: relative;
+  margin-top: 0px;
+  /* Sit directly under the flow-name field — the base .breadcrumb-filter-row nudges down 5px, which
+     widens the gap below the title. Scoped to the tree filter only (node galleries keep their nudge). */
+  top: 0;
+  padding-left: 0;
+  margin-bottom: -4px !important;
+  gap: 0;
+  /* border: 1px solid red; */
+}
+
+.tree-tag-match-status .breadcrumb-filter-chip-list {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  /* ▼▼▼ GAP KNOB ▼▼▼  This single number sets the vertical distance between the flow-name field and
+     the filter row below it. Increase for more space, decrease for less. (Was effectively ~19px before;
+     0 is flush-tight.) Scoped to the tree filter only — node galleries are unaffected. */
+  margin-top: 6px !important;
+}
+
+.tree-tag-match-status .breadcrumb-filter-trigger.tree-filter-indicator-btn {
+  position: static !important;
+  left: auto !important;
+  top: auto !important;
+  transform: none !important;
+  margin: 0 !important;
+  width: var(--icon-btn-size-xs);
+  min-width: var(--icon-btn-size-xs);
+  height: var(--icon-btn-size-xs);
+  min-height: var(--icon-btn-size-xs);
+  align-self: center;
+  box-sizing: border-box;
+  padding: 0;
+  border-radius: var(--icon-btn-radius, 4px); /* the earlier duplicate 6px declaration in this block was dead (this later one always won) */
+  opacity: 0.9;
+}
+
+
+.tree-toolbar #tree-hidden-nodes-btn {
+  opacity: 0.82;
+}
+
+.tree-toolbar #tree-hidden-nodes-btn[hidden] {
+  display: none !important;
+}
+
+.tree-toolbar #tree-hidden-nodes-btn:hover,
+.tree-toolbar #tree-hidden-nodes-btn:focus {
+  opacity: 1;
+}
+
+}

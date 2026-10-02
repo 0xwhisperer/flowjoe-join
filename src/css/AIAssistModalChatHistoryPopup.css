@@ -1,0 +1,196 @@
+@layer app {
+.ai-chat-history-popup {
+  display: none;
+  position: fixed;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg, 8px);
+  box-shadow: var(--elev-floating);
+  z-index: var(--flowjoe-z-ai-popup);
+  min-width: 400px;
+  max-width: 600px;
+  max-height: min(560px, calc(100vh - 48px));
+  overflow: hidden;
+}
+
+.ai-chat-history-popup.is-modal-dragging,
+.ai-chat-history-popup.is-floating-surface-dragging,
+.ai-chat-history-popup.is-floating-surface-resizing {
+  transition: none !important;
+}
+
+.ai-chat-history-popup.show {
+  display: block;
+}
+
+.ai-chat-history-content {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  max-height: inherit;
+  min-height: 0;
+  box-sizing: border-box;
+}
+
+.ai-chat-history-popup.is-manual-size .ai-chat-history-content {
+  height: 100%;
+  max-height: none;
+}
+
+.ai-chat-history-header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: start;
+  gap: 12px;
+  margin-bottom: 16px;
+  cursor: grab;
+}
+
+.ai-chat-history-header .context-menu-drag-strip {
+  cursor: inherit;
+  pointer-events: none;
+  justify-self: center;
+  margin: 0;
+  height: auto;
+  width: auto;
+}
+
+.ai-chat-history-popup.is-modal-dragging .ai-chat-history-header,
+.ai-chat-history-header.is-dragging {
+  cursor: grabbing;
+}
+
+.ai-chat-history-header :is(button, a, label) {
+  cursor: pointer;
+}
+
+.ai-chat-history-header h4 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 1.1em;
+  justify-self: start;
+}
+
+.ai-chat-history-header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--icon-row-gap);
+  justify-self: end;
+}
+
+.ai-chat-history-scope {
+  margin: -8px 0 12px 0;
+  color: var(--accent-color);
+  font-size: 0.85em;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ai-chat-history-header .close-btn {
+  background: none;
+  border: 1px solid var(--border-color);
+  border-radius: var(--icon-btn-radius, 4px); /* unified square-button radius */
+  color: var(--text-primary);
+  font-size: 18px;
+  width: var(--icon-btn-size); /* was a drifted 28px */
+  height: var(--icon-btn-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  transition: all var(--transition-speed) ease;
+  justify-self: end;
+}
+
+.ai-chat-history-header .close-btn:hover {
+  background-color: var(--hover-bg);
+  color: var(--accent-color);
+  border-color: var(--accent-color);
+}
+
+.ai-chat-history-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.ai-chat-history-popup.is-manual-size .ai-chat-history-list {
+  max-height: none;
+}
+
+.ai-chat-history-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 0;
+  cursor: pointer;
+  transition: background var(--transition-speed) ease;
+}
+
+.ai-chat-history-item:hover {
+  background: var(--bg-tertiary);
+}
+
+.ai-chat-history-item-current {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.ai-chat-history-item-current:hover {
+  background: transparent;
+}
+
+.ai-chat-history-item-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.ai-chat-history-item-preview {
+  flex: 1;
+  font-size: 0.9em;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ai-chat-history-item-time {
+  font-size: 0.9em;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.ai-chat-history-item-delete {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 0 4px;
+  font-size: 14px;
+  border-radius: var(--radius-sm, 4px);
+  transition: all var(--transition-speed) ease;
+  line-height: 1;
+}
+
+.ai-chat-history-item-delete:hover {
+  color: var(--danger-color);
+  background: var(--bg-tertiary);
+}
+
+.ai-chat-history-popup .ai-chat-history-list,
+.ai-generate-prompt-history-popup .ai-generate-prompt-history-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: none;
+  overflow-y: auto;
+}
+
+}

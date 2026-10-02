@@ -1,0 +1,70 @@
+@layer app {
+.ai-json-preview-modal {
+  display: grid;
+  gap: 0;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.ai-json-preview-body {
+  margin: 0;
+  max-height: min(65vh, 620px);
+  overflow: auto;
+  width: 100%;
+  max-width: 100%;
+  padding: 12px;
+  border-radius: var(--radius-lg, 8px);
+  border: 1px solid var(--border-color);
+  background: color-mix(in srgb, var(--bg-secondary) 82%, black 18%);
+  color: var(--text-primary);
+  font-size: 0.83em;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  word-break: break-word;
+  box-sizing: border-box;
+}
+
+.ai-json-preview-panel #modal-message {
+  margin-bottom: 10px;
+  padding-right: 48px;
+}
+
+.ai-json-preview-panel #modal-extra-controls {
+  margin-top: 0;
+}
+
+.ai-json-preview-title-close {
+  position: absolute;
+  top: var(--pad-modal);
+  right: var(--pad-modal);
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  min-height: 40px;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md, 6px);
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+  transition: border-color var(--transition-speed) ease, background var(--transition-speed) ease, color var(--transition-speed) ease;
+}
+
+.ai-json-preview-title-close:hover,
+.ai-json-preview-title-close:focus-visible {
+  outline: none;
+  border-color: var(--accent-color);
+  background: var(--hover-bg);
+  color: var(--accent-color);
+}
+
+}

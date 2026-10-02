@@ -1,0 +1,126 @@
+/* FlowJoe · 03 · shape-soft  —  the "over theme".
+   Colors are NOT touched here: this stacks on top of any of your 22 skins,
+   including the high-contrast ones. Toggle: <body class="shape-soft">.
+
+   Three moves, in order of visual payoff:
+     1. borders stop being the default separator; fills take over
+     2. the radius ladder loses its 4px DOS-box step
+     3. chrome text moves off monospace — mono is kept for data */
+
+body.shape-soft {
+
+  /* ── 2 · Radius ladder ────────────────────────────────────────── */
+  --radius-sm:  6px;   /* was 4px */
+  --radius-md:  8px;   /* was 6px */
+  --radius-lg:  10px;  /* was 8px */
+  --radius-xl:  10px;  /* unchanged */
+  --radius-2xl: 14px;  /* was 12px */
+
+  /* DERIVED from the ladder — must be restated (see readme) */
+  --icon-btn-radius:               var(--radius-sm);
+  --tag-chip-radius:               var(--radius-sm);
+  --search-bar-radius:             var(--radius-sm);
+  --search-control-radius:         var(--radius-sm);
+  --search-input-radius:           var(--radius-md);
+  --dropdown-radius:               var(--radius-md);
+  --rect-btn-radius:               var(--radius-md);
+  --modal-footer-btn-radius:       var(--radius-md);
+  --panel-card-radius:             var(--radius-md);
+  --gallery-section-header-radius: var(--radius-md);
+  --gallery-header-btn-radius:     var(--radius-sm);
+  --cta-btn-radius:                var(--radius-xl);
+  --modal-panel-radius:            var(--radius-2xl);
+
+  /* ── 1 · Borders become fills ─────────────────────────────────────
+     --border-color keeps its per-theme value for the things that still need
+     an edge (fields, panel outlines). --border-light is what internal
+     dividers use, and it drops to a true hairline. */
+  --border-light: color-mix(in srgb, var(--border-color) 45%, transparent);
+
+  /* ── 3 · Motion ──────────────────────────────────────────────── */
+  --transition-timing: cubic-bezier(.2, .7, .3, 1);
+}
+
+/* Chrome buttons: no resting outline. The fill does the work; the outline
+   comes back on hover, where it means something.
+
+   Corrected selector list (2026-07-30, owner-flagged): .btn-icon and
+   .toolbar-btn had zero live DOM call sites anywhere in this codebase
+   (.toolbar-btn doesn't exist at all; .btn-icon is only a dead rule in
+   AIComponents.css that nothing ever applies) — an authoring error in the
+   original drop-in, so this rule was silently a no-op for those two.
+   Verified live under shape-soft
+   (getComputedStyle border-top-width) that .add-root-btn, .header-audio-btn,
+   .close-btn and .floating-pin-btn all draw a real 1px solid resting border
+   and belong here; .virtual-gallery-save-btn has the same explicit border
+   declaration (buttons.css) but only renders inside a virtual gallery's
+   summary view, so it didn't surface on the default boot sweep. .info-btn
+   was in the original list too but has zero live call sites (its one CSS
+   rule only sets font-style) — dropped rather than kept on the strength of
+   a name match alone.
+
+   .header-audio-btn-primary is listed EXPLICITLY, not folded into
+   .header-audio-btn above: buttons.css:528 gives it its own
+   `border-color: var(--border-color)` declaration (the play button's
+   resting-state styling — restart/next/rate share the base class alone and
+   need no separate entry). Harmless either way once this rule wins, but
+   matching its selector directly documents the dependency instead of
+   relying on the base class's coverage alone. (Note for anyone re-verifying
+   live: --border-color transitions over 0.15s on these buttons — read
+   getComputedStyle immediately after toggling shape-soft and you'll catch
+   the mid-transition starting value, not the settled one; wait ~200ms.) */
+body.shape-soft :is(.icon-btn, .app-rail-item, .settings-tab, .add-root-btn, .header-audio-btn, .header-audio-btn-primary, .close-btn, .floating-pin-btn, .virtual-gallery-save-btn) {
+  border-color: transparent;
+  background-color: transparent;
+}
+body.shape-soft :is(.icon-btn, .app-rail-item, .settings-tab, .add-root-btn, .header-audio-btn, .header-audio-btn-primary, .close-btn, .floating-pin-btn, .virtual-gallery-save-btn):hover {
+  background-color: var(--hover-bg);
+  border-color: transparent;
+  color: var(--accent-color);
+}
+
+/* Cards and panels: keep the fill, drop the hairline. */
+body.shape-soft :is(.setting-item, .gallery-slot, .image-slot) {
+  border-color: transparent;
+}
+
+/* Things you type into KEEP their outline — that is the one place a border
+   is load-bearing, because it tells you where the edit region is. */
+body.shape-soft :is(input, textarea, select, [contenteditable]) {
+  border-color: var(--border-color);
+}
+
+/* Selection stops being a grey block and becomes an accent-tinted row with a
+   2px spine. Reads as "here" instead of "highlighted". */
+body.shape-soft #tree li.selected > .flex-container,
+body.shape-soft #tree li.multi-selected > .flex-container {
+  background-color: color-mix(in srgb, var(--accent-color) 12%, var(--bg-secondary));
+  box-shadow: inset 2px 0 0 var(--accent-color);
+}
+
+/* ── Chrome typeface ──────────────────────────────────────────────
+   Opt in via the existing Font Style select (Settings > Appearance): choosing
+   any non-monospace family adds this class (settingsPanel.js's
+   _applyAppFontFamilyImpl), which sets --app-font-family to the user's actual
+   chosen sans/serif stack — that assignment already happens in JS, so this
+   file must NOT also declare --app-font-family here (an earlier version of
+   this rule hardcoded it to "IBM Plex Sans" regardless of which non-mono font
+   the user picked, silently overriding their real choice via cascade order).
+   Mono stays pinned on counts, JSON, code and the status bar, where the
+   fixed advance width is doing real work — as a literal stack, not
+   var(--font-mono) (undefined anywhere in this codebase; the app's only mono
+   token is --app-font-family itself, which is exactly the variable this rule
+   needs to override locally, so referencing it here would be circular).
+   Breadcrumbs (.breadcrumb-current-node/-link/-separator/-ellipsis) were
+   REMOVED from this pin on 2026-08-17 by user decision: the path row follows
+   the user's chosen Font Style like the rest of the chrome. If a breadcrumb
+   segment is ever re-added here, pin ALL four classes together — pinning only
+   the current node once left "Root › Child › Current" mixed sans/mono. */
+body.chrome-sans :is(
+  .node-inline-meta, .child-count, .self-count, .descendants-count,
+  .status-footer, .tree-query-tag-badge,
+  pre, code, .flowjoe-markdown pre, .flowjoe-markdown code,
+  .ai-chat-json-preview, .terminal-panel
+) {
+  font-family: "JetBrains Mono", "Fira Mono", "Courier Prime", monospace;
+}

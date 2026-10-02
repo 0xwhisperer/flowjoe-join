@@ -1,0 +1,500 @@
+@layer app {
+  #joe-pet-stage {
+    --joe-pet-size: 96px;
+    --joe-pet-control-height: 32px;
+    position: fixed;
+    z-index: calc(var(--flowjoe-z-ai-shell, 200008) + 1);
+    left: 0;
+    bottom: var(--status-footer-height, 22px);
+    width: 360px;
+    height: calc(var(--joe-pet-size) + var(--joe-pet-control-height));
+    overflow: visible;
+    pointer-events: none;
+  }
+
+  #joe-pet-stage[hidden] {
+    display: none !important;
+  }
+
+  #joe-pet-stage[data-chat-fullscreen="true"],
+  #joe-pet-stage[data-chat-crowded="true"] {
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .joe-pet-walker {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: var(--joe-pet-size);
+    height: 100%;
+    pointer-events: none;
+    will-change: transform;
+
+  }
+
+  .joe-pet-character {
+    position: absolute;
+    left: 0;
+    bottom: var(--joe-pet-control-height);
+    display: block;
+    width: var(--joe-pet-size);
+    height: var(--joe-pet-size);
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    cursor: pointer;
+    pointer-events: auto;
+    outline: none;
+  }
+
+  .joe-pet-character:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+    border-radius: var(--radius-md, 6px);
+  }
+
+  .joe-pet-art {
+    position: absolute;
+    inset: 0;
+    display: block;
+    transform-origin: center bottom;
+    animation: joe-pet-bob 2.2s steps(2, end) infinite;
+  }
+
+  .joe-pet-sprite {
+    position: absolute;
+    inset: 0;
+    display: block;
+    background-image: url("../assets/joe-pet-walking.png");
+    background-size: 400% 200%;
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    image-rendering: pixelated;
+    will-change: background-position;
+  }
+
+  /* Every supplied action sheet is an 8-frame, 4-by-2 grid at the same scale. */
+  #joe-pet-stage[data-behavior="walking"] .joe-pet-sprite {
+    background-image: url("../assets/joe-pet-walking.png");
+    background-size: 400% 200%;
+    animation: joe-pet-walk-cycle 960ms steps(1, end) infinite;
+  }
+  #joe-pet-stage[data-walk-direction="left"][data-behavior="walking"] .joe-pet-sprite,
+  #joe-pet-stage[data-walk-direction="left"][data-behavior="drinking"] .joe-pet-sprite {
+    transform: scaleX(-1);
+  }
+
+  #joe-pet-stage[data-behavior="drinking"] .joe-pet-sprite {
+    background-image: url("../assets/joe-pet-coffee.png");
+    background-size: 400% 200%;
+    animation: joe-pet-sip-cycle 2800ms steps(1, end) 1 both;
+  }
+  #joe-pet-stage[data-behavior="pointing"][data-point-target="gallery"] .joe-pet-sprite {
+    background-image: url("../assets/joe-pet-point-gallery.png");
+    background-size: 400% 200%;
+    animation: joe-pet-point-cycle 2200ms steps(1, end) 1 both;
+    transform: scaleX(-1);
+  }
+  #joe-pet-stage[data-behavior="pointing"][data-point-target="tree"] .joe-pet-sprite {
+    background-image: url("../assets/joe-pet-point-tree.png");
+    background-size: 400% 200%;
+    animation: joe-pet-point-cycle 2200ms steps(1, end) 1 both;
+  }
+  #joe-pet-stage[data-behavior="dancing"] .joe-pet-sprite {
+    background-image: url("../assets/joe-pet-dance.png");
+    background-size: 400% 200%;
+    animation: joe-pet-dance-cycle 1120ms steps(1, end) infinite;
+  }
+  #joe-pet-stage[data-behavior="dancing"][data-dance-direction="left"] .joe-pet-sprite {
+    transform: scaleX(-1);
+  }
+
+  #joe-pet-stage[data-behavior="resting"] .joe-pet-sprite,
+  #joe-pet-stage[data-behavior="celebrating"] .joe-pet-sprite,
+  #joe-pet-stage[data-behavior="surprised"] .joe-pet-sprite {
+    background-position: 0 0;
+    animation: none;
+  }
+
+  .joe-pet-blink {
+    position: absolute;
+    z-index: 1;
+    width: 4.8%;
+    height: 2.5%;
+    background: #fdd68c;
+    image-rendering: pixelated;
+    animation: joe-pet-blink 4.4s steps(1, end) infinite;
+  }
+
+  .joe-pet-blink::after {
+    position: absolute;
+    top: 0;
+    left: 34%;
+    width: 32%;
+    height: 100%;
+    background: #24140e;
+    content: "";
+    animation: joe-pet-eye-pupil 4.4s steps(1, end) infinite;
+  }
+
+  .joe-pet-blink--left { left: 43.2%; top: 44.8%; }
+  .joe-pet-blink--right { left: 53.8%; top: 44.8%; animation-delay: 55ms; }
+  .joe-pet-blink--right::after { animation-delay: 55ms; }
+
+  .joe-pet-steam {
+    position: absolute;
+    top: 48%;
+    left: 64%;
+    width: 4px;
+    height: 4px;
+    opacity: 0;
+    background: #fff0d2;
+    box-shadow: 4px -4px #fff7e4, 8px -8px #fff0d2;
+    image-rendering: pixelated;
+    animation: joe-pet-steam 2.6s steps(4, end) infinite;
+  }
+
+  .joe-pet-steam--two {
+    left: 68%;
+    animation-delay: -1.3s;
+  }
+
+  .joe-pet-point-marker {
+    position: absolute;
+    z-index: 2;
+    top: 45%;
+    right: 1%;
+    width: 4px;
+    height: 4px;
+    opacity: 0;
+    background: #f6bd63;
+    box-shadow:
+      4px 0 #f6bd63,
+      8px 0 #f6bd63,
+      12px 0 #f6bd63,
+      12px -4px #f6bd63,
+      12px 4px #f6bd63,
+      8px 4px #f6bd63,
+      4px 4px #f6bd63,
+      0 4px #f6bd63;
+    image-rendering: pixelated;
+    pointer-events: none;
+  }
+
+  .joe-pet-status-bubble {
+    position: absolute;
+    top: 1%;
+    right: 9%;
+    display: none;
+    width: 20px;
+    height: 20px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid color-mix(in srgb, var(--border-color) 85%, transparent);
+    border-radius: 50%;
+    color: var(--text-primary);
+    background: var(--bg-secondary);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+    font: 700 13px/1 var(--app-font-family, system-ui, sans-serif);
+  }
+
+  .joe-pet-status-bubble::before { content: ""; }
+  #joe-pet-stage[data-status="running"] .joe-pet-status-bubble,
+  #joe-pet-stage[data-status="needs-input"] .joe-pet-status-bubble,
+  #joe-pet-stage[data-status="ready"] .joe-pet-status-bubble,
+  #joe-pet-stage[data-status="blocked"] .joe-pet-status-bubble { display: flex; }
+  #joe-pet-stage[data-status="running"] .joe-pet-status-bubble::before { content: "…"; }
+  #joe-pet-stage[data-status="needs-input"] .joe-pet-status-bubble::before { content: "?"; }
+  #joe-pet-stage[data-status="ready"] .joe-pet-status-bubble::before { content: "✓"; }
+  #joe-pet-stage[data-status="blocked"] .joe-pet-status-bubble::before { content: "!"; }
+  #joe-pet-stage[data-status="blocked"] .joe-pet-status-bubble { color: var(--danger-color, #e66); }
+
+  .joe-pet-actions {
+    position: absolute;
+    z-index: 2;
+    left: 50%;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 2px;
+    border: 1px solid color-mix(in srgb, var(--border-color) 82%, transparent);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--bg-secondary) 94%, transparent);
+    box-shadow: var(--elev-floating, 0 3px 12px rgba(0, 0, 0, 0.28));
+    transform: translate(-50%, 4px);
+    pointer-events: auto;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 140ms ease, transform 140ms ease, visibility 0s linear 140ms;
+  }
+
+  #joe-pet-stage:hover .joe-pet-actions,
+  #joe-pet-stage:focus-within .joe-pet-actions {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, 0);
+    transition-delay: 0s;
+  }
+
+  .joe-pet-actions button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 26px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    color: var(--text-primary);
+    background: transparent;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  .joe-pet-actions button:hover,
+  .joe-pet-actions button:focus-visible {
+    color: var(--accent-color);
+    background: color-mix(in srgb, var(--accent-color) 14%, transparent);
+    outline: none;
+  }
+
+  .joe-pet-actions button[aria-pressed="true"] { color: var(--danger-color, #e66); }
+
+  #joe-pet-context-menu,
+  #joe-pet-settings-popover {
+    position: fixed;
+    z-index: 4;
+    color: var(--text-primary);
+    border: 1px solid color-mix(in srgb, var(--border-color) 88%, transparent);
+    background: var(--bg-secondary);
+    box-shadow: var(--elev-floating, 0 8px 24px rgba(0, 0, 0, 0.34));
+    pointer-events: auto;
+  }
+
+  #joe-pet-context-menu[hidden],
+  #joe-pet-settings-popover[hidden] { display: none !important; }
+
+  #joe-pet-context-menu {
+    width: 160px;
+    padding: 4px;
+    box-sizing: border-box;
+    border-radius: var(--radius-lg, 10px);
+  }
+
+  #joe-pet-context-menu button {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 28px;
+    margin: 0;
+    padding: 4px 8px;
+    line-height: 1.15;
+    border: 0;
+    border-radius: var(--radius-md, 6px);
+    color: inherit;
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  #joe-pet-context-menu button:hover,
+  #joe-pet-context-menu button:focus-visible,
+  .joe-pet-size-reset:hover,
+  .joe-pet-size-reset:focus-visible {
+    color: var(--accent-color);
+    background: color-mix(in srgb, var(--accent-color) 14%, transparent);
+    outline: none;
+  }
+
+  #joe-pet-settings-popover {
+    width: 280px;
+    max-width: calc(100vw - 24px);
+    padding: 14px;
+    border-radius: var(--radius-xl, 12px);
+  }
+
+  .joe-pet-settings-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .joe-pet-settings-header h3 { margin: 0; font-size: 1rem; }
+
+  .joe-pet-settings-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border: 0;
+    border-radius: 50%;
+    color: var(--text-secondary, var(--text-primary));
+    background: transparent;
+    cursor: pointer;
+  }
+
+  #joe-pet-settings-popover > label { display: block; margin-bottom: 3px; font-weight: 600; }
+  #joe-pet-size-description { margin: 0 0 10px; color: var(--text-secondary, var(--text-primary)); font-size: 0.88em; }
+  .joe-pet-size-control { display: flex; align-items: center; gap: 10px; }
+  #joe-pet-size { flex: 1 1 auto; min-width: 0; accent-color: var(--accent-color); }
+  #joe-pet-size-value { min-width: 44px; color: var(--text-secondary, var(--text-primary)); text-align: right; font-variant-numeric: tabular-nums; }
+  .joe-pet-size-reset { margin-top: 11px; padding: 5px 9px; border: 1px solid var(--border-color); border-radius: var(--radius-md, 6px); color: var(--text-primary); background: transparent; cursor: pointer; }
+
+  #joe-pet-stage[data-behavior="resting"] .joe-pet-art { animation-duration: 4s; }
+  #joe-pet-stage[data-behavior="walking"] .joe-pet-art,
+  #joe-pet-stage[data-behavior="drinking"] .joe-pet-art,
+  #joe-pet-stage[data-behavior="pointing"] .joe-pet-art,
+  #joe-pet-stage[data-behavior="dancing"] .joe-pet-art { animation: none; }
+  #joe-pet-stage[data-behavior="walking"] .joe-pet-walker { animation: none !important; }
+  #joe-pet-stage[data-behavior="celebrating"] .joe-pet-art { animation: joe-pet-finish 950ms steps(3, end) 1 both; }
+  #joe-pet-stage[data-behavior="surprised"] .joe-pet-art { animation: joe-pet-error 700ms steps(2, end) 1 both; }
+
+  #joe-pet-stage { --joe-pet-travel-state: paused; }
+  #joe-pet-stage[data-behavior="walking"] { --joe-pet-travel-state: running; }
+  #joe-pet-stage:hover,
+  #joe-pet-stage:focus-within { --joe-pet-travel-state: paused; }
+
+  /* Canvas interactions can hold the ambient freeze while the app is visible.
+     Joe owns his foreground animation; the hidden-window freeze still applies.
+     Important is required to counter the universal important freeze rule. */
+  #joe-pet-stage[data-document-visible="true"] .joe-pet-art,
+  #joe-pet-stage[data-document-visible="true"] .joe-pet-sprite {
+    animation-play-state: running !important;
+  }
+  #joe-pet-stage[data-document-visible="true"] .joe-pet-walker {
+    animation-play-state: var(--joe-pet-travel-state) !important;
+  }
+
+  #joe-pet-stage[data-motion="off"] .joe-pet-walker,
+  #joe-pet-stage[data-motion="off"] .joe-pet-art,
+  #joe-pet-stage[data-motion="off"] .joe-pet-sprite,
+  #joe-pet-stage[data-motion="off"] .joe-pet-blink,
+  #joe-pet-stage[data-motion="off"] .joe-pet-blink::after,
+  #joe-pet-stage[data-motion="off"] .joe-pet-steam,
+  #joe-pet-stage[data-motion="off"] .joe-pet-point-marker { animation: none !important; }
+  #joe-pet-stage[data-motion="off"] .joe-pet-walker { left: 0; }
+  #joe-pet-stage[data-motion="off"] .joe-pet-point-marker { opacity: 0; }
+
+  @keyframes joe-pet-walk-cycle {
+    0%, 12.49% { background-position: 0 0; }
+    12.5%, 24.99% { background-position: 33.3333% 0; }
+    25%, 37.49% { background-position: 66.6667% 0; }
+    37.5%, 49.99% { background-position: 100% 0; }
+    50%, 62.49% { background-position: 0 100%; }
+    62.5%, 74.99% { background-position: 33.3333% 100%; }
+    75%, 87.49% { background-position: 66.6667% 100%; }
+    87.5%, 100% { background-position: 100% 100%; }
+  }
+
+  @keyframes joe-pet-sip-cycle {
+    0%, 12.49% { background-position: 0 0; }
+    12.5%, 24.99% { background-position: 33.3333% 0; }
+    25%, 37.49% { background-position: 66.6667% 0; }
+    37.5%, 49.99% { background-position: 100% 0; }
+    50%, 62.49% { background-position: 0 100%; }
+    62.5%, 74.99% { background-position: 33.3333% 100%; }
+    75%, 87.49% { background-position: 66.6667% 100%; }
+    87.5%, 100% { background-position: 100% 100%; }
+  }
+
+  @keyframes joe-pet-point-cycle {
+    0%, 12.49% { background-position: 0 0; }
+    12.5%, 24.99% { background-position: 33.3333% 0; }
+    25%, 37.49% { background-position: 66.6667% 0; }
+    37.5%, 49.99% { background-position: 100% 0; }
+    50%, 62.49% { background-position: 0 100%; }
+    62.5%, 74.99% { background-position: 33.3333% 100%; }
+    75%, 87.49% { background-position: 66.6667% 100%; }
+    87.5%, 100% { background-position: 100% 100%; }
+  }
+
+  @keyframes joe-pet-dance-cycle {
+    0%, 12.49% { background-position: 0 0; }
+    12.5%, 24.99% { background-position: 33.3333% 0; }
+    25%, 37.49% { background-position: 66.6667% 0; }
+    37.5%, 49.99% { background-position: 100% 0; }
+    50%, 62.49% { background-position: 0 100%; }
+    62.5%, 74.99% { background-position: 33.3333% 100%; }
+    75%, 87.49% { background-position: 66.6667% 100%; }
+    87.5%, 100% { background-position: 100% 100%; }
+  }
+
+  @keyframes joe-pet-bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-2px); }
+  }
+
+  @keyframes joe-pet-blink {
+    0%, 93%, 100% { background-color: #fdd68c; }
+    94%, 96% { background-color: #24140e; }
+  }
+
+  @keyframes joe-pet-eye-pupil {
+    0%, 93%, 100% { opacity: 1; }
+    94%, 96% { opacity: 0; }
+  }
+
+  @keyframes joe-pet-steam {
+    0% { opacity: 0; transform: translate(0, 4px); }
+    25% { opacity: 0.58; transform: translate(1px, 1px); }
+    75% { opacity: 0.36; transform: translate(-1px, -5px); }
+    100% { opacity: 0; transform: translate(1px, -9px); }
+  }
+
+  @keyframes joe-pet-sip {
+    0%, 100% { transform: translateY(0); }
+    35%, 68% { transform: translateY(-3px); }
+  }
+
+  @keyframes joe-pet-point {
+    from { transform: translateX(0); }
+    to { transform: translateX(4px); }
+  }
+
+  @keyframes joe-pet-finish {
+    0%, 100% { transform: translateY(0); }
+    35% { transform: translateY(-5px); }
+    70% { transform: translateY(-1px); }
+  }
+
+  @keyframes joe-pet-error {
+    0%, 100% { transform: translateX(0); }
+    35% { transform: translateX(-2px); }
+    70% { transform: translateX(2px); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .joe-pet-walker,
+    .joe-pet-art,
+    .joe-pet-sprite,
+    .joe-pet-blink,
+    .joe-pet-blink::after,
+    .joe-pet-steam,
+    .joe-pet-point-marker {
+      animation: none !important;
+    }
+    .joe-pet-walker { left: 0; }
+    .joe-pet-sprite { transform: none !important; }
+    .joe-pet-art { transform: none; }
+    .joe-pet-actions { transition: none; }
+    .joe-pet-steam,
+    .joe-pet-point-marker { display: none; }
+  }
+}
+
+/* The general button hover fill must not paint a square behind Joe's transparent sprite. */
+#joe-pet-character:hover,
+#joe-pet-character:active,
+#joe-pet-character:focus:not(:focus-visible) {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}

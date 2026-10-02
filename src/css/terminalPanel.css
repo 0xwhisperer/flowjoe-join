@@ -1,0 +1,284 @@
+@layer app {
+/* FlowJoe Forge — terminal panel. Floating, draggable, tabbed. Electron-only surface. */
+
+.terminal-panel {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  width: 760px;
+  height: 440px;
+  min-width: 320px;
+  min-height: 160px;
+  /* Sit at the settings-panel tier; stays below the AI pill tray (200035). */
+  z-index: var(--flowjoe-z-settings-panel, 100100);
+  display: flex;
+  flex-direction: column;
+  background: var(--terminal-panel-bg);
+  border: 1px solid var(--border-color, #555);
+  border-radius: var(--radius-xl, 10px);
+  box-shadow: var(--elev-overlay);
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(12px) scale(0.99);
+  pointer-events: none;
+  transition: opacity var(--transition-speed) ease, transform var(--transition-speed) ease;
+}
+
+.terminal-panel.active {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+.terminal-panel.is-maximized {
+  border-radius: 0;
+}
+
+.terminal-drag-strip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  background: var(--terminal-drag-strip-bg);
+  border-bottom: 1px solid var(--terminal-drag-strip-border);
+  cursor: grab;
+}
+.terminal-drag-strip:active {
+  cursor: grabbing;
+}
+
+.terminal-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--terminal-title-text);
+  letter-spacing: 0.02em;
+  padding: 0 4px;
+}
+
+.terminal-tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 0 1 auto;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.terminal-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.terminal-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--control-icon-gap); /* label <-> close-icon gap inside a tab, matches the token's stated purpose */
+  padding: 3px 8px;
+  border-radius: var(--radius-md, 6px);
+  font-size: var(--font-control);
+  color: var(--terminal-tab-text);
+  background: transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--transition-speed) ease, color var(--transition-speed) ease;
+}
+.terminal-tab:hover {
+  background: var(--terminal-tab-hover-bg);
+  color: var(--text-primary);
+}
+.terminal-tab.is-active {
+  background: var(--terminal-tab-active-bg);
+  color: var(--text-primary);
+}
+.terminal-tab.dragging {
+  opacity: 0.45;
+}
+.terminal-tab.drag-over {
+  box-shadow: inset 2px 0 0 var(--accent-color, #ff9500);
+  background: var(--terminal-tab-hover-bg);
+}
+
+/* Pointer-drag ghost that follows the cursor while dragging a tab. */
+.terminal-tab-ghost {
+  position: fixed;
+  z-index: var(--flowjoe-z-terminal-panel);
+  pointer-events: none;
+  padding: 4px 10px;
+  font-size: var(--font-control);
+  color: var(--text-primary);
+  background: var(--terminal-tab-active-bg);
+  border: 1px solid var(--accent-color, #ff9500);
+  border-radius: var(--radius-md, 6px);
+  box-shadow: var(--elev-floating);
+  opacity: 0.95;
+}
+
+/* A window highlighted as a re-dock target while dragging a tab over it. */
+.terminal-panel.drag-target {
+  outline: 2px solid var(--accent-color, #ff9500);
+  outline-offset: -2px;
+}
+
+/* Inline tab rename (matches FlowJoe's node-edit-input, with its own compact padding for the
+   narrow 96px tab strip). Selector is `input[type="text"].terminal-tab-edit` (specificity 0,1,2),
+   matching the bump made to `.node-edit-input` itself in styles-gallery-notes.css (see that
+   rule's comment) — this input carries both classes (terminalPanel.js's startTabRename()), so
+   without an equal specificity bump here `.node-edit-input`'s own `padding:0`/`border-radius:0`
+   would now unconditionally beat this rule's `padding: 1px 4px` regardless of file load order,
+   instead of the two resolving by cascade order (this file loads after styles-gallery-notes.css)
+   the way they did — moot, but present — before the input[type="text"] specificity fix. */
+input[type="text"].terminal-tab-edit {
+  width: 96px;
+  max-width: 150px;
+  font-size: var(--font-control);
+  padding: 1px 4px;
+  margin: 0;
+}
+
+.terminal-tab-close,
+.terminal-newtab,
+.terminal-close {
+  border: none;
+  background: transparent;
+  color: var(--terminal-icon-color);
+  cursor: pointer;
+  line-height: 1;
+  border-radius: var(--radius-sm, 4px);
+}
+.terminal-tab-close {
+  font-size: var(--font-control);
+  padding: 2px;
+  width: 17px;
+  height: 17px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.terminal-tab-close:hover,
+.terminal-newtab:hover,
+.terminal-close:hover {
+  background: var(--terminal-icon-hover-bg);
+  color: var(--terminal-icon-hover-color);
+}
+.terminal-newtab {
+  font-size: 16px;
+  padding: 0 7px;
+}
+.terminal-spacer {
+  flex: 1 1 auto;
+}
+/* Window controls — compact (keep the title bar streamlined), themed like FlowJoe modal buttons. */
+/* Window controls use the app header's .icon-btn for size/border/shape (identical box, no
+   background reset needed here); the group is spaced by the same --header-gap the header uses,
+   so it matches the header button row exactly. */
+.terminal-win-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--header-gap, 12px);
+}
+
+/* .icon-btn's rest-state background/border/color come from the app's light-surface tokens
+   (--bg-tertiary/--border-color/--text-primary), which read as near-invisible against the
+   terminal's always-dark strip (--terminal-drag-strip-bg). Repaint rest AND hover with the same
+   dark-safe terminal tokens the adjacent .terminal-tab-close/.terminal-newtab/.terminal-close
+   buttons already use, so the icon is visible before hover, not just after. */
+.terminal-win-btn {
+  background-color: transparent;
+  border-color: transparent;
+  color: var(--terminal-icon-color);
+}
+.terminal-win-btn:hover,
+.terminal-win-btn:focus {
+  background-color: var(--terminal-icon-hover-bg);
+  border-color: transparent;
+  color: var(--terminal-icon-hover-color);
+}
+
+/* No edge-resize while fullscreen (also keeps handles from eating title-bar double-clicks). */
+.terminal-panel.is-maximized .terminal-resize-handle {
+  pointer-events: none;
+}
+
+.terminal-body {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  background: var(--terminal-body-bg);
+}
+
+.terminal-instance {
+  position: absolute;
+  inset: 0;
+  padding: 6px 8px;
+  display: none;
+}
+.terminal-instance.is-active {
+  display: block;
+}
+
+/* The header button shares the standard .icon-btn styling; the active state mirrors the
+   browser button's is-active treatment. */
+#terminal-btn.is-active {
+  color: var(--accent-color, #ff9500);
+}
+
+/* Full-resize handles: 4 edges + 4 corners. Above the terminal body so they catch the pointer. */
+.terminal-resize-handle {
+  position: absolute;
+  z-index: 6;
+  touch-action: none;
+}
+.terminal-resize-n {
+  top: 0;
+  left: 10px;
+  right: 10px;
+  height: 6px;
+  cursor: ns-resize;
+}
+.terminal-resize-s {
+  bottom: 0;
+  left: 10px;
+  right: 10px;
+  height: 6px;
+  cursor: ns-resize;
+}
+.terminal-resize-e {
+  top: 10px;
+  bottom: 10px;
+  right: 0;
+  width: 6px;
+  cursor: ew-resize;
+}
+.terminal-resize-w {
+  top: 10px;
+  bottom: 10px;
+  left: 0;
+  width: 6px;
+  cursor: ew-resize;
+}
+.terminal-resize-ne {
+  top: 0;
+  right: 0;
+  width: 14px;
+  height: 14px;
+  cursor: nesw-resize;
+}
+.terminal-resize-nw {
+  top: 0;
+  left: 0;
+  width: 14px;
+  height: 14px;
+  cursor: nwse-resize;
+}
+.terminal-resize-se {
+  bottom: 0;
+  right: 0;
+  width: 16px;
+  height: 16px;
+  cursor: nwse-resize;
+}
+.terminal-resize-sw {
+  bottom: 0;
+  left: 0;
+  width: 14px;
+  height: 14px;
+  cursor: nesw-resize;
+}
+}

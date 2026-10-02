@@ -1,0 +1,132 @@
+@layer app {
+.ai-send-to-slot-modal {
+  display: grid;
+  gap: 12px;
+}
+
+#modal > div.modal-panel-send-link {
+  width: min(620px, 92vw);
+  min-width: min(420px, 88vw);
+  max-width: min(720px, 92vw);
+  max-height: min(82vh, 720px);
+  padding: var(--pad-modal); /* was a drifted 18px 20px 16px */
+  overflow: auto;
+}
+
+#modal > div.modal-panel-send-link #modal-message {
+  margin-bottom: 12px;
+}
+
+#modal > div.modal-panel-send-link .modal-extra-controls {
+  margin-top: 0;
+}
+
+#modal > div.modal-panel-send-link .ai-send-to-slot-modal {
+  gap: 10px;
+}
+
+#modal > div.modal-panel-send-link .ai-send-to-slot-preview {
+  min-height: 0;
+  padding-top: 8px;
+}
+
+#modal > div.modal-panel-send-link #modal-button-container {
+  margin-top: 12px;
+}
+
+.ai-send-to-slot-label {
+  display: block;
+  color: var(--text-secondary);
+  font-size: 0.9em;
+  font-weight: 500;
+}
+
+.ai-send-to-slot-select {
+  width: 100%;
+  height: var(--dropdown-height);
+  padding: 0 28px 0 10px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--dropdown-radius);
+  background-color: var(--dropdown-bg);
+  color: var(--text-primary);
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: var(--dropdown-chevron);
+  background-repeat: no-repeat;
+  background-position: right var(--dropdown-chevron-inset) center;
+  background-size: 12px 12px;
+}
+
+.ai-send-to-slot-input {
+  width: 100%;
+  min-height: var(--text-input-height); /* the app-wide single-line input height (slot-title anchor) — was a 38px one-off */
+  padding: 0 10px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md, 6px);
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  box-sizing: border-box;
+}
+
+.ai-send-to-slot-select:hover:not(:disabled) {
+  border-color: var(--accent-color);
+  background-color: var(--bg-tertiary);
+}
+
+.ai-send-to-slot-input:hover:not(:disabled) {
+  border-color: var(--accent-color);
+  background-color: var(--bg-tertiary);
+}
+
+.ai-send-to-slot-select:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: var(--focus-ring);
+}
+
+.ai-send-to-slot-input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: var(--focus-ring);
+}
+
+.ai-send-to-slot-preview {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  align-content: stretch;
+  justify-items: stretch;
+  gap: 8px;
+  min-height: 0;
+  padding-top: 12px;
+}
+
+.ai-send-to-slot-preview-scroll {
+  min-height: 0;
+  max-height: min(38vh, 320px);
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+.ai-send-to-slot-preview-label {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.9em;
+  text-align: left;
+}
+
+.ai-send-to-slot-preview-body {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 0.85em;
+  white-space: pre-wrap;
+  text-align: left;
+}
+
+.ai-send-to-slot-preview-scroll img {
+  max-width: 100%;
+  max-height: min(38vh, 320px);
+  object-fit: contain;
+}
+}

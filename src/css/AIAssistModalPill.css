@@ -1,0 +1,110 @@
+@layer app {
+/* ── Minimized-surface pills ─────────────────────────────────────────────────
+   Floating pills for minimized surfaces (Joe AI Assist, preview/node-summary
+   modal). The session stays alive behind each pill; click restores it (Joe also
+   via Ctrl/Cmd+Shift+A). The shared tray stacks multiple pills bottom-right.
+   Z-INDEX: ABOVE both big-modal shells — Joe (200007/200008) and #image-modal
+   (runtime-elevated up to 200030) — because under the one-surfaced-many-parked
+   model a parked surface's pill must stay CLICKABLE while the other modal is in
+   front (clicking it swaps: restores this one, parks that one). Kept below
+   Joe's heavy internal overlays (200040+). A pill only exists while its own
+   surface is hidden, so the tray never covers its own modal.
+   The floating "Agent request" / native-approval cards (mcpBridgeSettings.css
+   .mcp-bridge-approvals, AIAssistModalApprovalCard.css #native-approval-floating-host) are
+   DELIBERATELY NOT children of this tray — they must clear the 200040+ tier this tray is
+   audited to stay below (see the "Kept below" note above and each card's own CSS comment).
+   They stay independent fixed-position siblings; syncFloatingStackPositions (modalUtils.js)
+   keeps them visually slotted into the SAME stack as the pills, sorted narrowest-on-top to
+   widest-on-bottom by measured width, without merging the two into one DOM subtree. */
+#flowjoe-minimized-pill-tray {
+  position: fixed;
+  right: 16px;
+  /* Sit ~4px ABOVE the status footer so the tray never rides on it (the var is 0 when the footer is hidden,
+     leaving a flat +4px over the original 16px). */
+  bottom: calc(16px + var(--status-footer-height, 0px) + 4px);
+  z-index: var(--flowjoe-z-ai-pill-tray);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  pointer-events: none; /* empty tray must never block clicks */
+}
+#flowjoe-minimized-pill-tray > * {
+  pointer-events: auto;
+}
+.flowjoe-minimized-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-full, 999px);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: var(--font-control);
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: var(--elev-floating);
+}
+/* Fallback when the tray helper isn't available and a pill lands on <body>. */
+body > .flowjoe-minimized-pill {
+  position: fixed;
+  right: 16px;
+  bottom: calc(16px + var(--status-footer-height, 0px) + 4px);
+  z-index: var(--flowjoe-z-ai-pill-tray);
+}
+.flowjoe-minimized-pill:hover {
+  border-color: var(--accent-color);
+  background: var(--hover-bg, var(--bg-tertiary));
+}
+/* Kind tag — pills self-identify what's parked ("Node Summary" / "Preview"; Joe's label is
+   "Joe AI") so stacked pills in the tray are tellable apart at a glance. */
+.flowjoe-minimized-pill .flowjoe-minimized-pill-kind {
+  color: var(--text-secondary);
+  font-size: var(--font-micro);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  padding-right: 2px;
+}
+.flowjoe-minimized-pill .ai-assist-minimized-pill-label {
+  font-weight: 600;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.flowjoe-minimized-pill .ai-assist-minimized-pill-status {
+  color: var(--text-secondary);
+  font-size: var(--font-control);
+}
+.flowjoe-minimized-pill .ai-assist-minimized-pill-status:empty {
+  display: none;
+}
+.flowjoe-minimized-pill .ai-assist-minimized-pill-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full, 999px);
+  background: var(--text-secondary);
+  flex: 0 0 auto;
+}
+.flowjoe-minimized-pill[data-state="working"] .ai-assist-minimized-pill-dot {
+  background: var(--accent-color);
+  animation: ai-assist-minimized-pill-pulse 1.2s ease-in-out infinite;
+}
+.flowjoe-minimized-pill[data-state="done"] .ai-assist-minimized-pill-dot {
+  background: var(--success-color, #2f9e44);
+}
+/* A flow-patch approval card is parked in the hidden chat — Joe is waiting on the USER. */
+.flowjoe-minimized-pill[data-state="attention"] {
+  border-color: var(--warning-color, #e0a046);
+}
+.flowjoe-minimized-pill[data-state="attention"] .ai-assist-minimized-pill-dot {
+  background: var(--warning-color, #e0a046);
+  animation: ai-assist-minimized-pill-pulse 0.8s ease-in-out infinite;
+}
+@keyframes ai-assist-minimized-pill-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(0.75); }
+}
+}

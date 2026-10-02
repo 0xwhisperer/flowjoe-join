@@ -1,0 +1,204 @@
+@layer app {
+#transcribe-panel {
+  display: none;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  gap: var(--modal-row-gap); /* .ai-transcribe-mode-heading -> .ai-transcribe-grid: both are DOM children of this panel (same nesting shape as #chat-mode-selector/#chat-panel), so they never got #ai-spell-check-content's row-gap — was accidentally flush */
+}
+
+.ai-transcribe-mode-label {
+  padding-left: 0;
+  color: var(--text-secondary);
+  font-size: 0.9em;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.ai-transcribe-grid {
+  display: flex;
+  gap: 12px;
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.ai-transcribe-controls,
+.ai-transcribe-result-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 0;
+  box-sizing: border-box;
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--bg-secondary) var(--modal-glass-ai-container-secondary-mix), transparent),
+      color-mix(in srgb, var(--bg-primary) var(--modal-glass-ai-container-primary-mix), transparent)
+    );
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-2xl, 12px);
+  padding: 8px;
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--text-primary) 5%, transparent);
+}
+
+.ai-transcribe-controls {
+  gap: var(--modal-row-gap);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.ai-transcribe-result-panel {
+  gap: var(--modal-row-gap-loose);
+  overflow: hidden;
+}
+
+.ai-transcribe-card,
+.ai-transcribe-result-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--modal-row-gap);
+  padding: 8px;
+  background: color-mix(in srgb, var(--bg-secondary) var(--modal-glass-ai-card-mix), transparent);
+  border: 1px solid color-mix(in srgb, var(--border-color) 82%, transparent);
+  border-radius: var(--radius-xl, 10px);
+  min-width: 0;
+}
+
+.ai-transcribe-source-content {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  min-width: 0;
+}
+
+.ai-transcribe-source-thumb-wrap {
+  width: 142px;
+  height: 142px;
+  border-radius: var(--radius-xl, 10px);
+  overflow: hidden;
+  background: color-mix(in srgb, var(--bg-secondary) var(--modal-glass-ai-container-secondary-mix), transparent);
+  border: 1px solid color-mix(in srgb, var(--border-color) 88%, transparent);
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+}
+
+#ai-transcribe-source-image {
+  display: none;
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: var(--radius-lg, 8px);
+  object-fit: contain;
+}
+
+.ai-transcribe-source-icon {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  color: var(--accent-color);
+  font-size: 2.4rem;
+  background: color-mix(in srgb, var(--accent-color) 8%, transparent);
+  border-radius: var(--radius-lg, 8px);
+}
+
+.ai-transcribe-source-details {
+  display: grid;
+  grid-template-rows: auto auto auto 1fr;
+  gap: 6px;
+  align-content: start;
+  min-width: 0;
+  padding: 6px 0;
+}
+
+.ai-transcribe-source-title {
+  color: var(--accent-color);
+  font-weight: 700;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.ai-transcribe-source-subtitle,
+.ai-transcribe-source-location,
+.ai-transcribe-source-meta,
+.ai-transcribe-status {
+  color: var(--text-secondary);
+  font-size: 0.86em;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.ai-transcribe-source-location {
+  color: var(--text-primary);
+}
+
+.ai-transcribe-source-select,
+#ai-transcribe-model,
+#ai-transcribe-language {
+  height: var(--dropdown-height);
+  border-radius: var(--dropdown-radius);
+  width: 100%;
+  margin: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  box-sizing: border-box;
+  background-color: var(--dropdown-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  font-family: inherit;
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: var(--dropdown-chevron);
+  background-repeat: no-repeat;
+  background-position: right var(--dropdown-chevron-inset) center;
+  background-size: 12px;
+  transition: border-color var(--transition-speed), box-shadow var(--transition-speed), background-color var(--transition-speed);
+}
+
+.ai-transcribe-source-select:hover:not(:disabled),
+#ai-transcribe-model:hover:not(:disabled),
+#ai-transcribe-language:hover:not(:disabled) {
+  border-color: var(--accent-color);
+  background-color: var(--bg-tertiary);
+}
+
+.ai-transcribe-source-select:focus,
+#ai-transcribe-model:focus,
+#ai-transcribe-language:focus {
+  border-color: var(--accent-color);
+  box-shadow: var(--focus-ring);
+}
+
+.ai-transcribe-source-select:disabled {
+  opacity: var(--disabled-opacity-field);
+  cursor: not-allowed;
+}
+
+.ai-transcribe-empty-state {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 10px;
+  color: var(--text-secondary);
+  border: 1px dashed var(--border-color);
+  border-radius: var(--radius-lg, 8px);
+}
+
+.ai-transcribe-empty-state[hidden] {
+  display: none !important;
+}
+
+}

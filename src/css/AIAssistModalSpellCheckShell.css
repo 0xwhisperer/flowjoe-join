@@ -1,0 +1,1116 @@
+@layer app {
+  #ai-spell-check-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    gap: var(--modal-row-gap); /* ONE shared vertical rhythm between this modal's stacked mode rows (chat-mode-selector -> chat-panel, etc.) — same token every other stacked-row column in the app uses, instead of a margin baked into one specific row */
+  }
+
+  #ai-spell-check-panel {
+    background: var(--modal-glass-surface-background);
+    backdrop-filter: blur(var(--modal-glass-blur)) saturate(var(--modal-glass-saturate));
+    -webkit-backdrop-filter: blur(var(--modal-glass-blur)) saturate(var(--modal-glass-saturate));
+    border: var(--modal-panel-border);
+    border-radius: var(--modal-panel-radius); /* shared panel radius (Preview/Summary/stack-preview/playlist) — was the one outlier at 8px via --radius-lg */
+    padding: var(--pad-modal); /* shared modal body-padding token (20px) — same inset the playlist body and Preview/Summary use, so one token moves them together */
+    box-sizing: border-box;
+    box-shadow: var(--elev-overlay);
+    color: var(--text-primary);
+    max-width: calc(100vw - (2 * var(--modal-viewport-margin)));
+    max-height: calc(100vh - (2 * var(--modal-viewport-margin)));
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #ai-spell-check-panel[data-mode="chat"] {
+    contain: none;
+    backface-visibility: visible;
+  }
+
+  body.glass-effects-disabled #ai-spell-check-panel {
+    background: var(--bg-secondary);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  #ai-spell-check-header {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 12px;
+    min-height: var(--modal-header-min-height); /* shared titlebar height (Preview/Summary/stack-preview/playlist) — was a hardcoded 58px outlier */
+    margin: calc(-1 * var(--pad-modal)) calc(-1 * var(--pad-modal)) 0; /* cancels the panel's own --pad-modal padding on top/left/right so the header sits flush like every other modal's titlebar; bottom is flush too (0, border-only separation) — the SAME titlebar-to-body pattern every other modal (Preview/Summary/Thumbnail/Playlist) uses, no gap below the titlebar band itself */
+    padding: var(--modal-header-padding);
+    border-bottom: 1px solid var(--border-color);
+    background: var(--modal-glass-titlebar-background);
+    backdrop-filter: blur(var(--modal-glass-blur)) saturate(var(--modal-glass-saturate));
+    -webkit-backdrop-filter: blur(var(--modal-glass-blur)) saturate(var(--modal-glass-saturate));
+    cursor: pointer;
+    box-sizing: border-box;
+    position: relative;
+
+    h3 {
+      margin: 0;
+      color: var(--text-primary);
+      font-size: var(--modal-title-font-size);
+      line-height: 1.2;
+      font-weight: var(--modal-title-font-weight);
+      letter-spacing: 0.01em;
+      white-space: nowrap;
+      grid-column: 1;
+      justify-self: start;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      position: relative;
+      z-index: 1;
+    }
+
+    .context-menu-drag-strip {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      margin: 0;
+      cursor: pointer;
+      height: auto;
+      width: auto;
+      pointer-events: auto;
+      z-index: 2;
+    }
+
+    .ai-spell-check-header-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--header-gap); /* owner call: modal titlebar rows share the app header rhythm */
+      grid-column: 3;
+      justify-self: end;
+      position: relative;
+      z-index: 3;
+    }
+  }
+
+  #ai-spell-check-header .close-btn {
+    width: var(--icon-btn-size); /* was a drifted 40px; standard chrome size */
+    height: var(--icon-btn-size);
+    min-width: var(--icon-btn-size);
+    min-height: var(--icon-btn-size);
+    background: var(--bg-tertiary);
+    font-size: 18px;
+  }
+
+  #ai-spell-check-header .close-btn:is(#ai-assist-top-rows-collapse-toggle, #ai-font-size-increase, #ai-spell-check-fullscreen, #ai-spell-check-pin) {
+    font-size: 14px;
+  }
+
+  #ai-spell-check-header > h3 {
+    grid-column: 1;
+    justify-self: start;
+  }
+
+  #ai-spell-check-header > .context-menu-drag-strip {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+    z-index: 2;
+  }
+
+  #ai-spell-check-header > .ai-spell-check-header-actions {
+    grid-column: 3;
+    justify-self: end;
+    display: flex;
+    align-items: center;
+    gap: var(--header-gap); /* owner call: modal titlebar rows share the app header rhythm */
+    position: relative;
+    z-index: 3;
+  }
+
+  .ai-assist-focus-mode-chip {
+    /* Sizing/shape (height, padding-x, radius, font-size) comes from the shared tag-chip
+     token group in tags.css — this rule only layers the status-chip look (accent border/fill,
+     bold uppercase) on top, since this is a non-interactive indicator, not an assigned tag. */
+    max-width: 180px;
+    border: 1px solid color-mix(in srgb, var(--accent-color) 58%, var(--border-color));
+    background: color-mix(in srgb, var(--accent-color) 13%, var(--bg-tertiary));
+    color: var(--text-primary);
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: default;
+  }
+
+  .ai-assist-focus-mode-chip[hidden] {
+    display: none;
+  }
+
+  #ai-spell-check-panel[data-fullscreen="true"] #ai-spell-check-header {
+    margin-top: calc(-1 * var(--pad-modal));
+  }
+
+  #ai-spell-check-panel.ai-assist-top-rows-collapsed #ai-spell-check-header {
+    margin-bottom: 0; /* collapsed state: the target/slot row and mode tabs hide, so the titlebar sits directly above the chat body */
+  }
+
+  #ai-spell-check-panel[data-fullscreen="true"] .ai-assist-modal-resize-handle {
+    display: none;
+  }
+
+  .ai-assist-modal-resize-handle {
+    position: absolute;
+    z-index: 30;
+    display: block;
+    pointer-events: auto;
+  }
+
+  .ai-assist-modal-resize-handle[data-ai-assist-resize-edge="n"],
+  .ai-assist-modal-resize-handle[data-ai-assist-resize-edge="s"] {
+    left: 14px;
+    right: 14px;
+    height: 10px;
+    cursor: ns-resize;
+  }
+
+  .ai-assist-modal-resize-handle[data-ai-assist-resize-edge="n"] {
+    top: -5px;
+  }
+
+  .ai-assist-modal-resize-handle[data-ai-assist-resize-edge="s"] {
+    bottom: -5px;
+  }
+
+  .ai-assist-modal-resize-handle[data-ai-assist-resize-edge="e"],
+  .ai-assist-modal-resize-handle[data-ai-assist-resize-edge="w"] {
+    top: 14px;
+    bottom: 14px;
+    width: 10px;
+    cursor: ew-resize;
+  }
+
+  .ai-assist-modal-resize-handle[data-ai-assist-resize-edge="e"] {
+    right: -5px;
+  }
+
+  .ai-assist-modal-resize-handle[data-ai-assist-resize-edge="w"] {
+    left: -5px;
+  }
+
+  .ai-assist-modal-resize-handle[data-ai-assist-resize-edge="ne"],
+  .ai-assist-modal-resize-handle[data-ai-assist-resize-edge="nw"],
+  .ai-assist-modal-resize-handle[data-ai-assist-resize-edge="se"],
+  .ai-assist-modal-resize-handle[data-ai-assist-resize-edge="sw"] {
+    width: 18px;
+    height: 18px;
+  }
+
+  .ai-assist-modal-resize-handle[data-ai-assist-resize-edge="ne"] {
+    top: -7px;
+    right: -7px;
+    cursor: nesw-resize;
+  }
+
+  .ai-assist-modal-resize-handle[data-ai-assist-resize-edge="nw"] {
+    top: -7px;
+    left: -7px;
+    cursor: nwse-resize;
+  }
+
+  .ai-assist-modal-resize-handle[data-ai-assist-resize-edge="se"] {
+    right: -7px;
+    bottom: -7px;
+    cursor: nwse-resize;
+  }
+
+  .ai-assist-modal-resize-handle[data-ai-assist-resize-edge="sw"] {
+    left: -7px;
+    bottom: -7px;
+    cursor: nesw-resize;
+  }
+
+  #ai-spell-check-panel.is-modal-resizing,
+  #ai-spell-check-panel.is-modal-dragging {
+    transition: none !important;
+  }
+
+  #ai-spell-check-pin.is-active {
+    border-color: var(--accent-color);
+    box-shadow: var(--focus-ring);
+    color: var(--accent-color);
+  }
+
+  #ai-font-size-increase.is-active {
+    border-color: var(--accent-color);
+    box-shadow: var(--focus-ring);
+    color: var(--accent-color);
+  }
+
+  /* --- Target/slot row layout contract ---
+   .ai-spell-check-target is a flex row (itself, and the positioning root for its popups); its one
+   child that needs shrink-to-fit column behavior, .ai-assist-target-controls, is a CSS Grid. Both
+   levels need their own min-width:0 escape hatch, because a flex/grid child's default min-width is
+   "auto" (its content's intrinsic width), which silently overrides a min-width:0 set further down
+   the tree — see the two comments below at each level where that's actually pinned down.
+   Vertical rhythm: 8px above this row (titlebar -> row, matches the "Chat with Joe" button bar's
+   own rhythm) and 8px below via .ai-mode-tabs's margin-top (not this row's own margin-bottom --
+   see that rule for why the gap is owned by the tab strip, not this row).
+   Collapse (Focus Mode): this row and the .ai-mode-tabs button bar hide together. See the
+   #ai-spell-check-panel.ai-assist-top-rows-collapsed rules directly below.
+   flex-shrink:0 (matches .ai-mode-tabs) -- below the @container breakpoint (see
+   .ai-assist-target-controls below) the node and slot pickers stack into two rows instead of one,
+   so this row's natural content height grows. Without flex-shrink:0, the shared column layout
+   (#ai-spell-check-content) squeezes this row back below that taller content height instead of
+   shrinking the scrollable text-preview area beneath it, so the stacked picker row visibly
+   overhangs into the tab strip below.
+   container-type:inline-size -- this row's own rendered width (NOT the viewport's) is what decides
+   whether the node/slot pickers fit side-by-side, since the modal itself is independently resizable
+   down to widths far narrower than the viewport. A viewport media query can't see that: on a wide
+   viewport with a narrow modal, a @media(max-width) rule never fires, the grid keeps its 4-column
+   layout with nothing willing to shrink below its columns' content width, and the row silently
+   overflows past the modal's own edge instead of collapsing to one column the way it correctly does
+   on an actually-narrow viewport/window. */
+  .ai-spell-check-target {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+    gap: 8px;
+    min-height: var(--modal-section-header-height);
+    margin: 8px 0 0;
+    padding: 0;
+    box-sizing: border-box;
+    color: var(--accent-color);
+    font-size: 1em;
+    font-weight: 500;
+    line-height: 1.35;
+    container-type: inline-size;
+    /* Positioning root for .ai-assist-target-node-menu/-slot-menu (see those rules) -- the popups
+     stretch to THIS row's full width (same left/right edges as the tabs/History/chat window
+     below), not just their own narrow grid-column parent's width. */
+    position: relative;
+  }
+
+  #ai-spell-check-panel.ai-assist-top-rows-collapsed .ai-spell-check-target {
+    display: none;
+  }
+
+  .ai-assist-target-controls {
+    display: grid;
+    grid-template-columns: minmax(180px, 0.92fr) auto auto minmax(180px, 1.08fr);
+    align-items: center;
+    gap: 8px;
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: none;
+    color: var(--text-secondary);
+    font-size: inherit;
+  }
+
+  /* Container query, keyed to .ai-spell-check-target's own rendered width (see container-type
+     above) -- ADDITIONAL to the @media(max-width:768px) VIEWPORT query further below, not a
+     replacement for it. The two catch different narrow scenarios and both stay: this one fires
+     when the MODAL is narrow regardless of viewport size (the modal is independently resizable
+     narrower than the viewport), the media query fires when the VIEWPORT/window itself is small
+     regardless of modal width. Either firing collapses the grid to one stacked column so the
+     pickers stack instead of forcing the row wider than it actually has room for.
+     Threshold is 600px, not 360-424px (the row's 180px-per-column floor arithmetic would suggest
+     that's enough): measured live, the 4-column grid drifts its own LAST column past its
+     container's right edge (by up to ~100px) anywhere both minmax(180px,...) columns are pinned to
+     their floor with the two middle (separator/label) auto columns squeezed toward 0 -- that drift
+     zone runs up to ~590px wide before the grid has enough real room to lay out cleanly. 600px is a
+     safety margin past the measured drift, not a principled recalculation of the underlying CSS
+     Grid quirk -- if a still-wider drift zone is ever found, raise this threshold again. */
+  @container (max-width: 600px) {
+    .ai-assist-target-controls {
+      grid-template-columns: minmax(0, 1fr);
+      max-width: 100%;
+      flex-basis: 100%;
+    }
+
+    .ai-assist-target-separator,
+    .ai-assist-target-slot-label {
+      display: none;
+    }
+  }
+
+  /* Grid items default to min-width:auto (their own content's intrinsic width), which overrides
+   any min-width:0 set further down the tree (.ai-assist-target-slot-picker, .ai-assist-target-select,
+   etc.) -- so a long slot label could still force its column past minmax()'s 180px floor and push
+   the whole row past the modal's right edge. min-width:0 on the grid items themselves is what
+   actually lets the 1.08fr track (and its ellipsis-truncating label inside) shrink to fit. */
+  .ai-assist-target-controls > * {
+    min-width: 0;
+  }
+
+  .ai-assist-target-controls[hidden] {
+    display: none !important;
+  }
+
+  .ai-assist-target-controls[data-target-scope="node-summary"],
+  .ai-assist-target-controls[data-target-scope="node-chat"] {
+    grid-template-columns: minmax(180px, 1fr);
+  }
+
+  .ai-assist-target-static {
+    color: var(--text-primary);
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  .ai-assist-target-separator {
+    color: var(--text-secondary);
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .ai-assist-target-slot-label {
+    color: var(--text-primary);
+    font-weight: 700;
+    white-space: nowrap;
+    /* An `auto` grid track sizes to its content's min-content width regardless of min-width:0 on
+       the grid ITEM (.ai-assist-target-controls > * on its own doesn't help an auto track the way
+       it helps a minmax() track) -- overflow:hidden is what actually lets this column's min-content
+       contribution shrink below the label text's full width, so the row can compress down to the
+       modal's real available width instead of forcing the grid wider than its container. */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
+
+  .ai-assist-target-select {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    height: var(--dropdown-height);
+    padding: 4px 24px 4px 8px;
+    border: 1px solid color-mix(in srgb, var(--border-color) 84%, transparent);
+    border-radius: var(--dropdown-radius);
+    background: var(--dropdown-bg);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: var(--ai-control-text-size, 0.84rem);
+    font-style: normal;
+    font-weight: 400;
+    line-height: var(--ai-line-height, normal);
+    box-sizing: border-box;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: var(--dropdown-chevron);
+    background-repeat: no-repeat;
+    background-position: right var(--dropdown-chevron-inset) center;
+    background-size: 12px;
+  }
+
+  .ai-assist-target-node-picker {
+    /* Not a positioning root -- .ai-assist-target-node-menu anchors to .ai-spell-check-target
+     (the whole row) instead, so the popup can span the row's full width. See that rule. */
+    min-width: 0;
+    width: 100%;
+  }
+
+  .ai-assist-target-node-button,
+  .ai-assist-target-slot-button {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .ai-assist-target-node-button-label {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ai-assist-target-select-chevron {
+    position: absolute;
+    top: 50%;
+    right: 8px;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: var(--text-secondary);
+    font-size: 0.8em;
+  }
+
+  .ai-assist-target-slot-picker {
+    /* Not a positioning root -- .ai-assist-target-slot-menu anchors to .ai-spell-check-target
+     (the whole row) instead, so the popup can span the row's full width. See that rule. */
+    min-width: 0;
+    width: 100%;
+  }
+
+  .ai-assist-target-slot-picker .ai-assist-target-select {
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  .ai-assist-target-node-button[aria-expanded="true"],
+  .ai-assist-target-slot-button[aria-expanded="true"] {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent-color) 45%, transparent);
+  }
+
+  .ai-assist-target-node-button:disabled,
+  .ai-assist-target-slot-button:disabled {
+    background: var(--disabled-bg);
+    color: var(--disabled-text);
+    cursor: not-allowed;
+  }
+
+  .ai-assist-target-node-menu,
+  .ai-assist-target-slot-menu {
+    position: absolute;
+    left: 0;
+    top: calc(100% + 6px);
+    width: 100%;
+    min-width: 100%;
+    max-height: min(520px, 60vh);
+    overflow: auto;
+    box-sizing: border-box;
+    padding: var(--pad-menu); /* was a drifted 6px */
+    border: 1px solid color-mix(in srgb, var(--border-color) 86%, transparent);
+    border-radius: var(--radius-lg, 8px);
+    background: color-mix(in srgb, var(--bg-primary) 96%, transparent);
+    box-shadow: var(--elev-floating);
+    z-index: var(--flowjoe-z-ai-preview);
+  }
+
+  .ai-assist-target-node-menu[hidden],
+  .ai-assist-target-slot-menu[hidden] {
+    display: none !important;
+  }
+
+  .ai-assist-node-tree-row {
+    width: max-content;
+    min-width: 100%;
+    min-height: 32px;
+    display: flex;
+    align-items: center;
+    border: 0;
+    border-radius: var(--radius-md, 6px);
+    background: transparent;
+    color: var(--text-primary);
+    font: inherit;
+    text-align: left;
+    padding: 2px 8px 2px 2px;
+    cursor: pointer;
+  }
+
+  .ai-assist-node-tree-row:hover:not(:disabled),
+  .ai-assist-node-tree-row:focus-visible:not(:disabled) {
+    background: var(--hover-bg);
+    color: var(--accent-color);
+    outline: none;
+  }
+
+  .ai-assist-node-tree-row[aria-selected="true"] {
+    background: var(--selection-bg);
+    color: var(--text-primary);
+  }
+
+  .ai-assist-node-tree-row:disabled {
+    opacity: var(--disabled-opacity-field);
+    cursor: not-allowed;
+  }
+
+  .ai-assist-node-branches {
+    display: inline-flex;
+    align-self: stretch;
+    flex: 0 0 auto;
+    min-height: 28px;
+  }
+
+  .ai-assist-node-branch-segment {
+    position: relative;
+    flex: 0 0 24px;
+    width: 24px;
+    min-height: 28px;
+  }
+
+  .ai-assist-node-branch-segment.is-continuation::before,
+  .ai-assist-node-branch-segment.is-elbow::before {
+    content: "";
+    position: absolute;
+    left: 11px;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--tree-line-color);
+  }
+
+  .ai-assist-node-branch-segment.is-elbow.is-last::before {
+    bottom: 50%;
+  }
+
+  .ai-assist-node-branch-segment.is-elbow::after {
+    content: "";
+    position: absolute;
+    left: 11px;
+    top: 50%;
+    width: 18px;
+    height: var(--hairline);
+    background: var(--tree-line-color);
+  }
+
+  .ai-assist-node-tree-content {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-width: max-content;
+    line-height: 1.25;
+  }
+
+  .ai-assist-node-tree-content .status-indicator {
+    margin-right: 0;
+    cursor: inherit;
+  }
+
+  .ai-assist-node-tree-name {
+    min-width: max-content;
+    overflow: visible;
+    text-overflow: clip;
+    white-space: nowrap;
+    font-weight: 700;
+  }
+
+  .ai-assist-node-tree-count {
+    color: var(--accent-color);
+    font-weight: 700;
+    flex: 0 0 auto;
+  }
+
+  .ai-assist-node-tree-child-count {
+    color: var(--text-secondary);
+    flex: 0 0 auto;
+  }
+
+  .ai-assist-target-select:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 1px;
+  }
+
+  .ai-assist-target-select:disabled {
+    background: var(--disabled-bg);
+    color: var(--disabled-text);
+    cursor: not-allowed;
+  }
+
+  /* VIEWPORT-width fallback -- catches a small browser/OS window regardless of the modal's own
+     width. See the @container(max-width:600px) rule above (.ai-assist-target-controls) for the
+     MODAL-width equivalent; the two are additive, not duplicates -- keep both. */
+  @media (max-width: 768px) {
+    .ai-assist-target-controls {
+      grid-template-columns: minmax(0, 1fr);
+      max-width: 100%;
+      flex-basis: 100%;
+    }
+
+    .ai-assist-target-separator,
+    .ai-assist-target-slot-label {
+      display: none;
+    }
+  }
+
+  .ai-mode-tabs {
+    display: flex;
+    flex-shrink: 0;
+    background: color-mix(in srgb, var(--bg-secondary) var(--modal-glass-ai-card-mix), transparent);
+    padding: 0;
+    gap: 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--border-color) 82%, transparent);
+    /* margin-top (not padding-top): padding here would be filled by this row's own background,
+     reading as "the tab strip already started, just padded" instead of a genuinely transparent
+     gap matching the target row's own margin above it — see the target/slot row layout contract
+     comment above .ai-spell-check-target for the full rhythm. */
+    margin: 8px 0 var(--modal-row-gap);
+    min-width: 0;
+    overflow: hidden;
+    backdrop-filter: blur(var(--modal-glass-blur)) saturate(var(--modal-glass-saturate));
+    -webkit-backdrop-filter: blur(var(--modal-glass-blur)) saturate(var(--modal-glass-saturate));
+  }
+
+  .ai-mode-tabs[hidden] {
+    display: none;
+  }
+
+  .ai-mode-tab {
+    flex: 1;
+    min-width: 0;
+    background: color-mix(in srgb, var(--bg-primary) var(--modal-glass-ai-chat-messages-mix), transparent);
+    border-top: 1px solid color-mix(in srgb, var(--border-color) 82%, transparent);
+    border-left: 1px solid color-mix(in srgb, var(--border-color) 82%, transparent);
+    border-right: 1px solid color-mix(in srgb, var(--border-color) 82%, transparent);
+    border-bottom: none;
+    border-radius: var(--radius-md, 6px) var(--radius-md, 6px) 0 0;
+    color: var(--text-secondary);
+    font-family: inherit;
+    font-size: var(--font-control);
+    font-weight: 500;
+    padding: var(--ai-mode-tab-pad);
+    cursor: pointer;
+    transition:
+      color var(--transition-speed),
+      background var(--transition-speed),
+      border-color var(--transition-speed);
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: relative;
+    bottom: -1px;
+    margin-right: -1px;
+  }
+
+  .ai-mode-tab:last-child {
+    margin-right: 0;
+  }
+
+  .ai-mode-tab:hover {
+    color: var(--text-primary);
+    background: color-mix(in srgb, var(--bg-secondary) var(--modal-glass-ai-field-secondary-mix), transparent);
+  }
+
+  .ai-mode-tab.active {
+    background: color-mix(in srgb, var(--bg-secondary) var(--modal-glass-ai-panel-mix), transparent);
+    color: var(--accent-color);
+    border-top-color: var(--accent-color);
+    border-left-color: color-mix(in srgb, var(--border-color) 88%, transparent);
+    border-right-color: color-mix(in srgb, var(--border-color) 88%, transparent);
+    border-bottom-color: color-mix(in srgb, var(--bg-secondary) var(--modal-glass-ai-panel-mix), transparent);
+    font-weight: 600;
+    z-index: 1;
+  }
+
+  body.glass-effects-disabled .ai-mode-tabs {
+    background: var(--bg-secondary);
+    border-bottom-color: var(--border-color);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  body.glass-effects-disabled .ai-mode-tab {
+    background: var(--bg-primary);
+    border-top-color: var(--border-color);
+    border-left-color: var(--border-color);
+    border-right-color: var(--border-color);
+  }
+
+  body.glass-effects-disabled .ai-mode-tab:hover,
+  body.glass-effects-disabled .ai-mode-tab.active {
+    background: var(--bg-secondary);
+  }
+
+  body.glass-effects-disabled .ai-mode-tab.active {
+    border-bottom-color: var(--bg-secondary);
+  }
+
+  .ai-mode-tab:focus-visible {
+    outline: none;
+    box-shadow: none;
+    z-index: 2;
+  }
+
+  #ai-spell-check-prompt {
+    margin: 0 0 12px 0;
+    color: var(--text-secondary);
+    font-size: 0.9em;
+  }
+  #ai-spell-check-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  #ai-spell-check-preview-wrap {
+    display: none;
+    margin-bottom: var(--modal-row-gap-loose);
+  }
+
+  #spell-check-panel,
+  #ai-spell-check-phase-action {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  #spell-check-panel {
+    display: flex;
+    flex-direction: column;
+  }
+
+  #ai-spell-check-phase-action {
+    flex-direction: column;
+  }
+
+  #ai-spell-check-phase-action #ai-spell-check-preview-wrap {
+    flex: 1 1 auto;
+    min-height: 0;
+    flex-direction: column;
+  }
+
+  #ai-spell-check-phase-action #ai-spell-check-preview {
+    flex: 1 1 auto;
+    height: auto;
+    min-height: 0;
+    padding: 20px;
+  }
+
+  #ai-spell-check-phase-action #ai-spell-check-actions {
+    flex: 0 0 auto;
+  }
+
+  #ai-spell-check-action-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex: 0 0 auto;
+    min-height: var(--modal-section-header-height);
+  }
+
+  .ai-spell-check-action-footer-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  #ai-spell-check-result-wrap {
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0;
+    min-height: 0;
+  }
+  #ai-spell-check-preview-wrap .ai-spell-check-label,
+  #ai-spell-check-phase-review .ai-spell-check-label,
+  #ai-spell-check-result-wrap .ai-spell-check-label {
+    margin: 0 0 var(--modal-row-gap) 8px;
+    color: var(--text-secondary);
+    font-size: 0.9em;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  #ai-spell-check-phase-action #ai-spell-check-preview-wrap > .ai-spell-check-label {
+    height: var(--modal-section-header-height);
+    min-height: var(--modal-section-header-height);
+    max-height: var(--modal-section-header-height);
+    flex: 0 0 48px;
+    display: flex;
+    align-items: center;
+    margin: 0 0 0 8px;
+  }
+
+  #ai-spell-check-phase-action #ai-spell-check-preview-wrap > .ai-spell-check-label,
+  #chat-mode-selector .ai-chat-section-label,
+  .ai-generate-mode-label {
+    padding-left: 0;
+    color: var(--text-secondary);
+    font-size: 0.9em;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+  #ai-spell-check-preview,
+  #ai-spell-check-result {
+    width: 100%;
+    height: 220px;
+    min-height: 220px;
+    background: color-mix(in srgb, var(--bg-primary) var(--modal-glass-ai-field-primary-mix), transparent);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md, 6px);
+    padding: 10px 12px;
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 0.9em;
+    line-height: 1.5;
+    resize: none;
+    box-sizing: border-box;
+    margin-bottom: 0;
+  }
+  #ai-spell-check-loading {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 32px 20px;
+    text-align: center;
+    white-space: normal;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+  #ai-spell-check-loading p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.98em;
+    line-height: 1.35;
+  }
+  @keyframes ai-spell-check-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  .ai-spell-check-spinner {
+    display: block;
+    width: 24px;
+    height: 24px;
+    border: 3px solid var(--border-color);
+    border-top-color: var(--accent-color);
+    border-radius: var(--radius-full, 999px);
+    animation: ai-spell-check-spin 0.9s linear infinite;
+    flex: 0 0 auto;
+  }
+  #ai-spell-check-error {
+    display: none;
+    background: color-mix(in srgb, var(--danger-color) 15%, var(--bg-primary));
+    border: 1px solid color-mix(in srgb, var(--danger-color) 40%, var(--border-color));
+    border-radius: var(--radius-md, 6px);
+    padding: 10px 12px;
+    color: var(--danger-color);
+    font-size: 0.9em;
+    margin: 0;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  #ai-spell-check-actions,
+  #ai-spell-check-review-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--cta-row-gap);
+  }
+
+  #ai-spell-check-actions {
+    margin-left: auto;
+  }
+
+  #ai-spell-check-review-actions {
+    margin-top: 20px;
+  }
+
+  /* The Check/Cancel ACTION row is a prominent CTA pair (family: Send/Generate/Transcribe) —
+   owner-directed; the REVIEW footer below stays on the modal-footer tier. */
+  #ai-spell-check-actions .btn {
+    min-width: 108px;
+    min-height: var(--cta-btn-height);
+    padding: 0 18px;
+    border-radius: var(--cta-btn-radius);
+  }
+  #ai-spell-check-review-actions .btn {
+    min-width: 108px;
+    min-height: var(--modal-footer-btn-height);
+    padding: 8px 18px;
+    border-radius: var(--modal-footer-btn-radius);
+  }
+  #ai-spell-check-modal .btn:hover {
+    opacity: 0.9;
+  }
+  #ai-spell-check-modal .confirm-button,
+  #preview-modal-spellcheck-review-actions .confirm-button,
+  #image-modal-markdown-spellcheck-review-actions .confirm-button,
+  #summary-modal-spellcheck-review-actions .confirm-button {
+    background: var(--accent-color);
+    color: var(--text-on-accent);
+    border: none;
+    box-shadow: var(--confirm-btn-shadow);
+  }
+
+  #modal .confirm-button {
+    box-shadow: var(--confirm-btn-shadow);
+  }
+  #ai-spell-check-modal .cancel-button,
+  #preview-modal-spellcheck-review-actions .cancel-button,
+  #image-modal-markdown-spellcheck-review-actions .cancel-button,
+  #summary-modal-spellcheck-review-actions .cancel-button {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+  }
+
+  #ai-spell-check-modal #ai-spell-check-cancel.cancel-button:hover:not(:disabled),
+  #ai-spell-check-modal #ai-spell-check-cancel.cancel-button:focus:not(:disabled),
+  #ai-spell-check-modal #ai-spell-check-cancel.cancel-button:focus-visible:not(:disabled) {
+    background: var(--hover-bg);
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+    opacity: 1;
+    outline: none !important;
+  }
+
+  #ai-spell-check-modal #ai-spell-check-cancel.cancel-button:focus:not(:disabled),
+  #ai-spell-check-modal #ai-spell-check-cancel.cancel-button:focus-visible:not(:disabled) {
+    box-shadow: none !important;
+  }
+
+  #ai-spell-check-modal #ai-spell-check-reject.cancel-button {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    box-shadow: none;
+  }
+
+  #ai-spell-check-modal #ai-spell-check-reject.cancel-button:hover:not(:disabled),
+  #ai-spell-check-modal #ai-spell-check-reject.cancel-button:focus-visible:not(:disabled) {
+    background: var(--hover-bg);
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+    opacity: 1;
+    outline: none !important;
+  }
+
+  #ai-spell-check-modal #ai-spell-check-reject.cancel-button:focus-visible:not(:disabled) {
+    box-shadow: none !important;
+  }
+
+  #ai-spell-check-modal #ai-spell-check-reject.cancel-button:active:not(:disabled) {
+    background: color-mix(in srgb, var(--accent-color) 18%, var(--bg-tertiary));
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+    box-shadow: none;
+  }
+  #ai-spell-check-result {
+    margin-bottom: 0;
+    display: block;
+    flex: 1 1 auto;
+    height: auto;
+    min-height: 0;
+  }
+  #ai-spell-check-result:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: var(--focus-ring);
+  }
+  .ai-spell-check-review-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 8px;
+    min-height: var(--modal-section-header-height);
+    margin: 0px;
+    gap: 12px;
+  }
+
+  #ai-spell-check-phase-review .ai-spell-check-review-header .ai-spell-check-label {
+    margin: 0;
+  }
+
+  #ai-spell-check-phase-review {
+    display: grid;
+    grid-template-rows: 48px minmax(0, 1fr) 48px minmax(0, 1fr) auto;
+    flex: 1 1 auto;
+    gap: 0;
+    min-height: 0;
+  }
+
+  #ai-spell-check-phase-review > :not(.ai-spell-check-diff):not(#ai-spell-check-result-wrap) {
+    flex: 0 0 auto;
+  }
+  #ai-spell-check-review-mode-controls {
+    margin-bottom: 16px;
+  }
+  .ai-spell-check-prompt {
+    margin: 0 0 12px 0;
+    color: var(--text-secondary);
+    font-size: 0.9em;
+  }
+  .ai-spell-check-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+  .ai-spell-check-diff {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md, 6px);
+    padding: 10px 12px;
+    font-size: 0.9em;
+    height: auto;
+    min-height: 0;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    color: var(--text-primary);
+    line-height: 1.5;
+    flex: 1 1 0;
+    box-sizing: border-box;
+    margin-bottom: 0;
+  }
+  .ai-spell-check-resize-handle {
+    height: 14px;
+    width: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: grab;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+
+    &.is-dragging {
+      cursor: grabbing;
+    }
+
+    .floating-inline-grip {
+      transform: scale(0.7);
+    }
+  }
+  .ai-spell-check-tweaks-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 8px;
+    min-height: var(--modal-section-header-height);
+    margin: 0;
+    position: relative;
+    cursor: grab;
+    touch-action: none;
+  }
+  .ai-spell-check-tweaks-header.is-dragging {
+    cursor: grabbing;
+  }
+  .ai-spell-check-tweaks-label {
+    margin: 0 !important;
+  }
+  .diff-removed {
+    text-decoration: line-through;
+    opacity: 0.5;
+    color: var(--text-secondary);
+  }
+  .diff-added {
+    background: color-mix(in srgb, var(--accent-color) 18%, transparent);
+    color: var(--accent-color);
+    border-radius: var(--radius-xs, 2px);
+    padding: 0 2px;
+    margin: 0 -2px;
+  }
+  .ai-spell-check-response-badge {
+    display: inline-grid;
+    place-items: center;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    min-height: 24px; /* joins the 24px small-control rhythm — the old em-scaled max() outgrew every fixed-height chip beside it; candidate member of a future generic-badge family */
+    height: 24px;
+    font-size: 0.7em;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent-color);
+    background: color-mix(in srgb, var(--accent-color) 12%, var(--bg-primary));
+    border: 1px solid color-mix(in srgb, var(--accent-color) 30%, var(--border-color));
+    border-radius: var(--radius-sm, 4px);
+    padding: 0 0.7em;
+    line-height: 1 !important;
+    text-align: center;
+  }
+}

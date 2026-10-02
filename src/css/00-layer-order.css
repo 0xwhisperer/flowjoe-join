@@ -1,0 +1,39 @@
+/* Declares the app's cascade layer order (Phase 3.5 @layer cutover). Layer order here controls
+   precedence regardless of load order OR SELECTOR SPECIFICITY among layered rules — a later
+   layer always wins over an earlier one, no matter how specific the earlier layer's selector is
+   — EXCEPT for high-importance declarations (the "bang" flag), where the CSS cascade spec
+   REVERSES layer order (an earlier layer's high-importance declaration beats a later layer's).
+   `app` holds styles.css and the "component" files (buttons.css, tags.css, gallery-scrubber.css,
+   stack-styles.css, tooltip.css, confetti.css, onboarding.css, AIComponents.css, AIAssistModal.css,
+   terminalPanel.css, mcpBridgeSettings.css, statusFooter.css, z-index-fix.css) as ONE layer, not
+   split: styles.css shares 30-58 class names with several of these files (e.g. `.close-btn`,
+   `.floating-pin-btn`, `.icon-btn`), and which file's rule wins for a given shared class today
+   depends on THAT PAIR's specificity, not a fixed file precedence — there is no single order that
+   gets all of them right. Splitting them into separate layers produced real regressions in both
+   directions (settings buttons, playlist buttons). z-index-fix.css was also tried in its own
+   EARLIER layer (to win its high-importance z-index fights against tooltip.css via the inversion
+   rule above) — that fixed one narrow tooltip/settings-panel z-index collision, but
+   ALSO made it win against tooltip.css's own INTERNAL hover/focus z-index escalation logic
+   wherever their selectors happened to overlap — a broader, unintended reach. Verified (2026-07-02
+   visual A/B against a 72-hours-prior commit on a separate port) that the one narrow collision
+   this surfaces — a settings-panel tooltip z-index nuance — is a PRE-EXISTING, unrelated bug, not
+   a regression this cutover introduces; keeping z-index-fix.css in `app` (source-order resolution,
+   zero behavior change for everything it doesn't already win) is the correct choice, leaving that
+   pre-existing bug for separate triage rather than growing the layer surface to chase it.
+   `overrides` (fj-rail-collapse.css, most of it) stays a separate LATER layer (after `app`): its
+   precedence-critical declarations are mostly NON-important and rely on its very high selector
+   specificity to win — that only works if it's ranked after `app` by normal (non-important) layer
+   order. ONE small exception, `rail-fix` (also fj-rail-collapse.css — its single collapse-to-zero
+   rule block only): live-probing the running app (not just the automated gates, which don't
+   exercise this hover/idle animation state) found this exact declaration losing to buttons.css's
+   `height`/`min-height: 24px` high-importance rule on the SAME selector, via the same inversion
+   mechanism as the z-index-fix.css case above — so that ONE rule block needed the SAME EARLIER-
+   layer treatment, scoped surgically (verified: every OTHER high-importance declaration in
+   fj-rail-collapse.css restates a value buttons.css ALREADY has, so moving only this one block
+   is sufficient and the rest of the file needed no change). Runtime-injected stylesheets
+   (AIAssistModalStyles.js, stackPreviewModal.js, linkedFileGallery.js) all join `app` at injection
+   time — same layer as their static-file collision partners, same document-order tiebreak as
+   before (injected `<style>` tags still land after all static `<link>`s). fa-interop.css and the
+   font-awesome CDN link stay deliberately UNLAYERED (see fa-interop.css) — unlayered rules always
+   beat any layered rule. */
+@layer tokens, themes, node-themes, rail-fix, app, overrides;

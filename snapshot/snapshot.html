@@ -1,0 +1,2123 @@
+<!--
+  FlowJoe app snapshot for browser-collaboration-presence.html (design mockup only).
+
+  This is the REAL FlowJoe renderer DOM, frozen: the app was run from this repo
+  (index.html + bundle/bundle.esm.js, commit 735de73fc), a sample Flow
+  "Coastal Restoration Plan" was loaded, the node "Restoration notes" was selected,
+  and the top bar, app rail, tree, gallery canvas and status footer were captured
+  with scripts removed. The JS-generated <style> blocks the app injects at runtime
+  (canvas gallery, linked files) are captured too; every other style comes from the
+  real stylesheets the mockup links from src/css. Asset paths are rewritten to
+  /src/.
+
+  Do not hand-edit for design changes; the mockup adjusts this DOM at runtime for the
+  guest view (hides owner/Electron-only controls, adds presence pieces). Regenerate it
+  from the running app if the real UI changes.
+-->
+<template
+  id="snap-meta"
+  data-html-style='--app-font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; --font-scale: var(--font-size-normal); --notes-line-height: 1.35; --startup-tree-width: 280px; --tree-resizer-width: 8px; --image-gallery-width: 320px; --image-notes-width: 320px; --gallery-header-bottom-lock-top: 46px; --gallery-scrubber-fixed-top: 110px; --gallery-scrubber-fixed-left: 350px; --gallery-scrubber-fixed-right: 20px; --gallery-viewport-fixed-top: 56px; --gallery-viewport-fixed-bottom: 34px; --canvas-bc-overlap: 46px; --canvas-slot-enum-width: 13px; --collapsed-item-width: 320px; --image-gallery-slot-width: 320px;'
+  data-body-class="density-compact shape-soft tree-auto-resize-enabled joe-docked-presentation toast-theme-match tree-branch-toggle-flat chrome-sans notes-justified scrubber-top scrubber-beveled slot-scrubber-themed slot-scrubber-middle slot-scrubber-thumb-flat gallery-slot-actions-rail hide-gallery-button-bar gallery-slot-actions-rail-expanded canvas-reposition-active fj-bg-idle fj-ambient-freeze canvas-pack-horizontal gallery-top-scrubber-visible"></template>
+
+<template id="snap-topbar">
+  <div class="topbar">
+    <span class="logo-svg" data-coffee-break-wired="1" data-tooltip="Take a break ☕" data-tooltip-placement="bottom" data-tooltip-align="start" role="button" tabindex="0">
+      <img src="/src/assets/coffee-mug-logo.svg" alt="Coffee Mug Logo" />
+    </span>
+    <!-- prettier-ignore -->
+    <div class="topbar-brand-stack" aria-hidden="false">
+        <h1>FlowJoe</h1>
+        <div class="topbar-subtext" data-i18n="tooltips.topbar.tagline">Visual Intelligence Workspace</div>
+      </div>
+
+    <!-- Browser controls (shown when browser-view-active, positioned above gallery) -->
+    <div id="browser-controls" class="browser-controls">
+      <button class="icon-btn" id="browser-back-btn" data-tooltip="Back" data-position="right" data-align="left" aria-label="Browser back" data-i18n-attr="data-tooltip:tooltips.browserShell.back;aria-label:tooltips.browserShell.backAriaLabel">
+        <i class="fa-solid fa-arrow-left"></i>
+      </button>
+      <button class="icon-btn" id="browser-forward-btn" data-tooltip="Forward" data-position="right" data-align="left" aria-label="Browser forward" data-i18n-attr="data-tooltip:tooltips.browserShell.forward;aria-label:tooltips.browserShell.forwardAriaLabel">
+        <i class="fa-solid fa-arrow-right"></i>
+      </button>
+      <button class="icon-btn" id="browser-home-btn" data-tooltip="Home" data-position="right" data-align="left" aria-label="Browser home" data-i18n-attr="data-tooltip:tooltips.browserShell.home;aria-label:tooltips.browserShell.homeAriaLabel">
+        <i class="fa-solid fa-house"></i>
+      </button>
+      <button class="icon-btn" id="browser-refresh-btn" data-tooltip="Refresh" data-position="right" data-align="left" aria-label="Browser refresh" data-i18n-attr="data-tooltip:tooltips.browserShell.refresh;aria-label:tooltips.browserShell.refreshAriaLabel">
+        <i class="fa-solid fa-rotate-right"></i>
+      </button>
+      <button class="icon-btn" id="browser-sleep-inactive-btn" data-tooltip="Sleep Inactive Tabs" data-position="right" data-align="left" aria-label="Sleep inactive browser tabs" data-i18n-attr="data-tooltip:tooltips.browserShell.sleepInactiveTabs;aria-label:tooltips.browserShell.sleepInactiveTabsAriaLabel">
+        <i class="fa-solid fa-moon"></i>
+      </button>
+      <div class="browser-address-wrap">
+        <input type="text" id="browser-address-bar" placeholder="Enter URL..." aria-label="Browser address bar" data-i18n-attr="aria-label:tooltips.browserShell.addressBar" class="browser-address-bar"/>
+        <span id="browser-address-loading-indicator" class="browser-address-loading-indicator" aria-hidden="true"></span>
+        <span id="browser-tab-count-pill" class="browser-tab-count-pill" data-tooltip="Open Tabs (1)|" data-position="right" data-align="left" aria-label="Open browser tabs">1</span>
+        <button class="browser-bookmark-star" id="browser-bookmark-star-btn" data-sound-key="tree_select" data-tooltip="Bookmark Page" data-position="right" data-align="left" aria-label="Bookmark current page" data-i18n-attr="data-tooltip:tooltips.browserShell.bookmarkPage;aria-label:tooltips.browserShell.bookmarkPageAriaLabel">
+          <i class="fa-regular fa-star"></i>
+        </button>
+      </div>
+      <button class="icon-btn" id="browser-go-btn" data-tooltip="Go" data-position="right" data-align="left" aria-label="Go to URL" data-i18n-attr="data-tooltip:tooltips.browserShell.goToUrl;aria-label:tooltips.browserShell.goToUrlAriaLabel">
+        <i class="fa-solid fa-arrow-right-to-bracket"></i>
+      </button>
+      <button class="icon-btn" id="browser-send-to-slot-btn" data-tooltip="Send to Gallery" data-position="right" data-align="left" aria-label="Send to Gallery" data-i18n-attr="data-tooltip:tooltips.browserShell.sendToGallery;aria-label:tooltips.browserShell.sendToGallery">
+        <i class="fa-solid fa-download"></i>
+      </button>
+    </div>
+    <div id="browser-find-bar" class="browser-find-bar" role="search" aria-label="Find on page" hidden="" data-i18n-attr="aria-label:tooltips.browserShell.findOnPage">
+      <input type="text" id="browser-find-input" placeholder="Find on page" aria-label="Find on page" autocomplete="off" spellcheck="false" data-i18n-attr="aria-label:tooltips.browserShell.findOnPage;placeholder:tooltips.browserShell.findOnPage" class="browser-find-input"/>
+      <span id="browser-find-count" class="browser-find-count" aria-live="polite">0/0</span>
+      <span class="browser-find-divider" aria-hidden="true"></span>
+      <button type="button" id="browser-find-prev-btn" class="browser-find-btn" aria-label="Previous match" title="Previous (Shift+Enter)" data-i18n-attr="title:tooltips.browserShell.findPrevious;aria-label:tooltips.browserShell.findPreviousAriaLabel">
+        <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+      </button>
+      <button type="button" id="browser-find-next-btn" class="browser-find-btn" aria-label="Next match" title="Next (Enter)" data-i18n-attr="title:tooltips.browserShell.findNext;aria-label:tooltips.browserShell.findNextAriaLabel">
+        <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+      </button>
+      <button type="button" id="browser-find-close-btn" class="browser-find-btn browser-find-close" aria-label="Close find" title="Close (Esc)" data-i18n-attr="title:tooltips.browserShell.findClose;aria-label:tooltips.browserShell.findCloseAriaLabel">
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <div class="sty-1">
+      <div id="header-unsaved-indicator" class="topbar-unsaved-indicator is-visible" aria-live="polite" aria-hidden="false" data-tooltip="Last export:|Never" data-i18n-attr="data-tooltip:modals.eventListeners.lastExportExportNowTooltip" data-tooltip-placement="bottom" data-tooltip-align="end" data-enabled="true">
+        <span class="topbar-unsaved-indicator-dot" aria-hidden="true"></span>
+        <span class="topbar-unsaved-indicator-text" data-i18n="modals.eventListeners.changes">Changes (1)</span>
+      </div>
+      <div id="header-audio-player" class="header-audio-player is-empty" aria-hidden="false" data-mode="continuous" data-spot="audio">
+        <button type="button" id="header-audio-restart-btn" class="header-audio-btn" data-sound-key="tree_select" aria-label="Restart current audio. Double-click for previous track." data-i18n-attr="aria-label:tooltips.browserShell.restartAudio" disabled="">
+          <i class="fa-solid fa-rotate-left"></i>
+        </button>
+        <button type="button" id="header-audio-next-btn" class="header-audio-btn" data-sound-key="tree_select" aria-label="Next track" data-i18n-attr="aria-label:tooltips.browserShell.nextTrack" disabled="">
+          <i class="fa-solid fa-forward-step"></i>
+        </button>
+        <div id="header-audio-seek-panel" class="header-audio-seek-panel" aria-hidden="true">
+          <input type="range" id="header-audio-seek-range" min="0" max="1000" value="0" step="1" aria-label="Seek current audio" data-i18n-attr="aria-label:tooltips.browserShell.seekAudio" disabled="" aria-valuetext="No seekable audio loaded" title="Seek current audio" class="header-audio-seek-range sty-2"/>
+        </div>
+        <button type="button" id="header-audio-rate-btn" class="header-audio-btn header-audio-rate-btn" data-sound-key="tree_select" aria-label="Playback speed 1x" disabled="">1x</button>
+        <button type="button" id="header-audio-playlist-btn" class="header-audio-btn" data-sound-key="tree_select" aria-label="Open audio playlist" data-i18n-attr="aria-label:tooltips.browserShell.openAudioPlaylist">
+          <i class="fa-solid fa-list-ul"></i>
+        </button>
+        <button type="button" id="header-audio-play-btn" class="header-audio-btn header-audio-btn-primary" data-sound-key="tree_select" aria-label="Play header audio player" disabled=""><i class="fa-solid fa-play"></i></button>
+        <span id="header-audio-play-tooltip" class="header-audio-play-tooltip" aria-hidden="true" data-i18n-html="tooltips.browserShell.streamAudioTooltipHtml">Stream audio from your Flow</span>
+        <audio id="header-audio-element" preload="metadata"></audio>
+      </div>
+
+      <!-- File dropdown -->
+      <div id="file-menu-wrapper" class="sty-3">
+        <button class="icon-btn" id="file-menu-btn" data-tooltip="File Menu: New, Import, Export" data-tooltip-placement="bottom" data-tooltip-align="end" aria-haspopup="true" aria-expanded="false" aria-label="File Menu: New, Import, Export" data-i18n-attr="data-tooltip:tooltips.browserShell.fileMenu;aria-label:tooltips.browserShell.fileMenu">
+          <i class="fa-solid fa-folder-open"></i>
+        </button>
+        <div id="file-menu-dropdown" class="file-menu-dropdown" role="menu" aria-hidden="true">
+          <button class="file-menu-item" id="new-flow" role="menuitem">
+            <div class="file-menu-item-icon"><i class="fa-solid fa-file"></i></div>
+            <div class="file-menu-item-text">
+              <span class="file-menu-item-label" data-i18n="tooltips.fileMenu.createNewFlow">Create New Flow</span>
+              <span class="file-menu-item-desc" data-i18n="tooltips.fileMenu.createNewFlowDesc">Start a fresh Flow with a new empty tree. Shortcut: Cmd+N.</span>
+            </div>
+          </button>
+          <button class="file-menu-item" id="import-json" role="menuitem">
+            <div class="file-menu-item-icon"><i class="fa-solid fa-folder-open"></i></div>
+            <div class="file-menu-item-text">
+              <span class="file-menu-item-label" data-i18n="tooltips.fileMenu.importFlow">Import Flow</span>
+              <span class="file-menu-item-desc" data-i18n="tooltips.fileMenu.importFlowDesc">Import a .fj, .zip, or .json Flow file. Shortcut: Cmd+I / Ctrl+I.</span>
+            </div>
+          </button>
+          <button class="file-menu-item" id="import-node-json" role="menuitem">
+            <div class="file-menu-item-icon"><i class="fa-solid fa-list-check"></i></div>
+            <div class="file-menu-item-text">
+              <span class="file-menu-item-label" data-i18n="tooltips.fileMenu.importNodes">Import Node(s)</span>
+              <span class="file-menu-item-desc" data-i18n="tooltips.fileMenu.importNodesDesc">Cherry-pick one or more nodes from a .fj, .zip, or .json file without importing the whole Flow.</span>
+            </div>
+          </button>
+          <button class="file-menu-item" id="export-json" role="menuitem">
+            <div class="file-menu-item-icon"><i class="fa-solid fa-save"></i></div>
+            <div class="file-menu-item-text">
+              <span class="file-menu-item-label" data-i18n="tooltips.fileMenu.exportFlow">Export Flow</span>
+              <span class="file-menu-item-desc" data-i18n="tooltips.fileMenu.exportFlowDesc">Export as full package (.fj) or data-only (.json). Shortcut: Cmd+S / Ctrl+S.</span>
+            </div>
+          </button>
+          <button id="import-images" role="menuitem" hidden="" aria-hidden="true" tabindex="-1" class="file-menu-item sty-4">
+            <div class="file-menu-item-icon"><i class="fa-solid fa-images"></i></div>
+            <div class="file-menu-item-text">
+              <span class="file-menu-item-label" data-i18n="tooltips.fileMenu.bulkImportImages">Bulk Import Images</span>
+              <span class="file-menu-item-desc" data-i18n="tooltips.fileMenu.bulkImportImagesDesc">Import folders of images, like Mobbin exports</span>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <button class="icon-btn active" id="sounds-toggle-btn" data-tooltip="Sound FX on" data-tooltip-placement="bottom" data-tooltip-align="end" aria-label="Sound effects on" data-i18n-attr="data-tooltip:tooltips.browserShell.soundEffectsToggle;aria-label:tooltips.browserShell.soundEffectsToggle" data-sound-bound="1">
+        <i class="fa-solid fa-volume-high"></i>
+      </button>
+
+      <!-- Cache-busting reload -->
+      <div class="tooltip-wrapper header-tooltip-wrapper">
+        <button class="icon-btn" id="cache-bust-btn" data-tooltip-placement="bottom" data-tooltip-align="end" aria-label="Cache-busting reload" data-i18n-attr="aria-label:tooltips.browserShell.cacheBustingReload">
+          <i class="fa-solid fa-rotate"></i>
+        </button>
+        <span class="tooltip-content" data-i18n="tooltips.browserShell.cacheBustingReload">Cache-busting reload</span>
+      </div>
+
+      <!-- Browser view toggle -->
+      <div class="tooltip-wrapper header-tooltip-wrapper browser-tooltip-wrapper">
+        <button class="icon-btn" id="browser-btn" data-tooltip-placement="bottom" data-tooltip-align="end" aria-label="Toggle embedded browser view" data-i18n-attr="aria-label:tooltips.browserShell.toggleBrowserViewAriaLabel">
+          <i class="fa-solid fa-globe"></i>
+          <span class="browser-btn-audio-indicator" aria-hidden="true" hidden="">
+            <i class="fa-solid fa-volume-high"></i>
+          </span>
+        </button>
+        <span class="tooltip-content" data-i18n="tooltips.browserShell.toggleBrowserView">Toggle Browser View (B)</span>
+      </div>
+
+      <!-- FlowJoe Forge terminal toggle (desktop-only) -->
+      <div class="tooltip-wrapper header-tooltip-wrapper">
+        <button class="icon-btn" id="terminal-btn" data-tooltip-placement="bottom" data-tooltip-align="end" aria-label="Toggle terminal" aria-pressed="false" data-i18n-attr="aria-label:tooltips.browserShell.toggleTerminalAriaLabel">
+          <i class="fa-solid fa-terminal"></i>
+        </button>
+        <span class="tooltip-content" data-i18n="tooltips.browserShell.toggleTerminal">Toggle Terminal (Ctrl/Cmd+`)</span>
+      </div>
+
+      <div class="topbar-settings-group">
+        <div class="topbar-settings-separator" aria-hidden="true"></div>
+        <div class="tooltip-wrapper header-tooltip-wrapper">
+          <button class="icon-btn" id="settings-btn" data-tooltip-placement="bottom" data-tooltip-align="end" aria-label="Settings" data-i18n-attr="aria-label:tooltips.browserShell.settings" data-settings-click-bound="1">
+            <i class="fa-solid fa-gear"></i>
+          </button>
+          <span class="tooltip-content" data-i18n-html="tooltips.browserShell.settingsTooltipHtml">
+            Settings
+            <br />
+            Cmd/Ctrl+,
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+<template id="snap-headerBg">
+  <div class="header-bg">
+    <div class="header-bg-left"></div>
+    <div class="header-bg-right"></div>
+  </div>
+</template>
+<template id="snap-container">
+  <div class="container sty-5">
+    <!-- PROTOTYPE (left-rail): global left navigation rail. Genuine 4th grid track (see
+           .container in styles-search.css); the tree/resizer/content-section columns were
+           renumbered to make room. Collapsed by default, matching the Settings menu's own
+           default. Icons/labels/actions are placeholders — nothing here is wired to real
+           handlers yet; this is a visual-only prototype. -->
+    <nav class="app-rail" aria-label="App navigation" id="app-rail">
+      <button type="button" class="app-rail-collapse" id="app-rail-collapse-btn" aria-label="Expand rail" aria-expanded="false" title="Expand rail" data-i18n-attr="aria-label:appRail.collapseButton.expand;title:appRail.collapseButton.expand">
+        <i class="app-rail-collapse-icon fa-solid fa-angles-left" aria-hidden="true"></i>
+      </button>
+      <button type="button" class="app-rail-item active" id="app-rail-flow-btn" title="Flow" data-i18n-attr="title:appRail.items.flow">
+        <i class="app-rail-icon fa-solid fa-folder-tree" aria-hidden="true"></i>
+        <span class="app-rail-label" data-i18n="appRail.items.flow">Flow</span>
+      </button>
+      <button type="button" class="app-rail-item" id="app-rail-source-control-btn" title="Source Control" data-i18n-attr="title:appRail.items.sourceControl">
+        <i class="app-rail-icon fa-solid fa-code-branch" aria-hidden="true"></i>
+        <span class="app-rail-label" data-i18n="appRail.items.sourceControl">Source Control</span>
+      </button>
+      <button type="button" class="app-rail-item" id="app-rail-browser-btn" title="Browser" data-i18n-attr="title:appRail.items.browser">
+        <i class="app-rail-icon fa-solid fa-globe" aria-hidden="true"></i>
+        <span class="app-rail-label" data-i18n="appRail.items.browser">Browser</span>
+      </button>
+      <button type="button" class="app-rail-item" id="app-rail-terminal-btn" title="Terminal" data-i18n-attr="title:appRail.items.terminal">
+        <i class="app-rail-icon fa-solid fa-terminal" aria-hidden="true"></i>
+        <span class="app-rail-label" data-i18n="appRail.items.terminal">Terminal</span>
+      </button>
+      <button type="button" class="app-rail-item" id="app-rail-joe-btn" title="Joe" data-i18n-attr="title:appRail.items.joe" aria-pressed="false">
+        <i class="app-rail-icon fa-solid fa-robot" aria-hidden="true"></i>
+        <span class="app-rail-label" data-i18n="appRail.items.joe">Joe</span>
+      </button>
+      <div class="app-rail-sep"></div>
+      <button type="button" class="app-rail-item" id="app-rail-docs-btn" title="Documentation" data-i18n-attr="title:appRail.items.docs">
+        <i class="app-rail-icon fa-solid fa-book" aria-hidden="true"></i>
+        <span class="app-rail-label" data-i18n="appRail.items.docs">Documentation</span>
+      </button>
+      <div class="app-rail-spacer"></div>
+      <button type="button" class="app-rail-item app-rail-joe-pet-toggle" id="app-rail-joe-pet-toggle" title="Show Pet Joe" aria-label="Show Pet Joe" aria-pressed="false">
+        <span class="app-rail-icon app-rail-joe-pet-icon-wrap" aria-hidden="true"><img class="app-rail-joe-pet-icon" src="/src/assets/joe-pet-mascot.png" alt="" /></span>
+        <span class="app-rail-label" data-i18n="settings.appearance.joePet.label">Pet Joe</span>
+      </button>
+      <button type="button" class="app-rail-item" id="app-rail-activity-btn" title="History" data-i18n-attr="title:appRail.items.activity">
+        <i class="app-rail-icon fa-solid fa-clock-rotate-left" aria-hidden="true"></i>
+        <span class="app-rail-label" data-i18n="appRail.items.activity">History</span>
+      </button>
+      <button type="button" class="app-rail-item" id="app-rail-storage-btn" title="Storage" data-i18n-attr="title:appRail.items.storage">
+        <i class="app-rail-icon fa-solid fa-database" aria-hidden="true"></i>
+        <span class="app-rail-label" data-i18n="appRail.items.storage">Storage</span>
+      </button>
+      <button type="button" class="app-rail-item" id="app-rail-settings-btn" title="Settings" data-i18n-attr="title:appRail.items.settings">
+        <i class="app-rail-icon fa-solid fa-gear" aria-hidden="true"></i>
+        <span class="app-rail-label" data-i18n="appRail.items.settings">Settings</span>
+      </button>
+    </nav>
+    <div class="tree-section" data-ai-font-size="normal">
+      <div class="tree-toolbar" aria-label="Tree tools" data-i18n-attr="aria-label:tooltips.browserShell.treeToolsAriaLabel">
+        <div class="toolbar-buttons-row">
+          <div class="toolbar-left-buttons">
+            <button data-tooltip="Keyboard shortcuts (K)" data-position="bottom" data-align="left" data-no-sound="" id="tree-keyboard-shortcuts-btn" class="icon-btn info-btn-left sty-6"><i class="fa-solid fa-info"></i></button>
+            <button class="icon-btn" data-tooltip="Sort tree alphabetically|View only: does not rewrite manual order" data-position="bottom" data-align="left" data-no-sound="" id="tree-alpha-sort-btn" aria-pressed="false"><i class="fa-solid fa-arrow-down-a-z"></i></button>
+          </div>
+          <div class="toolbar-right-buttons">
+            <button class="icon-btn" data-position="bottom" data-align="left" data-no-sound="" id="tree-hidden-nodes-btn" hidden="" aria-hidden="true"><i class="fa-solid fa-eye"></i></button>
+            <button class="icon-btn" data-tooltip="Add new node (N or Ctrl+N)" data-position="bottom" data-align="left" data-no-sound="" id="tree-add-node-btn"><i class="fa-solid fa-plus"></i></button>
+            <button class="icon-btn" data-tooltip="Attach item(s) (Ctrl+A)" data-position="bottom" data-align="left" data-no-sound="" id="tree-add-image-btn"><i class="fa-solid fa-image"></i></button>
+            <button class="icon-btn" data-tooltip="Search tree (Ctrl+F)" data-position="bottom" data-align="left" data-no-sound="" id="tree-search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+            <button class="icon-btn" data-tooltip="Print tree structure (text only)" data-position="bottom" data-align="left" data-no-sound="" id="tree-print-btn"><i class="fa-solid fa-print"></i></button>
+            <button class="icon-btn" data-tooltip="Remove selected node (D)" data-position="bottom" data-align="left" data-no-sound="" id="tree-delete-node-btn"><i class="fa-solid fa-trash-alt"></i></button>
+          </div>
+        </div>
+        <div id="tree-search-bar" class="tree-search-bar">
+          <input type="text" id="tree-search-input" placeholder="Search nodes..." autocomplete="off" spellcheck="false" class="tree-search-input"/>
+          <button class="tree-search-clear" title="Clear search"><i class="fa-solid fa-xmark"></i></button>
+          <button class="tree-search-collapse" title="Close search"><i class="fa-solid fa-chevron-up"></i></button>
+        </div>
+      </div>
+      <div class="tree-title-container">
+        <button class="add-root-btn" id="add-root">+</button>
+        <button type="button" class="flow-summary-btn" id="flow-summary-btn" aria-label="Edit Flow Summary" data-tooltip="Edit Flow Summary|" data-position="bottom" data-align="left" data-wired="true"><i class="far fa-file-lines" aria-hidden="true"></i></button>
+        <input type="text" id="tree-title" value="Coastal Restoration Plan" placeholder="Name your Flow" autocomplete="off" spellcheck="false" autocapitalize="off" class="tree-title-input sty-7"/>
+      </div>
+      <div id="tree-tag-match-status" class="tree-tag-match-status">
+        <div class="breadcrumb-filter-row" title="Tree node matching">
+          <div class="breadcrumb-filter-chip-list">
+            <button type="button" class="icon-btn small tree-filter-indicator-btn breadcrumb-filter-trigger" aria-label="Tree tag filters" title="Tree tag filters" id="tree-filter-indicator-btn">
+              <i class="fa-solid fa-filter" aria-hidden="true"></i>
+            </button>
+            <span class="breadcrumb-filter-chip breadcrumb-filter-chip-static"><span class="breadcrumb-filter-chip-text">No active filters</span></span>
+          </div>
+        </div>
+      </div>
+      <div id="tree" data-ai-font-size="normal" data-spot="tree">
+        <ul>
+          <li draggable="true" data-node-id="8598cd75-1167-4e51-a7f0-2307fd48a34b">
+            <div class="flex-container">
+              <span class="status-indicator status-completed" title="Status: completed. Click to set all descendants." data-node-id="8598cd75-1167-4e51-a7f0-2307fd48a34b"></span>
+              <span class="node-text">Volunteers</span>
+              <span class="node-inline-meta">
+                <span class="image-count self-count" title="Items on this node">(1)</span>
+                <span class="image-count descendants-count" title="Items in child nodes">(1)</span>
+                <span class="child-count expanded" title="Child nodes">[1]</span>
+                <button class="collapse-btn" type="button" title="Collapse branch" aria-label="Collapse Volunteers" aria-expanded="true" data-state="expanded" data-node-id="8598cd75-1167-4e51-a7f0-2307fd48a34b"><span class="collapse-btn-glyph" aria-hidden="true"></span></button>
+              </span>
+              <div class="arrow-container"></div>
+            </div>
+            <ul>
+              <li draggable="true" data-node-id="0214e412-7cfd-43b6-9292-80ed8a4ed8a7">
+                <div class="flex-container">
+                  <span class="status-indicator status-completed" title="Status: completed. Click to change." data-node-id="0214e412-7cfd-43b6-9292-80ed8a4ed8a7"></span>
+                  <span class="node-text">Sign-up sheet</span>
+                  <span class="node-inline-meta"><span class="image-count self-count" title="Items on this node">(1)</span></span>
+                  <div class="arrow-container"></div>
+                </div>
+              </li>
+            </ul>
+          </li>
+          <li draggable="true" data-node-id="4f39f75c-1711-48cd-b8e0-31224a396b1b">
+            <div class="flex-container">
+              <span class="status-indicator status-in-progress" title="Status: in-progress. Click to set all descendants." data-node-id="4f39f75c-1711-48cd-b8e0-31224a396b1b"></span>
+              <span class="node-text">Coastal restoration</span>
+              <span class="node-inline-meta">
+                <span class="image-count self-count" title="Items on this node">(1)</span>
+                <span class="image-count descendants-count" title="Items in child nodes">(6)</span>
+                <span class="child-count expanded" title="Child nodes">[3]</span>
+                <button class="collapse-btn" type="button" title="Collapse branch" aria-label="Collapse Coastal restoration" aria-expanded="true" data-state="expanded" data-node-id="4f39f75c-1711-48cd-b8e0-31224a396b1b"><span class="collapse-btn-glyph" aria-hidden="true"></span></button>
+              </span>
+              <div class="arrow-container"></div>
+            </div>
+            <ul>
+              <li draggable="true" data-node-id="ab211600-6778-4864-8662-db974f8699b1">
+                <div class="flex-container">
+                  <span class="status-indicator status-completed" title="Status: completed. Click to change." data-node-id="ab211600-6778-4864-8662-db974f8699b1"></span>
+                  <span class="node-text">Shoreline</span>
+                  <span class="node-inline-meta"><span class="image-count self-count" title="Items on this node">(1)</span></span>
+                  <div class="arrow-container"></div>
+                </div>
+              </li>
+              <li draggable="true" data-node-id="be188ad4-114d-4894-ac93-6d37d19982ce">
+                <div class="flex-container">
+                  <span class="status-indicator status-in-progress" title="Status: in-progress. Click to change." data-node-id="be188ad4-114d-4894-ac93-6d37d19982ce"></span>
+                  <span class="node-text">Planting map</span>
+                  <span class="node-inline-meta"><span class="image-count self-count" title="Items on this node">(1)</span></span>
+                  <div class="arrow-container"></div>
+                </div>
+              </li>
+              <li class="selected" draggable="true" data-node-id="879432ee-f627-43f5-91cf-429132aa7855">
+                <div class="flex-container">
+                  <span class="status-indicator status-in-progress" title="Status: in-progress. Click to change." data-node-id="879432ee-f627-43f5-91cf-429132aa7855"></span>
+                  <span class="node-text">Restoration notes</span>
+                  <span class="node-inline-meta"><span class="image-count self-count" title="Items on this node">(4)</span></span>
+                  <div class="arrow-container"></div>
+                </div>
+              </li>
+            </ul>
+          </li>
+          <li draggable="true" data-node-id="ae9a8877-6a68-4919-934a-a71438aef848">
+            <div class="flex-container">
+              <span class="status-indicator status-not-started" title="Status: not-started. Click to set all descendants." data-node-id="ae9a8877-6a68-4919-934a-a71438aef848"></span>
+              <span class="node-text">Budget</span>
+              <span class="node-inline-meta">
+                <span class="image-count self-count" title="Items on this node">(1)</span>
+                <span class="image-count descendants-count" title="Items in child nodes">(1)</span>
+                <span class="child-count expanded" title="Child nodes">[1]</span>
+                <button class="collapse-btn" type="button" title="Collapse branch" aria-label="Collapse Budget" aria-expanded="true" data-state="expanded" data-node-id="ae9a8877-6a68-4919-934a-a71438aef848"><span class="collapse-btn-glyph" aria-hidden="true"></span></button>
+              </span>
+              <div class="arrow-container"></div>
+            </div>
+            <ul>
+              <li draggable="true" data-node-id="68392556-9fbe-491f-94f8-6a3016dae75f">
+                <div class="flex-container">
+                  <span class="status-indicator status-not-started" title="Status: not-started. Click to change." data-node-id="68392556-9fbe-491f-94f8-6a3016dae75f"></span>
+                  <span class="node-text">Grants</span>
+                  <span class="node-inline-meta"><span class="image-count self-count" title="Items on this node">(1)</span></span>
+                  <div class="arrow-container"></div>
+                </div>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="resizer"></div>
+    <div class="content-section">
+      <div id="node-details">
+        <div id="node-info" class="sty-8">
+          <h2 id="selected-node-name" data-ai-font-size="normal">
+            <div class="breadcrumb-container">
+              <div class="breadcrumbs-wrapper">
+                <div class="breadcrumbs-left">
+                  <div class="breadcrumbs-text">
+                    <button type="button" id="gallery-summary-btn" class="icon-btn" data-tooltip="Node Summary|" data-position="bottom" data-align="left" aria-label="Node Summary"><i class="far fa-file-lines" aria-hidden="true"></i></button>
+                    <span data-full-name="Coastal Restoration Plan" title="Coastal Restoration Plan" class="breadcrumb-flow sty-9">Coastal Restoration Plan</span>
+                    <span class="breadcrumb-separator">›</span>
+                    <a href="#" class="breadcrumb-link breadcrumb-main" data-full-name="Coastal restoration" data-index="1" title="Coastal restoration">Coastal restoration</a>
+                    <span class="breadcrumb-separator">›</span>
+                    <span title="Restoration notes" class="breadcrumb-current-node sty-10">Restoration notes</span>
+                    <span class="breadcrumb-storage-figure" aria-hidden="false" title="Media stored on this node: 0.0 MB">(0.0 MB)</span>
+                  </div>
+                </div>
+                <div class="breadcrumbs-actions">
+                  <div class="breadcrumbs-primary-tools">
+                    <button id="delete-all-images" class="icon-btn" data-tooltip="Remove all items and data on this node only" data-position="bottom" data-tooltip-placement="bottom" data-tooltip-align="start">
+                      <i class="fas fa-trash-alt"></i>
+                    </button>
+                    <div class="gallery-search-wrap">
+                      <button id="gallery-search-btn" class="icon-btn " data-tooltip="Search Gallery|Shortcut: Cmd+F" data-position="bottom">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                      </button>
+                      <div class="gallery-search-bar" id="gallery-search-bar">
+                        <input type="text" id="gallery-search-input" placeholder="Search Gallery..." autocomplete="off" spellcheck="false" class="gallery-search-input"/>
+                        <button class="gallery-search-clear" id="gallery-search-clear" title="Clear search"><i class="fa-solid fa-xmark"></i></button>
+                        <button class="gallery-search-collapse" id="gallery-search-collapse" title="Close search"><i class="fa-solid fa-chevron-right"></i></button>
+                      </div>
+                      <div id="gallery-search-options-popover" aria-hidden="true" class="gallery-search-options-popover sty-11">
+                        <div class="gallery-search-options">
+                          <label class="gallery-search-checkbox">
+                            <input type="checkbox" id="gallery-search-all-nodes"/>
+                            <span class="gallery-search-checkbox-ui" aria-hidden="true"></span>
+                            <span class="gallery-search-checkbox-label">All nodes</span>
+                          </label>
+                          <label class="gallery-search-checkbox">
+                            <input type="checkbox" id="gallery-search-include-file-names"/>
+                            <span class="gallery-search-checkbox-ui" aria-hidden="true"></span>
+                            <span class="gallery-search-checkbox-label">Include file names</span>
+                          </label>
+                          <label class="gallery-search-checkbox">
+                            <input type="checkbox" id="gallery-search-include-document-text"/>
+                            <span class="gallery-search-checkbox-ui" aria-hidden="true"></span>
+                            <span class="gallery-search-checkbox-label">Include document text</span>
+                          </label>
+                          <label class="gallery-search-checkbox">
+                            <input type="checkbox" id="gallery-search-include-tags"/>
+                            <span class="gallery-search-checkbox-ui" aria-hidden="true"></span>
+                            <span class="gallery-search-checkbox-label">Include tags</span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="image-width-control " data-tooltip="Media size" data-position="bottom" data-align="right">
+                    <select id="image-width-select" data-dropdown-sound-bound="1">
+                      <option value="160">Thumbnail (160px)</option>
+                      <option value="240">Small (240px)</option>
+                      <option value="320" selected="">Medium (320px)</option>
+                      <option value="480">Large (480px)</option>
+                    </select>
+                  </div>
+
+                  <button id="layout-toggle" class="icon-btn " data-tooltip="Canvas Mode (click for Theatre Mode)" data-position="bottom" data-align="right">
+                    <i class="fa-solid fa-vector-square"></i>
+                  </button>
+                  <button id="collapse-images-toggle-legacy" data-tooltip="Collapse all media" data-position="bottom" data-align="right" class="icon-btn gallery-toggle-composite  sty-12">
+                    <!-- Initial direction only: the slots do not exist yet when breadcrumbs are
+                 built, so this seeds from the persisted flag. nodeDetails' syncCollapseBtn
+                 re-derives it from the rendered slots immediately after and is the
+                 authority whenever the two disagree. -->
+                    <i class="fa-solid fa-angles-up"></i>
+                    <!-- Composite icon (USER DECISION 2026-09-09): the angles above stay FIRST (the
+                 element syncCollapseBtn flips) and become the corner state badge; this
+                 image glyph says what the button collapses, like its two siblings. -->
+                    <i class="fa-solid fa-image gallery-toggle-glyph"></i>
+                  </button>
+                  <button id="collapse-tag-bins-toggle-legacy" data-tooltip="Collapse all tag bins" data-position="bottom" data-align="right" class="icon-btn gallery-toggle-composite   sty-12">
+                    <i class="fa-solid fa-angles-up"></i>
+                    <i class="fa-solid fa-tags gallery-toggle-glyph"></i>
+                  </button>
+                  <button id="collapse-notes-toggle-legacy" data-tooltip="Collapse all notes" data-position="bottom" data-align="right" class="icon-btn gallery-toggle-composite   sty-12">
+                    <i class="fa-solid fa-angles-up"></i>
+                    <i class="fa-solid fa-note-sticky gallery-toggle-glyph"></i>
+                  </button>
+                  <button type="button" id="gallery-font-size-override-btn" class="icon-btn flowjoe-font-size-override-btn" data-ai-font-size="normal" aria-label="Increase font size" aria-pressed="false" data-tooltip="Workspace font size|Temporary tree and gallery override" data-position="bottom" data-flowjoe-font-size-bound="1">
+                    <span class="ai-font-size-button-glyph" aria-hidden="true">
+                      <i class="fas fa-font"></i>
+                      <span class="ai-font-size-button-level">+</span>
+                    </span>
+                  </button>
+                  <button type="button" id="gallery-notes-justification-toggle-legacy" data-notes-justification-toggle="1" data-position="bottom" aria-pressed="true" aria-label="Use normal notes alignment" data-tooltip="Slot notes justified|" class="icon-btn gallery-notes-justification-btn is-active active sty-4"><i class="fa-solid fa-align-justify" aria-hidden="true"></i></button>
+                  <button id="scroll-to-start" class="icon-btn disabled" data-tooltip="Scroll to beginning|Shortcuts: Ctrl/Cmd+B, Shift+Left Arrow" data-position="bottom" data-align="right" disabled="">
+                    <i class="fa-solid fa-arrow-left"></i>
+                  </button>
+                  <button id="scroll-to-end" class="icon-btn" data-tooltip="Scroll to end|Shortcut: Shift+Right Arrow" data-position="bottom" data-align="right">
+                    <i class="fa-solid fa-arrow-right"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Divider line using CSS class -->
+              <div class="content-divider"></div>
+            </div>
+          </h2>
+          <div id="gallery-top-scrubber-spacer"></div>
+          <div id="gallery-top-scrubber" aria-hidden="true" class="active sty-13">
+            <div id="gallery-top-scrubber-graduations">
+              <div data-slot-index="1" class="gallery-top-tick major sty-14"></div>
+              <div data-slot-index="1" class="gallery-top-tick-label active-slot sty-14">1</div>
+              <div data-slot-index="2" class="gallery-top-tick major sty-15"></div>
+              <div data-slot-index="2" class="gallery-top-tick-label sty-15">2</div>
+              <div data-slot-index="3" class="gallery-top-tick major sty-16"></div>
+              <div data-slot-index="3" class="gallery-top-tick-label sty-16">3</div>
+              <div data-slot-index="4" class="gallery-top-tick major sty-17"></div>
+              <div data-slot-index="4" class="gallery-top-tick-label sty-17">4</div>
+              <div class="gallery-top-tick minor quarter sty-18"></div>
+              <div class="gallery-top-tick minor half sty-19"></div>
+              <div class="gallery-top-tick minor quarter sty-20"></div>
+              <div class="gallery-top-tick minor quarter sty-21"></div>
+              <div class="gallery-top-tick minor half sty-22"></div>
+              <div class="gallery-top-tick minor quarter sty-23"></div>
+              <div class="gallery-top-tick minor quarter sty-24"></div>
+              <div class="gallery-top-tick minor half sty-25"></div>
+              <div class="gallery-top-tick minor quarter sty-26"></div>
+            </div>
+            <div id="gallery-top-scrubber-inner" class="sty-27"></div>
+            <div id="gallery-top-scrubber-count">4 slots</div>
+            <div id="gallery-top-scrub-tooltip" class="gallery-top-scrub-tooltip"></div>
+          </div>
+          <div id="image-display" data-ai-font-size="normal" data-node-id="879432ee-f627-43f5-91cf-429132aa7855" data-gallery-source-type="node" data-gallery-image-count="4" data-gallery-sound-delegates-bound="1" data-inline-media-hydration-started="1" class="sty-28">
+            <div class="image-gallery  sty-29">
+              <svg aria-hidden="true" class="canvas-connection-layer sty-4"><defs></defs></svg>
+
+              <div data-canvas-notes-sized-for-width="320" data-canvas-slot-height="474" data-canvas-slot-width="320" data-canvas-placed="1" data-ai-font-size="normal" data-canvas-rendered-height="473" class="enum-image-unit sty-30">
+                <div class="canvas-image-number" aria-hidden="true">1.</div>
+                <div data-position="0" data-drag-drop-bound="1" class="add-image-position has-listeners sty-31">
+                  <div class="image-number">1.</div>
+                  <button class="add-image-btn" title="Insert new slot here">
+                    <i class="fas fa-plus"></i>
+                  </button>
+
+                  <button class="stack-image-btn" title="Convert this slot to stack and add to it" aria-label="Convert this slot to stack and add to it" data-image-index="0" data-gallery-bound="1">
+                    <i class="fas fa-layer-group"></i>
+                  </button>
+                  <!-- Replace side-rail control is hidden; use the slot context menu for that action. -->
+                  <button class="delete-image-btn" title="Remove slot" aria-label="Remove slot" data-image-index="0" data-gallery-bound="1">
+                    <i class="fas fa-trash-alt" aria-hidden="true"></i>
+                  </button>
+                  <button class="ai-query-btn" data-image-index="0" title="Joe AI Assistant" aria-label="Joe AI Assistant" data-gallery-bound="1">
+                    <i class="fas fa-robot"></i>
+                  </button>
+                  <button title="Open Wireframe Designer" data-image-index="0" class="wireframe-btn sty-4">
+                    <i class="fas fa-pencil-ruler"></i>
+                  </button>
+                </div>
+
+                <div data-image-index="0" data-entry-id="gallery-5ab70f0a-9a08-48c9-a7ec-44a9d63fd0f4" data-node-id="879432ee-f627-43f5-91cf-429132aa7855" data-active-media-ready="1" draggable="false" data-canvas-reposition-drag-disabled="1" data-gallery-text-target-mode="slot" data-gallery-text-controls-synced="1" data-dnd-bound="1" data-drag-lock-bound="1" data-context-menu-bound="1" class="image-item  sty-32">
+                  <div class="image-stack-container">
+                    <div class="image-selection-checkbox">
+                      <input type="checkbox" data-image-index="0" title="Select for bulk removal" class="image-select-cb"/>
+                    </div>
+                    <div data-active-media-ready="1" data-aspect-ratio="1 / 1" data-image-index="0" data-inline-resolved-aspect-ratio="1024 / 1024" class="image-frame gallery-drag-surface sty-33">
+                      <div class="canvas-rail-attached">
+                        <button class="canvas-rail-add-btn" title="Insert new slot here" data-canvas-rail-wired="1" data-gallery-bound="1">
+                          <i class="fas fa-plus"></i>
+                        </button>
+
+                        <button class="canvas-rail-stack-btn" title="Convert this slot to stack and add to it" aria-label="Convert this slot to stack and add to it" data-image-index="0" data-canvas-rail-wired="1" data-gallery-bound="1">
+                          <i class="fas fa-layer-group"></i>
+                        </button>
+                        <button class="canvas-rail-delete-btn" title="Remove slot" aria-label="Remove slot" data-image-index="0" data-canvas-rail-wired="1" data-gallery-bound="1">
+                          <i class="fas fa-trash-alt" aria-hidden="true"></i>
+                        </button>
+                        <button class="canvas-rail-ai-btn" data-image-index="0" title="Joe AI Assistant" aria-label="Joe AI Assistant" data-canvas-rail-wired="1" data-gallery-bound="1">
+                          <i class="fas fa-robot"></i>
+                        </button>
+                        <button title="Open Wireframe Designer" data-image-index="0" data-canvas-rail-wired="1" class="canvas-rail-wireframe-btn sty-4">
+                          <i class="fas fa-pencil-ruler"></i>
+                        </button>
+                      </div>
+                      <div class="image-move-indicator">
+                        <span class="move-position-number"></span>
+                      </div>
+
+                      <div data-badge-kind="placeholder" class="cropped-image-badge cropped-image-badge--primary">
+                        <span class="missing-badge-label">PLACEHOLDER</span>
+                      </div>
+                      <div class="gallery-inline-media-shell" aria-hidden="true"></div>
+                      <button type="button" class="slot-media-collapse-toggle" title="Click to expand" aria-label="Click to expand" aria-expanded="true" data-image-index="0">
+                        <i class="fa-solid fa-chevron-up"></i>
+                      </button>
+
+                      <div class="image-info-icon-wrapper">
+                        <div class="compression-status placeholder" title=""></div>
+
+                        <div class="image-info-card">
+                          <div class="info-row info-row--type">
+                            <span>
+                              Type:
+                              <span class="info-type">PLACEHOLDER</span>
+                            </span>
+                          </div>
+                          <div class="info-row info-row--resolution">
+                            <span>
+                              Resolution:
+                              <span class="info-resolution">N/A</span>
+                            </span>
+                          </div>
+                          <div class="info-row">
+                            <span>
+                              Size:
+                              <span class="info-size">N/A (Placeholder)</span>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <img draggable="false" data-image-index="0" data-stack-index="0" data-media-type="image" data-media-provider="website" data-media-mime-type="" data-media-src="/src/assets/placeholder.jpg" data-url-preview-kind="" src="/src/assets/placeholder.jpg" data-src="/src/assets/placeholder.jpg" alt="Restoration notes image 1" loading="lazy" data-canvas-reposition-drag-disabled="1" data-slot-listener="1" class="loaded sty-34"/>
+                      <video preload="metadata" playsinline="" data-media-type="image" data-media-src="/src/assets/placeholder.jpg" data-image-index="0" class="gallery-inline-media gallery-inline-video sty-12"></video>
+                      <div data-center-kind="video" data-center-action="play" role="button" tabindex="0" aria-label="Play/Pause video" class="gallery-inline-video-idle-glyph gallery-inline-empty-disc sty-12">
+                        <span class="gallery-inline-video-idle-rest gallery-inline-blank-icon gallery-inline-blank-icon--video gallery-inline-empty-rest" aria-hidden="true">
+                          <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true" class="sty-35">
+                            <path d="M8 5.5L18.5 12L8 18.5Z"></path>
+                          </svg>
+                        </span>
+                        <span class="gallery-inline-video-idle-action gallery-inline-blank-action gallery-inline-empty-action" aria-hidden="true" data-state="play">
+                          <span class="gallery-inline-blank-action-set gallery-inline-blank-action-set--play">
+                            <svg class="gallery-inline-glyph-play" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                              <path d="M8 5.5L18.5 12L8 18.5Z"></path>
+                            </svg>
+                            <svg class="gallery-inline-glyph-pause" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                              <rect x="7" y="5.5" width="3.75" height="13" rx="0.9"></rect>
+                              <rect x="13.25" y="5.5" width="3.75" height="13" rx="0.9"></rect>
+                            </svg>
+                          </span>
+                        </span>
+                      </div>
+                      <div class="gallery-inline-side-volume gallery-inline-video-volume-cluster sty-12">
+                        <button type="button" class="gallery-inline-video-mute-icon" aria-label="Mute video">
+                          <i class="fas fa-volume-up" aria-hidden="true"></i>
+                        </button>
+                        <input type="range" min="0" max="100" value="100" step="1" aria-label="Video volume" class="gallery-inline-video-volume"/>
+                      </div>
+                      <div class="gallery-inline-video-top-controls sty-12">
+                        <button type="button" class="gallery-inline-video-menu-btn" aria-label="Video speed">
+                          <span class="gallery-inline-video-speed-readout" aria-hidden="true">1x</span>
+                        </button>
+                        <button type="button" class="gallery-inline-video-fullscreen" aria-label="Toggle fullscreen">
+                          <i class="fas fa-expand" aria-hidden="true"></i>
+                        </button>
+                      </div>
+                      <div class="gallery-inline-video-controls sty-12">
+                        <span class="gallery-inline-video-time">0:00 / 0:00</span>
+                        <div class="gallery-inline-video-controls-row">
+                          <input type="range" min="0" max="1000" value="0" step="1" aria-label="Seek video" class="gallery-inline-video-progress"/>
+                        </div>
+                      </div>
+                      <iframe title="Embedded media preview" loading="eager" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" referrerpolicy="strict-origin-when-cross-origin" data-image-index="0" class="gallery-inline-media gallery-inline-embed sty-12"></iframe>
+                      <iframe title="PDF preview" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" data-image-index="0" class="gallery-inline-media gallery-inline-doc sty-12"></iframe>
+                      <div role="document" aria-label="PDF preview" data-image-index="0" class="gallery-inline-media gallery-inline-pdf-renderer sty-12"></div>
+                      <div data-image-index="0" data-blank-kind="" data-blank-state="" data-blank-action="" class="gallery-inline-media gallery-inline-blank-card gallery-inline-media-card-shell gallery-inline-empty-shell gallery-inline-slot-shell sty-12">
+                        <button type="button" class="gallery-inline-empty-disc" aria-label="Open media">
+                          <span class="gallery-inline-blank-rest gallery-inline-empty-rest" aria-hidden="true">
+                            <span class="gallery-inline-blank-icon gallery-inline-blank-icon--audio">♪</span>
+                            <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--video" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                              <path d="M8 5.5L18.5 12L8 18.5Z"></path>
+                            </svg>
+                            <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--url" viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"></path></svg>
+                            <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--doc" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                              <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"></path>
+                              <path d="M8 15h8v2H8v-2zm0-4h8v2H8v-2zm0-4h5v2H8V7z"></path>
+                            </svg>
+                            <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--spreadsheet" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                              <path d="M4 4h16v16H4V4zm2 2v3h12V6H6zm0 5v3h5v-3H6zm7 0v3h5v-3h-5zM6 16v2h5v-2H6zm7 0v2h5v-2h-5z"></path>
+                            </svg>
+                            <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--calendar" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                              <path d="M7 2v2H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7zm-2 7h14v10H5V9zm2 2v2h2v-2H7zm4 0v2h2v-2h-2zm4 0v2h2v-2h-2z"></path>
+                            </svg>
+                            <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--scheduler" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                              <path d="M12 2a10 10 0 1 0 10 10h-2a8 8 0 1 1-8-8V2zm1 5h-2v6l5 3 .96-1.75L13 12V7z"></path>
+                            </svg>
+                          </span>
+                          <span class="gallery-inline-blank-action gallery-inline-empty-action" aria-hidden="true" data-state="play">
+                            <span class="gallery-inline-blank-action-set gallery-inline-blank-action-set--play">
+                              <svg class="gallery-inline-glyph-play" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                <path d="M8 5.5L18.5 12L8 18.5Z"></path>
+                              </svg>
+                              <svg class="gallery-inline-glyph-pause" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                <rect x="7" y="5.5" width="3.75" height="13" rx="0.9"></rect>
+                                <rect x="13.25" y="5.5" width="3.75" height="13" rx="0.9"></rect>
+                              </svg>
+                            </span>
+                            <span class="gallery-inline-blank-action-set gallery-inline-blank-action-set--open">
+                              <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                <path d="M14 4h6v6h-2V7.41l-7.29 7.3-1.42-1.42 7.3-7.29H14V4z"></path>
+                                <path d="M5 5h6v2H7v10h10v-4h2v6H5V5z"></path>
+                              </svg>
+                            </span>
+                          </span>
+                        </button>
+
+                        <div class="gallery-inline-blank-loader" aria-hidden="true">
+                          <span class="gallery-inline-blank-loader-ring">
+                            <button type="button" class="gallery-inline-empty-disc gallery-inline-loader-disc" aria-label="Loading URL">
+                              <span class="gallery-inline-blank-rest gallery-inline-empty-rest" aria-hidden="true">
+                                <span class="gallery-inline-blank-icon gallery-inline-blank-icon--audio">♪</span>
+                                <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--video" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                  <path d="M8 5.5L18.5 12L8 18.5Z"></path>
+                                </svg>
+                                <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--url" viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"></path></svg>
+                                <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--doc" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                  <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"></path>
+                                  <path d="M8 15h8v2H8v-2zm0-4h8v2H8v-2zm0-4h5v2H8V7z"></path>
+                                </svg>
+                                <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--spreadsheet" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                  <path d="M4 4h16v16H4V4zm2 2v3h12V6H6zm0 5v3h5v-3H6zm7 0v3h5v-3h-5zM6 16v2h5v-2H6zm7 0v2h5v-2h-5z"></path>
+                                </svg>
+                                <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--calendar" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                  <path d="M7 2v2H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7zm-2 7h14v10H5V9zm2 2v2h2v-2H7zm4 0v2h2v-2h-2zm4 0v2h2v-2h-2z"></path>
+                                </svg>
+                                <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--scheduler" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                  <path d="M12 2a10 10 0 1 0 10 10h-2a8 8 0 1 1-8-8V2zm1 5h-2v6l5 3 .96-1.75L13 12V7z"></path>
+                                </svg>
+                              </span>
+                              <span class="gallery-inline-blank-action gallery-inline-empty-action" aria-hidden="true" data-state="play">
+                                <span class="gallery-inline-blank-action-set gallery-inline-blank-action-set--play">
+                                  <svg class="gallery-inline-glyph-play" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                    <path d="M8 5.5L18.5 12L8 18.5Z"></path>
+                                  </svg>
+                                  <svg class="gallery-inline-glyph-pause" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                    <rect x="7" y="5.5" width="3.75" height="13" rx="0.9"></rect>
+                                    <rect x="13.25" y="5.5" width="3.75" height="13" rx="0.9"></rect>
+                                  </svg>
+                                </span>
+                                <span class="gallery-inline-blank-action-set gallery-inline-blank-action-set--open">
+                                  <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                    <path d="M14 4h6v6h-2V7.41l-7.29 7.3-1.42-1.42 7.3-7.29H14V4z"></path>
+                                    <path d="M5 5h6v2H7v10h10v-4h2v6H5V5z"></path>
+                                  </svg>
+                                </span>
+                              </span>
+                            </button>
+                          </span>
+                        </div>
+                      </div>
+                      <div aria-hidden="true" data-image-index="0" class="gallery-inline-scroll-shield sty-12"></div>
+                      <div data-image-index="0" class="gallery-inline-media gallery-inline-audio-card gallery-inline-media-card-shell sty-12">
+                        <img alt="Album art" data-slot-listener="1" class="gallery-inline-audio-cover sty-12"/>
+                        <div aria-hidden="true" class="gallery-inline-audio-cover-fallback gallery-inline-empty-shell gallery-inline-slot-shell sty-12"></div>
+                        <div class="gallery-inline-audio-idle-glyph gallery-inline-empty-disc" data-center-kind="audio" data-center-action="play" role="button" tabindex="0" aria-label="Play/Pause audio">
+                          <span class="gallery-inline-audio-idle-note gallery-inline-blank-icon gallery-inline-blank-icon--audio gallery-inline-empty-rest" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true" class="sty-35">
+                              <path d="M8 5.5L18.5 12L8 18.5Z"></path>
+                            </svg>
+                          </span>
+                          <span class="gallery-inline-audio-idle-action gallery-inline-blank-action gallery-inline-empty-action" aria-hidden="true" data-state="play">
+                            <span class="gallery-inline-blank-action-set gallery-inline-blank-action-set--play">
+                              <svg class="gallery-inline-glyph-play" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                <path d="M8 5.5L18.5 12L8 18.5Z"></path>
+                              </svg>
+                              <svg class="gallery-inline-glyph-pause" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                <rect x="7" y="5.5" width="3.75" height="13" rx="0.9"></rect>
+                                <rect x="13.25" y="5.5" width="3.75" height="13" rx="0.9"></rect>
+                              </svg>
+                            </span>
+                          </span>
+                        </div>
+                        <canvas class="gallery-inline-audio-viz" aria-label="Audio visualizer"></canvas>
+                        <div class="gallery-inline-audio-body">
+                          <div class="gallery-inline-audio-title">Shoreline survey</div>
+                          <div class="gallery-inline-audio-subtitle">IMAGE</div>
+                          <div class="gallery-inline-audio-controls">
+                            <button type="button" class="gallery-inline-audio-play" aria-label="Play/Pause">
+                              <i class="fas fa-play"></i>
+                            </button>
+                            <span class="gallery-inline-audio-time">0:00 / 0:00</span>
+                            <input type="range" min="0" max="1000" value="0" step="1" aria-label="Seek" class="gallery-inline-audio-progress"/>
+                          </div>
+                          <audio class="gallery-inline-audio" preload="metadata" data-media-type="image" data-media-src="/src/assets/placeholder.jpg" data-image-index="0"></audio>
+                        </div>
+                        <button type="button" class="gallery-inline-audio-rate-btn" aria-label="Playback speed" title="Playback speed">1x</button>
+                        <div class="gallery-inline-side-volume gallery-inline-audio-volume-cluster">
+                          <i class="fas fa-volume-up gallery-inline-audio-volume-icon" aria-hidden="true"></i>
+                          <input type="range" min="0" max="100" value="100" step="1" aria-label="Volume" class="gallery-inline-audio-volume"/>
+                        </div>
+                      </div>
+
+                      <div class="image-stack-indicator-wrapper">
+                        <div class="image-stack-indicator hidden">
+                          <span class="stack-count-number">1</span>
+                          <div class="image-info-card">
+                            <div class="info-row">
+                              <span>Items in stack: 1</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div data-image-index="0" class="gallery-inline-media gallery-inline-link-card gallery-inline-media-card-shell gallery-inline-empty-shell gallery-inline-slot-shell sty-12">
+                        <div class="gallery-inline-link-rich">
+                          <div class="gallery-inline-link-embed-host"></div>
+                          <div class="gallery-inline-link-image-shell">
+                            <img alt="URL preview" data-slot-listener="1" class="gallery-inline-link-preview sty-12"/>
+                          </div>
+                          <div class="gallery-inline-link-meta-fallback">
+                            <div class="gallery-inline-link-copy">
+                              <div class="gallery-inline-link-site-row">
+                                <img alt="" data-slot-listener="1" class="gallery-inline-link-favicon sty-12"/>
+                                <span class="gallery-inline-link-site">website</span>
+                              </div>
+                              <div class="gallery-inline-link-title">Shoreline survey</div>
+                              <div class="gallery-inline-link-description"></div>
+                              <div class="gallery-inline-link-url">https://xn--north%20cove%20at%20low%20tide,%2014%20photoserosion%20line%20marked%20with%20stakes%2039-n670d/</div>
+                              <div class="gallery-inline-link-rich-host">URL item</div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="gallery-inline-link-provider">WEBSITE</div>
+                        <div class="gallery-inline-link-host">URL item</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="image-expand-bar" title="Click to expand" data-expand-bar-bound="1">
+                    <i class="fa-solid fa-chevron-down"></i>
+                  </div>
+                  <div class="image-controls">
+                    <div class="image-controls-left">
+                      <button class="ai-query-btn" title="Joe AI Assistant" data-gallery-bound="1" data-image-index="0">
+                        <i class="fas fa-robot"></i>
+                      </button>
+                      <button class="copy-notes-btn" title="Copy notes to clipboard" data-image-index="0" data-gallery-bound="1">
+                        <i class="far fa-copy"></i>
+                      </button>
+                    </div>
+                    <div class="image-controls-right">
+                      <button class="move-left-btn move-img-btn" disabled="" title="Cannot move left" data-gallery-bound="1" data-image-index="0">
+                        <i class="fas fa-arrow-left-long"></i>
+                      </button>
+                      <button class="move-right-btn move-img-btn" title="Move right" data-gallery-bound="1" data-image-index="0">
+                        <i class="fas fa-arrow-right-long"></i>
+                      </button>
+                      <button class="stack-image-btn" title="Convert this slot to stack and add to it" aria-label="Convert this slot to stack and add to it" data-gallery-bound="1">
+                        <i class="fas fa-layer-group"></i>
+                      </button>
+                      <button class="replace-image-btn" title="Replace" data-gallery-bound="1" data-image-index="0">Replace</button>
+                      <button class="delete-image-btn" title="Remove slot" aria-label="Remove slot" data-gallery-bound="1" data-image-index="0">Remove</button>
+                    </div>
+                  </div>
+
+                  <div class="slot-under-stack">
+                    <input type="text" placeholder="Name your slot..." value="Shoreline survey" spellcheck="true" data-canvas-title-width-bound="1" data-canvas-title-width-key='14px system-ui, -apple-system, "system-ui", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif Shoreline survey' data-notes-history-entry-id="gallery-5ab70f0a-9a08-48c9-a7ec-44a9d63fd0f4" data-notes-history-field="title" data-gallery-bound="1" data-notes-undo-prev-value="Shoreline survey" class="image-title"/>
+
+                    <div class="gallery-tag-section is-empty">
+                      <div class="gallery-tags-titlebar">
+                        <span class="gallery-tags-title-wrap">
+                          <button type="button" class="gallery-tag-bin-toggle" title="Collapse Tag Bin" aria-label="Collapse Tag Bin" aria-expanded="true">
+                            <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                          </button>
+
+                          <span class="gallery-tags-title">Tag Bin</span>
+                        </span>
+                        <span class="gallery-tags-title-actions">
+                          <button type="button" class="gallery-tags-manager-btn" title="Manage tags" aria-label="Manage tags for this slot" data-image-index="0" data-flyout-anchor="self">Manage</button>
+                        </span>
+                      </div>
+                    </div>
+
+                    <div class="image-notes-column gallery-notes-tiptap-host sty-36">
+                      <div class="gallery-notes-titlebar" data-gallery-notes-titlebar="">
+                        <span class="gallery-notes-titlebar-label-wrap">
+                          <button type="button" class="gallery-notes-collapse-toggle" title="Collapse Slot Notes" aria-label="Collapse Slot Notes" aria-expanded="true">
+                            <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                          </button>
+                          <span class="gallery-notes-titlebar-label">Slot Notes</span>
+                        </span>
+                        <span class="gallery-notes-titlebar-right sty-37">
+                          <button type="button" title="Hide from Joe" aria-label="Hide from Joe" aria-pressed="false" role="switch" class="gallery-notes-hide-from-joe sty-38"><i class="far fa-eye" aria-hidden="true"></i></button>
+                          <div class="gallery-notes-target-toggle" role="group" aria-label="Gallery text target">
+                            <span aria-hidden="true" class="gallery-notes-target-pill sty-39"></span>
+                            <button type="button" class="gallery-notes-target-option active" data-gallery-text-target="slot" aria-pressed="true" data-gallery-target-bound="1">
+                              <i class="fas fa-check" aria-hidden="true"></i>
+                              <span>Slot</span>
+                            </button>
+                            <button type="button" class="gallery-notes-target-option" data-gallery-text-target="item" aria-pressed="false" data-gallery-target-bound="1">
+                              <i class="fas fa-check" aria-hidden="true"></i>
+                              <span>Stack</span>
+                            </button>
+                          </div>
+                        </span>
+                      </div>
+                      <textarea rows="1" placeholder="Enter main slot notes here..." dir="auto" spellcheck="false" data-rich-notes="1" data-notes-history-entry-id="gallery-5ab70f0a-9a08-48c9-a7ec-44a9d63fd0f4" data-notes-history-field="notes" data-notes-undo-prev-value="North cove at low tide, 14 photos
+Erosion line marked with stakes 3–9" wrap="soft" data-textarea-autosize-bound="1" data-gallery-notes-sound-bound="1" data-initialized="true" class="image-notes gallery-notes-tiptap-source-masked sty-40">
+North cove at low tide, 14 photos
+Erosion line marked with stakes 3–9</textarea>
+                      <div aria-hidden="true" dir="auto" data-gallery-notes-placeholder="Enter main slot notes here..." class="image-notes-content gallery-notes-tiptap-display sty-41"><p>North cove at low tide, 14 photos Erosion line marked with stakes 3–9</p></div>
+                    </div>
+                  </div>
+                  <span class="canvas-slot-title-drag-strip" aria-hidden="true"></span>
+                  <span class="canvas-slot-drag-grip" aria-hidden="true" title="Drag to move this card"><i class="fa-solid fa-grip-vertical" aria-hidden="true"></i></span>
+                </div>
+                <button type="button" class="canvas-connect-handle" aria-label="Drag to another slot to connect them (drag again to disconnect)" title="Drag to another slot to connect them (drag again to disconnect)"></button>
+                <button type="button" class="canvas-resize-handle" data-corner="br" aria-label="Drag to resize this slot (double-click to reset to the default size)" title="Drag to resize this slot (double-click to reset to the default size)"></button>
+                <button type="button" class="canvas-resize-handle" data-corner="bl" aria-label="Drag to resize this slot (double-click to reset to the default size)" title="Drag to resize this slot (double-click to reset to the default size)"></button>
+                <button type="button" class="canvas-resize-handle" data-corner="tr" aria-label="Drag to resize this slot (double-click to reset to the default size)" title="Drag to resize this slot (double-click to reset to the default size)"></button>
+                <button type="button" class="canvas-resize-handle" data-corner="tl" aria-label="Drag to resize this slot (double-click to reset to the default size)" title="Drag to resize this slot (double-click to reset to the default size)"></button>
+              </div>
+
+              <div data-ai-font-size="normal" data-canvas-slot-height="476" data-canvas-slot-width="320" data-canvas-placed="1" data-canvas-rendered-height="475" data-canvas-notes-sized-for-width="320" class="enum-image-unit sty-42">
+                <div class="canvas-image-number" aria-hidden="true">2.</div>
+                <div data-position="1" data-drag-drop-bound="1" class="add-image-position has-listeners sty-43">
+                  <div class="image-number">2.</div>
+                  <button class="add-image-btn" title="Insert new slot here">
+                    <i class="fas fa-plus"></i>
+                  </button>
+                  <button class="copy-image-btn" title="Insert clone of previous slot here --&gt; " data-src="/src/assets/feat_placeholder.png" data-image-index="1" data-gallery-bound="1">
+                    <i class="fas fa-copy"></i>
+                  </button>
+
+                  <button class="stack-image-btn" title="Convert this slot to stack and add to it" aria-label="Convert this slot to stack and add to it" data-image-index="1" data-gallery-bound="1">
+                    <i class="fas fa-layer-group"></i>
+                  </button>
+                  <!-- Replace side-rail control is hidden; use the slot context menu for that action. -->
+                  <button class="delete-image-btn" title="Remove slot" aria-label="Remove slot" data-image-index="1" data-gallery-bound="1">
+                    <i class="fas fa-trash-alt" aria-hidden="true"></i>
+                  </button>
+                  <button class="ai-query-btn" data-image-index="1" title="Joe AI Assistant" aria-label="Joe AI Assistant" data-gallery-bound="1">
+                    <i class="fas fa-robot"></i>
+                  </button>
+                  <button title="Open Wireframe Designer" data-image-index="1" class="wireframe-btn sty-4">
+                    <i class="fas fa-pencil-ruler"></i>
+                  </button>
+                </div>
+
+                <div data-image-index="1" data-entry-id="gallery-8b6d15b2-ef87-4678-88cc-bd2d3ab20210" data-node-id="879432ee-f627-43f5-91cf-429132aa7855" data-active-media-ready="1" data-gallery-text-controls-synced="1" data-gallery-text-target-mode="slot" data-dnd-bound="1" draggable="false" data-drag-lock-bound="1" data-context-menu-bound="1" data-canvas-reposition-drag-disabled="1" class="image-item  sty-44">
+                  <div class="image-stack-container">
+                    <div class="image-selection-checkbox">
+                      <input type="checkbox" data-image-index="1" title="Select for bulk removal" class="image-select-cb"/>
+                    </div>
+                    <div data-active-media-ready="1" data-aspect-ratio="1 / 1" data-inline-resolved-aspect-ratio="1024 / 1024" data-image-index="1" class="image-frame gallery-drag-surface sty-45">
+                      <div class="canvas-rail-attached">
+                        <button class="canvas-rail-add-btn" title="Insert new slot here" data-gallery-bound="1" data-canvas-rail-wired="1">
+                          <i class="fas fa-plus"></i>
+                        </button>
+                        <button class="canvas-rail-copy-btn" title="Insert clone of previous slot here --&gt; " data-src="/src/assets/feat_placeholder.png" data-image-index="1" data-gallery-bound="1" data-canvas-rail-wired="1">
+                          <i class="fas fa-copy"></i>
+                        </button>
+                        <button class="canvas-rail-stack-btn" title="Convert this slot to stack and add to it" aria-label="Convert this slot to stack and add to it" data-image-index="1" data-gallery-bound="1" data-canvas-rail-wired="1">
+                          <i class="fas fa-layer-group"></i>
+                        </button>
+                        <button class="canvas-rail-delete-btn" title="Remove slot" aria-label="Remove slot" data-image-index="1" data-gallery-bound="1" data-canvas-rail-wired="1">
+                          <i class="fas fa-trash-alt" aria-hidden="true"></i>
+                        </button>
+                        <button class="canvas-rail-ai-btn" data-image-index="1" title="Joe AI Assistant" aria-label="Joe AI Assistant" data-gallery-bound="1" data-canvas-rail-wired="1">
+                          <i class="fas fa-robot"></i>
+                        </button>
+                        <button title="Open Wireframe Designer" data-image-index="1" data-canvas-rail-wired="1" class="canvas-rail-wireframe-btn sty-4">
+                          <i class="fas fa-pencil-ruler"></i>
+                        </button>
+                      </div>
+                      <div class="image-move-indicator">
+                        <span class="move-position-number"></span>
+                      </div>
+
+                      <div data-badge-kind="placeholder" class="cropped-image-badge cropped-image-badge--primary">
+                        <span class="missing-badge-label">PLACEHOLDER</span>
+                      </div>
+                      <div class="gallery-inline-media-shell" aria-hidden="true"></div>
+                      <button type="button" class="slot-media-collapse-toggle" title="Click to expand" aria-label="Click to expand" aria-expanded="true" data-image-index="1">
+                        <i class="fa-solid fa-chevron-up"></i>
+                      </button>
+
+                      <div class="image-info-icon-wrapper">
+                        <div class="compression-status placeholder" title=""></div>
+
+                        <div class="image-info-card">
+                          <div class="info-row info-row--type">
+                            <span>
+                              Type:
+                              <span class="info-type">PLACEHOLDER</span>
+                            </span>
+                          </div>
+                          <div class="info-row info-row--resolution">
+                            <span>
+                              Resolution:
+                              <span class="info-resolution">N/A</span>
+                            </span>
+                          </div>
+                          <div class="info-row">
+                            <span>
+                              Size:
+                              <span class="info-size">N/A (Placeholder)</span>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <img draggable="true" data-image-index="1" data-stack-index="0" data-media-type="image" data-media-provider="website" data-media-mime-type="" data-media-src="/src/assets/feat_placeholder.png" data-url-preview-kind="" src="/src/assets/feat_placeholder.png" data-src="/src/assets/feat_placeholder.png" alt="Restoration notes image 2" loading="lazy" data-slot-listener="1" class="loaded sty-34"/>
+                      <video preload="metadata" playsinline="" data-media-type="image" data-media-src="/src/assets/feat_placeholder.png" data-image-index="1" class="gallery-inline-media gallery-inline-video sty-12"></video>
+                      <div data-center-kind="video" data-center-action="play" role="button" tabindex="0" aria-label="Play/Pause video" class="gallery-inline-video-idle-glyph gallery-inline-empty-disc sty-12">
+                        <span class="gallery-inline-video-idle-rest gallery-inline-blank-icon gallery-inline-blank-icon--video gallery-inline-empty-rest" aria-hidden="true">
+                          <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true" class="sty-35">
+                            <path d="M8 5.5L18.5 12L8 18.5Z"></path>
+                          </svg>
+                        </span>
+                        <span class="gallery-inline-video-idle-action gallery-inline-blank-action gallery-inline-empty-action" aria-hidden="true" data-state="play">
+                          <span class="gallery-inline-blank-action-set gallery-inline-blank-action-set--play">
+                            <svg class="gallery-inline-glyph-play" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                              <path d="M8 5.5L18.5 12L8 18.5Z"></path>
+                            </svg>
+                            <svg class="gallery-inline-glyph-pause" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                              <rect x="7" y="5.5" width="3.75" height="13" rx="0.9"></rect>
+                              <rect x="13.25" y="5.5" width="3.75" height="13" rx="0.9"></rect>
+                            </svg>
+                          </span>
+                        </span>
+                      </div>
+                      <div class="gallery-inline-side-volume gallery-inline-video-volume-cluster sty-12">
+                        <button type="button" class="gallery-inline-video-mute-icon" aria-label="Mute video">
+                          <i class="fas fa-volume-up" aria-hidden="true"></i>
+                        </button>
+                        <input type="range" min="0" max="100" value="100" step="1" aria-label="Video volume" class="gallery-inline-video-volume"/>
+                      </div>
+                      <div class="gallery-inline-video-top-controls sty-12">
+                        <button type="button" class="gallery-inline-video-menu-btn" aria-label="Video speed">
+                          <span class="gallery-inline-video-speed-readout" aria-hidden="true">1x</span>
+                        </button>
+                        <button type="button" class="gallery-inline-video-fullscreen" aria-label="Toggle fullscreen">
+                          <i class="fas fa-expand" aria-hidden="true"></i>
+                        </button>
+                      </div>
+                      <div class="gallery-inline-video-controls sty-12">
+                        <span class="gallery-inline-video-time">0:00 / 0:00</span>
+                        <div class="gallery-inline-video-controls-row">
+                          <input type="range" min="0" max="1000" value="0" step="1" aria-label="Seek video" class="gallery-inline-video-progress"/>
+                        </div>
+                      </div>
+                      <iframe title="Embedded media preview" loading="eager" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" referrerpolicy="strict-origin-when-cross-origin" data-image-index="1" class="gallery-inline-media gallery-inline-embed sty-12"></iframe>
+                      <iframe title="PDF preview" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" data-image-index="1" class="gallery-inline-media gallery-inline-doc sty-12"></iframe>
+                      <div role="document" aria-label="PDF preview" data-image-index="1" class="gallery-inline-media gallery-inline-pdf-renderer sty-12"></div>
+                      <div data-image-index="1" data-blank-kind="" data-blank-state="" data-blank-action="" class="gallery-inline-media gallery-inline-blank-card gallery-inline-media-card-shell gallery-inline-empty-shell gallery-inline-slot-shell sty-12">
+                        <button type="button" class="gallery-inline-empty-disc" aria-label="Open media">
+                          <span class="gallery-inline-blank-rest gallery-inline-empty-rest" aria-hidden="true">
+                            <span class="gallery-inline-blank-icon gallery-inline-blank-icon--audio">♪</span>
+                            <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--video" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                              <path d="M8 5.5L18.5 12L8 18.5Z"></path>
+                            </svg>
+                            <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--url" viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"></path></svg>
+                            <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--doc" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                              <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"></path>
+                              <path d="M8 15h8v2H8v-2zm0-4h8v2H8v-2zm0-4h5v2H8V7z"></path>
+                            </svg>
+                            <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--spreadsheet" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                              <path d="M4 4h16v16H4V4zm2 2v3h12V6H6zm0 5v3h5v-3H6zm7 0v3h5v-3h-5zM6 16v2h5v-2H6zm7 0v2h5v-2h-5z"></path>
+                            </svg>
+                            <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--calendar" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                              <path d="M7 2v2H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7zm-2 7h14v10H5V9zm2 2v2h2v-2H7zm4 0v2h2v-2h-2zm4 0v2h2v-2h-2z"></path>
+                            </svg>
+                            <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--scheduler" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                              <path d="M12 2a10 10 0 1 0 10 10h-2a8 8 0 1 1-8-8V2zm1 5h-2v6l5 3 .96-1.75L13 12V7z"></path>
+                            </svg>
+                          </span>
+                          <span class="gallery-inline-blank-action gallery-inline-empty-action" aria-hidden="true" data-state="play">
+                            <span class="gallery-inline-blank-action-set gallery-inline-blank-action-set--play">
+                              <svg class="gallery-inline-glyph-play" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                <path d="M8 5.5L18.5 12L8 18.5Z"></path>
+                              </svg>
+                              <svg class="gallery-inline-glyph-pause" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                <rect x="7" y="5.5" width="3.75" height="13" rx="0.9"></rect>
+                                <rect x="13.25" y="5.5" width="3.75" height="13" rx="0.9"></rect>
+                              </svg>
+                            </span>
+                            <span class="gallery-inline-blank-action-set gallery-inline-blank-action-set--open">
+                              <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                <path d="M14 4h6v6h-2V7.41l-7.29 7.3-1.42-1.42 7.3-7.29H14V4z"></path>
+                                <path d="M5 5h6v2H7v10h10v-4h2v6H5V5z"></path>
+                              </svg>
+                            </span>
+                          </span>
+                        </button>
+
+                        <div class="gallery-inline-blank-loader" aria-hidden="true">
+                          <span class="gallery-inline-blank-loader-ring">
+                            <button type="button" class="gallery-inline-empty-disc gallery-inline-loader-disc" aria-label="Loading URL">
+                              <span class="gallery-inline-blank-rest gallery-inline-empty-rest" aria-hidden="true">
+                                <span class="gallery-inline-blank-icon gallery-inline-blank-icon--audio">♪</span>
+                                <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--video" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                  <path d="M8 5.5L18.5 12L8 18.5Z"></path>
+                                </svg>
+                                <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--url" viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"></path></svg>
+                                <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--doc" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                  <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"></path>
+                                  <path d="M8 15h8v2H8v-2zm0-4h8v2H8v-2zm0-4h5v2H8V7z"></path>
+                                </svg>
+                                <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--spreadsheet" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                  <path d="M4 4h16v16H4V4zm2 2v3h12V6H6zm0 5v3h5v-3H6zm7 0v3h5v-3h-5zM6 16v2h5v-2H6zm7 0v2h5v-2h-5z"></path>
+                                </svg>
+                                <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--calendar" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                  <path d="M7 2v2H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7zm-2 7h14v10H5V9zm2 2v2h2v-2H7zm4 0v2h2v-2h-2zm4 0v2h2v-2h-2z"></path>
+                                </svg>
+                                <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--scheduler" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                  <path d="M12 2a10 10 0 1 0 10 10h-2a8 8 0 1 1-8-8V2zm1 5h-2v6l5 3 .96-1.75L13 12V7z"></path>
+                                </svg>
+                              </span>
+                              <span class="gallery-inline-blank-action gallery-inline-empty-action" aria-hidden="true" data-state="play">
+                                <span class="gallery-inline-blank-action-set gallery-inline-blank-action-set--play">
+                                  <svg class="gallery-inline-glyph-play" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                    <path d="M8 5.5L18.5 12L8 18.5Z"></path>
+                                  </svg>
+                                  <svg class="gallery-inline-glyph-pause" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                    <rect x="7" y="5.5" width="3.75" height="13" rx="0.9"></rect>
+                                    <rect x="13.25" y="5.5" width="3.75" height="13" rx="0.9"></rect>
+                                  </svg>
+                                </span>
+                                <span class="gallery-inline-blank-action-set gallery-inline-blank-action-set--open">
+                                  <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                    <path d="M14 4h6v6h-2V7.41l-7.29 7.3-1.42-1.42 7.3-7.29H14V4z"></path>
+                                    <path d="M5 5h6v2H7v10h10v-4h2v6H5V5z"></path>
+                                  </svg>
+                                </span>
+                              </span>
+                            </button>
+                          </span>
+                        </div>
+                      </div>
+                      <div aria-hidden="true" data-image-index="1" class="gallery-inline-scroll-shield sty-12"></div>
+                      <div data-image-index="1" class="gallery-inline-media gallery-inline-audio-card gallery-inline-media-card-shell sty-12">
+                        <img alt="Album art" data-slot-listener="1" class="gallery-inline-audio-cover sty-12"/>
+                        <div aria-hidden="true" class="gallery-inline-audio-cover-fallback gallery-inline-empty-shell gallery-inline-slot-shell sty-12"></div>
+                        <div class="gallery-inline-audio-idle-glyph gallery-inline-empty-disc" data-center-kind="audio" data-center-action="play" role="button" tabindex="0" aria-label="Play/Pause audio">
+                          <span class="gallery-inline-audio-idle-note gallery-inline-blank-icon gallery-inline-blank-icon--audio gallery-inline-empty-rest" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true" class="sty-35">
+                              <path d="M8 5.5L18.5 12L8 18.5Z"></path>
+                            </svg>
+                          </span>
+                          <span class="gallery-inline-audio-idle-action gallery-inline-blank-action gallery-inline-empty-action" aria-hidden="true" data-state="play">
+                            <span class="gallery-inline-blank-action-set gallery-inline-blank-action-set--play">
+                              <svg class="gallery-inline-glyph-play" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                <path d="M8 5.5L18.5 12L8 18.5Z"></path>
+                              </svg>
+                              <svg class="gallery-inline-glyph-pause" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                <rect x="7" y="5.5" width="3.75" height="13" rx="0.9"></rect>
+                                <rect x="13.25" y="5.5" width="3.75" height="13" rx="0.9"></rect>
+                              </svg>
+                            </span>
+                          </span>
+                        </div>
+                        <canvas class="gallery-inline-audio-viz" aria-label="Audio visualizer"></canvas>
+                        <div class="gallery-inline-audio-body">
+                          <div class="gallery-inline-audio-title">Planting map</div>
+                          <div class="gallery-inline-audio-subtitle">IMAGE</div>
+                          <div class="gallery-inline-audio-controls">
+                            <button type="button" class="gallery-inline-audio-play" aria-label="Play/Pause">
+                              <i class="fas fa-play"></i>
+                            </button>
+                            <span class="gallery-inline-audio-time">0:00 / 0:00</span>
+                            <input type="range" min="0" max="1000" value="0" step="1" aria-label="Seek" class="gallery-inline-audio-progress"/>
+                          </div>
+                          <audio class="gallery-inline-audio" preload="metadata" data-media-type="image" data-media-src="/src/assets/feat_placeholder.png" data-image-index="1"></audio>
+                        </div>
+                        <button type="button" class="gallery-inline-audio-rate-btn" aria-label="Playback speed" title="Playback speed">1x</button>
+                        <div class="gallery-inline-side-volume gallery-inline-audio-volume-cluster">
+                          <i class="fas fa-volume-up gallery-inline-audio-volume-icon" aria-hidden="true"></i>
+                          <input type="range" min="0" max="100" value="100" step="1" aria-label="Volume" class="gallery-inline-audio-volume"/>
+                        </div>
+                      </div>
+
+                      <div class="image-stack-indicator-wrapper">
+                        <div class="image-stack-indicator hidden">
+                          <span class="stack-count-number">1</span>
+                          <div class="image-info-card">
+                            <div class="info-row">
+                              <span>Items in stack: 1</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div data-image-index="1" class="gallery-inline-media gallery-inline-link-card gallery-inline-media-card-shell gallery-inline-empty-shell gallery-inline-slot-shell sty-12">
+                        <div class="gallery-inline-link-rich">
+                          <div class="gallery-inline-link-embed-host"></div>
+                          <div class="gallery-inline-link-image-shell">
+                            <img alt="URL preview" data-slot-listener="1" class="gallery-inline-link-preview sty-12"/>
+                          </div>
+                          <div class="gallery-inline-link-meta-fallback">
+                            <div class="gallery-inline-link-copy">
+                              <div class="gallery-inline-link-site-row">
+                                <img alt="" data-slot-listener="1" class="gallery-inline-link-favicon sty-12"/>
+                                <span class="gallery-inline-link-site">website</span>
+                              </div>
+                              <div class="gallery-inline-link-title">Planting map</div>
+                              <div class="gallery-inline-link-description"></div>
+                              <div class="gallery-inline-link-url">https://xn--dune%20grass%20zones%20adzone%20c%20needs%20sand%20fencing%20first-4d65b/</div>
+                              <div class="gallery-inline-link-rich-host">URL item</div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="gallery-inline-link-provider">WEBSITE</div>
+                        <div class="gallery-inline-link-host">URL item</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="image-expand-bar" title="Click to expand">
+                    <i class="fa-solid fa-chevron-down"></i>
+                  </div>
+                  <div class="image-controls">
+                    <div class="image-controls-left">
+                      <button class="ai-query-btn" title="Joe AI Assistant" data-gallery-bound="1" data-image-index="1">
+                        <i class="fas fa-robot"></i>
+                      </button>
+                      <button class="copy-notes-btn" title="Copy notes to clipboard" data-image-index="1" data-gallery-bound="1">
+                        <i class="far fa-copy"></i>
+                      </button>
+                    </div>
+                    <div class="image-controls-right">
+                      <button class="move-left-btn move-img-btn" title="Move left" data-gallery-bound="1" data-image-index="1">
+                        <i class="fas fa-arrow-left-long"></i>
+                      </button>
+                      <button class="move-right-btn move-img-btn" title="Move right" data-gallery-bound="1" data-image-index="1">
+                        <i class="fas fa-arrow-right-long"></i>
+                      </button>
+                      <button class="stack-image-btn" title="Convert this slot to stack and add to it" aria-label="Convert this slot to stack and add to it" data-gallery-bound="1">
+                        <i class="fas fa-layer-group"></i>
+                      </button>
+                      <button class="replace-image-btn" title="Replace" data-gallery-bound="1" data-image-index="1">Replace</button>
+                      <button class="delete-image-btn" title="Remove slot" aria-label="Remove slot" data-gallery-bound="1" data-image-index="1">Remove</button>
+                    </div>
+                  </div>
+
+                  <div class="slot-under-stack">
+                    <input type="text" placeholder="Name your slot..." value="Planting map" spellcheck="true" data-canvas-title-width-key='14px system-ui, -apple-system, "system-ui", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif Planting map' data-canvas-title-width-bound="1" data-notes-history-entry-id="gallery-8b6d15b2-ef87-4678-88cc-bd2d3ab20210" data-notes-history-field="title" data-gallery-bound="1" data-notes-undo-prev-value="Planting map" class="image-title"/>
+
+                    <div class="gallery-tag-section is-empty">
+                      <div class="gallery-tags-titlebar">
+                        <span class="gallery-tags-title-wrap">
+                          <button type="button" class="gallery-tag-bin-toggle" title="Collapse Tag Bin" aria-label="Collapse Tag Bin" aria-expanded="true">
+                            <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                          </button>
+
+                          <span class="gallery-tags-title">Tag Bin</span>
+                        </span>
+                        <span class="gallery-tags-title-actions">
+                          <button type="button" class="gallery-tags-manager-btn" title="Manage tags" aria-label="Manage tags for this slot" data-image-index="1" data-flyout-anchor="self">Manage</button>
+                        </span>
+                      </div>
+                    </div>
+
+                    <div class="image-notes-column gallery-notes-tiptap-host sty-36">
+                      <div class="gallery-notes-titlebar" data-gallery-notes-titlebar="">
+                        <span class="gallery-notes-titlebar-label-wrap">
+                          <button type="button" class="gallery-notes-collapse-toggle" title="Collapse Slot Notes" aria-label="Collapse Slot Notes" aria-expanded="true">
+                            <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                          </button>
+                          <span class="gallery-notes-titlebar-label">Slot Notes</span>
+                        </span>
+                        <span class="gallery-notes-titlebar-right sty-37">
+                          <button type="button" title="Hide from Joe" aria-label="Hide from Joe" aria-pressed="false" role="switch" class="gallery-notes-hide-from-joe sty-38"><i class="far fa-eye" aria-hidden="true"></i></button>
+                          <div class="gallery-notes-target-toggle" role="group" aria-label="Gallery text target">
+                            <span aria-hidden="true" class="gallery-notes-target-pill sty-39"></span>
+                            <button type="button" class="gallery-notes-target-option active" data-gallery-text-target="slot" aria-pressed="true" data-gallery-target-bound="1">
+                              <i class="fas fa-check" aria-hidden="true"></i>
+                              <span>Slot</span>
+                            </button>
+                            <button type="button" class="gallery-notes-target-option" data-gallery-text-target="item" aria-pressed="false" data-gallery-target-bound="1">
+                              <i class="fas fa-check" aria-hidden="true"></i>
+                              <span>Stack</span>
+                            </button>
+                          </div>
+                        </span>
+                      </div>
+                      <textarea rows="1" placeholder="Enter main slot notes here..." dir="auto" spellcheck="false" wrap="soft" data-textarea-autosize-bound="1" data-rich-notes="1" data-notes-history-entry-id="gallery-8b6d15b2-ef87-4678-88cc-bd2d3ab20210" data-notes-history-field="notes" data-notes-undo-prev-value="Dune grass zones A–D
+Zone C needs sand fencing first" data-gallery-notes-sound-bound="1" data-initialized="true" class="image-notes gallery-notes-tiptap-source-masked sty-46">
+Dune grass zones A–D
+Zone C needs sand fencing first</textarea>
+                      <div aria-hidden="true" dir="auto" data-gallery-notes-placeholder="Enter main slot notes here..." class="image-notes-content gallery-notes-tiptap-display sty-47"><p>Dune grass zones A–D Zone C needs sand fencing first</p></div>
+                    </div>
+                  </div>
+                  <span class="canvas-slot-title-drag-strip" aria-hidden="true"></span>
+                  <span class="canvas-slot-drag-grip" aria-hidden="true" title="Drag to move this card"><i class="fa-solid fa-grip-vertical" aria-hidden="true"></i></span>
+                </div>
+                <button type="button" class="canvas-connect-handle" aria-label="Drag to another slot to connect them (drag again to disconnect)" title="Drag to another slot to connect them (drag again to disconnect)"></button>
+                <button type="button" class="canvas-resize-handle" data-corner="br" aria-label="Drag to resize this slot (double-click to reset to the default size)" title="Drag to resize this slot (double-click to reset to the default size)"></button>
+                <button type="button" class="canvas-resize-handle" data-corner="bl" aria-label="Drag to resize this slot (double-click to reset to the default size)" title="Drag to resize this slot (double-click to reset to the default size)"></button>
+                <button type="button" class="canvas-resize-handle" data-corner="tr" aria-label="Drag to resize this slot (double-click to reset to the default size)" title="Drag to resize this slot (double-click to reset to the default size)"></button>
+                <button type="button" class="canvas-resize-handle" data-corner="tl" aria-label="Drag to resize this slot (double-click to reset to the default size)" title="Drag to resize this slot (double-click to reset to the default size)"></button>
+              </div>
+              <div data-ai-font-size="normal" data-canvas-rendered-height="494" data-canvas-slot-height="495" data-canvas-slot-width="320" data-canvas-placed="1" data-canvas-notes-sized-for-width="320" class="enum-image-unit sty-48">
+                <div class="canvas-image-number" aria-hidden="true">3.</div>
+                <div data-position="2" data-drag-drop-bound="1" class="add-image-position has-listeners sty-43">
+                  <div class="image-number">3.</div>
+                  <button class="add-image-btn" title="Insert new slot here">
+                    <i class="fas fa-plus"></i>
+                  </button>
+                  <button class="copy-image-btn" title="Insert clone of previous slot here --&gt; " data-src="/src/assets/placeholder.png" data-image-index="2" data-gallery-bound="1">
+                    <i class="fas fa-copy"></i>
+                  </button>
+
+                  <button class="stack-image-btn" title="Convert this slot to stack and add to it" aria-label="Convert this slot to stack and add to it" data-image-index="2" data-gallery-bound="1">
+                    <i class="fas fa-layer-group"></i>
+                  </button>
+                  <!-- Replace side-rail control is hidden; use the slot context menu for that action. -->
+                  <button class="delete-image-btn" title="Remove slot" aria-label="Remove slot" data-image-index="2" data-gallery-bound="1">
+                    <i class="fas fa-trash-alt" aria-hidden="true"></i>
+                  </button>
+                  <button class="ai-query-btn" data-image-index="2" title="Joe AI Assistant" aria-label="Joe AI Assistant" data-gallery-bound="1">
+                    <i class="fas fa-robot"></i>
+                  </button>
+                  <button title="Open Wireframe Designer" data-image-index="2" class="wireframe-btn sty-4">
+                    <i class="fas fa-pencil-ruler"></i>
+                  </button>
+                </div>
+
+                <div data-image-index="2" data-entry-id="gallery-b3e237b8-7068-45c0-954c-d218d2a0e573" data-node-id="879432ee-f627-43f5-91cf-429132aa7855" data-active-media-ready="1" data-gallery-text-controls-synced="1" data-gallery-text-target-mode="slot" data-dnd-bound="1" draggable="false" data-drag-lock-bound="1" data-context-menu-bound="1" data-canvas-reposition-drag-disabled="1" class="image-item  sty-49">
+                  <div class="image-stack-container">
+                    <div class="image-selection-checkbox">
+                      <input type="checkbox" data-image-index="2" title="Select for bulk removal" class="image-select-cb"/>
+                    </div>
+                    <div data-active-media-ready="1" data-aspect-ratio="1 / 1" data-inline-resolved-aspect-ratio="1024 / 1024" data-image-index="2" class="image-frame gallery-drag-surface sty-45">
+                      <div class="canvas-rail-attached">
+                        <button class="canvas-rail-add-btn" title="Insert new slot here" data-gallery-bound="1" data-canvas-rail-wired="1">
+                          <i class="fas fa-plus"></i>
+                        </button>
+                        <button class="canvas-rail-copy-btn" title="Insert clone of previous slot here --&gt; " data-src="/src/assets/placeholder.png" data-image-index="2" data-gallery-bound="1" data-canvas-rail-wired="1">
+                          <i class="fas fa-copy"></i>
+                        </button>
+                        <button class="canvas-rail-stack-btn" title="Convert this slot to stack and add to it" aria-label="Convert this slot to stack and add to it" data-image-index="2" data-gallery-bound="1" data-canvas-rail-wired="1">
+                          <i class="fas fa-layer-group"></i>
+                        </button>
+                        <button class="canvas-rail-delete-btn" title="Remove slot" aria-label="Remove slot" data-image-index="2" data-gallery-bound="1" data-canvas-rail-wired="1">
+                          <i class="fas fa-trash-alt" aria-hidden="true"></i>
+                        </button>
+                        <button class="canvas-rail-ai-btn" data-image-index="2" title="Joe AI Assistant" aria-label="Joe AI Assistant" data-gallery-bound="1" data-canvas-rail-wired="1">
+                          <i class="fas fa-robot"></i>
+                        </button>
+                        <button title="Open Wireframe Designer" data-image-index="2" data-canvas-rail-wired="1" class="canvas-rail-wireframe-btn sty-4">
+                          <i class="fas fa-pencil-ruler"></i>
+                        </button>
+                      </div>
+                      <div class="image-move-indicator">
+                        <span class="move-position-number"></span>
+                      </div>
+
+                      <div data-badge-kind="placeholder" class="cropped-image-badge cropped-image-badge--primary">
+                        <span class="missing-badge-label">PLACEHOLDER</span>
+                      </div>
+                      <div class="gallery-inline-media-shell" aria-hidden="true"></div>
+                      <button type="button" class="slot-media-collapse-toggle" title="Click to expand" aria-label="Click to expand" aria-expanded="true" data-image-index="2">
+                        <i class="fa-solid fa-chevron-up"></i>
+                      </button>
+
+                      <div class="image-info-icon-wrapper">
+                        <div class="compression-status placeholder" title=""></div>
+
+                        <div class="image-info-card">
+                          <div class="info-row info-row--type">
+                            <span>
+                              Type:
+                              <span class="info-type">PLACEHOLDER</span>
+                            </span>
+                          </div>
+                          <div class="info-row info-row--resolution">
+                            <span>
+                              Resolution:
+                              <span class="info-resolution">N/A</span>
+                            </span>
+                          </div>
+                          <div class="info-row">
+                            <span>
+                              Size:
+                              <span class="info-size">N/A (Placeholder)</span>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <img draggable="true" data-image-index="2" data-stack-index="0" data-media-type="image" data-media-provider="website" data-media-mime-type="" data-media-src="/src/assets/placeholder.png" data-url-preview-kind="" src="/src/assets/placeholder.png" data-src="/src/assets/placeholder.png" alt="Restoration notes image 3" loading="lazy" data-slot-listener="1" class="loaded sty-34"/>
+                      <video preload="metadata" playsinline="" data-media-type="image" data-media-src="/src/assets/placeholder.png" data-image-index="2" class="gallery-inline-media gallery-inline-video sty-12"></video>
+                      <div data-center-kind="video" data-center-action="play" role="button" tabindex="0" aria-label="Play/Pause video" class="gallery-inline-video-idle-glyph gallery-inline-empty-disc sty-12">
+                        <span class="gallery-inline-video-idle-rest gallery-inline-blank-icon gallery-inline-blank-icon--video gallery-inline-empty-rest" aria-hidden="true">
+                          <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true" class="sty-35">
+                            <path d="M8 5.5L18.5 12L8 18.5Z"></path>
+                          </svg>
+                        </span>
+                        <span class="gallery-inline-video-idle-action gallery-inline-blank-action gallery-inline-empty-action" aria-hidden="true" data-state="play">
+                          <span class="gallery-inline-blank-action-set gallery-inline-blank-action-set--play">
+                            <svg class="gallery-inline-glyph-play" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                              <path d="M8 5.5L18.5 12L8 18.5Z"></path>
+                            </svg>
+                            <svg class="gallery-inline-glyph-pause" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                              <rect x="7" y="5.5" width="3.75" height="13" rx="0.9"></rect>
+                              <rect x="13.25" y="5.5" width="3.75" height="13" rx="0.9"></rect>
+                            </svg>
+                          </span>
+                        </span>
+                      </div>
+                      <div class="gallery-inline-side-volume gallery-inline-video-volume-cluster sty-12">
+                        <button type="button" class="gallery-inline-video-mute-icon" aria-label="Mute video">
+                          <i class="fas fa-volume-up" aria-hidden="true"></i>
+                        </button>
+                        <input type="range" min="0" max="100" value="100" step="1" aria-label="Video volume" class="gallery-inline-video-volume"/>
+                      </div>
+                      <div class="gallery-inline-video-top-controls sty-12">
+                        <button type="button" class="gallery-inline-video-menu-btn" aria-label="Video speed">
+                          <span class="gallery-inline-video-speed-readout" aria-hidden="true">1x</span>
+                        </button>
+                        <button type="button" class="gallery-inline-video-fullscreen" aria-label="Toggle fullscreen">
+                          <i class="fas fa-expand" aria-hidden="true"></i>
+                        </button>
+                      </div>
+                      <div class="gallery-inline-video-controls sty-12">
+                        <span class="gallery-inline-video-time">0:00 / 0:00</span>
+                        <div class="gallery-inline-video-controls-row">
+                          <input type="range" min="0" max="1000" value="0" step="1" aria-label="Seek video" class="gallery-inline-video-progress"/>
+                        </div>
+                      </div>
+                      <iframe title="Embedded media preview" loading="eager" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" referrerpolicy="strict-origin-when-cross-origin" data-image-index="2" class="gallery-inline-media gallery-inline-embed sty-12"></iframe>
+                      <iframe title="PDF preview" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" data-image-index="2" class="gallery-inline-media gallery-inline-doc sty-12"></iframe>
+                      <div role="document" aria-label="PDF preview" data-image-index="2" class="gallery-inline-media gallery-inline-pdf-renderer sty-12"></div>
+                      <div data-image-index="2" data-blank-kind="" data-blank-state="" data-blank-action="" class="gallery-inline-media gallery-inline-blank-card gallery-inline-media-card-shell gallery-inline-empty-shell gallery-inline-slot-shell sty-12">
+                        <button type="button" class="gallery-inline-empty-disc" aria-label="Open media">
+                          <span class="gallery-inline-blank-rest gallery-inline-empty-rest" aria-hidden="true">
+                            <span class="gallery-inline-blank-icon gallery-inline-blank-icon--audio">♪</span>
+                            <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--video" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                              <path d="M8 5.5L18.5 12L8 18.5Z"></path>
+                            </svg>
+                            <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--url" viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"></path></svg>
+                            <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--doc" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                              <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"></path>
+                              <path d="M8 15h8v2H8v-2zm0-4h8v2H8v-2zm0-4h5v2H8V7z"></path>
+                            </svg>
+                            <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--spreadsheet" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                              <path d="M4 4h16v16H4V4zm2 2v3h12V6H6zm0 5v3h5v-3H6zm7 0v3h5v-3h-5zM6 16v2h5v-2H6zm7 0v2h5v-2h-5z"></path>
+                            </svg>
+                            <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--calendar" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                              <path d="M7 2v2H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7zm-2 7h14v10H5V9zm2 2v2h2v-2H7zm4 0v2h2v-2h-2zm4 0v2h2v-2h-2z"></path>
+                            </svg>
+                            <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--scheduler" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                              <path d="M12 2a10 10 0 1 0 10 10h-2a8 8 0 1 1-8-8V2zm1 5h-2v6l5 3 .96-1.75L13 12V7z"></path>
+                            </svg>
+                          </span>
+                          <span class="gallery-inline-blank-action gallery-inline-empty-action" aria-hidden="true" data-state="play">
+                            <span class="gallery-inline-blank-action-set gallery-inline-blank-action-set--play">
+                              <svg class="gallery-inline-glyph-play" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                <path d="M8 5.5L18.5 12L8 18.5Z"></path>
+                              </svg>
+                              <svg class="gallery-inline-glyph-pause" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                <rect x="7" y="5.5" width="3.75" height="13" rx="0.9"></rect>
+                                <rect x="13.25" y="5.5" width="3.75" height="13" rx="0.9"></rect>
+                              </svg>
+                            </span>
+                            <span class="gallery-inline-blank-action-set gallery-inline-blank-action-set--open">
+                              <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                <path d="M14 4h6v6h-2V7.41l-7.29 7.3-1.42-1.42 7.3-7.29H14V4z"></path>
+                                <path d="M5 5h6v2H7v10h10v-4h2v6H5V5z"></path>
+                              </svg>
+                            </span>
+                          </span>
+                        </button>
+
+                        <div class="gallery-inline-blank-loader" aria-hidden="true">
+                          <span class="gallery-inline-blank-loader-ring">
+                            <button type="button" class="gallery-inline-empty-disc gallery-inline-loader-disc" aria-label="Loading URL">
+                              <span class="gallery-inline-blank-rest gallery-inline-empty-rest" aria-hidden="true">
+                                <span class="gallery-inline-blank-icon gallery-inline-blank-icon--audio">♪</span>
+                                <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--video" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                  <path d="M8 5.5L18.5 12L8 18.5Z"></path>
+                                </svg>
+                                <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--url" viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"></path></svg>
+                                <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--doc" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                  <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"></path>
+                                  <path d="M8 15h8v2H8v-2zm0-4h8v2H8v-2zm0-4h5v2H8V7z"></path>
+                                </svg>
+                                <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--spreadsheet" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                  <path d="M4 4h16v16H4V4zm2 2v3h12V6H6zm0 5v3h5v-3H6zm7 0v3h5v-3h-5zM6 16v2h5v-2H6zm7 0v2h5v-2h-5z"></path>
+                                </svg>
+                                <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--calendar" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                  <path d="M7 2v2H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7zm-2 7h14v10H5V9zm2 2v2h2v-2H7zm4 0v2h2v-2h-2zm4 0v2h2v-2h-2z"></path>
+                                </svg>
+                                <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--scheduler" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                  <path d="M12 2a10 10 0 1 0 10 10h-2a8 8 0 1 1-8-8V2zm1 5h-2v6l5 3 .96-1.75L13 12V7z"></path>
+                                </svg>
+                              </span>
+                              <span class="gallery-inline-blank-action gallery-inline-empty-action" aria-hidden="true" data-state="play">
+                                <span class="gallery-inline-blank-action-set gallery-inline-blank-action-set--play">
+                                  <svg class="gallery-inline-glyph-play" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                    <path d="M8 5.5L18.5 12L8 18.5Z"></path>
+                                  </svg>
+                                  <svg class="gallery-inline-glyph-pause" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                    <rect x="7" y="5.5" width="3.75" height="13" rx="0.9"></rect>
+                                    <rect x="13.25" y="5.5" width="3.75" height="13" rx="0.9"></rect>
+                                  </svg>
+                                </span>
+                                <span class="gallery-inline-blank-action-set gallery-inline-blank-action-set--open">
+                                  <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                    <path d="M14 4h6v6h-2V7.41l-7.29 7.3-1.42-1.42 7.3-7.29H14V4z"></path>
+                                    <path d="M5 5h6v2H7v10h10v-4h2v6H5V5z"></path>
+                                  </svg>
+                                </span>
+                              </span>
+                            </button>
+                          </span>
+                        </div>
+                      </div>
+                      <div aria-hidden="true" data-image-index="2" class="gallery-inline-scroll-shield sty-12"></div>
+                      <div data-image-index="2" class="gallery-inline-media gallery-inline-audio-card gallery-inline-media-card-shell sty-12">
+                        <img alt="Album art" data-slot-listener="1" class="gallery-inline-audio-cover sty-12"/>
+                        <div aria-hidden="true" class="gallery-inline-audio-cover-fallback gallery-inline-empty-shell gallery-inline-slot-shell sty-12"></div>
+                        <div class="gallery-inline-audio-idle-glyph gallery-inline-empty-disc" data-center-kind="audio" data-center-action="play" role="button" tabindex="0" aria-label="Play/Pause audio">
+                          <span class="gallery-inline-audio-idle-note gallery-inline-blank-icon gallery-inline-blank-icon--audio gallery-inline-empty-rest" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true" class="sty-35">
+                              <path d="M8 5.5L18.5 12L8 18.5Z"></path>
+                            </svg>
+                          </span>
+                          <span class="gallery-inline-audio-idle-action gallery-inline-blank-action gallery-inline-empty-action" aria-hidden="true" data-state="play">
+                            <span class="gallery-inline-blank-action-set gallery-inline-blank-action-set--play">
+                              <svg class="gallery-inline-glyph-play" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                <path d="M8 5.5L18.5 12L8 18.5Z"></path>
+                              </svg>
+                              <svg class="gallery-inline-glyph-pause" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                <rect x="7" y="5.5" width="3.75" height="13" rx="0.9"></rect>
+                                <rect x="13.25" y="5.5" width="3.75" height="13" rx="0.9"></rect>
+                              </svg>
+                            </span>
+                          </span>
+                        </div>
+                        <canvas class="gallery-inline-audio-viz" aria-label="Audio visualizer"></canvas>
+                        <div class="gallery-inline-audio-body">
+                          <div class="gallery-inline-audio-title">Planting window</div>
+                          <div class="gallery-inline-audio-subtitle">IMAGE</div>
+                          <div class="gallery-inline-audio-controls">
+                            <button type="button" class="gallery-inline-audio-play" aria-label="Play/Pause">
+                              <i class="fas fa-play"></i>
+                            </button>
+                            <span class="gallery-inline-audio-time">0:00 / 0:00</span>
+                            <input type="range" min="0" max="1000" value="0" step="1" aria-label="Seek" class="gallery-inline-audio-progress"/>
+                          </div>
+                          <audio class="gallery-inline-audio" preload="metadata" data-media-type="image" data-media-src="/src/assets/placeholder.png" data-image-index="2"></audio>
+                        </div>
+                        <button type="button" class="gallery-inline-audio-rate-btn" aria-label="Playback speed" title="Playback speed">1x</button>
+                        <div class="gallery-inline-side-volume gallery-inline-audio-volume-cluster">
+                          <i class="fas fa-volume-up gallery-inline-audio-volume-icon" aria-hidden="true"></i>
+                          <input type="range" min="0" max="100" value="100" step="1" aria-label="Volume" class="gallery-inline-audio-volume"/>
+                        </div>
+                      </div>
+
+                      <div class="image-stack-indicator-wrapper">
+                        <div class="image-stack-indicator hidden">
+                          <span class="stack-count-number">1</span>
+                          <div class="image-info-card">
+                            <div class="info-row">
+                              <span>Items in stack: 1</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div data-image-index="2" class="gallery-inline-media gallery-inline-link-card gallery-inline-media-card-shell gallery-inline-empty-shell gallery-inline-slot-shell sty-12">
+                        <div class="gallery-inline-link-rich">
+                          <div class="gallery-inline-link-embed-host"></div>
+                          <div class="gallery-inline-link-image-shell">
+                            <img alt="URL preview" data-slot-listener="1" class="gallery-inline-link-preview sty-12"/>
+                          </div>
+                          <div class="gallery-inline-link-meta-fallback">
+                            <div class="gallery-inline-link-copy">
+                              <div class="gallery-inline-link-site-row">
+                                <img alt="" data-slot-listener="1" class="gallery-inline-link-favicon sty-12"/>
+                                <span class="gallery-inline-link-site">website</span>
+                              </div>
+                              <div class="gallery-inline-link-title">Planting window</div>
+                              <div class="gallery-inline-link-description"></div>
+                              <div class="gallery-inline-link-url">https://start%20after%20the%20last%20spring%20tideamerican%20beachgrass,%2018%20in%20spacingseaside%20goldenrod%20along%20the%20back%20dune/</div>
+                              <div class="gallery-inline-link-rich-host">URL item</div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="gallery-inline-link-provider">WEBSITE</div>
+                        <div class="gallery-inline-link-host">URL item</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="image-expand-bar" title="Click to expand">
+                    <i class="fa-solid fa-chevron-down"></i>
+                  </div>
+                  <div class="image-controls">
+                    <div class="image-controls-left">
+                      <button class="ai-query-btn" title="Joe AI Assistant" data-gallery-bound="1" data-image-index="2">
+                        <i class="fas fa-robot"></i>
+                      </button>
+                      <button class="copy-notes-btn" title="Copy notes to clipboard" data-image-index="2" data-gallery-bound="1">
+                        <i class="far fa-copy"></i>
+                      </button>
+                    </div>
+                    <div class="image-controls-right">
+                      <button class="move-left-btn move-img-btn" title="Move left" data-gallery-bound="1" data-image-index="2">
+                        <i class="fas fa-arrow-left-long"></i>
+                      </button>
+                      <button class="move-right-btn move-img-btn" title="Move right" data-gallery-bound="1" data-image-index="2">
+                        <i class="fas fa-arrow-right-long"></i>
+                      </button>
+                      <button class="stack-image-btn" title="Convert this slot to stack and add to it" aria-label="Convert this slot to stack and add to it" data-gallery-bound="1">
+                        <i class="fas fa-layer-group"></i>
+                      </button>
+                      <button class="replace-image-btn" title="Replace" data-gallery-bound="1" data-image-index="2">Replace</button>
+                      <button class="delete-image-btn" title="Remove slot" aria-label="Remove slot" data-gallery-bound="1" data-image-index="2">Remove</button>
+                    </div>
+                  </div>
+
+                  <div class="slot-under-stack">
+                    <input type="text" placeholder="Name your slot..." value="Planting window" spellcheck="true" data-canvas-title-width-key='14px system-ui, -apple-system, "system-ui", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif Planting window' data-canvas-title-width-bound="1" data-notes-history-entry-id="gallery-b3e237b8-7068-45c0-954c-d218d2a0e573" data-notes-history-field="title" data-gallery-bound="1" data-notes-undo-prev-value="Planting window" class="image-title"/>
+
+                    <div class="gallery-tag-section is-empty">
+                      <div class="gallery-tags-titlebar">
+                        <span class="gallery-tags-title-wrap">
+                          <button type="button" class="gallery-tag-bin-toggle" title="Collapse Tag Bin" aria-label="Collapse Tag Bin" aria-expanded="true">
+                            <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                          </button>
+
+                          <span class="gallery-tags-title">Tag Bin</span>
+                        </span>
+                        <span class="gallery-tags-title-actions">
+                          <button type="button" class="gallery-tags-manager-btn" title="Manage tags" aria-label="Manage tags for this slot" data-image-index="2" data-flyout-anchor="self">Manage</button>
+                        </span>
+                      </div>
+                    </div>
+
+                    <div class="image-notes-column gallery-notes-tiptap-host sty-36">
+                      <div class="gallery-notes-titlebar" data-gallery-notes-titlebar="">
+                        <span class="gallery-notes-titlebar-label-wrap">
+                          <button type="button" class="gallery-notes-collapse-toggle" title="Collapse Slot Notes" aria-label="Collapse Slot Notes" aria-expanded="true">
+                            <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                          </button>
+                          <span class="gallery-notes-titlebar-label">Slot Notes</span>
+                        </span>
+                        <span class="gallery-notes-titlebar-right sty-37">
+                          <button type="button" title="Hide from Joe" aria-label="Hide from Joe" aria-pressed="false" role="switch" class="gallery-notes-hide-from-joe sty-38"><i class="far fa-eye" aria-hidden="true"></i></button>
+                          <div class="gallery-notes-target-toggle" role="group" aria-label="Gallery text target">
+                            <span aria-hidden="true" class="gallery-notes-target-pill sty-39"></span>
+                            <button type="button" class="gallery-notes-target-option active" data-gallery-text-target="slot" aria-pressed="true" data-gallery-target-bound="1">
+                              <i class="fas fa-check" aria-hidden="true"></i>
+                              <span>Slot</span>
+                            </button>
+                            <button type="button" class="gallery-notes-target-option" data-gallery-text-target="item" aria-pressed="false" data-gallery-target-bound="1">
+                              <i class="fas fa-check" aria-hidden="true"></i>
+                              <span>Stack</span>
+                            </button>
+                          </div>
+                        </span>
+                      </div>
+                      <textarea rows="1" placeholder="Enter main slot notes here..." dir="auto" spellcheck="false" wrap="soft" data-textarea-autosize-bound="1" data-rich-notes="1" data-notes-history-entry-id="gallery-b3e237b8-7068-45c0-954c-d218d2a0e573" data-notes-history-field="notes" data-notes-undo-prev-value="Start after the last spring tide
+American beachgrass, 18 in spacing
+Seaside goldenrod along the back dune" data-gallery-notes-sound-bound="1" data-initialized="true" class="image-notes gallery-notes-tiptap-source-masked sty-50">
+Start after the last spring tide
+American beachgrass, 18 in spacing
+Seaside goldenrod along the back dune</textarea>
+                      <div aria-hidden="true" dir="auto" data-gallery-notes-placeholder="Enter main slot notes here..." class="image-notes-content gallery-notes-tiptap-display sty-51"><p>Start after the last spring tide American beachgrass, 18 in spacing Seaside goldenrod along the back dune</p></div>
+                    </div>
+                  </div>
+                  <span class="canvas-slot-title-drag-strip" aria-hidden="true"></span>
+                  <span class="canvas-slot-drag-grip" aria-hidden="true" title="Drag to move this card"><i class="fa-solid fa-grip-vertical" aria-hidden="true"></i></span>
+                </div>
+                <button type="button" class="canvas-connect-handle" aria-label="Drag to another slot to connect them (drag again to disconnect)" title="Drag to another slot to connect them (drag again to disconnect)"></button>
+                <button type="button" class="canvas-resize-handle" data-corner="br" aria-label="Drag to resize this slot (double-click to reset to the default size)" title="Drag to resize this slot (double-click to reset to the default size)"></button>
+                <button type="button" class="canvas-resize-handle" data-corner="bl" aria-label="Drag to resize this slot (double-click to reset to the default size)" title="Drag to resize this slot (double-click to reset to the default size)"></button>
+                <button type="button" class="canvas-resize-handle" data-corner="tr" aria-label="Drag to resize this slot (double-click to reset to the default size)" title="Drag to resize this slot (double-click to reset to the default size)"></button>
+                <button type="button" class="canvas-resize-handle" data-corner="tl" aria-label="Drag to resize this slot (double-click to reset to the default size)" title="Drag to resize this slot (double-click to reset to the default size)"></button>
+              </div>
+              <div data-ai-font-size="normal" data-canvas-rendered-height="475" data-canvas-slot-height="476" data-canvas-slot-width="320" data-canvas-placed="1" data-canvas-notes-sized-for-width="320" class="enum-image-unit sty-52">
+                <div class="canvas-image-number" aria-hidden="true">4.</div>
+                <div data-position="3" data-drag-drop-bound="1" class="add-image-position has-listeners sty-43">
+                  <div class="image-number">4.</div>
+                  <button class="add-image-btn" title="Insert new slot here">
+                    <i class="fas fa-plus"></i>
+                  </button>
+                  <button class="copy-image-btn" title="Insert clone of previous slot here --&gt; " data-src="/src/assets/album-art-placeholder.png" data-image-index="3" data-gallery-bound="1">
+                    <i class="fas fa-copy"></i>
+                  </button>
+
+                  <button class="stack-image-btn" title="Convert this slot to stack and add to it" aria-label="Convert this slot to stack and add to it" data-image-index="3" data-gallery-bound="1">
+                    <i class="fas fa-layer-group"></i>
+                  </button>
+                  <!-- Replace side-rail control is hidden; use the slot context menu for that action. -->
+                  <button class="delete-image-btn" title="Remove slot" aria-label="Remove slot" data-image-index="3" data-gallery-bound="1">
+                    <i class="fas fa-trash-alt" aria-hidden="true"></i>
+                  </button>
+                  <button class="ai-query-btn" data-image-index="3" title="Joe AI Assistant" aria-label="Joe AI Assistant" data-gallery-bound="1">
+                    <i class="fas fa-robot"></i>
+                  </button>
+                  <button title="Open Wireframe Designer" data-image-index="3" class="wireframe-btn sty-4">
+                    <i class="fas fa-pencil-ruler"></i>
+                  </button>
+                </div>
+
+                <div data-image-index="3" data-entry-id="gallery-727518c6-05a5-4247-b36a-a398698da66e" data-node-id="879432ee-f627-43f5-91cf-429132aa7855" data-active-media-ready="1" data-gallery-text-controls-synced="1" data-gallery-text-target-mode="slot" data-dnd-bound="1" draggable="false" data-drag-lock-bound="1" data-context-menu-bound="1" data-canvas-reposition-drag-disabled="1" class="image-item  sty-53">
+                  <div class="image-stack-container">
+                    <div class="image-selection-checkbox">
+                      <input type="checkbox" data-image-index="3" title="Select for bulk removal" class="image-select-cb"/>
+                    </div>
+                    <div data-active-media-ready="1" data-aspect-ratio="1 / 1" data-inline-resolved-aspect-ratio="1024 / 1024" data-image-index="3" class="image-frame gallery-drag-surface sty-45">
+                      <div class="canvas-rail-attached">
+                        <button class="canvas-rail-add-btn" title="Insert new slot here" data-gallery-bound="1" data-canvas-rail-wired="1">
+                          <i class="fas fa-plus"></i>
+                        </button>
+                        <button class="canvas-rail-copy-btn" title="Insert clone of previous slot here --&gt; " data-src="/src/assets/album-art-placeholder.png" data-image-index="3" data-gallery-bound="1" data-canvas-rail-wired="1">
+                          <i class="fas fa-copy"></i>
+                        </button>
+                        <button class="canvas-rail-stack-btn" title="Convert this slot to stack and add to it" aria-label="Convert this slot to stack and add to it" data-image-index="3" data-gallery-bound="1" data-canvas-rail-wired="1">
+                          <i class="fas fa-layer-group"></i>
+                        </button>
+                        <button class="canvas-rail-delete-btn" title="Remove slot" aria-label="Remove slot" data-image-index="3" data-gallery-bound="1" data-canvas-rail-wired="1">
+                          <i class="fas fa-trash-alt" aria-hidden="true"></i>
+                        </button>
+                        <button class="canvas-rail-ai-btn" data-image-index="3" title="Joe AI Assistant" aria-label="Joe AI Assistant" data-gallery-bound="1" data-canvas-rail-wired="1">
+                          <i class="fas fa-robot"></i>
+                        </button>
+                        <button title="Open Wireframe Designer" data-image-index="3" data-canvas-rail-wired="1" class="canvas-rail-wireframe-btn sty-4">
+                          <i class="fas fa-pencil-ruler"></i>
+                        </button>
+                      </div>
+                      <div class="image-move-indicator">
+                        <span class="move-position-number"></span>
+                      </div>
+
+                      <div data-badge-kind="image" class="cropped-image-badge cropped-image-badge--primary">
+                        <span class="missing-badge-label">IMAGE</span>
+                      </div>
+                      <div class="gallery-inline-media-shell" aria-hidden="true"></div>
+                      <button type="button" class="slot-media-collapse-toggle" title="Click to expand" aria-label="Click to expand" aria-expanded="true" data-image-index="3">
+                        <i class="fa-solid fa-chevron-up"></i>
+                      </button>
+
+                      <div class="image-info-icon-wrapper">
+                        <div class="compression-status uncompressed" title=""></div>
+
+                        <div class="image-info-card">
+                          <div class="info-row info-row--type">
+                            <span>
+                              Type:
+                              <span class="info-type">IMAGE (PNG)</span>
+                            </span>
+                          </div>
+                          <div class="info-row info-row--resolution">
+                            <span>
+                              Resolution:
+                              <span class="info-resolution">Loading...</span>
+                            </span>
+                          </div>
+                          <div class="info-row">
+                            <span>
+                              Size:
+                              <span class="info-size">Loading...</span>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <img draggable="true" data-image-index="3" data-stack-index="0" data-media-type="image" data-media-provider="website" data-media-mime-type="" data-media-src="/src/assets/album-art-placeholder.png" data-url-preview-kind="" src="/src/assets/album-art-placeholder.png" data-src="/src/assets/album-art-placeholder.png" alt="Restoration notes image 4" loading="lazy" data-slot-listener="1" class="loaded sty-34"/>
+                      <video preload="metadata" playsinline="" data-media-type="image" data-media-src="/src/assets/album-art-placeholder.png" data-image-index="3" class="gallery-inline-media gallery-inline-video sty-12"></video>
+                      <div data-center-kind="video" data-center-action="play" role="button" tabindex="0" aria-label="Play/Pause video" class="gallery-inline-video-idle-glyph gallery-inline-empty-disc sty-12">
+                        <span class="gallery-inline-video-idle-rest gallery-inline-blank-icon gallery-inline-blank-icon--video gallery-inline-empty-rest" aria-hidden="true">
+                          <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true" class="sty-35">
+                            <path d="M8 5.5L18.5 12L8 18.5Z"></path>
+                          </svg>
+                        </span>
+                        <span class="gallery-inline-video-idle-action gallery-inline-blank-action gallery-inline-empty-action" aria-hidden="true" data-state="play">
+                          <span class="gallery-inline-blank-action-set gallery-inline-blank-action-set--play">
+                            <svg class="gallery-inline-glyph-play" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                              <path d="M8 5.5L18.5 12L8 18.5Z"></path>
+                            </svg>
+                            <svg class="gallery-inline-glyph-pause" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                              <rect x="7" y="5.5" width="3.75" height="13" rx="0.9"></rect>
+                              <rect x="13.25" y="5.5" width="3.75" height="13" rx="0.9"></rect>
+                            </svg>
+                          </span>
+                        </span>
+                      </div>
+                      <div class="gallery-inline-side-volume gallery-inline-video-volume-cluster sty-12">
+                        <button type="button" class="gallery-inline-video-mute-icon" aria-label="Mute video">
+                          <i class="fas fa-volume-up" aria-hidden="true"></i>
+                        </button>
+                        <input type="range" min="0" max="100" value="100" step="1" aria-label="Video volume" class="gallery-inline-video-volume"/>
+                      </div>
+                      <div class="gallery-inline-video-top-controls sty-12">
+                        <button type="button" class="gallery-inline-video-menu-btn" aria-label="Video speed">
+                          <span class="gallery-inline-video-speed-readout" aria-hidden="true">1x</span>
+                        </button>
+                        <button type="button" class="gallery-inline-video-fullscreen" aria-label="Toggle fullscreen">
+                          <i class="fas fa-expand" aria-hidden="true"></i>
+                        </button>
+                      </div>
+                      <div class="gallery-inline-video-controls sty-12">
+                        <span class="gallery-inline-video-time">0:00 / 0:00</span>
+                        <div class="gallery-inline-video-controls-row">
+                          <input type="range" min="0" max="1000" value="0" step="1" aria-label="Seek video" class="gallery-inline-video-progress"/>
+                        </div>
+                      </div>
+                      <iframe title="Embedded media preview" loading="eager" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" referrerpolicy="strict-origin-when-cross-origin" data-image-index="3" class="gallery-inline-media gallery-inline-embed sty-12"></iframe>
+                      <iframe title="PDF preview" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" data-image-index="3" class="gallery-inline-media gallery-inline-doc sty-12"></iframe>
+                      <div role="document" aria-label="PDF preview" data-image-index="3" class="gallery-inline-media gallery-inline-pdf-renderer sty-12"></div>
+                      <div data-image-index="3" data-blank-kind="" data-blank-state="" data-blank-action="" class="gallery-inline-media gallery-inline-blank-card gallery-inline-media-card-shell gallery-inline-empty-shell gallery-inline-slot-shell sty-12">
+                        <button type="button" class="gallery-inline-empty-disc" aria-label="Open media">
+                          <span class="gallery-inline-blank-rest gallery-inline-empty-rest" aria-hidden="true">
+                            <span class="gallery-inline-blank-icon gallery-inline-blank-icon--audio">♪</span>
+                            <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--video" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                              <path d="M8 5.5L18.5 12L8 18.5Z"></path>
+                            </svg>
+                            <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--url" viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"></path></svg>
+                            <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--doc" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                              <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"></path>
+                              <path d="M8 15h8v2H8v-2zm0-4h8v2H8v-2zm0-4h5v2H8V7z"></path>
+                            </svg>
+                            <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--spreadsheet" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                              <path d="M4 4h16v16H4V4zm2 2v3h12V6H6zm0 5v3h5v-3H6zm7 0v3h5v-3h-5zM6 16v2h5v-2H6zm7 0v2h5v-2h-5z"></path>
+                            </svg>
+                            <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--calendar" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                              <path d="M7 2v2H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7zm-2 7h14v10H5V9zm2 2v2h2v-2H7zm4 0v2h2v-2h-2zm4 0v2h2v-2h-2z"></path>
+                            </svg>
+                            <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--scheduler" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                              <path d="M12 2a10 10 0 1 0 10 10h-2a8 8 0 1 1-8-8V2zm1 5h-2v6l5 3 .96-1.75L13 12V7z"></path>
+                            </svg>
+                          </span>
+                          <span class="gallery-inline-blank-action gallery-inline-empty-action" aria-hidden="true" data-state="play">
+                            <span class="gallery-inline-blank-action-set gallery-inline-blank-action-set--play">
+                              <svg class="gallery-inline-glyph-play" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                <path d="M8 5.5L18.5 12L8 18.5Z"></path>
+                              </svg>
+                              <svg class="gallery-inline-glyph-pause" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                <rect x="7" y="5.5" width="3.75" height="13" rx="0.9"></rect>
+                                <rect x="13.25" y="5.5" width="3.75" height="13" rx="0.9"></rect>
+                              </svg>
+                            </span>
+                            <span class="gallery-inline-blank-action-set gallery-inline-blank-action-set--open">
+                              <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                <path d="M14 4h6v6h-2V7.41l-7.29 7.3-1.42-1.42 7.3-7.29H14V4z"></path>
+                                <path d="M5 5h6v2H7v10h10v-4h2v6H5V5z"></path>
+                              </svg>
+                            </span>
+                          </span>
+                        </button>
+
+                        <div class="gallery-inline-blank-loader" aria-hidden="true">
+                          <span class="gallery-inline-blank-loader-ring">
+                            <button type="button" class="gallery-inline-empty-disc gallery-inline-loader-disc" aria-label="Loading URL">
+                              <span class="gallery-inline-blank-rest gallery-inline-empty-rest" aria-hidden="true">
+                                <span class="gallery-inline-blank-icon gallery-inline-blank-icon--audio">♪</span>
+                                <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--video" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                  <path d="M8 5.5L18.5 12L8 18.5Z"></path>
+                                </svg>
+                                <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--url" viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"></path></svg>
+                                <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--doc" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                  <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"></path>
+                                  <path d="M8 15h8v2H8v-2zm0-4h8v2H8v-2zm0-4h5v2H8V7z"></path>
+                                </svg>
+                                <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--spreadsheet" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                  <path d="M4 4h16v16H4V4zm2 2v3h12V6H6zm0 5v3h5v-3H6zm7 0v3h5v-3h-5zM6 16v2h5v-2H6zm7 0v2h5v-2h-5z"></path>
+                                </svg>
+                                <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--calendar" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                  <path d="M7 2v2H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7zm-2 7h14v10H5V9zm2 2v2h2v-2H7zm4 0v2h2v-2h-2zm4 0v2h2v-2h-2z"></path>
+                                </svg>
+                                <svg class="gallery-inline-blank-icon gallery-inline-blank-icon--scheduler" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                  <path d="M12 2a10 10 0 1 0 10 10h-2a8 8 0 1 1-8-8V2zm1 5h-2v6l5 3 .96-1.75L13 12V7z"></path>
+                                </svg>
+                              </span>
+                              <span class="gallery-inline-blank-action gallery-inline-empty-action" aria-hidden="true" data-state="play">
+                                <span class="gallery-inline-blank-action-set gallery-inline-blank-action-set--play">
+                                  <svg class="gallery-inline-glyph-play" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                    <path d="M8 5.5L18.5 12L8 18.5Z"></path>
+                                  </svg>
+                                  <svg class="gallery-inline-glyph-pause" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                    <rect x="7" y="5.5" width="3.75" height="13" rx="0.9"></rect>
+                                    <rect x="13.25" y="5.5" width="3.75" height="13" rx="0.9"></rect>
+                                  </svg>
+                                </span>
+                                <span class="gallery-inline-blank-action-set gallery-inline-blank-action-set--open">
+                                  <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                    <path d="M14 4h6v6h-2V7.41l-7.29 7.3-1.42-1.42 7.3-7.29H14V4z"></path>
+                                    <path d="M5 5h6v2H7v10h10v-4h2v6H5V5z"></path>
+                                  </svg>
+                                </span>
+                              </span>
+                            </button>
+                          </span>
+                        </div>
+                      </div>
+                      <div aria-hidden="true" data-image-index="3" class="gallery-inline-scroll-shield sty-12"></div>
+                      <div data-image-index="3" class="gallery-inline-media gallery-inline-audio-card gallery-inline-media-card-shell sty-12">
+                        <img alt="Album art" data-slot-listener="1" class="gallery-inline-audio-cover sty-12"/>
+                        <div aria-hidden="true" class="gallery-inline-audio-cover-fallback gallery-inline-empty-shell gallery-inline-slot-shell sty-12"></div>
+                        <div class="gallery-inline-audio-idle-glyph gallery-inline-empty-disc" data-center-kind="audio" data-center-action="play" role="button" tabindex="0" aria-label="Play/Pause audio">
+                          <span class="gallery-inline-audio-idle-note gallery-inline-blank-icon gallery-inline-blank-icon--audio gallery-inline-empty-rest" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true" class="sty-35">
+                              <path d="M8 5.5L18.5 12L8 18.5Z"></path>
+                            </svg>
+                          </span>
+                          <span class="gallery-inline-audio-idle-action gallery-inline-blank-action gallery-inline-empty-action" aria-hidden="true" data-state="play">
+                            <span class="gallery-inline-blank-action-set gallery-inline-blank-action-set--play">
+                              <svg class="gallery-inline-glyph-play" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                <path d="M8 5.5L18.5 12L8 18.5Z"></path>
+                              </svg>
+                              <svg class="gallery-inline-glyph-pause" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                <rect x="7" y="5.5" width="3.75" height="13" rx="0.9"></rect>
+                                <rect x="13.25" y="5.5" width="3.75" height="13" rx="0.9"></rect>
+                              </svg>
+                            </span>
+                          </span>
+                        </div>
+                        <canvas class="gallery-inline-audio-viz" aria-label="Audio visualizer"></canvas>
+                        <div class="gallery-inline-audio-body">
+                          <div class="gallery-inline-audio-title">Volunteer day</div>
+                          <div class="gallery-inline-audio-subtitle">IMAGE</div>
+                          <div class="gallery-inline-audio-controls">
+                            <button type="button" class="gallery-inline-audio-play" aria-label="Play/Pause">
+                              <i class="fas fa-play"></i>
+                            </button>
+                            <span class="gallery-inline-audio-time">0:00 / 0:00</span>
+                            <input type="range" min="0" max="1000" value="0" step="1" aria-label="Seek" class="gallery-inline-audio-progress"/>
+                          </div>
+                          <audio class="gallery-inline-audio" preload="metadata" data-media-type="image" data-media-src="/src/assets/album-art-placeholder.png" data-image-index="3"></audio>
+                        </div>
+                        <button type="button" class="gallery-inline-audio-rate-btn" aria-label="Playback speed" title="Playback speed">1x</button>
+                        <div class="gallery-inline-side-volume gallery-inline-audio-volume-cluster">
+                          <i class="fas fa-volume-up gallery-inline-audio-volume-icon" aria-hidden="true"></i>
+                          <input type="range" min="0" max="100" value="100" step="1" aria-label="Volume" class="gallery-inline-audio-volume"/>
+                        </div>
+                      </div>
+
+                      <div class="image-stack-indicator-wrapper">
+                        <div class="image-stack-indicator hidden">
+                          <span class="stack-count-number">1</span>
+                          <div class="image-info-card">
+                            <div class="info-row">
+                              <span>Items in stack: 1</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div data-image-index="3" class="gallery-inline-media gallery-inline-link-card gallery-inline-media-card-shell gallery-inline-empty-shell gallery-inline-slot-shell sty-12">
+                        <div class="gallery-inline-link-rich">
+                          <div class="gallery-inline-link-embed-host"></div>
+                          <div class="gallery-inline-link-image-shell">
+                            <img alt="URL preview" data-slot-listener="1" class="gallery-inline-link-preview sty-12"/>
+                          </div>
+                          <div class="gallery-inline-link-meta-fallback">
+                            <div class="gallery-inline-link-copy">
+                              <div class="gallery-inline-link-site-row">
+                                <img alt="" data-slot-listener="1" class="gallery-inline-link-favicon sty-12"/>
+                                <span class="gallery-inline-link-site">website</span>
+                              </div>
+                              <div class="gallery-inline-link-title">Volunteer day</div>
+                              <div class="gallery-inline-link-description"></div>
+                              <div class="gallery-inline-link-url">https://src/assets/album-art-placeholder.png</div>
+                              <div class="gallery-inline-link-rich-host">URL item</div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="gallery-inline-link-provider">WEBSITE</div>
+                        <div class="gallery-inline-link-host">URL item</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="image-expand-bar" title="Click to expand">
+                    <i class="fa-solid fa-chevron-down"></i>
+                  </div>
+                  <div class="image-controls">
+                    <div class="image-controls-left">
+                      <button class="ai-query-btn" title="Joe AI Assistant" data-gallery-bound="1" data-image-index="3">
+                        <i class="fas fa-robot"></i>
+                      </button>
+                      <button class="copy-notes-btn" title="Copy notes to clipboard" data-image-index="3" data-gallery-bound="1">
+                        <i class="far fa-copy"></i>
+                      </button>
+                    </div>
+                    <div class="image-controls-right">
+                      <button class="move-left-btn move-img-btn" title="Move left" data-gallery-bound="1" data-image-index="3">
+                        <i class="fas fa-arrow-left-long"></i>
+                      </button>
+                      <button class="move-right-btn move-img-btn" disabled="" title="Cannot move right" data-gallery-bound="1" data-image-index="3">
+                        <i class="fas fa-arrow-right-long"></i>
+                      </button>
+                      <button class="stack-image-btn" title="Convert this slot to stack and add to it" aria-label="Convert this slot to stack and add to it" data-gallery-bound="1">
+                        <i class="fas fa-layer-group"></i>
+                      </button>
+                      <button class="replace-image-btn" title="Replace" data-gallery-bound="1" data-image-index="3">Replace</button>
+                      <button class="delete-image-btn" title="Remove slot" aria-label="Remove slot" data-gallery-bound="1" data-image-index="3">Remove</button>
+                    </div>
+                  </div>
+
+                  <div class="slot-under-stack">
+                    <input type="text" placeholder="Name your slot..." value="Volunteer day" spellcheck="true" data-canvas-title-width-key='14px system-ui, -apple-system, "system-ui", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif Volunteer day' data-canvas-title-width-bound="1" data-notes-history-entry-id="gallery-727518c6-05a5-4247-b36a-a398698da66e" data-notes-history-field="title" data-gallery-bound="1" data-notes-undo-prev-value="Volunteer day" class="image-title"/>
+
+                    <div class="gallery-tag-section is-empty">
+                      <div class="gallery-tags-titlebar">
+                        <span class="gallery-tags-title-wrap">
+                          <button type="button" class="gallery-tag-bin-toggle" title="Collapse Tag Bin" aria-label="Collapse Tag Bin" aria-expanded="true">
+                            <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                          </button>
+
+                          <span class="gallery-tags-title">Tag Bin</span>
+                        </span>
+                        <span class="gallery-tags-title-actions">
+                          <button type="button" class="gallery-tags-manager-btn" title="Manage tags" aria-label="Manage tags for this slot" data-image-index="3" data-flyout-anchor="self">Manage</button>
+                        </span>
+                      </div>
+                    </div>
+
+                    <div class="image-notes-column gallery-notes-tiptap-host sty-36">
+                      <div class="gallery-notes-titlebar" data-gallery-notes-titlebar="">
+                        <span class="gallery-notes-titlebar-label-wrap">
+                          <button type="button" class="gallery-notes-collapse-toggle" title="Collapse Slot Notes" aria-label="Collapse Slot Notes" aria-expanded="true">
+                            <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                          </button>
+                          <span class="gallery-notes-titlebar-label">Slot Notes</span>
+                        </span>
+                        <span class="gallery-notes-titlebar-right sty-37">
+                          <button type="button" title="Hide from Joe" aria-label="Hide from Joe" aria-pressed="false" role="switch" class="gallery-notes-hide-from-joe sty-38"><i class="far fa-eye" aria-hidden="true"></i></button>
+                          <div class="gallery-notes-target-toggle" role="group" aria-label="Gallery text target">
+                            <span aria-hidden="true" class="gallery-notes-target-pill sty-39"></span>
+                            <button type="button" class="gallery-notes-target-option active" data-gallery-text-target="slot" aria-pressed="true" data-gallery-target-bound="1">
+                              <i class="fas fa-check" aria-hidden="true"></i>
+                              <span>Slot</span>
+                            </button>
+                            <button type="button" class="gallery-notes-target-option" data-gallery-text-target="item" aria-pressed="false" data-gallery-target-bound="1">
+                              <i class="fas fa-check" aria-hidden="true"></i>
+                              <span>Stack</span>
+                            </button>
+                          </div>
+                        </span>
+                      </div>
+                      <textarea rows="1" placeholder="Enter main slot notes here..." dir="auto" spellcheck="false" wrap="soft" data-textarea-autosize-bound="1" data-rich-notes="1" data-notes-history-entry-id="gallery-727518c6-05a5-4247-b36a-a398698da66e" data-notes-history-field="notes" data-notes-undo-prev-value="Meet at the north car park, 7:30
+Bring gloves and water" data-gallery-notes-sound-bound="1" data-initialized="true" class="image-notes gallery-notes-tiptap-source-masked sty-46">
+Meet at the north car park, 7:30
+Bring gloves and water</textarea>
+                      <div aria-hidden="true" dir="auto" data-gallery-notes-placeholder="Enter main slot notes here..." class="image-notes-content gallery-notes-tiptap-display sty-47"><p>Meet at the north car park, 7:30 Bring gloves and water</p></div>
+                    </div>
+                  </div>
+                  <span class="canvas-slot-title-drag-strip" aria-hidden="true"></span>
+                  <span class="canvas-slot-drag-grip" aria-hidden="true" title="Drag to move this card"><i class="fa-solid fa-grip-vertical" aria-hidden="true"></i></span>
+                </div>
+                <button type="button" class="canvas-connect-handle" aria-label="Drag to another slot to connect them (drag again to disconnect)" title="Drag to another slot to connect them (drag again to disconnect)"></button>
+                <button type="button" class="canvas-resize-handle" data-corner="br" aria-label="Drag to resize this slot (double-click to reset to the default size)" title="Drag to resize this slot (double-click to reset to the default size)"></button>
+                <button type="button" class="canvas-resize-handle" data-corner="bl" aria-label="Drag to resize this slot (double-click to reset to the default size)" title="Drag to resize this slot (double-click to reset to the default size)"></button>
+                <button type="button" class="canvas-resize-handle" data-corner="tr" aria-label="Drag to resize this slot (double-click to reset to the default size)" title="Drag to resize this slot (double-click to reset to the default size)"></button>
+                <button type="button" class="canvas-resize-handle" data-corner="tl" aria-label="Drag to resize this slot (double-click to reset to the default size)" title="Drag to resize this slot (double-click to reset to the default size)"></button>
+              </div>
+            </div>
+            <div aria-hidden="false" class="canvas-snap-grid is-visible sty-54"></div>
+            <div class="canvas-toolbar-chip-container">
+              <div class="canvas-overlay-ui canvas-toolbar">
+                <button class="icon-btn canvas-add-slot-btn" title="Add a slot" data-i18n-attr="title:tooltips.canvasGalleryView.addSlot" aria-label="Add a slot" aria-disabled="false"><i class="fa-solid fa-plus"></i></button>
+                <div class="canvas-toolbar-separator" aria-hidden="true"></div>
+                <button class="icon-btn canvas-collapse-media-toggle gallery-toggle-composite" data-i18n-attr="title:tooltips.breadcrumbs.collapseAllItems" id="collapse-images-toggle" data-tooltip="Collapse all media|">
+                  <i class="fa-solid fa-angles-up"></i>
+                  <i class="fa-solid fa-image gallery-toggle-glyph"></i>
+                </button>
+                <button class="icon-btn canvas-collapse-tag-bins-toggle gallery-toggle-composite" data-i18n-attr="title:tooltips.breadcrumbs.collapseAllTagBins" id="collapse-tag-bins-toggle" data-chrome-master-bound="1" data-tooltip="Collapse all tag bins|">
+                  <i class="fa-solid fa-angles-up"></i>
+                  <i class="fa-solid fa-tags gallery-toggle-glyph"></i>
+                </button>
+                <button class="icon-btn canvas-collapse-notes-toggle gallery-toggle-composite" data-i18n-attr="title:tooltips.breadcrumbs.collapseAllNotes" id="collapse-notes-toggle" data-chrome-master-bound="1" data-tooltip="Collapse all notes|">
+                  <i class="fa-solid fa-angles-up"></i>
+                  <i class="fa-solid fa-note-sticky gallery-toggle-glyph"></i>
+                </button>
+                <button class="icon-btn gallery-notes-justification-btn canvas-justify-notes-toggle is-active active" data-i18n-attr="title:tooltips.breadcrumbs.useNormalNotesAlignment" id="gallery-notes-justification-toggle" data-notes-justification-toggle="1" aria-pressed="true" aria-label="Use normal notes alignment" data-tooltip="Slot notes justified|"><i class="fa-solid fa-align-justify"></i></button>
+                <div class="canvas-toolbar-separator" aria-hidden="true"></div>
+                <button class="icon-btn canvas-snap-grid-toggle active" title="Snap to grid" data-i18n-attr="title:tooltips.canvasGalleryView.snapToGrid" aria-pressed="true"><i class="fa-solid fa-magnet"></i></button>
+                <div class="canvas-btn-expander canvas-layout-expander is-expanded">
+                  <button class="icon-btn canvas-layout-masonry-button" title="Arrange: Masonry" data-i18n-attr="title:tooltips.canvasGalleryView.resetLayoutMasonry" aria-pressed="false"><i class="fa-solid fa-table-cells-large"></i></button>
+                  <button class="icon-btn canvas-expander-option canvas-layout-horizontal-button" title="Arrange: Horizontal" data-i18n-attr="title:tooltips.canvasGalleryView.resetLayoutHorizontal" aria-pressed="false"><i class="fa-solid fa-grip-lines"></i></button>
+                  <button class="icon-btn canvas-expander-option canvas-layout-vertical-button" title="Arrange: Vertical" data-i18n-attr="title:tooltips.canvasGalleryView.resetLayoutVertical" aria-pressed="false"><i class="fa-solid fa-grip-lines-vertical"></i></button>
+                  <button class="icon-btn canvas-expander-option canvas-layout-free-button canvas-layout-active" title="Arrange: Free Form" data-i18n-attr="title:tooltips.canvasGalleryView.resetLayoutFreeForm" aria-pressed="true"><i class="fa-solid fa-hand"></i></button>
+                </div>
+                <div class="canvas-toolbar-separator" aria-hidden="true"></div>
+                <div class="canvas-btn-expander canvas-fit-expander">
+                  <button class="icon-btn canvas-fit-all-button" title="Fit all" data-i18n-attr="title:tooltips.canvasGalleryView.fitAll" aria-pressed="false"><i class="fa-solid fa-expand"></i></button>
+                  <button class="icon-btn canvas-expander-option canvas-fit-width-button" title="Fit width" data-i18n-attr="title:tooltips.canvasGalleryView.fitWidth" aria-pressed="false"><i class="fa-solid fa-arrows-left-right"></i></button>
+                  <button class="icon-btn canvas-expander-option canvas-fit-height-button" title="Fit height" data-i18n-attr="title:tooltips.canvasGalleryView.fitHeight" aria-pressed="false"><i class="fa-solid fa-arrows-up-down"></i></button>
+                </div>
+                <button class="icon-btn" title="Zoom in" data-i18n-attr="title:tooltips.canvasGalleryView.zoomIn"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+                <button class="icon-btn" title="Zoom out" data-i18n-attr="title:tooltips.canvasGalleryView.zoomOut"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
+                <button class="icon-btn canvas-reset-view-button" title="Reset (100% · 320px)" aria-pressed="false"><i class="fa-solid fa-arrows-to-dot"></i></button>
+              </div>
+              <div aria-hidden="false" class="canvas-overlay-ui canvas-sequence-order-hint is-visible sty-55">Free Form · 100%</div>
+            </div>
+            <div class="canvas-overlay-ui canvas-hint" data-i18n="tooltips.canvasGalleryView.hint">Scroll or drag empty space to pan • Pinch or Ctrl/⌘+scroll to zoom • Drag a slot to move it • Shift/⌘-drag to lasso • Drag the ● on a slot edge to connect</div>
+            <div class="canvas-overlay-ui canvas-zoom-cluster sty-56"><div aria-hidden="true" class="canvas-overlay-ui canvas-coordinate-hud"></div></div>
+          </div>
+
+          <!-- Canvas-only Y scrubber: shown when content overflows below the fold -->
+          <div id="gallery-side-scrubber" aria-hidden="true" class="sty-57">
+            <div id="gallery-side-scrubber-graduations"></div>
+            <div id="gallery-side-scrubber-inner" class="sty-58"></div>
+            <div id="gallery-side-scrub-tooltip" class="gallery-side-scrub-tooltip"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Docked Joe (JOE_DOCKED_PANEL_PLAN.md): tracks 5 and 6 of .container (styles-search.css),
+           both 0px wide unless body.joe-docked-open. The Joe panel element itself is built by
+           joeModalInitController and RE-PARENTED into #joe-dock while docked (joeDockLayout.js);
+           labels are set by joeDockLayout.syncJoeDockControls. -->
+
+    <!-- Step 4c task C: narrow-window overlay scrim, shown only under body.joe-docked-open.joe-dock-overlay
+           (joeDock.css). position:fixed (not a grid track), so it takes no space in .container's layout;
+           clicking it collapses the dock (joeDockLayout.js bindOverlayScrim). -->
+  </div>
+</template>
+<template id="snap-footer">
+  <footer id="flowjoe-status-footer" class="status-footer" role="contentinfo" aria-label="FlowJoe status bar">
+    <div class="status-footer-group status-footer-left">
+      <div class="status-footer-segment status-footer-stats"><span class="status-footer-text">8 nodes · 11 slots</span></div>
+      <button class="status-footer-segment status-footer-save status-footer-segment-interactive is-dirty" type="button" title="Save state — click to review changes &amp; export/save">
+        <span class="status-footer-dot" aria-hidden="true"></span>
+        <span class="status-footer-text">Unsaved (1)</span>
+        <kbd class="status-footer-kbd" aria-hidden="true">⌘S</kbd>
+      </button>
+      <button class="status-footer-segment status-footer-model status-footer-segment-interactive" type="button" title="Joe's brain — click to switch" aria-haspopup="menu" aria-expanded="false">
+        <span class="status-footer-model-icon" aria-hidden="true" title="OpenAI">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true">
+            <path d="M22.28 9.82a5.99 5.99 0 0 0-.52-4.91 6.05 6.05 0 0 0-6.52-2.9A6 6 0 0 0 4.98 4.18a5.99 5.99 0 0 0-4 2.9 6.05 6.05 0 0 0 .74 7.1 5.98 5.98 0 0 0 .51 4.91 6.05 6.05 0 0 0 6.52 2.9A6 6 0 0 0 19.02 19.8a5.99 5.99 0 0 0 4-2.9 6.06 6.06 0 0 0-.74-7.08Zm-9.02 12.6a4.48 4.48 0 0 1-2.88-1.04l4.26-2.46a.7.7 0 0 0 .35-.61v-6.01l1.8 1.04a.06.06 0 0 1 .04.05v4.97a4.5 4.5 0 0 1-3.57 4.06Zm-9.66-4.13a4.48 4.48 0 0 1-.54-3.01l4.26 2.46a.7.7 0 0 0 .7 0l5.2-3v2.08a.07.07 0 0 1-.03.06l-4.3 2.48a4.5 4.5 0 0 1-5.29-1.07Zm-1.12-9.3a4.47 4.47 0 0 1 2.34-1.97v5.06a.7.7 0 0 0 .35.6l5.2 3-1.8 1.04a.06.06 0 0 1-.06 0L7.6 15.66a4.5 4.5 0 0 1-1.66-6.13Zm14.8 3.44-5.2-3.01 1.8-1.04a.06.06 0 0 1 .06 0l4.32 2.5a4.5 4.5 0 0 1-.69 8.11v-5.06a.7.7 0 0 0-.35-.6Zm1.79-2.7-4.26-2.46a.7.7 0 0 0-.7 0l-5.2 3V8.18a.07.07 0 0 1 .03-.06l4.3-2.48a4.5 4.5 0 0 1 6.68 4.66ZM9.98 13.04 8.18 12a.06.06 0 0 1-.04-.05V6.98a4.5 4.5 0 0 1 7.38-3.45L11.26 6a.7.7 0 0 0-.35.6l-.01 6.01.08.43Z"></path>
+          </svg>
+        </span>
+        <span class="status-footer-text">Luna 6</span>
+        <i class="fas fa-caret-up status-footer-model-caret" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="status-footer-group status-footer-right">
+      <button class="status-footer-segment status-footer-scheduler status-footer-segment-interactive is-empty" type="button" title="Scheduled automations — click to manage">
+        <i class="fas fa-clock" aria-hidden="true"></i>
+        <span class="status-footer-text">No tasks</span>
+      </button>
+      <button class="status-footer-segment status-footer-theme status-footer-segment-interactive is-global-theme" type="button" title="Global theme — click to set a theme for the selected node" aria-haspopup="menu" aria-expanded="false">
+        <i class="fas fa-palette" aria-hidden="true"></i>
+        <span class="status-footer-text">Modern Ember (Default)</span>
+      </button>
+      <button class="status-footer-segment status-footer-language status-footer-segment-interactive" type="button" title="Language — click to switch" aria-haspopup="menu" aria-expanded="false">
+        <i class="fas fa-language" aria-hidden="true"></i>
+        <span class="status-footer-text">English</span>
+      </button>
+      <button class="status-footer-segment status-footer-shortcuts status-footer-segment-interactive" type="button" title="Keyboard shortcuts — click for the full legend">
+        <i class="fas fa-keyboard" aria-hidden="true"></i>
+        <span class="status-footer-text">Shortcuts</span>
+        <kbd class="status-footer-kbd" aria-hidden="true">K</kbd>
+      </button>
+    </div>
+  </footer>
+</template>

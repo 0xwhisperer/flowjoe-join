@@ -1,0 +1,407 @@
+@layer app {
+/* Protect compact header icon buttons from font-size scaling. */
+#ai-assist-top-rows-collapse-toggle,
+#ai-font-size-increase {
+  font-size: 14px !important;
+}
+
+#ai-spell-check-panel:is(
+  .ai-font-scale-large,
+  .ai-font-scale-larger,
+  .ai-font-scale-largest
+) #ai-spell-check-header {
+  min-height: 58px;
+  font-size: var(--ai-panel-text-size) !important;
+  line-height: normal !important;
+}
+
+#ai-spell-check-panel:is(
+  .ai-font-scale-large,
+  .ai-font-scale-larger,
+  .ai-font-scale-largest
+) #ai-spell-check-header > h3 {
+  font-size: var(--ai-title-text-size) !important;
+  line-height: 1.2 !important;
+}
+
+#ai-spell-check-panel:is(
+  .ai-font-scale-large,
+  .ai-font-scale-larger,
+  .ai-font-scale-largest
+) #ai-spell-check-header .close-btn {
+  width: var(--icon-btn-size);
+  height: var(--icon-btn-size);
+  min-width: var(--icon-btn-size);
+  min-height: var(--icon-btn-size);
+  font-size: 18px !important;
+}
+
+#ai-spell-check-panel:is(
+  .ai-font-scale-large,
+  .ai-font-scale-larger,
+  .ai-font-scale-largest
+) #ai-spell-check-header .close-btn:is(#ai-assist-top-rows-collapse-toggle, #ai-font-size-increase, #ai-spell-check-fullscreen, #ai-spell-check-pin) {
+  font-size: 14px !important;
+}
+
+#ai-spell-check-panel:is(
+  .ai-font-scale-large,
+  .ai-font-scale-larger,
+  .ai-font-scale-largest
+) .ai-chat-input-spell-check-btn {
+  font-size: 14px !important;
+  line-height: normal !important;
+}
+
+/* AI assistant font scaling.
+   The JS removes legacy ai-font-size-* classes and uses ai-font-scale-* on
+   every detached AI surface so sizing is scoped and does not compound. */
+#ai-spell-check-panel,
+.ai-chat-history-popup,
+.ai-generate-prompt-history-popup,
+.ai-image-history-drawer {
+  --ai-font-scale: 1;
+  --ai-line-height: var(--notes-line-height, 1.42);
+  --ai-panel-text-size: calc(14px * var(--font-scale, 1) * var(--ai-font-scale));
+  --ai-title-text-size: calc(17px * var(--font-scale, 1) * var(--ai-font-scale));
+  --ai-control-text-size: calc(13px * var(--font-scale, 1) * var(--ai-font-scale));
+  --ai-chat-text-size: calc(15px * var(--font-scale, 1) * var(--ai-font-scale));
+  --ai-small-text-size: calc(12px * var(--font-scale, 1) * var(--ai-font-scale));
+  --tooltip-font-size: var(--ai-control-text-size);
+  font-family: var(--app-font-family, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+  font-size: var(--ai-panel-text-size);
+  line-height: var(--ai-line-height);
+}
+
+#ai-spell-check-panel.ai-font-scale-large,
+.ai-chat-history-popup.ai-font-scale-large,
+.ai-generate-prompt-history-popup.ai-font-scale-large,
+.ai-image-history-drawer.ai-font-scale-large {
+  --ai-font-scale: 1.05;
+}
+
+#ai-spell-check-panel.ai-font-scale-larger,
+.ai-chat-history-popup.ai-font-scale-larger,
+.ai-generate-prompt-history-popup.ai-font-scale-larger,
+.ai-image-history-drawer.ai-font-scale-larger {
+  --ai-font-scale: 1.1;
+}
+
+#ai-spell-check-panel.ai-font-scale-largest,
+.ai-chat-history-popup.ai-font-scale-largest,
+.ai-generate-prompt-history-popup.ai-font-scale-largest,
+.ai-image-history-drawer.ai-font-scale-largest {
+  --ai-font-scale: 1.15;
+}
+
+#ai-spell-check-panel #ai-spell-check-header > h3 {
+  font-size: var(--ai-title-text-size);
+}
+
+#ai-spell-check-panel :is(
+  #ai-spell-check-target,
+  .ai-spell-check-label,
+  .ai-spell-check-tweaks-label,
+  .ai-spell-check-response-badge,
+  .ai-generate-mode-label,
+  .ai-transcribe-mode-label,
+  .ai-generate-option-title,
+  .ai-generate-option-subtitle,
+  .ai-generate-preview-meta,
+  .ai-generate-status,
+  .ai-generate-placeholder-text,
+  .ai-generate-reference-empty,
+  .ai-generate-prompt-empty-state,
+  .ai-generate-prompt-empty-state strong,
+  .ai-generate-prompt-hint,
+  .ai-transcribe-source-title,
+  .ai-transcribe-source-subtitle,
+  .ai-transcribe-source-location,
+  .ai-transcribe-source-meta,
+  .ai-transcribe-status,
+  .ai-transcribe-progress-label,
+  .ai-transcribe-empty-state,
+  .ai-chat-section-label,
+  .ai-chat-attachment-empty,
+  .ai-mode-tab,
+  .token-count,
+  .ai-spell-check-token-counter,
+  .ai-chat-token-counter,
+  #ai-spell-check-loading p,
+  #ai-chat-loading
+),
+.ai-chat-history-popup :is(
+  .ai-chat-history-header h4,
+  .ai-chat-history-scope,
+  .ai-chat-history-item-preview,
+  .ai-chat-history-item-time,
+  .ai-chat-history-empty,
+  .ai-generate-prompt-history-meta,
+  .ai-generate-prompt-history-body,
+  .ai-generate-prompt-history-chip
+),
+.ai-image-history-drawer :is(
+  .ai-image-history-count,
+  .ai-image-history-prompt,
+  .ai-image-history-title,
+  .ai-image-history-item-meta,
+  .ai-image-history-empty
+) {
+  font-size: var(--ai-panel-text-size);
+  line-height: var(--ai-line-height);
+}
+
+#ai-spell-check-panel :is(
+  .btn,
+  .ai-chat-new-btn,
+  .ai-chat-clear-all-btn,
+  .ai-chat-conversation-action-btn,
+  .ai-assist-target-select,
+  .ai-chat-json-context-select,
+  .ai-generate-history-copy-btn,
+  .ai-generate-prompt-history-chip,
+  .ai-generate-action-option,
+  .ai-generate-action-option span,
+  .ai-generate-checkbox-row,
+  .ai-generate-checkbox-row span,
+  .ai-chat-attachment-checkbox-row,
+  .ai-chat-attachment-checkbox-row span,
+  #ai-chat-input,
+  #ai-generate-prompt,
+  #ai-transcribe-result,
+  #ai-spell-check-preview,
+  #ai-spell-check-result,
+  .form-control,
+  .ai-chat-attachment-select,
+  .ai-generate-reference-select,
+  .ai-transcribe-source-select
+),
+.ai-image-history-drawer :is(input, select, .form-control),
+.ai-chat-history-popup :is(button, .btn) {
+  font-size: var(--ai-control-text-size);
+  line-height: var(--ai-line-height);
+}
+
+#ai-spell-check-panel :is(
+  #ai-chat-messages,
+  .ai-chat-message,
+  .ai-chat-bubble,
+  .ai-chat-welcome,
+  .ai-message-content
+) {
+  font-size: var(--ai-chat-text-size);
+  line-height: var(--ai-line-height);
+}
+
+  #ai-spell-check-panel :is(
+  .ai-chat-token-counter,
+  .ai-chat-msg-token-chip,
+  .ai-spell-check-token-counter,
+  .ai-transcribe-source-subtitle,
+  .ai-transcribe-source-location,
+  .ai-transcribe-source-meta,
+  .ai-transcribe-status,
+  .ai-transcribe-progress-label,
+  .ai-chat-attachment-hint,
+  .ai-chat-attachment-title,
+  .ai-chat-attachment-title-row,
+  .ai-chat-attachment-checkbox-row span
+),
+.ai-chat-history-popup :is(
+  .ai-chat-history-scope,
+  .ai-chat-history-item-time,
+  .ai-generate-prompt-history-meta
+),
+.ai-image-history-drawer :is(
+  .ai-image-history-item-meta,
+  .ai-image-history-count
+) {
+  font-size: var(--ai-small-text-size);
+}
+
+/* The transcript inset shrinks as the AI modal's own text scale grows, so a larger
+   font buys reading width instead of spending it on gutter.
+
+   This rule is INSIDE @layer app and outranks AIAssistModal.css's base
+   #ai-chat-messages rule (it adds the #ai-spell-check-panel ancestor, and the real
+   transcript is always inside that panel). So whatever it declares is what every
+   live transcript actually gets. It used to hardcode clamp(12px, 20px/scale, 20px),
+   which made the transcript-inset tokens dead here and silently broke the density
+   tiers — found and fixed 2026-07-29. It must keep consuming them.
+
+   The shrink is a SCALE FACTOR applied to each AXIS separately. It cannot be applied
+   to a single composed shorthand: calc() cannot multiply a multi-value shorthand (it
+   silently computes to 0px), and the inset is not always one value — the shape-soft
+   addendum runs a wider side gutter than top/bottom. At --ai-font-scale:1 the factor
+   is exactly 1, so the resting inset is precisely what the tier's tokens declare.
+
+   🚨 The FLOOR is load-bearing, not defensive padding. This shrink has only ever
+   applied in Comfy: before Phase 2 the density rule was UNLAYERED, so it beat this
+   rule outright and Compact's transcript inset was font-scale-INVARIANT at a flat
+   12px. A plain multiplier would have quietly made the shrink stack on top of the
+   tier reduction (12px -> 10.44px at the largest step), which is backwards — at
+   12px there is almost no gutter left to reclaim, so taking more of it costs
+   readability instead of buying width. Each tier's floor therefore defaults to its
+   OWN inset, i.e. no shrink at all, and only Comfy opts in below. */
+#ai-spell-check-panel #ai-chat-messages {
+  --ai-chat-messages-pad-scale: 1;
+  /* Default floor = the tier's own inset, so a tier that does not opt in never
+     shrinks — the pre-Phase-2 behaviour for every tier except Comfy. */
+  --ai-chat-messages-pad-floor-block: var(--ai-chat-messages-pad-block);
+  --ai-chat-messages-pad-floor-inline: var(--ai-chat-messages-pad-inline);
+  padding: max(var(--ai-chat-messages-pad-floor-block), calc(var(--ai-chat-messages-pad-block) * var(--ai-chat-messages-pad-scale)))
+    max(var(--ai-chat-messages-pad-floor-inline), calc(var(--ai-chat-messages-pad-inline) * var(--ai-chat-messages-pad-scale)));
+}
+
+/* Comfy is the one tier that opts into the shrink — it has a 20px gutter, so trading
+   some of it for reading width at larger text is a real win. The floor is the Compact
+   inset (12px): the shrink stops exactly where the next density step begins rather
+   than running past it. Compact and Dense keep the default floors above, so they stay
+   font-scale-invariant exactly as they were before Phase 2. */
+body:not(.density-compact):not(.density-dense) #ai-spell-check-panel #ai-chat-messages {
+  --ai-chat-messages-pad-floor-block: 12px;
+  --ai-chat-messages-pad-floor-inline: 12px;
+}
+
+/* The ladder reproduces the original clamp(12px, 20px / --ai-font-scale, 20px) at
+   each of the four --ai-font-scale steps: 1 / 1.05 / 1.10 / 1.15 give 20.00, 19.05,
+   18.18, 17.39px, i.e. ratios 1, 0.9524, 0.9091, 0.8696 — rounded to 2dp below, so
+   the largest step lands within 0.05px of the old value and the default is exact.
+   The old 12px lower bound never actually engaged (17.39px at the largest step is
+   well clear of it), so dropping to a pure ratio loses nothing. */
+#ai-spell-check-panel.ai-font-scale-large #ai-chat-messages {
+  --ai-chat-messages-pad-scale: 0.95;
+}
+#ai-spell-check-panel.ai-font-scale-larger #ai-chat-messages {
+  --ai-chat-messages-pad-scale: 0.91;
+}
+#ai-spell-check-panel.ai-font-scale-largest #ai-chat-messages {
+  --ai-chat-messages-pad-scale: 0.87;
+  /* Merged in rather than left as a second, adjacent rule with the identical
+     selector: at the largest text scale the transcript also gets a floor height so a
+     short conversation still reads as a panel rather than a strip. */
+  min-height: 88px;
+}
+
+#ai-spell-check-panel #ai-chat-messages :is(.ai-chat-welcome, .ai-chat-message .ai-chat-bubble) {
+  font-family: inherit;
+  font-size: var(--ai-chat-text-size) !important;
+  line-height: var(--ai-line-height) !important;
+  font-weight: 400;
+  color: var(--text-primary) !important;
+}
+
+#ai-spell-check-panel .ai-chat-attachment-thumb-wrap {
+  width: clamp(108px, calc(108px * var(--ai-font-scale)), 136px);
+  height: clamp(108px, calc(108px * var(--ai-font-scale)), 136px);
+  min-height: 0;
+  aspect-ratio: 1 / 1;
+  align-self: center;
+}
+
+#ai-spell-check-panel.ai-font-scale-largest .ai-chat-attachment-thumb-wrap {
+  width: 132px;
+  height: 132px;
+}
+
+.ai-font-size-button-glyph {
+  display: inline-grid;
+  grid-template-columns: auto auto;
+  align-items: start;
+  justify-content: center;
+  line-height: 1;
+}
+
+.ai-font-size-button-glyph .fa-font {
+  font-size: 0.9em;
+}
+
+.ai-font-size-button-level {
+  margin-left: -1px;
+  font-size: 0.58em;
+  font-weight: 700;
+  line-height: 1;
+}
+
+#image-modal {
+  --ai-modal-font-scale: 1;
+  --ai-modal-line-height: 1.42;
+  --ai-modal-field-size: calc(14px * var(--font-scale, 1) * var(--ai-modal-font-scale));
+  --ai-modal-label-size: calc(0.84rem * var(--ai-modal-font-scale));
+  --ai-modal-small-size: calc(0.78rem * var(--ai-modal-font-scale));
+}
+
+#image-modal.ai-font-scale-large {
+  --ai-modal-font-scale: 1.05;
+  --ai-modal-line-height: 1.44;
+}
+
+#image-modal.ai-font-scale-larger {
+  --ai-modal-font-scale: 1.1;
+  --ai-modal-line-height: 1.46;
+}
+
+#image-modal.ai-font-scale-largest {
+  --ai-modal-font-scale: 1.15;
+  --ai-modal-line-height: 1.48;
+}
+
+#image-modal :is(
+  #image-modal-title,
+  #image-modal-notes,
+  .tiptap-flowjoe-editor,
+  .tiptap-flowjoe-editor .tiptap,
+  #summary-modal-spellcheck-result,
+  #preview-modal-spellcheck-result,
+  #preview-modal-spellcheck-original,
+  #image-modal-markdown-spellcheck-result,
+  #image-modal-markdown-spellcheck-original,
+  #summary-modal-spellcheck-diff,
+  #preview-modal-spellcheck-review .ai-spell-check-diff,
+  #image-modal-markdown-spellcheck-review .ai-spell-check-diff,
+  #summary-modal-spellcheck-review .ai-spell-check-diff
+) {
+  font-size: var(--ai-modal-field-size) !important;
+  line-height: var(--ai-modal-line-height) !important;
+}
+
+#image-modal :is(
+  #summary-modal-breadcrumb,
+  #summary-modal-breadcrumb *,
+  #summary-modal-notes-label,
+  #summary-modal-save-status,
+  #preview-modal-save-status,
+  #summary-modal-footer-meta,
+  #preview-modal-footer-meta,
+  .ai-spell-check-label,
+  .ai-spell-check-response-badge,
+  .ai-spell-check-token-counter
+) {
+  font-size: var(--ai-modal-label-size) !important;
+  line-height: var(--ai-modal-line-height) !important;
+}
+
+#image-modal :is(
+  #image-modal-done,
+  #image-modal-cancel,
+  #summary-modal-spellcheck-accept,
+  #summary-modal-spellcheck-retry,
+  #summary-modal-spellcheck-reject,
+  #preview-modal-spellcheck-accept,
+  #preview-modal-spellcheck-retry,
+  #preview-modal-spellcheck-reject
+) {
+  font-size: var(--ai-modal-label-size) !important;
+  line-height: 1.2 !important;
+}
+
+#image-modal :is(
+  #summary-modal-token-counter,
+  #preview-modal-token-counter,
+  #summary-modal-spellcheck-token-counter,
+  #preview-modal-spellcheck-token-counter
+) {
+  font-size: var(--ai-modal-small-size) !important;
+}
+
+}

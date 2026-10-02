@@ -1,0 +1,243 @@
+@layer app {
+.ai-generate-options {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px 8px;
+  align-items: start;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+}
+
+.ai-generate-options-pickers {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: minmax(0, auto);
+  gap: 12px 12px;
+  align-items: start;
+  width: 100%;
+}
+
+.ai-generate-options-pickers .ai-generate-option-model,
+.ai-generate-options-pickers .ai-generate-option-format,
+.ai-generate-options-pickers .ai-generate-option-size {
+  grid-column: 1;
+}
+
+.ai-generate-options-pickers .ai-generate-option-quality,
+.ai-generate-options-pickers .ai-generate-option-background,
+.ai-generate-options-pickers .ai-generate-option-style {
+  grid-column: 2;
+}
+
+.ai-generate-options > .ai-generate-option {
+  align-self: start;
+}
+
+.ai-generate-option {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: var(--text-secondary);
+  font-size: 0.83em;
+  letter-spacing: 0.02em;
+  min-width: 0;
+  justify-content: flex-start;
+}
+
+.ai-generate-option-size,
+.ai-generate-option-model,
+.ai-generate-option-quality,
+.ai-generate-option-format,
+.ai-generate-option-background,
+.ai-generate-option-style {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  justify-self: stretch;
+}
+
+.ai-generate-option-title {
+  line-height: 1.2;
+  min-height: 20px;
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding-left: 4px;
+}
+
+.ai-generate-option-reference {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ai-generate-option-size .ai-generate-size-toggle,
+.ai-generate-option #ai-generate-model,
+.ai-generate-option #ai-generate-quality,
+.ai-generate-option #ai-generate-format,
+.ai-generate-option #ai-generate-background,
+.ai-generate-option #ai-generate-style {
+  width: 100%;
+  min-width: 0;
+}
+
+.ai-generate-option input[type="checkbox"] {
+  margin: 0;
+  flex: 0 0 auto;
+}
+
+.ai-generate-size-toggle {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 12px;
+  height: var(--dropdown-height);
+  min-height: var(--dropdown-height);
+  max-height: var(--dropdown-height);
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  justify-self: stretch;
+  flex-shrink: 0;
+}
+
+.ai-generate-size-btn {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  padding: 0;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border-radius: var(--dropdown-radius);
+  border: 1px solid color-mix(in srgb, var(--border-color) 90%, transparent);
+  background: color-mix(in srgb, var(--bg-secondary) var(--modal-glass-ai-select-mix), transparent);
+  color: var(--text-secondary);
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color var(--transition-speed) ease, background var(--transition-speed) ease, color var(--transition-speed) ease, transform var(--transition-speed) ease;
+}
+
+.ai-generate-size-btn:hover {
+  border-color: var(--border-color);
+  background: color-mix(in srgb, var(--bg-tertiary) 80%, transparent);
+  color: var(--text-primary);
+}
+
+.ai-generate-size-btn.is-active {
+  background: color-mix(in srgb, var(--accent-color) 22%, var(--bg-secondary));
+  border-color: color-mix(in srgb, var(--accent-color) 62%, var(--border-color));
+  color: var(--text-primary);
+}
+
+.ai-generate-size-icon {
+  display: block;
+  border: 1.5px solid currentColor;
+  border-radius: var(--radius-xs, 2px);
+  opacity: 0.95;
+}
+
+.ai-generate-size-icon-square {
+  width: 14px;
+  height: 14px;
+}
+
+.ai-generate-size-icon-landscape {
+  width: 24px;
+  height: 16px;
+}
+
+.ai-generate-size-icon-portrait {
+  width: 11px;
+  height: 16px;
+}
+
+#ai-generate-style,
+#ai-generate-model,
+#ai-generate-quality,
+#ai-generate-size {
+  height: var(--dropdown-height);
+  border-radius: var(--dropdown-radius);
+  width: 100%;
+  margin: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  box-sizing: border-box;
+}
+
+/* Generate option dropdowns - styled to match gallery dropdown */
+#ai-generate-model,
+#ai-generate-quality,
+#ai-generate-format,
+#ai-generate-background,
+#ai-generate-style,
+#ai-generate-size {
+  background-color: var(--dropdown-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--dropdown-radius);
+  height: var(--dropdown-height);
+  padding: 0 12px;
+  font-family: inherit;
+  font-size: var(--font-control);
+  cursor: pointer;
+  outline: none;
+  box-sizing: border-box;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: var(--dropdown-chevron);
+  background-repeat: no-repeat;
+  background-position: right var(--dropdown-chevron-inset) center;
+  background-size: 12px;
+  transition: border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+  transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+}
+
+#ai-generate-model:hover:not(:disabled),
+#ai-generate-quality:hover:not(:disabled),
+#ai-generate-format:hover:not(:disabled),
+#ai-generate-background:hover:not(:disabled),
+#ai-generate-style:hover:not(:disabled),
+#ai-generate-size:hover:not(:disabled) {
+  border-color: var(--accent-color);
+  background-color: var(--bg-tertiary);
+}
+
+#ai-generate-model:focus,
+#ai-generate-quality:focus,
+#ai-generate-format:focus,
+#ai-generate-background:focus,
+#ai-generate-style:focus,
+#ai-generate-size:focus {
+  border-color: var(--accent-color);
+  box-shadow: var(--focus-ring);
+}
+
+#ai-generate-model:disabled,
+#ai-generate-quality:disabled,
+#ai-generate-format:disabled,
+#ai-generate-background:disabled,
+#ai-generate-style:disabled,
+#ai-generate-size:disabled {
+  opacity: var(--disabled-opacity-field);
+  cursor: not-allowed;
+  background-color: var(--bg-primary);
+}
+
+#ai-generate-model option,
+#ai-generate-quality option,
+#ai-generate-format option,
+#ai-generate-background option,
+#ai-generate-style option,
+#ai-generate-size option {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+}

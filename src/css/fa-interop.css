@@ -1,0 +1,29 @@
+/* Font Awesome interop shim — deliberately UNLAYERED (Phase 3.5 @layer cutover).
+   The font-awesome CDN <link> is also unlayered, so it and every app rule in this file share the
+   same (unlayered) precedence tier, which sits ABOVE every @layer'd rule regardless of layer or
+   position — EXCEPT a layered high-importance declaration ("bang" flag), which still beats an
+   unlayered ordinary one (verified empirically), so app rules using that flag on these properties
+   need no restatement here and are omitted.
+   Font Awesome's base rule (`.fa,.fa-solid,...`) sets `display`, `line-height: 1`, `font-style`,
+   `font-variant`, `text-rendering` — a full scan of every app selector targeting a bare `<i>`
+   child found 21 such selectors; most only restate `line-height: 1`, which already MATCHES Font
+   Awesome's own default and needs no interop rule. The ones below are the selectors whose
+   ORDINARY (non-flagged) declaration differs from Font Awesome's default and would otherwise
+   revert to it now that the app's own CSS is layered: without these, once the app's own
+   `<i>`-targeting selectors move into a layer, Font Awesome's unlayered rule would win and revert
+   these icons. Restated verbatim from their source (styles.css unless noted) so the outcome is
+   unchanged. No colors, no high-importance flags — budget-clean by construction. */
+.gallery-notes-target-option > i {
+  display: none;
+  line-height: 22px;
+}
+.gallery-notes-target-option.active > i {
+  display: inline-block;
+}
+.browser-bookmark-star i {
+  display: inline-flex;
+  line-height: 18px;
+}
+.ob-progress i {
+  display: block;
+}

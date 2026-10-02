@@ -1,0 +1,1792 @@
+@layer app {
+.gallery-search-checkbox input:checked+.gallery-search-checkbox-ui::after {
+  border-color: color-mix(in srgb, var(--bg-primary) 92%, white 8%);
+  opacity: 1;
+  transform: rotate(45deg) scale(1);
+}
+
+.gallery-search-checkbox input:focus-visible+.gallery-search-checkbox-ui {
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, white 24%, transparent),
+    0 0 0 2px color-mix(in srgb, var(--accent-color) 24%, transparent);
+}
+
+.gallery-search-checkbox input:disabled+.gallery-search-checkbox-ui {
+  opacity: var(--disabled-opacity-field);
+}
+
+.gallery-search-checkbox input:disabled~.gallery-search-checkbox-label {
+  opacity: var(--disabled-opacity-field);
+}
+
+html.theme-fern .gallery-search-options-popover,
+html.theme-fern .gallery-search-checkbox {
+  color: white;
+}
+
+.gallery-search-bar:hover {
+  background: var(--search-bar-hover-bg);
+  border-color: var(--accent-color);
+}
+
+.gallery-search-bar.open {
+  max-width: 9999px;
+  opacity: 1;
+  padding: var(--search-bar-padding);
+  border-width: 1px;
+  margin-left: 0;
+}
+
+.gallery-search-bar:focus-within {
+  background: var(--search-bar-hover-bg);
+  border-color: var(--accent-color);
+  box-shadow: var(--focus-ring);
+}
+
+.gallery-search-input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  font-family: var(--app-font-family);
+  font-size: var(--search-input-font-size);
+  padding: 2px 0;
+}
+
+.gallery-search-input::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.6;
+}
+
+#gallery-search-input {
+  align-self: stretch;
+  appearance: none;
+  -webkit-appearance: none;
+  padding: var(--search-input-padding);
+  border: var(--search-input-border);
+  border-radius: var(--search-input-radius);
+  background: var(--search-input-bg);
+  box-sizing: border-box;
+}
+
+#gallery-search-bar {
+  gap: var(--search-bar-gap);
+}
+
+#gallery-search-clear {
+  width: var(--search-clear-size);
+  min-width: var(--search-clear-size);
+  padding: 0;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+#gallery-search-collapse i {
+  transform: translateX(var(--search-collapse-icon-nudge));
+}
+
+
+.floating-surface-drag-handle {
+  cursor: grab;
+}
+
+.floating-surface-drag-handle.is-dragging {
+  cursor: grabbing;
+}
+
+.flowjoe-resizable-surface {
+  position: relative;
+}
+
+.is-floating-surface-resizing,
+.is-floating-surface-dragging {
+  transition: none !important;
+}
+
+.flowjoe-floating-resize-handle {
+  position: absolute;
+  z-index: 4;
+  pointer-events: auto;
+}
+
+.flowjoe-resizable-surface[data-fullscreen="true"] > .flowjoe-floating-resize-handle,
+.flowjoe-resizable-surface.is-fullscreen > .flowjoe-floating-resize-handle {
+  display: none;
+}
+
+.flowjoe-floating-resize-handle[data-flowjoe-resize-edge="e"],
+.flowjoe-floating-resize-handle[data-flowjoe-resize-edge="w"] {
+  top: 12px;
+  bottom: 12px;
+  width: 10px;
+  cursor: ew-resize;
+}
+
+.flowjoe-floating-resize-handle[data-flowjoe-resize-edge="e"] {
+  right: -5px;
+}
+
+.flowjoe-floating-resize-handle[data-flowjoe-resize-edge="w"] {
+  left: -5px;
+}
+
+.flowjoe-floating-resize-handle[data-flowjoe-resize-edge="n"],
+.flowjoe-floating-resize-handle[data-flowjoe-resize-edge="s"] {
+  left: 12px;
+  right: 12px;
+  height: 10px;
+  cursor: ns-resize;
+}
+
+.flowjoe-floating-resize-handle[data-flowjoe-resize-edge="n"] {
+  top: -5px;
+}
+
+.flowjoe-floating-resize-handle[data-flowjoe-resize-edge="s"] {
+  bottom: -5px;
+}
+
+.flowjoe-floating-resize-handle[data-flowjoe-resize-edge="ne"],
+.flowjoe-floating-resize-handle[data-flowjoe-resize-edge="nw"],
+.flowjoe-floating-resize-handle[data-flowjoe-resize-edge="se"],
+.flowjoe-floating-resize-handle[data-flowjoe-resize-edge="sw"] {
+  width: 16px;
+  height: 16px;
+}
+
+.flowjoe-floating-resize-handle[data-flowjoe-resize-edge="ne"] {
+  top: -6px;
+  right: -6px;
+  cursor: nesw-resize;
+}
+
+.flowjoe-floating-resize-handle[data-flowjoe-resize-edge="nw"] {
+  top: -6px;
+  left: -6px;
+  cursor: nwse-resize;
+}
+
+.flowjoe-floating-resize-handle[data-flowjoe-resize-edge="se"] {
+  right: -6px;
+  bottom: -6px;
+  cursor: nwse-resize;
+}
+
+.flowjoe-floating-resize-handle[data-flowjoe-resize-edge="sw"] {
+  left: -6px;
+  bottom: -6px;
+  cursor: nesw-resize;
+}
+
+.floating-surface-header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--titlebar-action-gap);
+  flex: 0 0 auto;
+}
+
+.floating-inline-grip {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  opacity: 0.85;
+  pointer-events: none;
+  margin: 0 auto;
+}
+
+.context-menu-drag-strip {
+  height: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: -1px 0 1px 0;
+  cursor: grab;
+}
+
+.context-menu-drag-strip.is-dragging {
+  cursor: grabbing;
+}
+
+/* button.* specificity on purpose: these elements ALSO carry .close-btn, whose base rule
+   (32px chrome class, loaded later) would otherwise win the tie — the small class must hold. */
+button.context-menu-corner-close {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  z-index: 2;
+  width: var(--icon-btn-size-sm); /* was 28px; context-menu chrome joins the small class */
+  min-width: var(--icon-btn-size-sm);
+  height: var(--icon-btn-size-sm);
+  min-height: var(--icon-btn-size-sm);
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+button.context-menu-corner-pin {
+  position: absolute;
+  top: 4px;
+  /* edge inset + close width + the titlebar action-cluster gap — derived, so it tracks the token */
+  right: calc(6px + var(--icon-btn-size-sm) + var(--titlebar-action-gap));
+  z-index: 2;
+}
+
+.floating-inline-grip span {
+  width: 100px;
+  height: var(--hairline);
+  border-radius: var(--radius-full, 999px);
+  background:
+    linear-gradient(to bottom,
+      color-mix(in srgb, white 18%, transparent),
+      color-mix(in srgb, var(--text-secondary) 52%, transparent),
+      color-mix(in srgb, black 24%, transparent));
+  box-shadow:
+    0 1px 0 color-mix(in srgb, white 10%, transparent),
+    inset 0 1px 0 color-mix(in srgb, white 10%, transparent);
+}
+
+button.floating-pin-btn {
+  /* button.* specificity: also carries .close-btn — see the corner-close note above */
+  width: var(--icon-btn-size-sm); /* was 28px; context-menu chrome joins the small class */
+  min-width: var(--icon-btn-size-sm);
+  height: var(--icon-btn-size-sm);
+  min-height: var(--icon-btn-size-sm);
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* font-size: 10px;
+  line-height: 1; */
+}
+
+.floating-pin-btn i {
+  font-size: var(--icon-glyph-sm);
+  line-height: 1;
+}
+
+.floating-pin-btn.is-active {
+  border-color: var(--accent-color);
+  box-shadow: var(--focus-ring);
+  color: var(--accent-color);
+}
+
+:is(
+  .image-context-menu,
+  .gallery-panel-context-menu,
+  .node-context-menu,
+  .tree-panel-context-menu,
+  .header-context-menu,
+  .header-audio-playlist-context-menu,
+  #stack-preview-thumbnail-context-menu
+) {
+  background: var(--modal-glass-floating-surface-background) !important;
+  backdrop-filter: blur(var(--modal-glass-blur)) saturate(var(--modal-glass-saturate));
+  -webkit-backdrop-filter: blur(var(--modal-glass-blur)) saturate(var(--modal-glass-saturate));
+  background-clip: padding-box;
+  isolation: isolate;
+  box-shadow: var(--elev-floating) !important;
+}
+
+body.glass-effects-disabled :is(
+  .image-context-menu,
+  .gallery-panel-context-menu,
+  .node-context-menu,
+  .tree-panel-context-menu,
+  .header-context-menu,
+  .header-audio-playlist-context-menu,
+  #stack-preview-thumbnail-context-menu
+) {
+  background: var(--bg-secondary) !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* Shared row chrome for every context-menu's clickable item, across all 5 JS-built menus
+   (node/image/gallery-panel/tree-panel/header) plus stackPreviewModal's thumbnail menu.
+   Single source for the density/font/radius/line-height rules a prior audit found each
+   controller re-typing as its own raw literal (13px vs 14px font, 4 different padding
+   values, unset line-height). Controllers set className="context-menu-item" and stop
+   hand-typing these properties in cssText; per-item state (danger/disabled/highlighted/
+   selected) still toggles via inline style or a data-attribute, since that varies by menu. */
+.context-menu-item {
+  padding: var(--pad-menu-item);
+  font-size: var(--font-control);
+  line-height: 1.25;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: var(--control-icon-gap);
+  color: var(--text-primary);
+  transition: background-color 0.12s ease;
+}
+
+.context-menu-item-highlighted {
+  background-color: var(--selection-bg);
+}
+
+.context-menu-shortcut {
+  font-size: var(--font-meta);
+  line-height: 1.25;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  flex-shrink: 0;
+  opacity: 0.85;
+}
+
+.context-menu-section-header {
+  padding: 7px 10px;
+  font-size: var(--font-meta);
+  line-height: 1.25;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.context-menu-separator {
+  height: var(--hairline);
+  background: var(--border-color);
+  margin: 8px 0;
+}
+
+:is(
+  #image-modal-titlebar,
+  #stack-preview-titlebar,
+  .keyboard-shortcuts-modal-titlebar,
+  .stack-preview-header,
+  #ai-spell-check-header,
+  .header-audio-playlist-titlebar,
+  .settings-header,
+  .orphan-media-modal-toolbar
+) {
+  background: var(--modal-glass-titlebar-background) !important;
+  backdrop-filter: blur(var(--modal-glass-blur)) saturate(var(--modal-glass-saturate));
+  -webkit-backdrop-filter: blur(var(--modal-glass-blur)) saturate(var(--modal-glass-saturate));
+}
+
+body.glass-effects-disabled :is(
+  #image-modal-titlebar,
+  #stack-preview-titlebar,
+  .keyboard-shortcuts-modal-titlebar,
+  .stack-preview-header,
+  #ai-spell-check-header,
+  .header-audio-playlist-titlebar,
+  .settings-header,
+  .orphan-media-modal-toolbar
+) {
+  background: linear-gradient(90deg, var(--bg-primary) 0%, var(--bg-secondary) 100%) !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* Hide pin button in fullscreen mode */
+#ai-spell-check-panel[data-fullscreen="true"] .floating-pin-btn,
+#stack-preview-content[data-fullscreen="true"] .floating-pin-btn,
+#image-modal-content[data-fullscreen="true"] .floating-pin-btn {
+  display: none !important;
+}
+
+
+.image-context-menu:not(.image-context-menu-flyout) {
+  max-width: min(310px, calc(100vw - 24px));
+  box-sizing: border-box;
+}
+
+.image-context-menu-flyout {
+  box-sizing: border-box;
+  max-height: 400px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.image-context-menu .context-menu-item-highlighted {
+  box-shadow: inset 3px 0 0 var(--accent-color);
+}
+
+#gallery-notes-spellcheck-review {
+  position: fixed;
+  /* Scoped inside .content-section so this sits below the gallery scrubber
+     (100010) and sticky gallery header (100020), above normal gallery content. */
+  z-index: var(--flowjoe-z-stack-preview-base);
+  pointer-events: none;
+}
+
+#gallery-notes-dictation-control {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: var(--flowjoe-z-stack-preview-base);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg, 8px);
+  background: var(--bg-secondary);
+  box-shadow: var(--elev-floating);
+  translate: 0 0;
+  transition: none !important;
+  will-change: transform;
+}
+
+#gallery-notes-dictation-control button {
+  width: var(--icon-btn-size); /* was a one-off 34px; floating chrome joins the standard class */
+  height: var(--icon-btn-size);
+  padding: 0; /* UA default button padding (5px 10px) left the icon's grid track no room once
+                 density (dropin/01-density-compact.css) shrinks --icon-btn-size to 26/24px —
+                 the track overflowed bottom-right, pinning the glyph visibly off-center toward
+                 top-left. Every peer --icon-btn-size button zeroes padding; this one must too. */
+  border: 1px solid var(--accent-color);
+  border-radius: var(--icon-btn-radius, 4px); /* unified square-button radius */
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  background: color-mix(in srgb, var(--accent-color) 14%, var(--bg-tertiary));
+  color: var(--accent-color);
+}
+
+#gallery-notes-dictation-control button + button {
+  margin-top: 6px;
+}
+
+#gallery-notes-dictation-control .gallery-notes-dictation-toggle.is-listening {
+  background: color-mix(in srgb, var(--accent-color) 22%, var(--bg-tertiary));
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-color) 18%, transparent);
+}
+
+#gallery-notes-dictation-control .gallery-notes-dictation-close {
+  border-color: var(--border-color);
+  color: var(--text-secondary);
+  background: var(--bg-tertiary);
+}
+
+#gallery-notes-dictation-control button:hover {
+  border-color: var(--accent-color);
+  background: var(--hover-bg);
+}
+
+.gallery-notes-spellcheck-source-hidden {
+  color: transparent !important;
+  caret-color: transparent !important;
+  text-decoration-color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  pointer-events: none !important;
+}
+
+.gallery-notes-spellcheck-diff {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  max-height: none;
+  pointer-events: auto;
+  overscroll-behavior: contain;
+  box-sizing: border-box;
+}
+
+.gallery-notes-spellcheck-diff.ai-spell-check-diff {
+  background: color-mix(in srgb, var(--bg-primary) 90%, #000 10%);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md, 6px);
+  box-shadow: var(--elev-floating);
+  margin: 0;
+  padding: 8px 10px;
+  font-family: inherit;
+  /* Not var(--gallery-slot-text-font-size) — this overlay sits directly on top of .image-notes
+     and must match its ACTUAL rendered size, including a per-slot --gallery-slot-scale
+     override, or the diff text drifts out of alignment with the real notes underneath it. */
+  font-size: calc(14px * var(--font-scale, 1) * var(--gallery-slot-scale, 1));
+  font-weight: 400;
+  line-height: calc(calc(14px * var(--font-scale, 1) * var(--gallery-slot-scale, 1)) * var(--notes-line-height));
+  font-synthesis: none;
+  white-space: pre-wrap;
+  white-space: break-spaces;
+  overflow-wrap: anywhere;
+  word-wrap: anywhere;
+  box-sizing: border-box;
+}
+
+.gallery-notes-spellcheck-diff.ai-spell-check-diff:has(.notes-list-format-line--ordered, .notes-list-format-line--unordered) {
+  padding-bottom: calc(8px + 1.6lh);
+}
+
+.gallery-notes-spellcheck-actions {
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--icon-row-gap); /* vertical cluster of the same icon-button chrome rhythm */
+  padding: 6px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg, 8px);
+  background: var(--bg-secondary);
+  box-shadow: var(--elev-floating);
+  pointer-events: auto;
+  translate: 0 0;
+  transition: none !important;
+  will-change: transform;
+}
+
+.gallery-notes-spellcheck-actions button {
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md, 6px);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  background: var(--bg-tertiary);
+  color: var(--accent-color);
+}
+
+.gallery-notes-spellcheck-actions button:hover {
+  border-color: var(--accent-color);
+  background: var(--hover-bg);
+}
+
+.gallery-notes-spellcheck-reject {
+  color: var(--text-secondary) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gallery-notes-spellcheck-actions,
+  #gallery-notes-dictation-control {
+    will-change: auto;
+  }
+}
+
+
+.gallery-search-clear {
+  all: unset;
+  cursor: pointer;
+  color: var(--search-control-color);
+  font-size: var(--search-control-font-size);
+  padding: var(--search-collapse-padding);
+  border-radius: var(--search-control-radius);
+  line-height: 1;
+  opacity: var(--search-control-opacity);
+  transition: var(--search-control-transition);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.gallery-search-clear:hover {
+  opacity: 1;
+  color: var(--accent-color);
+  background: var(--search-control-hover-bg);
+}
+
+.gallery-search-collapse {
+  all: unset;
+  cursor: pointer;
+  color: var(--search-control-color);
+  font-size: var(--search-control-font-size);
+  padding: var(--search-collapse-padding);
+  border-radius: var(--search-control-radius);
+  line-height: 1;
+  opacity: var(--search-control-opacity);
+  transition: var(--search-control-transition);
+  border-left: var(--search-collapse-divider);
+  margin-left: var(--search-collapse-margin-left);
+  padding-left: var(--search-collapse-padding-left);
+  flex-shrink: 0;
+}
+
+.gallery-search-collapse:hover {
+  opacity: 1;
+  color: var(--accent-color);
+  background: var(--search-control-hover-bg);
+}
+
+#gallery-search-btn.active {
+  color: var(--accent-color) !important;
+}
+
+/* Hide non-matching gallery image blocks */
+.image-gallery .enum-image-unit.gallery-search-hidden,
+.image-gallery.vertical-layout .enum-image-unit.gallery-search-hidden,
+.image-gallery.vertical-notes-layout .enum-image-unit.gallery-search-hidden {
+  display: none !important;
+}
+
+.image-gallery.gallery-searching .enum-image-unit:not(.final-enum-unit),
+.image-gallery .enum-image-unit.gallery-search-repaint {
+  content-visibility: visible !important;
+}
+
+/* Gallery search overlays - positioned to match hidden inputs/textareas */
+.gallery-search-title-overlay,
+.gallery-search-notes-overlay {
+  position: absolute;
+  pointer-events: none;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: var(--text-primary);
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+.gallery-search-title-overlay {
+  width: 100%;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.gallery-search-notes-overlay {
+  width: 100%;
+  min-height: calc((14px * var(--font-scale) * var(--notes-line-height)) + 16px);
+}
+
+/* Hide the trailing add-image slot while search is active */
+.image-gallery.gallery-searching .final-enum-unit {
+  display: none !important;
+}
+
+/* ── Tree Search Filtering ───────────────────────────────────────────────── */
+
+/* Hide non-matching nodes */
+#tree li.search-hidden {
+  display: none;
+}
+
+/* Ancestor nodes — visible but dimmed to show path to match */
+#tree li.search-ancestor>.flex-container {
+  opacity: 0.45;
+}
+
+/* Direct match — full opacity, slight accent left border */
+#tree li.search-direct-match>.flex-container {
+  opacity: 1;
+  border-left: 2px solid var(--accent-color);
+  padding-left: 6px;
+  border-radius: 0 4px 4px 0;
+}
+
+/* Highlight matched text */
+mark.tree-search-mark {
+  background: var(--accent-color);
+  color: var(--bg-primary, #1a1a1a);
+  border-radius: var(--radius-xs, 2px);
+  padding: 0 1px;
+  font-weight: 600;
+}
+
+mark.gallery-search-mark {
+  background: var(--accent-color);
+  color: var(--bg-primary, #1a1a1a);
+  border-radius: var(--radius-xs, 2px);
+  padding: 0 1px;
+  font-weight: 600;
+}
+
+.notes-list-format-overlay mark.gallery-search-mark {
+  padding: 0;
+  font-weight: inherit;
+}
+
+.gallery-tag-chip.gallery-search-tag-match,
+.gallery-tag-chip-main.gallery-search-tag-match {
+  border-color: var(--tag-chip-search-match-border);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent-color) 25%, transparent);
+  color: var(--accent-color);
+}
+
+/* Hide tree title container when collapsed */
+.tree-section.collapsed .tree-title-container,
+/* Hide tree connecting lines when collapsed */
+.tree-section.collapsed #tree li::before,
+.tree-section.collapsed #tree li::after {
+  display: none !important;
+}
+
+/* Resizer styling - always tertiary color with no effects */
+.resizer {
+  /* PROTOTYPE (left-rail): tracks shifted right by one — column 1 is the app rail. */
+  grid-column: 3;
+  grid-row: 2;
+  background-color: var(--bg-tertiary);
+  cursor: col-resize;
+  position: relative;
+  z-index: 1000;
+  /* Higher z-index to ensure it's above other elements */
+  box-shadow: none;
+  width: var(--tree-resizer-width, 8px);
+  /* Dynamic width from settings */
+  pointer-events: auto !important;
+  /* Ensure it's always clickable */
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+/* Grip handle */
+.resizer::before {
+  content: "";
+  position: absolute;
+  top: var(--grippy-handle-top, 200px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 16px;
+  height: 60px;
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--border-color) 50%, var(--bg-secondary) 100%);
+  border-radius: var(--radius-lg, 8px);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--grippy-handle-bevel-shadow);
+  cursor: col-resize;
+  z-index: 1;
+}
+
+/* Keep gripper lit during any animation state */
+.resizer.grippy-dragging::before,
+.resizer.grippy-bouncing::before,
+.resizer.grippy-elastic::before,
+.resizer.grippy-active::before,
+.resizer:hover:not(.grippy-fading)::before,
+.joe-dock-resizer.grippy-dragging::before,
+.joe-dock-resizer.grippy-bouncing::before,
+.joe-dock-resizer.grippy-elastic::before,
+.joe-dock-resizer.grippy-active::before,
+.joe-dock-resizer:hover:not(.grippy-fading)::before {
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--accent-color) 50%, var(--bg-secondary) 100%) !important;
+}
+
+/* Active states - persistent during drag */
+body.resizing .resizer::before,
+.resizer.grippy-active::before,
+body.joe-dock-resizing .joe-dock-resizer::before,
+.joe-dock-resizer.grippy-active::before {
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--accent-color) 50%, var(--bg-secondary) 100%) !important;
+  box-shadow: var(--grippy-handle-bevel-shadow-active) !important;
+  transform: translateX(-50%) scale(1.05) !important;
+}
+
+/* OVERRIDE - grippy-lit has absolute priority over hover states! */
+.resizer.grippy-lit::before {
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--accent-color) 50%, var(--bg-secondary) 100%) !important;
+  /* Ensure the resizer background stays as topbar color */
+  background-color: var(--topbar-bg) !important;
+  box-shadow: var(--grippy-handle-bevel-shadow-active) !important;
+  transform: translateX(-50%) scale(1.05) !important;
+}
+
+.joe-dock-resizer.grippy-lit::before {
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--accent-color) 50%, var(--bg-secondary) 100%) !important;
+  background-color: var(--topbar-bg) !important;
+  box-shadow: var(--grippy-handle-bevel-shadow-active) !important;
+  transform: translateX(-50%) scale(1.05) !important;
+}
+
+body.scrubber-beveled .resizer::before {
+  background: linear-gradient(
+    to right,
+    var(--scrub-handle-beveled-fill-start) 0%,
+    var(--scrub-handle-beveled-fill-end) 100%
+  ) !important;
+  border-color: var(--scrub-handle-beveled-border);
+  box-shadow: var(--grippy-handle-beveled-shadow);
+}
+
+body.scrubber-beveled .resizer:hover:not(.grippy-fading)::before,
+body.scrubber-beveled.resizing .resizer::before,
+body.scrubber-beveled .resizer.grippy-active::before,
+body.scrubber-beveled .resizer.grippy-lit::before,
+body.scrubber-beveled .joe-dock-resizer:hover:not(.grippy-fading)::before,
+body.scrubber-beveled.joe-dock-resizing .joe-dock-resizer::before,
+body.scrubber-beveled .joe-dock-resizer.grippy-active::before,
+body.scrubber-beveled .joe-dock-resizer.grippy-lit::before {
+  background: linear-gradient(
+    to right,
+    var(--scrub-handle-beveled-fill-start) 0%,
+    var(--scrub-handle-beveled-fill-end) 100%
+  ) !important;
+}
+
+body.scrubber-flat .resizer::before {
+  background: var(--accent-color) !important;
+  border-color: color-mix(in srgb, var(--accent-color) 36%, var(--border-color));
+  box-shadow: var(--grippy-handle-flat-shadow);
+}
+
+body.scrubber-flat .resizer:hover:not(.grippy-fading)::before,
+body.scrubber-flat.resizing .resizer::before,
+body.scrubber-flat .resizer.grippy-active::before,
+body.scrubber-flat .resizer.grippy-lit::before,
+body.scrubber-flat .joe-dock-resizer:hover:not(.grippy-fading)::before,
+body.scrubber-flat.joe-dock-resizing .joe-dock-resizer::before,
+body.scrubber-flat .joe-dock-resizer.grippy-active::before,
+body.scrubber-flat .joe-dock-resizer.grippy-lit::before {
+  background: var(--accent-color) !important;
+}
+
+body.scrubber-glass .resizer::before {
+  background:
+    linear-gradient(to right, color-mix(in srgb, white 38%, transparent) 0%, transparent 28%),
+    linear-gradient(
+      to right,
+      var(--scrub-handle-glass-fill-start) 0%,
+      var(--scrub-handle-glass-fill-end) 100%
+    ) !important;
+  border-color: var(--scrub-handle-glass-border);
+  box-shadow: var(--grippy-handle-glass-shadow);
+}
+
+body.scrubber-glass .resizer:hover:not(.grippy-fading)::before,
+body.scrubber-glass.resizing .resizer::before,
+body.scrubber-glass .resizer.grippy-active::before,
+body.scrubber-glass .resizer.grippy-lit::before,
+body.scrubber-glass .joe-dock-resizer:hover:not(.grippy-fading)::before,
+body.scrubber-glass.joe-dock-resizing .joe-dock-resizer::before,
+body.scrubber-glass .joe-dock-resizer.grippy-active::before,
+body.scrubber-glass .joe-dock-resizer.grippy-lit::before {
+  background:
+    linear-gradient(to right, color-mix(in srgb, white 38%, transparent) 0%, transparent 28%),
+    linear-gradient(
+      to right,
+      var(--scrub-handle-glass-fill-start) 0%,
+      var(--scrub-handle-glass-fill-end) 100%
+    ) !important;
+}
+
+body.scrubber-beveled .resizer:hover:not(.grippy-fading)::before,
+body.scrubber-flat .resizer:hover:not(.grippy-fading)::before,
+body.scrubber-glass .resizer:hover:not(.grippy-fading)::before,
+body.scrubber-beveled.resizing .resizer::before,
+body.scrubber-flat.resizing .resizer::before,
+body.scrubber-glass.resizing .resizer::before,
+body.scrubber-beveled .resizer.grippy-active::before,
+body.scrubber-flat .resizer.grippy-active::before,
+body.scrubber-glass .resizer.grippy-active::before,
+body.scrubber-beveled .resizer.grippy-lit::before,
+body.scrubber-flat .resizer.grippy-lit::before,
+body.scrubber-glass .resizer.grippy-lit::before,
+body.scrubber-beveled.joe-dock-resizing .joe-dock-resizer::before,
+body.scrubber-flat.joe-dock-resizing .joe-dock-resizer::before,
+body.scrubber-glass.joe-dock-resizing .joe-dock-resizer::before,
+body.scrubber-beveled .joe-dock-resizer.grippy-active::before,
+body.scrubber-flat .joe-dock-resizer.grippy-active::before,
+body.scrubber-glass .joe-dock-resizer.grippy-active::before,
+body.scrubber-beveled .joe-dock-resizer.grippy-lit::before,
+body.scrubber-flat .joe-dock-resizer.grippy-lit::before,
+body.scrubber-glass .joe-dock-resizer.grippy-lit::before {
+  filter: brightness(1.03);
+  box-shadow: var(--grippy-handle-variant-hover-shadow) !important;
+}
+
+/* Grip indicators */
+.resizer::after {
+  content: "";
+  position: absolute;
+  top: var(--grippy-dots-top, 215px);
+  /* Centered within the handle */
+  left: 50%;
+  /* Center of resizer */
+  transform: translateX(-50%);
+  width: 8px;
+  height: 30px;
+  background-image:
+    /* Left grip lines */
+    repeating-linear-gradient(to bottom, transparent 0px, transparent 2px, var(--text-secondary) 2px, var(--text-secondary) 4px),
+    /* Right grip lines */
+    repeating-linear-gradient(to bottom, transparent 0px, transparent 2px, var(--text-secondary) 2px, var(--text-secondary) 4px);
+  background-size:
+    2px 100%,
+    2px 100%;
+  background-position:
+    1px 0,
+    5px 0;
+  background-repeat: repeat-y, repeat-y;
+  opacity: 0.7;
+  cursor: col-resize;
+  z-index: 200;
+  /* Higher than gripper to ensure dots stay on top */
+}
+
+/* Simple hover effect for dots */
+.resizer:hover:not(.grippy-lit):not(.grippy-fading):not(.grippy-dragging)::after {
+  opacity: 1;
+}
+
+/* Active states - persistent during drag */
+body.resizing .resizer::after,
+.resizer.grippy-active::after {
+  opacity: 1;
+}
+
+/* Keep dots visible during any animation state */
+.resizer.grippy-dragging::after,
+.resizer.grippy-bouncing::after,
+.resizer.grippy-elastic::after,
+.resizer.grippy-active::after,
+.resizer:hover:not(.grippy-fading)::after,
+.resizer.grippy-lit::after,
+.joe-dock-resizer.grippy-dragging::after,
+.joe-dock-resizer.grippy-bouncing::after,
+.joe-dock-resizer.grippy-elastic::after,
+.joe-dock-resizer.grippy-active::after,
+.joe-dock-resizer:hover:not(.grippy-fading)::after,
+.joe-dock-resizer.grippy-lit::after {
+  opacity: 1 !important;
+}
+
+/* Elastic grippy animations */
+.resizer::before,
+.resizer::after,
+.joe-dock-resizer::before,
+.joe-dock-resizer::after {
+  transition: var(--grippy-transition, top 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55));
+}
+
+.resizer.grippy-dragging::before,
+.resizer.grippy-dragging::after,
+.joe-dock-resizer.grippy-dragging::before,
+.joe-dock-resizer.grippy-dragging::after {
+  transition: none;
+  /* Disable transition while dragging */
+}
+
+.resizer.grippy-bouncing::before,
+.resizer.grippy-bouncing::after,
+.joe-dock-resizer.grippy-bouncing::before,
+.joe-dock-resizer.grippy-bouncing::after,
+.resizer.grippy-snapping::before,
+.resizer.grippy-snapping::after,
+.joe-dock-resizer.grippy-snapping::before,
+.joe-dock-resizer.grippy-snapping::after,
+.resizer.grippy-final-settling::before,
+.resizer.grippy-final-settling::after,
+.joe-dock-resizer.grippy-final-settling::before,
+.joe-dock-resizer.grippy-final-settling::after {
+  transition: var(--grippy-transition, top 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55));
+}
+
+@keyframes grippyElastic {
+  0% {
+    transform: translateX(-50%) scaleY(1);
+  }
+
+  20% {
+    transform: translateX(-50%) scaleY(1.2);
+  }
+
+  40% {
+    transform: translateX(-50%) scaleY(0.8);
+  }
+
+  60% {
+    transform: translateX(-50%) scaleY(1.1);
+  }
+
+  80% {
+    transform: translateX(-50%) scaleY(0.95);
+  }
+
+  100% {
+    transform: translateX(-50%) scaleY(1);
+  }
+}
+
+.resizer.grippy-elastic::before,
+.resizer.grippy-elastic::after {
+  animation: grippyElastic 0.6s ease-out;
+}
+
+/* Topbar styles are now in buttons.css */
+
+.content-section {
+  /* PROTOTYPE (left-rail): tracks shifted right by one — column 1 is the app rail. */
+  grid-column: 4;
+  grid-row: 2;
+  display: flex;
+  flex-direction: column;
+  padding: 0 12px 12px 10px;
+  /* border-box so the 20px bottom padding is INSIDE the height below, not added on top of it —
+     without this the box renders 20px taller than the topbar/footer reservation accounts for,
+     and the Electron browser view (whose native bounds are read from this element's rect) covers
+     the status footer by that same 20px. */
+  box-sizing: border-box;
+  background-color: var(--bg-primary);
+  overflow-y: auto;
+  overflow-x: auto;
+  border-top-left-radius: 8px;
+  position: relative;
+  z-index: 10;
+  height: calc(100vh - var(--topbar-height, 56px) - var(--status-footer-height, 0px));
+  margin-top: 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-color) transparent;
+  scrollbar-gutter: stable;
+  overscroll-behavior: none;
+}
+
+/* Keep scroll container stable during drop animations (prevents sticky rail/nav jitter). */
+
+/* Webkit scrollbar for content area */
+.content-section::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.content-section::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: var(--icon-btn-radius, 4px);
+}
+
+.content-section::-webkit-scrollbar-thumb {
+  background-color: var(--border-color);
+  border-radius: var(--icon-btn-radius, 4px);
+}
+
+.content-section::-webkit-scrollbar-thumb:hover {
+  background-color: var(--accent-color);
+}
+
+.tree-section #tree {
+  margin-top: -15px;
+}
+
+/* Node Tree Styling */
+#tree {
+  --tree-row-right-gutter: 10px;
+}
+
+#tree ul {
+  list-style-type: none;
+  padding-left: 0px;
+  margin: 0;
+  position: relative;
+}
+
+.tree-filter-empty-state {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 10px 6px 0 6px;
+  padding: 12px 14px;
+  background: color-mix(in srgb, var(--selection-bg) 55%, transparent);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg, 8px);
+  box-sizing: border-box;
+}
+
+.tree-filter-empty-title {
+  color: var(--text-primary);
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.tree-filter-empty-copy {
+  color: var(--text-secondary);
+  line-height: 1.35;
+}
+
+#tree li {
+  position: relative;
+  line-height: 2em;
+  --tree-line-height-middle: 1em;
+  /* set variable for half the line height */
+  padding-left: 30px;
+  box-sizing: border-box;
+  margin-left: 0;
+  /* Vertical stem sits under the PARENT row's status LED.
+     LED is 8px wide at the start of the content box; center is +4px from the
+     content-box left. Nested ul children start at that content-box left, so
+     their ::before/::after use left: 4px to hang under the parent LED center
+     (not the LED's left edge, which read a hair left of center). */
+  --tree-stem-nudge: 4px;
+}
+
+#tree ul ul>li {
+  padding-left: 30px;
+  /* Less indent for children */
+}
+
+/* vertical line */
+#tree li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1px;
+  height: var(--tree-line-height-middle);
+  background: var(--tree-line-color);
+}
+
+/* Nested rows only: shift the stem under the parent LED center.
+   Root-level rows keep left: 0 so LEDs stay to the right of the trunk. */
+#tree ul ul > li::before {
+  left: var(--tree-stem-nudge);
+}
+
+/* horizontal line */
+#tree li::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: var(--tree-line-height-middle);
+  width: 22px;
+  height: var(--hairline);
+  background: var(--tree-line-color);
+}
+
+/* Nested rows only: start the stub from the nudged stem; keep the same end x. */
+#tree ul ul > li::after {
+  left: var(--tree-stem-nudge);
+  width: calc(22px - var(--tree-stem-nudge));
+}
+
+/* Extend horizontal line to reach pulled-forward tree on hover */
+#tree li:not(.selected):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)::after {
+  width: 30px;
+  /* Extend 8px more to reach the pulled-forward node */
+}
+
+#tree ul ul > li:not(.selected):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)::after {
+  width: calc(30px - var(--tree-stem-nudge));
+}
+
+/* First root node vertical line placement */
+#tree>ul>li:first-child::before {
+  top: var(--tree-line-height-middle);
+}
+
+/* For all except last child, extend the vertical line all the way down */
+#tree li:not(:last-child)::before {
+  height: 100%;
+}
+
+/* Style selected node */
+#tree li.selected>.flex-container {
+  background-color: var(--selection-bg);
+  border-radius: var(--radius-md, 6px);
+  padding: 4px 8px;
+  margin-top: 6px;
+  margin-bottom: 6px;
+  width: calc(100% - var(--tree-row-right-gutter));
+  /* align with tree panel right gutter */
+}
+
+#tree li.selected>.flex-container>.node-text,
+#tree li.multi-selected>.flex-container>.node-text {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Additional selection highlight for tree multi-select (non-primary nodes) */
+#tree li.multi-selected>.flex-container {
+  background-color: var(--selection-bg);
+  border-radius: var(--radius-md, 6px);
+  border: 1px dashed var(--accent-color);
+  padding: 4px 8px;
+  margin-top: 6px;
+  margin-bottom: 6px;
+  width: calc(100% - var(--tree-row-right-gutter));
+  opacity: 0.85;
+}
+
+#tree li.context-target>.flex-container {
+  background-color: var(--selection-bg);
+  border-radius: var(--radius-md, 6px);
+  border: 1px dashed var(--accent-color);
+  padding: 4px 8px;
+  margin-top: 6px;
+  margin-bottom: 6px;
+  width: calc(100% - var(--tree-row-right-gutter));
+  opacity: 0.85;
+}
+
+#tree li.context-target>.flex-container>.node-text {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Primary selected node inside a multi-selection run keeps full emphasis. */
+#tree li.selected.multi-selected>.flex-container {
+  opacity: 1;
+}
+
+/* Set variable for selected node line-height calculations */
+#tree li.selected {
+  --tree-line-height-middle-padding: 10px;
+  /* half the total padding and margin height */
+}
+
+
+/* Dynamic selection highlighting with rounded corners */
+#tree li.selected {
+  background-color: transparent;
+  /* Remove background from li */
+}
+
+/* Selected node horizontal line placement */
+#tree li.selected::after {
+  top: calc(var(--tree-line-height-middle) + var(--tree-line-height-middle-padding));
+}
+
+/* For last-children that are selected, adjust height to account for padding */
+#tree li:last-child.selected::before {
+  height: calc(var(--tree-line-height-middle) + var(--tree-line-height-middle-padding));
+}
+
+/* Adjust the first root node when there are multiple roots or the single root has children */
+#tree>ul>li:first-child.selected::before {
+  top: calc(var(--tree-line-height-middle) + var(--tree-line-height-middle-padding));
+}
+
+/* Status Indicator Styles */
+.status-indicator {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full, 999px);
+  margin-right: 6px;
+  cursor: pointer;
+  flex-shrink: 0;
+  flex-grow: 0;
+  align-self: center;
+  transition: all var(--transition-speed) ease;
+  border: 1px solid var(--status-ring);
+  position: relative;
+  z-index: 1;
+}
+
+.status-indicator::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  right: -8px;
+  bottom: -8px;
+  border-radius: var(--radius-full, 999px);
+}
+
+.status-not-started {
+  background-color: var(--status-not-started);
+  /* Red */
+}
+
+.status-in-progress {
+  background-color: var(--status-in-progress);
+  /* Yellow */
+  box-shadow: 0 0 10px var(--status-in-progress);
+  /* Glow effect */
+}
+
+/* Expanding pulse ring as a transform/opacity ripple on ::after (compositor-only). The old
+   box-shadow-spread animation repainted every visible in-progress badge every frame. */
+.status-in-progress::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-full, 999px);
+  pointer-events: none;
+  z-index: -1;
+  background: color-mix(in srgb, var(--status-in-progress) 55%, transparent);
+  animation: status-pulse-ripple 2s ease-out infinite;
+}
+
+.status-completed {
+  background-color: var(--status-completed);
+  /* Green */
+}
+
+.status-neutral {
+  background-color: var(--status-neutral);
+  /* Grey - works with both dark and light themes */
+}
+
+@keyframes status-pulse-ripple {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+
+  70% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+/* The settings panel's dimmer overlay is translucent (50% black), not opaque, so this ripple
+   keeps showing through behind it otherwise — pausing on open and resuming on close (via
+   animation-play-state, not display:none) avoids a visible restart glitch either way. */
+body.settings-panel-open .status-in-progress::after {
+  animation-play-state: paused;
+}
+
+/* Hide status indicators when setting is disabled */
+body.hide-status-indicators .status-indicator,
+/* Hide image counts when setting is disabled */
+body.hide-image-counts .image-count,
+/* Hide child counts when setting is disabled */
+body.hide-child-counts .child-count {
+  display: none;
+}
+
+/* Remove any cascading selection effects */
+#tree li.selected li {
+  background-color: transparent;
+}
+
+/* Ensure child nodes of selected items don't inherit the selection styling */
+#tree li.selected>ul>li {
+  background-color: transparent;
+}
+
+/* Highlight for copy/move target nodes */
+#tree li.copy-move-target>.flex-container {
+  background-color: var(--selection-bg);
+  border-radius: var(--radius-md, 6px);
+  padding: 4px 8px;
+  margin: 0 -8px;
+  border: 2px solid var(--accent-color);
+  animation: pulse-highlight 2s ease-in-out;
+}
+
+@keyframes pulse-highlight {
+  0% {
+    background-color: var(--hover-bg);
+    border-color: var(--accent-color);
+    opacity: 0.7;
+  }
+
+  50% {
+    background-color: var(--selection-bg);
+    border-color: var(--accent-color);
+    opacity: 1;
+    box-shadow: 0 0 8px var(--accent-color);
+  }
+
+  100% {
+    background-color: var(--hover-bg);
+    border-color: var(--accent-color);
+    opacity: 0.7;
+  }
+}
+
+/* Lone root (new / empty flow): hide connectors (nothing to connect) and sit the
+   row FLUSH with the tree-nav left edge — same x as the stem column on multi-root
+   trees (see --tree-nav-left). The old 6px inset was a leftover from when the nav
+   itself was inset 6px; nav is now 0, so the lone root must be 0 too.
+   `.tree-single-root` is stamped by renderTree for a bulletproof match; the
+   :has(> li:only-child) form is kept as a no-JS fallback.
+   Multi-root trees never match these selectors — their 30px stem gutter is unchanged. */
+#tree > ul.tree-single-root > li:first-child::before,
+#tree > ul:has(> li:only-child) > li:first-child::before {
+  content: none;
+  height: 0;
+  width: 0;
+}
+
+#tree > ul.tree-single-root > li:first-child::after,
+#tree > ul:has(> li:only-child) > li:first-child::after {
+  content: none;
+  width: 0;
+}
+
+#tree > ul.tree-single-root > li:first-child,
+#tree > ul:has(> li:only-child) > li:first-child {
+  padding-left: var(--tree-nav-left, 0px);
+}
+
+.flex-container {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  /* Allows text truncation to work with flexbox */
+  width: calc(100% - var(--tree-row-right-gutter));
+  /* Full row hit area aligned to right gutter */
+  flex-wrap: nowrap;
+  overflow: visible;
+  /* Allow content to show */
+  flex: 0 1 auto;
+  /* Don't grow, but can shrink */
+  box-sizing: border-box;
+  border-radius: var(--radius-md, 6px);
+  transition: background-color var(--transition-speed) ease;
+}
+
+.flex-container>* {
+  transition: transform var(--transition-speed) ease;
+}
+
+/* Hover affordance for tree rows without overriding active selections */
+#tree li:not(.selected):not(.multi-selected):not(.context-target)>.flex-container:hover {
+  background-color: color-mix(in srgb, var(--selection-bg) 45%, transparent);
+  border-radius: var(--radius-md, 6px);
+  padding: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  width: calc(100% - var(--tree-row-right-gutter));
+}
+
+/* Animate child branch only (not the hovered parent row). */
+#tree li>ul {
+  transition: transform var(--transition-speed) ease;
+}
+
+/* Pull only this node's children branch forward on hover. */
+#tree li:not(.selected):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>ul {
+  transform: translateX(8px);
+}
+
+/* Keep shifted descendant row cards inside the same visible right edge. */
+#tree li:not(.selected):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>ul>li>.flex-container,
+#tree li:not(.selected):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>ul>li.selected>.flex-container,
+#tree li:not(.selected):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>ul>li.multi-selected>.flex-container {
+  width: calc(100% - var(--tree-row-right-gutter) - 8px);
+}
+
+/* Move parent row content only; keep hover card/background itself stationary. */
+#tree li:not(.selected):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>.flex-container>.status-indicator,
+#tree li:not(.selected):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>.flex-container>.tree-node-lock-indicator,
+#tree li:not(.selected):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>.flex-container>.tree-node-readonly-indicator,
+#tree li:not(.selected):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>.flex-container>.tree-node-schedule-indicator,
+#tree li:not(.selected):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>.flex-container>.tree-node-hidden-from-joe-indicator,
+#tree li:not(.selected):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>.flex-container>.tree-node-repo-indicator,
+#tree li:not(.selected):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>.flex-container>.tree-node-share-indicator,
+#tree li:not(.selected):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>.flex-container>.node-text,
+#tree li:not(.selected):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>.flex-container>.node-inline-meta {
+  transform: translateX(8px);
+}
+
+/* Share mark (browser collaboration, share-modal mockup state 8): same inline-indicator recipe as the tree's key and lock
+   (see indicatorCss in treeRenderer.js), drawn only on the top node of each partial share. */
+.tree-node-share-indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  margin-inline-end: 6px; /* logical so it stays on the text side in RTL; the sibling key/lock indicators set a physical margin-right inline from JS (indicatorCss), left as is */
+  flex-shrink: 0;
+  opacity: 0.95;
+  margin-top: -4px;
+  font-size: var(--font-meta);
+}
+
+/* Repo node icon (docs/IMPLEMENTATION/REPO_NODES_PLAN.md Task 2.9) — same inline color/size tokens as
+   .tree-node-lock-indicator (set via indicatorCss in treeRenderer.js); missing-history state gets the
+   same warning token the app uses elsewhere for "needs attention". */
+.tree-node-repo-indicator.is-history-missing {
+  color: var(--warning-color, #e0a800);
+}
+
+.node-text {
+  flex: 0 1 auto;
+  min-width: 0;
+  /* Allow text to shrink below its content size */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 0;
+  text-align: left;
+  display: inline-block;
+  font-weight: 400;
+}
+
+.node-inline-meta {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  min-width: 0;
+  white-space: nowrap;
+  margin-left: 8px;
+}
+
+/* While a node's title is being renamed (treeRenderer.js's isEditingNode), its counts/badges/
+   collapse-button are still built and appended here so the row keeps its normal height/width
+   instead of shrinking — but they're not meant to be seen or clickable mid-rename, so this
+   visually hides them and blocks interaction without removing them from layout. */
+.node-inline-meta--inert {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.tree-query-tag-badges {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 8px;
+}
+
+.tree-query-tag-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tag-badge-size);
+  height: var(--tag-badge-size);
+  border-radius: var(--tag-chip-radius);
+  border: 1px solid color-mix(in srgb, var(--tag-accent, var(--border-color)) 70%, var(--border-color));
+  background: color-mix(in srgb, var(--tag-accent, var(--bg-tertiary)) 22%, var(--bg-tertiary));
+  color: var(--tag-accent-text, var(--text-primary));
+  font-size: var(--font-meta);
+  line-height: 1;
+  box-sizing: border-box;
+  flex: 0 0 auto;
+}
+
+.tree-status-filter-warning {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  margin-left: 0;
+  color: var(--accent-color);
+  opacity: 0.9;
+  cursor: default;
+}
+
+.tree-status-filter-warning i {
+  font-size: var(--icon-glyph-sm);
+  line-height: 1;
+  pointer-events: none;
+}
+
+.tree-status-filter-warning:hover,
+.tree-status-filter-warning:focus-within {
+  opacity: 1;
+}
+
+#tree-status-filter-warning-tooltip {
+  position: fixed;
+  left: 0;
+  top: 0;
+  max-width: var(--tooltip-max-width, 240px);
+  min-width: 160px;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm, 4px);
+  background: var(--tooltip-bg);
+  /* Same bubble recipe as .flowjoe-tooltip (tooltip.css) — bg/border/ink must track it
+     together, so this reads --tooltip-text with the same --accent-color fallback. */
+  color: var(--tooltip-text, var(--accent-color));
+  border: 1.5px solid var(--tooltip-border);
+  box-shadow: 0 2.5px 10px var(--shadow-medium);
+  font-family: "Fira Mono", "Courier New", Courier, monospace;
+  font-size: calc(15px * var(--font-scale));
+  line-height: 1.5;
+  text-align: left;
+  white-space: normal;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  z-index: var(--flowjoe-z-tooltip) !important;
+  transition: opacity var(--transition-speed) ease, visibility var(--transition-speed) ease;
+}
+
+#tree-status-filter-warning-tooltip.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+#tree-status-filter-warning-tooltip::before {
+  content: "";
+  position: absolute;
+  bottom: -16px;
+  left: 8px;
+  border-width: 8px;
+  border-style: solid;
+  border-color: var(--tooltip-bg) transparent transparent transparent;
+}
+
+.arrow-container {
+  display: flex;
+  gap: 4px;
+  margin-left: 8px;
+  flex-shrink: 0;
+  /* Prevent the arrow container from shrinking */
+}
+
+/* Progressive tree compaction as panel narrows.
+   Priority: keep status + title + chevron visible; hide secondary metadata first. */
+.tree-section.tree-compact .node-text {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 66%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tree-section.tree-compact #tree li.selected>.flex-container>.node-text,
+.tree-section.tree-compact #tree li.multi-selected>.flex-container>.node-text {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 66%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tree-section.tree-tight .descendants-count {
+  display: none;
+}
+
+.tree-section.tree-tight .node-text {
+  max-width: 56%;
+}
+
+.tree-section.tree-tight #tree li.selected>.flex-container>.node-text,
+.tree-section.tree-tight #tree li.multi-selected>.flex-container>.node-text {
+  max-width: 56%;
+}
+
+.tree-section.tree-ultra-tight .child-count,
+.tree-section.tree-ultra-tight .self-count {
+  display: none;
+}
+
+.tree-section.tree-ultra-tight .node-text {
+  max-width: 48%;
+}
+
+.tree-section.tree-ultra-tight #tree li.selected>.flex-container>.node-text,
+.tree-section.tree-ultra-tight #tree li.multi-selected>.flex-container>.node-text {
+  max-width: 48%;
+}
+
+.tree-section.tree-ultra-tight .arrow-container {
+  margin-left: 4px;
+}
+
+/* Measurement mode used by treeResizer.js.
+   During autosize calculation we temporarily reveal the full node label so the
+   width can be based on the real visible row content, not the currently clipped render. */
+.tree-section.tree-autosize-measuring .node-text,
+.tree-section.tree-autosize-measuring #tree li.selected>.flex-container>.node-text,
+.tree-section.tree-autosize-measuring #tree li.multi-selected>.flex-container>.node-text {
+  flex: 0 0 auto;
+  min-width: 0;
+  max-width: none;
+  overflow: visible;
+  text-overflow: clip;
+  white-space: nowrap;
+}
+
+/* Collapse/Expand Button Styling */
+.collapse-btn {
+  --collapse-btn-size: 21px;
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--bg-secondary) 72%, white 8%),
+      color-mix(in srgb, var(--bg-tertiary) 88%, black 10%));
+  border: 1px solid color-mix(in srgb, var(--border-color) 74%, var(--accent-color) 26%);
+  color: var(--accent-color);
+  width: var(--collapse-btn-size);
+  height: var(--collapse-btn-size);
+  min-width: var(--collapse-btn-size);
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: var(--radius-sm, 4px);
+  margin: 0;
+  margin-left: 7px;
+  flex-shrink: 0;
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, white 12%, transparent),
+    0 1px 2px color-mix(in srgb, black 22%, transparent);
+  transition:
+    background-color var(--transition-speed) ease,
+    border-color var(--transition-speed) ease,
+    box-shadow var(--transition-speed) ease,
+    transform var(--transition-speed) ease,
+    color var(--transition-speed) ease;
+}
+
+.collapse-btn-glyph {
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-right: 1.75px solid currentColor;
+  border-bottom: 1.75px solid currentColor;
+  transform: translateY(-1px) rotate(45deg);
+  transform-origin: center;
+  transition: transform var(--transition-speed) ease, color var(--transition-speed) ease;
+}
+
+.collapse-btn[data-state="collapsed"] .collapse-btn-glyph {
+  transform: translateX(-1px) rotate(-45deg);
+}
+
+.collapse-btn:hover,
+.collapse-btn:focus-visible {
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--hover-bg) 82%, white 8%),
+      color-mix(in srgb, var(--bg-secondary) 84%, black 8%));
+  border-color: color-mix(in srgb, var(--accent-color) 76%, var(--border-color));
+  color: var(--text-primary);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, white 16%, transparent),
+    0 0 0 2px color-mix(in srgb, var(--accent-color) 18%, transparent),
+    0 2px 6px color-mix(in srgb, black 28%, transparent);
+}
+
+.collapse-btn:focus-visible {
+  outline: none;
+}
+
+.collapse-btn:active {
+  transform: translateY(1px);
+  box-shadow:
+    inset 0 1px 2px color-mix(in srgb, black 25%, transparent),
+    0 0 0 2px color-mix(in srgb, var(--accent-color) 18%, transparent);
+}
+
+body.tree-branch-toggle-flat .collapse-btn {
+  background: transparent;
+  border: 0;
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  border-radius: var(--radius-sm, 4px);
+  margin-left: 5px;
+  box-shadow: none;
+  transition: color var(--transition-speed) ease;
+}
+
+body.tree-branch-toggle-flat .collapse-btn:hover,
+body.tree-branch-toggle-flat .collapse-btn:focus-visible {
+  background: transparent;
+  border-color: transparent;
+  color: var(--text-primary);
+  box-shadow: none;
+}
+
+body.tree-branch-toggle-flat .collapse-btn:focus-visible {
+  outline: 1px solid color-mix(in srgb, var(--accent-color) 58%, transparent);
+  outline-offset: 2px;
+}
+
+body.tree-branch-toggle-flat .collapse-btn:active {
+  color: var(--accent-color);
+  transform: none;
+  box-shadow: none;
+}
+}

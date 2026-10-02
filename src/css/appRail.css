@@ -1,0 +1,292 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   PROTOTYPE — Global left app rail (left-rail-proto branch, visual-only)
+
+   A vertical, collapsible icon menu holding GLOBAL navigation: workspace-mode
+   switches (Flow / Browser / Terminal / Joe), global surfaces (Search, Flow
+   Summary, Shortcuts), and Storage/Settings pinned to the bottom.
+
+   DESIGN NOTES
+   ------------
+   1. Genuine 4th grid track. .container's grid-template-columns (styles-search.css)
+      gained a leading column for this rail; .tree-section / .resizer / .content-section
+      were renumbered to tracks 2/3/4 to match. This was only safe because every
+      JS call site that used to rewrite the WHOLE gridTemplateColumns string
+      (tree collapse/restore/drag in eventListeners.js, treeResizer.js,
+      settingsPanel.js, treeToolbar.js, exportPreferences.js — 15 sites total)
+      was converted to set the single --startup-tree-width custom property
+      instead. That property is now the SOLE source of truth for the tree
+      track's width; the grid's shape is no longer duplicated across the
+      codebase. See those files for the individual conversions.
+
+   2. No new size token. The rail's width is an alias of the Settings menu's own
+      collapse pair — --settings-nav-rail-width (52px) / --settings-nav-width
+      (148px) — so the app's two vertical icon menus are dimensionally identical
+      by construction, not by coincidence.
+
+   3. Collapse markup/behaviour mirrors .settings-tabs exactly: a chevron button
+      pinned at the top, .collapsed on the container, labels display:none, items
+      re-centered, chevron rotated 180deg. See src/js/appRailProto.js.
+
+   4. Appearance goes through existing semantic tokens (--bg-secondary, --border-color,
+      --accent-color, --text-secondary, --transition-speed, --radius-sm, --icon-glyph,
+      --icon-row-gap-dense, --pad-menu, --text-stack-gap), per DESIGN_TOKEN_CONTRACT.md —
+      no new colors and no new size tokens introduced.
+
+   5. Spacing/type/metric values come from the shared --rail-* token family in
+      styles-variables.css ("Vertical icon-menu (rail) family"). Those tokens hold the values
+      that .settings-tab / .settings-tabs already used; BOTH that menu and this rail now
+      reference them, so the app's two vertical icon menus are driven by one source and cannot
+      silently drift apart. Adding a metric here means adding a --rail-* token, not a literal.
+      The only bare literals left are structural (grid placement, flex ratios, 0/100%/50%,
+      transforms). The separator's thickness uses --hairline, the app-wide divider token.
+   ───────────────────────────────────────────────────────────────────────────── */
+
+@layer app {
+  /* --app-rail-width lives on .container (declared here, ONLY here) so the SAME custom property
+     drives both the grid track (.container's grid-template-columns, styles-search.css, which
+     just consumes it with a fallback) and the rail's own rendered width below — one value, two
+     readers, no risk of the two disagreeing. Collapsed is the default (matches the Settings
+     menu's own default), expanded is the opt-in state via .app-rail-expanded. */
+  .container {
+    --app-rail-width: var(--settings-nav-rail-width);
+  }
+
+  .container.app-rail-expanded {
+    --app-rail-width: var(--settings-nav-width);
+  }
+
+  .app-rail {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    width: var(--app-rail-width);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: var(--rail-menu-row-gap);
+    padding: var(--rail-menu-pad);
+    /* Rail-specific bottom clearance (does not reuse --rail-menu-pad-bottom, which is shared with
+       .settings-tabs — bumping that shared token would move both menus). Storage/Settings are
+       flush against this padding's inner edge via .app-rail-spacer above them, so this token IS
+       the visible gap between them and the status footer. Do NOT add --status-footer-height here:
+       .container's own height already subtracts it (styles-search.css), so the rail's bottom edge
+       ends exactly at the footer's top — adding the footer height again double-reserved it as
+       22px of dead space above the footer that no token value could remove. */
+    padding-bottom: var(--rail-bottom-group-pad-bottom);
+    background: var(--bg-secondary);
+    border-right: 1px solid var(--border-color);
+    border-top-right-radius: 8px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    transition: width var(--transition-speed) ease;
+    position: relative;
+    z-index: 10;
+  }
+
+  /* ── Collapse toggle — mirrors .settings-nav-collapse ── */
+  .app-rail-collapse {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    box-sizing: border-box;
+    align-self: stretch;
+    flex: 0 0 auto;
+    margin: var(--rail-collapse-margin);
+    padding: var(--rail-collapse-pad);
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-md, 6px);
+    color: var(--text-secondary);
+    cursor: pointer;
+    opacity: var(--rail-collapse-opacity);
+    transition: color var(--transition-speed), background var(--transition-speed), opacity var(--transition-speed);
+  }
+
+  .app-rail-collapse:hover {
+    color: var(--accent-color);
+    background: var(--hover-bg);
+    opacity: 1;
+  }
+
+  .app-rail-collapse-icon {
+    font-size: var(--rail-collapse-icon-size);
+    transition: transform var(--transition-speed) ease;
+  }
+
+  /* ── Items — mirrors .settings-tab ── */
+  .app-rail-item {
+    display: flex;
+    align-items: center;
+    gap: var(--rail-item-gap);
+    box-sizing: border-box;
+    align-self: stretch;
+    max-width: 100%;
+    flex: 0 0 auto;
+    /* Reset buttons.css's global `button { margin: 5px; }` base rule. */
+    margin: 0;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm, 4px);
+    color: var(--text-secondary);
+    font-family: var(--app-font-family);
+    font-size: var(--rail-item-font-size);
+    font-weight: var(--rail-item-font-weight);
+    text-align: left;
+    padding: var(--rail-item-pad);
+    cursor: pointer;
+    transition: color var(--transition-speed), background var(--transition-speed), border-color var(--transition-speed);
+    letter-spacing: var(--rail-item-letter-spacing);
+    white-space: nowrap;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .app-rail-icon {
+    flex: 0 0 auto;
+    width: var(--rail-icon-col);
+    font-size: var(--rail-icon-size);
+    text-align: center;
+    color: inherit;
+    opacity: var(--rail-icon-opacity);
+  }
+
+  .app-rail-joe-pet-icon-wrap {
+    position: relative;
+    width: 32px;
+    height: 32px;
+    flex: 0 0 32px;
+    opacity: 1;
+  }
+
+  .app-rail-joe-pet-icon {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 32px;
+    height: 32px;
+    transform: translate(-50%, -50%);
+    object-fit: contain;
+    image-rendering: pixelated;
+  }
+
+  .app-rail-label {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .app-rail-item:hover {
+    color: var(--text-primary);
+    background: var(--hover-bg);
+  }
+
+  .app-rail-item.active {
+    background: color-mix(in srgb, var(--accent-color) 12%, transparent);
+    color: var(--accent-color);
+    border-color: color-mix(in srgb, var(--accent-color) 26%, transparent);
+    font-weight: var(--rail-item-font-weight-active);
+  }
+
+  /* Accent left-bar on the active item — same idiom as .settings-tab.active. */
+  .app-rail-item.active::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: var(--rail-active-bar-width);
+    height: var(--rail-active-bar-height);
+    border-radius: 0 var(--rail-active-bar-width) var(--rail-active-bar-width) 0;
+    background: var(--accent-color);
+  }
+
+  .app-rail-item.active .app-rail-icon {
+    opacity: 1;
+  }
+
+  .app-rail-joe-pet-toggle[aria-pressed="true"] {
+    background: color-mix(in srgb, var(--accent-color) 12%, transparent);
+    color: var(--accent-color);
+    border-color: color-mix(in srgb, var(--accent-color) 26%, transparent);
+  }
+
+  .app-rail-joe-pet-toggle[aria-pressed="false"] {
+    color: var(--text-secondary);
+    background: transparent;
+    border-color: transparent;
+  }
+
+  .app-rail-joe-pet-toggle[aria-pressed="false"]:hover {
+    color: var(--text-primary);
+    background: var(--hover-bg);
+  }
+
+  .app-rail-joe-pet-toggle[aria-pressed="false"] .app-rail-joe-pet-icon {
+    opacity: 0.52;
+    filter: grayscale(1);
+  }
+
+  .app-rail-joe-pet-toggle[aria-pressed="true"] .app-rail-joe-pet-icon {
+    opacity: 1;
+    filter: none;
+  }
+
+  .app-rail-joe-pet-toggle:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+  }
+
+  /* ── Group separator + spacer that pins the trailing group to the bottom ── */
+  .app-rail-sep {
+    flex: 0 0 auto;
+    height: var(--hairline);
+    margin: var(--rail-sep-margin);
+    background: var(--border-color);
+    opacity: var(--rail-sep-opacity);
+  }
+
+  .app-rail-spacer {
+    flex: 1 1 auto;
+    min-height: var(--rail-menu-pad-block-start);
+  }
+
+  /* ── Collapsed state (default) — mirrors .settings-tabs.collapsed. Gated on the ABSENCE of
+     .container.app-rail-expanded, since that class (not a class on .app-rail itself) is the
+     single source of truth for expand/collapse — see the --app-rail-width comment above. */
+  .container:not(.app-rail-expanded) .app-rail-label {
+    display: none;
+  }
+
+  /* Collapsed narrows the container's inline gutter, same as .settings-tabs.collapsed does. */
+  .container:not(.app-rail-expanded) .app-rail {
+    padding-left: var(--rail-menu-pad-inline-collapsed);
+    padding-right: var(--rail-menu-pad-inline-collapsed);
+  }
+
+  .container:not(.app-rail-expanded) .app-rail-item {
+    justify-content: center;
+    gap: 0;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .container:not(.app-rail-expanded) .app-rail-joe-pet-toggle {
+    flex: 0 0 40px;
+    align-self: center;
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
+    min-height: 40px;
+    padding: 0;
+    border-radius: var(--radius-md, 6px);
+  }
+
+  .container:not(.app-rail-expanded) .app-rail-collapse {
+    justify-content: center;
+  }
+
+  .container:not(.app-rail-expanded) .app-rail-collapse-icon {
+    transform: rotate(180deg);
+  }
+}

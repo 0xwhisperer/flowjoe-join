@@ -1,0 +1,122 @@
+/* FlowJoe · 04 · theme-modern  —  two skins, colors only.
+   These are ordinary members of your theme list: no spacing, no radius, no
+   type. Pair with .shape-soft for the full 1b look, or use them alone.
+
+   Toggle: <html class="theme-modern-ember">  /  <html class="theme-modern-paper">
+   (Phase 4 fix, 2026-07-29: the brief's original comment said <body>, but
+   ThemeManager.applyTheme() always stamps theme-* on document.documentElement
+   — same as every existing theme, e.g. .theme-dark-1 in themes.css, which is
+   a bare unscoped selector for exactly this reason. These two rules were
+   originally written as `body.theme-modern-*`, so the selector never matched
+   and both skins were unreachable at runtime — this only surfaced once Phase
+   4 wired them into the actual Theme select and someone clicked one.) */
+
+/* ── Modern Ember — a colder, deeper ground than Ember Console, so the orange
+      reads as a signal instead of as decoration. ─────────────────── */
+.theme-modern-ember {
+  --bg-primary:   #121214;
+  --bg-secondary: #191A1D;
+  --bg-tertiary:  #212226;
+  --bg-input:     #16171A;
+
+  --text-primary:   #ECECEF;
+  --text-secondary: #8A8A93;
+  --text-muted:     var(--text-secondary);
+
+  --accent-color:   #FF9500;
+  --accent-hover:   #FFAA33;
+  --accent-dark:    #C97600;
+  --text-on-accent: #17130C;
+
+  --border-color:  #2B2C31;
+  --border-light:  #222327;
+  --border-focus:  var(--accent-color);
+
+  --topbar-bg:     #191A1D;
+  --topbar-border: #222327;
+  --modal-bg:      #191A1D;
+  --modal-overlay: rgba(8, 8, 10, .62);
+  --tooltip-bg:    #24252A;
+  --tooltip-border:#33343A;
+  --tree-line-color: #3A3B42;
+  --selection-bg:  #2A2118;
+  --hover-bg:      #2A2B31;
+  --disabled-bg:   #17181A;
+  --disabled-text: #4A4B51;
+  --scrollbar-track: #17181A;
+  --scrollbar-thumb: #33343A;
+  --drop-highlight: rgba(255, 149, 0, .10);
+
+  /* Status dots, desaturated one notch. Still four unmistakable hues, but they
+     stop competing with the user's own media for attention. */
+  --status-not-started: #E5484D;
+  --status-in-progress: #E0A046;
+  --status-completed:   #46A758;
+  --status-neutral:     #7C7D85;
+
+  --danger-color:  #E5484D;
+  --success-color: #46A758;
+  --warning-color: #E0A046;
+}
+
+/* ── Modern Paper — the same structure on a light ground. Accent darkens to
+      hold 4.5:1 against paper; nothing else changes shape. ────────── */
+.theme-modern-paper {
+  --bg-primary:   #F5F3F0;
+  --bg-secondary: #FFFFFF;
+  --bg-tertiary:  #EDEAE5;
+  --bg-input:     #FFFFFF;
+
+  --text-primary:   #1E1D1B;
+  --text-secondary: #6E6B66;
+  --text-muted:     var(--text-secondary);
+
+  /* Was #B25E09, annotated "4.6:1 on #F5F3F0" — that figure is this accent measured on
+     #FFFFFF (4.67), not on the page ground it names, where it is really 4.22 and so misses
+     AA; on --bg-tertiary #EDEAE5 it was 3.89. Darkened one step to clear 4.5:1 on all three
+     of this theme's grounds (page 5.02 / white 5.56 / tertiary 4.64) at the same hue 30, so
+     it stays the same burnt orange. --accent-hover #8F4B05 and --accent-dark #7A3F04 are
+     already darker, so the ramp keeps descending; white --text-on-accent holds at 5.56. */
+  --accent-color:   #A25304;
+  --accent-hover:   #8F4B05;
+  --accent-dark:    #7A3F04;
+  --text-on-accent: #FFFFFF;
+
+  --border-color:  #E0DCD5;
+  --border-light:  #EBE8E2;
+  --border-focus:  var(--accent-color);
+
+  --topbar-bg:     #FFFFFF;
+  --topbar-border: #E7E3DC;
+  --modal-bg:      #FFFFFF;
+  --modal-overlay: rgba(40, 36, 30, .30);
+  /* Was #2A2723/#3A3630 — a near-black brown carried over from Modern Ember, the dark
+     twin this pair was authored alongside. That made Modern Paper the only light theme
+     in the app wearing a dark tooltip (accent-on-near-black measured 3.18:1). Every
+     other light theme — light-1..4, ghibli-1..4, slate-4, high-contrast-light — tints
+     its own page ground instead, so these follow that: a warm paper a shade deeper than
+     --bg-primary (#F5F3F0), a mid-tone border, and the theme's ink for text. */
+  --tooltip-bg:    #F3EFE8;
+  --tooltip-border:#D8D0C4;
+  --tooltip-text:  #1E1D1B;
+  --tree-line-color: #CFC9C0;
+  --selection-bg:  #F7EBDC;
+  --hover-bg:      #EAE6E0;
+  --disabled-bg:   #EFECE7;
+  --disabled-text: #A8A49D;
+  --scrollbar-track: #EFECE7;
+  --scrollbar-thumb: #CFC9C0;
+  /* Tracks --accent-color at 10% alpha, the pairing this file's Ember twin also keeps
+     (rgba(255,149,0,.10) = its #FF9500). Restated here in decimal because every theme
+     hand-writes this token; kept in step with the accent retune above. */
+  --drop-highlight: rgba(162, 83, 4, .10);
+
+  --status-not-started: #C4373C;
+  --status-in-progress: #B7822C;
+  --status-completed:   #3C8B4A;
+  --status-neutral:     #8B8781;
+
+  --danger-color:  #C4373C;
+  --success-color: #3C8B4A;
+  --warning-color: #B7822C;
+}

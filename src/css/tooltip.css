@@ -1,0 +1,115 @@
+@layer app {
+/*
+ * FlowJoe shared tooltip contract
+ *
+ * Triggers provide data-tooltip and optional data-position/data-align. Legacy
+ * .tooltip-wrapper markup remains layout-compatible while its old bubble is
+ * consumed by tooltipEnhancement.js and rendered through the single body portal.
+ */
+
+[data-tooltip] {
+  cursor: pointer;
+}
+
+.tooltip-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Never let a legacy bubble or pseudo-chevron compete with the shared renderer. */
+body .tooltip-wrapper > .tooltip-content {
+  display: none !important;
+}
+
+.flowjoe-tooltip {
+  position: fixed;
+  box-sizing: border-box;
+  min-width: 80px;
+  width: max-content;
+  max-width: min(var(--tooltip-max-width, 520px), calc(100vw - 20px));
+  padding: 8px 16px;
+  border: 1.5px solid var(--tooltip-border);
+  border-radius: var(--radius-sm, 4px);
+  background: var(--tooltip-bg);
+  /* --tooltip-text is the theme's purpose-built tooltip ink; it sat beside --tooltip-bg and
+     --tooltip-border in 35 of the 42 theme blocks but was never read anywhere, so every
+     tooltip rendered in --accent-color regardless. Accent is tuned to sit on the app
+     background, not on the tooltip bubble, which left thin accent-on-tint text (light-4
+     3.16:1, fern-1/Brass Fern 1.15:1). Reading the token restores its intended role; the
+     --accent-color fallback preserves today's exact rendering for the 7 themes that still
+     declare no --tooltip-text (dark-1, dark-3, nord-1/2/3, night-1, modern-ember; all of
+     them already clear AA, the lowest being night-1 at 4.82:1). Measured live over every
+     theme: 34 improve, 8 identical, 0 regress.
+     The same recipe is restated by hand on four sibling surfaces — keep them in step:
+     .gallery-search-options-popover + .gallery-search-checkbox (styles-search.css),
+     #tree-status-filter-warning-tooltip (styles-tree.css), .header-audio-play-tooltip
+     (buttons.css). */
+  color: var(--tooltip-text, var(--accent-color));
+  box-shadow: var(--elev-raised);
+  font-family: var(--app-font-family, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+  font-size: var(--tooltip-font-size, calc(14px * var(--font-scale, 1)));
+  line-height: 1.5;
+  text-align: center;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  z-index: var(--flowjoe-z-tooltip) !important;
+  transition: opacity 120ms ease;
+}
+
+.flowjoe-tooltip.is-visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+html.theme-fern .flowjoe-tooltip {
+  /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- theme contrast exception matches the existing fern tooltip treatment */
+  color: white;
+}
+
+/* A real child of the bubble: there is exactly one chevron for every tooltip. */
+.flowjoe-tooltip__chevron {
+  position: absolute;
+  box-sizing: border-box;
+  width: 14px;
+  height: 14px;
+  background: var(--tooltip-bg);
+  pointer-events: none;
+}
+
+.flowjoe-tooltip[data-placement="bottom"] .flowjoe-tooltip__chevron {
+  top: -7px;
+  left: var(--flowjoe-tooltip-arrow-x);
+  border-top: 1.5px solid var(--tooltip-border);
+  border-left: 1.5px solid var(--tooltip-border);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.flowjoe-tooltip[data-placement="top"] .flowjoe-tooltip__chevron {
+  bottom: -7px;
+  left: var(--flowjoe-tooltip-arrow-x);
+  border-right: 1.5px solid var(--tooltip-border);
+  border-bottom: 1.5px solid var(--tooltip-border);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.flowjoe-tooltip[data-placement="right"] .flowjoe-tooltip__chevron {
+  top: var(--flowjoe-tooltip-arrow-y);
+  left: -7px;
+  border-left: 1.5px solid var(--tooltip-border);
+  border-bottom: 1.5px solid var(--tooltip-border);
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.flowjoe-tooltip[data-placement="left"] .flowjoe-tooltip__chevron {
+  top: var(--flowjoe-tooltip-arrow-y);
+  right: -7px;
+  border-top: 1.5px solid var(--tooltip-border);
+  border-right: 1.5px solid var(--tooltip-border);
+  transform: translateY(-50%) rotate(45deg);
+}
+}

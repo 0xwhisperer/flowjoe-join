@@ -1,0 +1,75 @@
+@layer app {
+.ai-chat-clear-all-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9em;
+  padding: 6px 12px;
+  background: var(--white-overlay-hover);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--ai-chat-action-btn-border);
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm, 4px);
+  transition: all var(--transition-speed) ease;
+  z-index: 10;
+}
+
+.ai-chat-conversation-actions {
+  --ai-chat-conversation-control-height: 24px; /* matches the app's small-control rhythm (chips / --icon-btn-size-sm value) — own component token */
+  --ai-chat-conversation-control-gap: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--ai-chat-conversation-control-gap);
+  margin-left: auto;
+  flex: 0 0 auto;
+}
+
+.ai-chat-conversation-actions .btn {
+  box-sizing: border-box;
+  margin: 0 !important;
+}
+
+.ai-chat-conversation-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--ai-chat-conversation-control-height);
+  min-width: var(--ai-chat-conversation-control-height);
+  height: var(--ai-chat-conversation-control-height);
+  min-height: var(--ai-chat-conversation-control-height);
+  max-height: var(--ai-chat-conversation-control-height);
+  padding: 0;
+  line-height: 1;
+  border-radius: var(--radius-sm, 4px);
+  background: var(--ai-chat-action-btn-bg);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--ai-chat-action-btn-border-soft);
+  color: var(--text-secondary);
+  transition: all var(--transition-speed) ease;
+  z-index: 10;
+}
+
+.ai-chat-conversation-actions .ai-chat-clear-all-btn {
+  height: var(--ai-chat-conversation-control-height);
+  min-height: var(--ai-chat-conversation-control-height);
+  max-height: var(--ai-chat-conversation-control-height);
+  padding-top: 0;
+  padding-bottom: 0;
+  line-height: 1;
+}
+
+.ai-chat-conversation-action-btn:hover {
+  background: var(--bg-tertiary);
+  color: var(--accent-color);
+}
+
+.ai-chat-conversation-action-btn.copied {
+  color: var(--success-color);
+}
+
+.ai-chat-clear-all-btn:hover {
+  background: var(--bg-tertiary);
+  color: var(--danger-color);
+}
+}

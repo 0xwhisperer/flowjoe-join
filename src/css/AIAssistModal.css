@@ -1,0 +1,1415 @@
+@layer app {
+#modal .ai-chat-compaction-instruction-field {
+  margin: 0 0 16px;
+}
+
+#modal .ai-chat-compaction-instruction-input {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* Shared Chat / Generate mode action header */
+#chat-mode-selector,
+#generate-panel .ai-generate-mode-heading,
+#transcribe-panel .ai-transcribe-mode-heading {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0;
+  flex: 0 0 var(--modal-section-header-height);
+  min-height: var(--modal-section-header-height);
+}
+
+#chat-mode-selector .chat-mode-header,
+#generate-panel .chat-mode-header,
+#transcribe-panel .chat-mode-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: var(--modal-section-header-height);
+  min-height: var(--modal-section-header-height);
+  margin: 0; /* the gap below this row comes from a parent flex gap, not a margin baked into this one row: #ai-spell-check-content's gap (Generate/Transcribe, where the mode's body is a true flex sibling) or #chat-mode-selector's own chat-mode gap above (Chat/Memories, where #chat-panel is a DOM child instead) — same var(--modal-row-gap) token either way */
+  padding-left: 8px;
+  box-sizing: border-box;
+}
+
+#chat-mode-selector p,
+#generate-panel .ai-generate-mode-heading p,
+#transcribe-panel .ai-transcribe-mode-heading p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.9em;
+}
+
+#chat-mode-selector .chat-mode-actions,
+#generate-panel .ai-generate-mode-actions,
+#transcribe-panel .chat-mode-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  margin: 0px;
+}
+#chat-mode-selector .chat-mode-actions button,
+#generate-panel .ai-generate-mode-actions button,
+#transcribe-panel .chat-mode-actions button {
+  margin: 0;
+}
+
+.ai-chat-heading-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0px;
+  min-width: 0;
+}
+
+#chat-mode-selector .ai-chat-section-label,
+#generate-panel .ai-generate-mode-label,
+#transcribe-panel .ai-transcribe-mode-label {
+  flex: 0 0 auto;
+  padding: 0 10px;
+}
+
+#chat-mode-selector .ai-chat-new-btn,
+#generate-panel .ai-chat-new-btn,
+#transcribe-panel .ai-chat-new-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--control-height-sm);
+  min-height: var(--control-height-sm);
+  padding: 0 10px;
+  border: 1px solid var(--border-color); /* hairline static outline (owner ask) — same as the Manage button's resting border; the generic .btn rule's transparent border was hiding the button edge against the panel */
+  border-radius: var(--radius-md, 6px);
+  font-size: 0.7em;
+  line-height: 1.2;
+  gap: var(--control-icon-gap);
+}
+
+/* Chat with Joe's rail only: unify this row's pill-button height with its dropdowns and "?" toggle
+   (see --ai-chat-header-control-height comment in styles-variables.css). Generate/Transcribe panels
+   keep the app-wide --control-height-sm above — untouched. */
+#chat-mode-selector .ai-chat-new-btn {
+  height: var(--ai-chat-header-control-height);
+  min-height: var(--ai-chat-header-control-height);
+}
+
+#chat-mode-selector .ai-chat-memories-btn.is-active {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+  background: color-mix(in srgb, var(--accent-color) 14%, var(--bg-tertiary) 86%);
+}
+
+/* Memories mode hides the chat action controls but MUST keep the memories button —
+   it doubles as the "Back to chat" control (hiding the whole row trapped the user). */
+#ai-spell-check-panel[data-mode="memories"] #chat-mode-selector .chat-mode-actions > *:not(.ai-chat-memories-tooltip-wrapper) {
+  display: none;
+}
+
+/* #chat-mode-selector isn't just the toolbar header row's styling target — #chat-panel (the actual
+   messages + input) is its DOM child, not a sibling. In chat/memories mode it must grow to fill the
+   panel's remaining height instead of staying pinned to the shared header height above, or #chat-panel
+   collapses to that same fixed height and its content becomes invisible. */
+#ai-spell-check-panel[data-mode="chat"] #chat-mode-selector,
+#ai-spell-check-panel[data-mode="memories"] #chat-mode-selector {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--modal-row-gap); /* .chat-mode-header -> #chat-panel: #chat-panel is a DOM CHILD of #chat-mode-selector (not a flex sibling under #ai-spell-check-content), so it never received that parent's row-gap — was accidentally flush (0px) against the header above it */
+}
+
+#ai-spell-check-panel[data-mode="memories"] #ai-chat-messages {
+  flex: 1 1 0 !important;
+  min-height: 0;
+}
+
+#chat-panel {
+  display: none;
+  flex-direction: column;
+  flex: 1 1 0;
+  margin: 0;
+  min-height: 0;
+  max-height: 100%;
+  position: relative;
+  overflow: hidden;
+  /* Breathing room so the footer (token counter + segmented breakdown bar/legend) is never clipped flush
+     against the panel's bottom edge. The footer is flex:0 0 auto; the messages list (flex:1) yields. */
+  padding-bottom: var(--chat-panel-pad-bottom);
+}
+
+#ai-spell-check-panel[data-mode="memories"] #ai-chat-messages > :not(#memories-panel) {
+  display: none !important;
+}
+
+#ai-chat-messages {
+  --ai-chat-scroll-control-reserve: 58px;
+  --ai-chat-sticky-panel-offset: 0px;
+  flex: 1 1 0;
+  overflow-y: auto;
+  /* Themed thin scrollbar doubles as the live position indicator that runs down the
+     right edge between the ▲/▼ jump caps. `scrollbar-gutter: stable` reserves the
+     track width on both sides so the float controls keep equal, predictable margins
+     whether or not the thumb is showing. */
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--accent-color) 45%, transparent) transparent;
+  scrollbar-gutter: stable;
+  /* Zero floor so the messages list (flex:1) ALWAYS yields vertical space to the fixed footer (input +
+     token counter + segmented breakdown bar + legend, which can wrap). Any positive floor can push the
+     footer past #chat-panel's overflow:hidden edge and clip the bar on shorter panels. */
+  min-height: 0;
+  padding: var(--ai-chat-messages-pad-block) var(--ai-chat-messages-pad-inline);
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ai-chat-messages-gap);
+  overflow-anchor: none;
+  background: color-mix(in srgb, var(--bg-primary) var(--modal-glass-ai-chat-messages-mix), transparent);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md, 6px);
+  position: relative;
+  user-select: text;
+  -webkit-user-select: text;
+  contain: none;
+  content-visibility: visible;
+  backface-visibility: visible;
+  will-change: auto;
+}
+
+#ai-chat-messages > .ai-chat-compaction-panel {
+  position: relative !important;
+  top: auto !important;
+  z-index: 2;
+  flex: 1 1 auto;
+  width: 100% !important;
+  max-width: none !important;
+  align-self: stretch !important;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+#ai-chat-messages.ai-chat-compaction-review-open > :not(#ai-chat-compaction-panel):not(#ai-chat-compaction-guide):not(#ai-chat-loading):not(#memories-panel) {
+  display: none !important;
+}
+
+#ai-chat-messages.ai-chat-compaction-review-open > #ai-chat-compaction-panel[hidden] {
+  display: none !important;
+}
+
+#ai-chat-messages > .ai-chat-compaction-panel[hidden] {
+  display: none !important;
+}
+
+#ai-chat-messages::after {
+  content: "";
+  order: 999;
+  flex: 0 0 var(--ai-chat-messages-tail);
+}
+
+/* Floating chat-window controls share one look: the expand toggle and the ▲/▼ scroll-jump
+   caps are all absolute overlays in #chat-panel that stay fixed over the messages box (the
+   expand toggle bottom-right, the caps bookending the scrollbar position rail). The 20px
+   insets are applied by syncChatScrollRail() so each float sits an equal margin from the edge. */
+.ai-chat-window-expand-toggle,
+.ai-chat-scroll-jump {
+  z-index: 3;
+  width: var(--icon-btn-size);
+  height: var(--icon-btn-size);
+  min-width: var(--icon-btn-size);
+  min-height: var(--icon-btn-size);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--border-color) 86%, transparent);
+  border-radius: var(--radius-md, 6px);
+  background: color-mix(in srgb, var(--bg-tertiary) 92%, transparent);
+  color: var(--accent-color);
+  box-shadow: var(--elev-floating);
+  cursor: pointer;
+  transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease, color var(--transition-speed) ease, opacity var(--transition-speed) ease;
+}
+
+.ai-chat-window-expand-toggle:hover,
+.ai-chat-window-expand-toggle:focus-visible,
+.ai-chat-window-expand-toggle[aria-pressed="true"],
+.ai-chat-scroll-jump:hover,
+.ai-chat-scroll-jump:focus-visible {
+  background: var(--hover-bg);
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+  outline: none;
+}
+
+/* Dim + disable a jump cap once the conversation is already pinned to that end. */
+.ai-chat-scroll-jump:disabled {
+  opacity: var(--disabled-opacity-control);
+  cursor: default;
+  box-shadow: none;
+}
+
+#chat-panel.ai-chat-response-expanded #ai-chat-messages {
+  flex: 1 1 0 !important;
+  min-height: 0;
+}
+
+#chat-panel.ai-chat-response-expanded #ai-chat-attachment,
+#chat-panel.ai-chat-response-expanded #ai-chat-input-area {
+  display: none !important;
+}
+
+#chat-panel[style*="flex"] {
+  display: flex;
+}
+
+/* Chat bubble improvements */
+.ai-chat-message.user .ai-chat-bubble,
+.ai-chat-message.assistant .ai-chat-bubble {
+  padding: var(--chat-bubble-pad);
+  max-width: var(--chat-bubble-measure);
+  word-wrap: break-word;
+  font-size: 0.95em;
+  line-height: 1.5;
+  cursor: text;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.ai-chat-bubble,
+.ai-chat-bubble .flowjoe-markdown,
+.ai-chat-bubble .flowjoe-markdown * {
+  user-select: text;
+  -webkit-user-select: text;
+  contain: none;
+  content-visibility: visible;
+  backface-visibility: visible;
+  will-change: auto;
+}
+
+.ai-chat-actions,
+.ai-chat-action-btn,
+.ai-chat-actions .tooltip-wrapper,
+.ai-chat-conversation-actions,
+.ai-chat-conversation-action-btn,
+.ai-chat-message-attachments,
+.ai-chat-message-attachment,
+.ai-chat-message-state,
+.ai-chat-msg-state-btn,
+.ai-chat-message-state-badge,
+.ai-chat-msg-provider {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.ai-chat-message.user .ai-chat-bubble {
+  background: var(--accent-color);
+  color: var(--text-on-accent);
+  border-radius: 12px 12px 4px 12px;
+  box-shadow: var(--elev-resting);
+}
+
+.ai-chat-message.user {
+  --ai-chat-user-message-gap: 10px;
+  display: flex !important;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: 100%;
+  margin-left: 0;
+  justify-content: flex-end !important;
+  align-items: flex-end !important;
+  gap: 4px var(--ai-chat-user-message-gap);
+}
+
+.ai-chat-message.user::after {
+  display: none;
+}
+
+.ai-chat-message.user .ai-chat-actions {
+  order: 1;
+  display: flex;
+  flex-direction: row;
+  gap: var(--ai-chat-user-message-gap);
+  position: sticky;
+  bottom: 14px;
+  width: max-content;
+  max-width: calc(100% - 8px);
+  align-self: end;
+  justify-self: end;
+  margin: 0 !important;
+  z-index: 4;
+}
+
+.ai-chat-message.user .ai-chat-actions .ai-chat-action-btn {
+  margin: 0;
+}
+
+.ai-chat-message.user .ai-chat-bubble {
+  order: 2;
+  flex: 0 1 auto;
+}
+
+.ai-chat-message.user .ai-chat-message-attachments {
+  order: 3;
+  margin-left: 0;
+  align-self: flex-end;
+  gap: var(--ai-chat-user-message-gap);
+}
+
+.ai-chat-message.user .ai-chat-message-attachments,
+.ai-chat-message.user .ai-chat-message-attachment {
+  margin: 0 !important;
+}
+
+/* Per-message Omit/Pin controls (transcript turns). Anchored to the bubble's top-right edge: the
+   bubble is the positioning context, so the controls hug the reply rather than the full-width row. */
+.ai-chat-message .ai-chat-bubble {
+  position: relative;
+}
+.ai-chat-message.has-message-state-controls {
+  position: relative;
+  box-sizing: border-box;
+  padding-top: var(--chat-msg-state-reserve);
+}
+.ai-chat-message-state {
+  position: absolute;
+  bottom: calc(100% + var(--chat-msg-state-offset)); /* sits in the reserved row padding above the bubble */
+  display: flex;
+  gap: var(--chat-msg-state-gap);
+  width: max-content; /* hug the buttons so they cluster tightly and never spread */
+  max-width: 100%;
+  align-items: center;
+  white-space: nowrap;
+  opacity: 1;
+  z-index: 3;
+}
+/* Anchor to the bubble edge that keeps the strip on-screen: Joe's bubbles are left-aligned, so the
+   controls hug the bubble's left/top and extend right into open space; user bubbles are right-aligned,
+   so they hug the right edge and extend left. (Right-anchoring a wide strip to a short left bubble would
+   run it off-screen.) Offset by --chat-bubble-pad-x (the bubble's own horizontal inset, restated as its
+   own token since CSS can't pull one value out of a shorthand custom property) so the strip's text aligns
+   with the bubble's text, not with the bubble's outer edge — at every density/shape tier, not just the
+   default (every --chat-bubble-pad override in dropin/ restates --chat-bubble-pad-x alongside it). */
+.ai-chat-message.assistant .ai-chat-message-state {
+  left: var(--chat-bubble-pad-x);
+  justify-content: flex-start;
+}
+.ai-chat-message.user .ai-chat-message-state {
+  right: var(--chat-bubble-pad-x);
+  justify-content: flex-end;
+}
+/* Provider mark (which brain wrote this reply) — sits left of the Omit button, dim until hovered. */
+.ai-chat-msg-provider {
+  display: inline-flex;
+  align-items: center;
+  opacity: 0.65;
+  margin-right: 2px;
+}
+.ai-chat-msg-provider svg {
+  display: block;
+}
+.ai-chat-message-state:hover .ai-chat-msg-provider {
+  opacity: 1;
+}
+.ai-chat-msg-state-btn {
+  font-size: 11px;
+  line-height: 1;
+  padding: var(--chat-msg-state-btn-pad);
+  border-radius: var(--radius-full, 999px);
+  border: 1px solid var(--border-color, #555);
+  background: transparent;
+  color: var(--text-secondary, #9aa0a6);
+  cursor: pointer;
+}
+.ai-chat-msg-state-btn:hover {
+  background: var(--hover-bg, #444);
+  color: var(--text-primary);
+}
+.ai-chat-msg-state-btn.is-active {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+.ai-chat-msg-delete-btn:hover {
+  border-color: var(--danger-color);
+  background: color-mix(in srgb, var(--danger-color) 14%, transparent);
+  color: var(--danger-color);
+}
+
+#ai-spell-check-panel #ai-chat-messages .ai-chat-message.user.is-actions-wrapped .ai-chat-actions .ai-chat-message-state {
+  position: static;
+  display: flex;
+  order: -2;
+  flex: 0 0 auto;
+  margin: 0 6px 0 0;
+  opacity: 1;
+  max-width: none;
+  justify-content: flex-end;
+}
+
+#ai-spell-check-panel #ai-chat-messages .ai-chat-message.user.is-actions-wrapped .ai-chat-actions {
+  flex-wrap: nowrap;
+}
+
+/* Per-message token chip (quiet, state-aware) */
+.ai-chat-msg-token-chip {
+  align-self: flex-end;
+  margin-top: 0;
+  font-size: var(--font-micro);
+  line-height: 1.3;
+  opacity: 0.6;
+  color: var(--text-secondary, #9aa0a6);
+  white-space: nowrap;
+  user-select: none;
+}
+/* User chips wrap to their own flex line and hug the right edge under the bubble.
+   A zero-height full-width break (order:3) forces the chip onto its own line so the
+   chip itself can stay content-width (flex:0 0 auto) and hug the bubble's right edge —
+   a full-width chip box would overlap the actions cell horizontally. */
+.ai-chat-message.user .ai-chat-msg-token-chip-break {
+  order: 3;
+  flex: 0 0 100%;
+  height: 0;
+  margin: 0;
+  padding: 0;
+}
+.ai-chat-message.user .ai-chat-msg-token-chip {
+  order: 4;
+  flex: 0 0 auto;
+  margin-left: auto;
+  text-align: right;
+}
+.ai-chat-message.assistant .ai-chat-msg-token-chip {
+  flex: 0 0 100%;
+  order: 3;
+  align-self: flex-start;
+  margin-left: 18px;
+}
+.ai-chat-msg-token-chip[data-state="omitted"] { color: var(--text-secondary, #9aa0a6); opacity: 0.5; font-style: italic; }
+.ai-chat-msg-token-chip[data-state="compacted"] { color: rgba(170, 140, 220, 0.9); opacity: 0.8; font-style: italic; }
+.ai-chat-msg-token-chip[data-state="pinned"] { color: var(--accent-color); opacity: 0.85; }
+
+/* Web-search transparency chip: deterministic "this reply used the live web" marker under an assistant
+   bubble. Collapsed by default; expands to the exact queries + cited sources. */
+.ai-chat-web-search-chip {
+  /* Force the pill onto its OWN full-width line, ordered after the bubble + sticky action buttons, so it
+     sits under the bubble and has zero effect on where the buttons land (they stay bottom-right of the
+     bubble, sticky, exactly as on a reply with no search). */
+  order: 1;
+  flex: 0 0 100%;
+  align-self: flex-start;
+  margin: 4px 0 2px 18px;
+  max-width: calc(100% - 18px);
+  font-size: var(--ai-panel-text-size);
+  line-height: var(--ai-line-height);
+}
+.ai-chat-web-search-chip-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--control-icon-gap);
+  padding: var(--pad-compact); /* was a drifted 2px 10px */
+  border-radius: var(--radius-full, 999px);
+  border: 1px solid rgba(120, 170, 255, 0.5);
+  background: rgba(120, 170, 255, 0.12);
+  color: var(--text-secondary, #9aa0a6);
+  cursor: pointer;
+  font-size: inherit;
+  line-height: inherit;
+  transition: background var(--transition-speed) ease, border-color var(--transition-speed) ease;
+}
+.ai-chat-web-search-chip-toggle:hover {
+  background: rgba(120, 170, 255, 0.2);
+  border-color: rgba(120, 170, 255, 0.7);
+}
+.ai-chat-web-search-chip-toggle--inert {
+  cursor: default;
+}
+.ai-chat-web-search-chip-toggle--inert:hover {
+  background: rgba(120, 170, 255, 0.12);
+  border-color: rgba(120, 170, 255, 0.5);
+}
+.ai-chat-web-search-chip-icon { font-size: 0.95em; }
+.ai-chat-web-search-chip-label { font-weight: 600; }
+.ai-chat-web-search-chip-count { opacity: 0.8; }
+.ai-chat-web-search-chip-details {
+  margin: 6px 0 0 4px;
+  padding: 8px 12px;
+  border-left: 2px solid rgba(120, 170, 255, 0.4);
+  color: var(--text-secondary, #9aa0a6);
+}
+.ai-chat-web-search-chip-details[hidden] { display: none; }
+.ai-chat-web-search-chip-queries { margin-bottom: 6px; }
+.ai-chat-web-search-chip-queries-label { font-weight: 600; }
+.ai-chat-web-search-chip-sources {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.ai-chat-web-search-chip-sources li {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.ai-chat-web-search-chip-sources a {
+  color: var(--accent-color, #ff9500);
+  text-decoration: none;
+}
+.ai-chat-web-search-chip-sources a:hover { text-decoration: underline; }
+.ai-chat-web-search-chip-source-host { opacity: 0.6; font-size: 0.9em; }
+
+/* Code-interpreter transparency chip: deterministic "this reply used the Python sandbox" marker under
+   an assistant bubble. Collapsed by default; expands to show the code Joe ran. Mirrors the web-search
+   chip layout with a green accent (Python's color). */
+.ai-chat-code-interpreter-chip {
+  order: 1;
+  flex: 0 0 100%;
+  align-self: flex-start;
+  margin: 4px 0 2px 18px;
+  max-width: calc(100% - 18px);
+  font-size: var(--ai-panel-text-size);
+  line-height: var(--ai-line-height);
+}
+.ai-chat-code-interpreter-chip-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--control-icon-gap);
+  padding: var(--pad-compact);
+  border-radius: var(--radius-full, 999px);
+  border: 1px solid rgba(100, 200, 100, 0.5);
+  background: rgba(100, 200, 100, 0.12);
+  color: var(--text-secondary, #9aa0a6);
+  cursor: pointer;
+  font-size: inherit;
+  line-height: inherit;
+  transition: background var(--transition-speed) ease, border-color var(--transition-speed) ease;
+}
+.ai-chat-code-interpreter-chip-toggle:hover {
+  background: rgba(100, 200, 100, 0.2);
+  border-color: rgba(100, 200, 100, 0.7);
+}
+.ai-chat-code-interpreter-chip-icon { font-size: 0.95em; }
+.ai-chat-code-interpreter-chip-label { font-weight: 600; }
+.ai-chat-code-interpreter-chip-count { opacity: 0.8; }
+.ai-chat-code-interpreter-chip-details {
+  margin: 6px 0 0 4px;
+  padding: 8px 12px;
+  border-left: 2px solid rgba(100, 200, 100, 0.4);
+  color: var(--text-secondary, #9aa0a6);
+}
+.ai-chat-code-interpreter-chip-details[hidden] { display: none; }
+.ai-chat-code-interpreter-chip-code {
+  font-family: var(--ai-mono-font, "SF Mono", "Fira Code", "Cascadia Code", monospace);
+  font-size: 0.85em;
+  margin: 0 0 8px 0;
+  padding: 8px 10px;
+  background: rgba(100, 200, 100, 0.06);
+  border-radius: var(--radius-sm, 4px);
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-x: auto;
+  max-height: 300px;
+  overflow-y: auto;
+}
+.ai-chat-code-interpreter-chip-code:last-child { margin-bottom: 0; }
+
+/* Jev outside-text note (Slice 3): a file or item read this turn contained text addressed to an AI. A plain line
+   in the same slot as the other reply chips (own full-width row under the bubble), tinted with the warning token. */
+.ai-chat-outside-text-chip {
+  order: 1;
+  flex: 0 0 100%;
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--control-icon-gap);
+  margin: 4px 0 2px 18px;
+  max-width: calc(100% - 18px);
+  padding: var(--pad-compact);
+  border-radius: var(--radius-full, 999px);
+  border: 1px solid color-mix(in srgb, var(--warning-color) 45%, transparent);
+  background: color-mix(in srgb, var(--warning-color) 10%, transparent);
+  color: var(--text-secondary);
+  font-size: var(--ai-panel-text-size);
+  line-height: var(--ai-line-height);
+}
+.ai-chat-outside-text-chip-icon {
+  font-size: 0.95em;
+}
+/* Manual-reference transparency chip: deterministic "this reply was given FlowJoe manual chapters"
+   marker (director preload and/or open_reference). Warm amber accent so it reads as docs, not web/Python. */
+.ai-chat-manual-reference-chip {
+  order: 1;
+  flex: 0 0 100%;
+  align-self: flex-start;
+  margin: 4px 0 2px 18px;
+  max-width: calc(100% - 18px);
+  font-size: var(--ai-panel-text-size);
+  line-height: var(--ai-line-height);
+}
+.ai-chat-manual-reference-chip-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--control-icon-gap);
+  padding: var(--pad-compact);
+  border-radius: var(--radius-full, 999px);
+  border: 1px solid rgba(255, 170, 80, 0.55);
+  background: rgba(255, 170, 80, 0.12);
+  color: var(--text-secondary, #9aa0a6);
+  cursor: pointer;
+  font-size: inherit;
+  line-height: inherit;
+  transition: background var(--transition-speed) ease, border-color var(--transition-speed) ease;
+}
+.ai-chat-manual-reference-chip-toggle:hover {
+  background: rgba(255, 170, 80, 0.2);
+  border-color: rgba(255, 170, 80, 0.75);
+}
+.ai-chat-manual-reference-chip-icon { font-size: 0.95em; }
+.ai-chat-manual-reference-chip-label { font-weight: 600; }
+.ai-chat-manual-reference-chip-count { opacity: 0.8; }
+.ai-chat-manual-reference-chip-details {
+  margin: 6px 0 0 4px;
+  padding: 8px 12px;
+  border-left: 2px solid rgba(255, 170, 80, 0.45);
+  color: var(--text-secondary, #9aa0a6);
+}
+.ai-chat-manual-reference-chip-details[hidden] { display: none; }
+.ai-chat-manual-reference-chip-topics {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.ai-chat-manual-reference-chip-topics li {
+  font-weight: 500;
+}
+.ai-chat-manual-reference-chip-topic-link {
+  display: inline;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent-color, #ff9500);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  text-decoration: none;
+}
+.ai-chat-manual-reference-chip-topic-link:hover {
+  text-decoration: underline;
+}
+
+/* Segmented token breakdown bar + legend (read-only; partitions the request total) */
+.ai-chat-token-bar {
+  display: flex;
+  flex-direction: column;
+  /* Bar → legend gap is independent of --ai-meter-gap (which only drives prompt→rail→bar). */
+  gap: var(--ai-legend-gap, 10px);
+  margin-top: var(--ai-meter-gap, 10px);
+  padding-bottom: 0;
+  position: relative;
+}
+.ai-chat-token-bar[hidden] { display: none; }
+/* The row collapses to the track height; the round "?" toggle floats at the far right and is
+   vertically centered on the bar, so it no longer inflates the row and skews the gap to the legend. */
+.ai-chat-token-bar-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding-right: 28px;
+}
+.ai-chat-token-bar-track {
+  display: block;
+  flex: 1 1 auto;
+  width: 100%;
+  height: 6px;
+  border-radius: var(--radius-full, 999px);
+  overflow: hidden;
+  background: var(--bg-tertiary, #333);
+}
+.ai-chat-token-used {
+  display: flex;
+  height: 100%;
+  max-width: 100%;
+  min-width: 0;
+  border-radius: inherit;
+  overflow: hidden;
+}
+.ai-chat-token-seg { display: block; min-width: 2px; height: 100%; }
+.ai-chat-token-seg[data-bucket="system"],
+.ai-chat-token-legend-swatch[data-bucket="system"] { background: rgba(140, 150, 170, 0.85); }
+/* Tools (tool definitions + tool-instruction addenda): a muted olive — H82, midway between
+   location's yellow-gold (H58) and history's green (H120) but darker and far less saturated than
+   either, and nowhere near system's blue-grey it sits beside in the legend. */
+.ai-chat-token-seg[data-bucket="tools"],
+.ai-chat-token-legend-swatch[data-bucket="tools"] { background: rgba(150, 165, 95, 0.9); }
+/* Split from the former single "context" bucket (Joe system audit, image-token-reduction follow-up):
+   the tree map, small location packets, and the current slot's full JSON were one undifferentiated
+   number, which made "Omit entire flow map" look broken (it only ever suppressed the map). Three
+   distinct but related teal/green-family shades keep them visually grouped as "flow-ish" while
+   staying tell-apart-able from each other and from every other bucket's color. */
+.ai-chat-token-seg[data-bucket="flowMap"],
+.ai-chat-token-legend-swatch[data-bucket="flowMap"] { background: rgba(90, 190, 180, 0.9); }
+/* Early-audit finding: an amber at H41/S59/L52 measured only ~10° of hue from "reference"
+   (H31/S100/L66) — the closest pair in the whole palette, reading as "same orange, lighter" in a
+   thin bar. Re-picked at true yellow-gold (H58) — 27° from reference, 62° from history (H120) — with
+   distinctly different saturation/lightness from reference too, not hue alone. */
+.ai-chat-token-seg[data-bucket="location"],
+.ai-chat-token-legend-swatch[data-bucket="location"] { background: rgba(215, 210, 66, 0.85); }
+.ai-chat-token-seg[data-bucket="slotData"],
+.ai-chat-token-legend-swatch[data-bucket="slotData"] { background: rgba(205, 90, 80, 0.85); }
+.ai-chat-token-seg[data-bucket="reference"],
+.ai-chat-token-legend-swatch[data-bucket="reference"] { background: rgba(255, 170, 80, 0.9); }
+.ai-chat-token-seg[data-bucket="memories"],
+.ai-chat-token-legend-swatch[data-bucket="memories"] { background: rgba(120, 170, 235, 0.9); }
+.ai-chat-token-seg[data-bucket="compacted"],
+.ai-chat-token-legend-swatch[data-bucket="compacted"] { background: rgba(170, 140, 220, 0.9); }
+/* Fixed, not var(--accent-color): the accent color drifts close to the reference/attachments
+   swatches in several themes, recreating the exact same-color confusion this palette exists to avoid. */
+.ai-chat-token-seg[data-bucket="history"],
+.ai-chat-token-legend-swatch[data-bucket="history"] { background: rgba(120, 200, 120, 0.9); }
+.ai-chat-token-seg[data-bucket="attachments"],
+.ai-chat-token-legend-swatch[data-bucket="attachments"] { background: rgba(215, 110, 160, 0.9); }
+.ai-chat-token-seg[data-bucket="overhead"],
+.ai-chat-token-legend-swatch[data-bucket="overhead"] { background: rgba(190, 200, 215, 0.58); }
+/* Legend row: segment legend on the left (scrolls if it overflows), attachment-memories
+   affordance pinned to the right (relocated here from the now-removed row above the rail). */
+.ai-chat-token-bar-legend-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+}
+.ai-chat-token-bar-legend-row > #ai-chat-context-legend {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  color: var(--text-secondary, #9aa0a6);
+}
+.ai-chat-token-bar-legend-row > #ai-chat-context-legend:empty {
+  display: none;
+}
+.ai-chat-token-bar-legend {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  flex-wrap: nowrap; /* single compact line — multi-line wrap bloated the footer and clipped it */
+  overflow-x: auto;
+  gap: 2px 10px;
+  font-size: 1em;
+  line-height: 1.3;
+  color: var(--text-secondary, #9aa0a6);
+  scrollbar-width: none;
+}
+.ai-chat-token-bar-legend::-webkit-scrollbar { display: none; }
+.ai-chat-token-legend-item { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; flex: 0 0 auto; }
+.ai-chat-token-legend-item.is-empty { opacity: 0.65; }
+.ai-chat-token-legend-swatch { width: 8px; height: 8px; border-radius: var(--radius-xs, 2px); flex: 0 0 auto; }
+.ai-chat-token-legend-draft { font-style: italic; opacity: 0.7; }
+.ai-chat-token-legend-toggle {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 22px;
+  height: var(--icon-btn-size-xs);
+  min-width: 22px;
+  min-height: var(--icon-btn-size-xs);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid var(--border-color, #555);
+  border-radius: var(--radius-full, 999px);
+  background: var(--bg-tertiary, #333);
+  color: var(--text-secondary, #9aa0a6);
+  font: inherit;
+  line-height: 1;
+  cursor: pointer;
+}
+.ai-chat-token-legend-toggle i {
+  font-size: 0.78em;
+  line-height: 1;
+}
+.ai-chat-token-legend-toggle:hover,
+.ai-chat-token-legend-toggle:focus-visible,
+.ai-chat-token-legend-toggle[aria-expanded="true"] {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+  background: color-mix(in srgb, var(--accent-color) 14%, var(--bg-tertiary) 86%);
+}
+.ai-chat-token-legend-popover {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 8px);
+  z-index: 20;
+  width: min(560px, 100%);
+  max-height: min(360px, 55vh);
+  overflow: auto;
+  padding: 12px;
+  border: 1px solid color-mix(in srgb, var(--accent-color) 42%, var(--border-color, #555) 58%);
+  border-radius: var(--radius-lg, 8px);
+  background: var(--bg-secondary, #2a2a2a);
+  color: var(--text-primary);
+  box-shadow: var(--elev-floating);
+}
+.ai-chat-token-legend-popover[hidden] { display: none; }
+.ai-chat-token-legend-popover-title {
+  margin: 0 0 var(--card-title-gap);
+  color: var(--accent-color);
+  font-weight: 700;
+}
+.ai-chat-token-legend-popover-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.ai-chat-token-legend-popover-item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 2px 8px;
+  align-items: center;
+  padding: 8px;
+  border: 1px solid var(--border-color, #555);
+  border-radius: var(--radius-md, 6px);
+  background: color-mix(in srgb, var(--bg-tertiary) 72%, transparent);
+}
+.ai-chat-token-legend-popover-item strong {
+  font-weight: 700;
+}
+.ai-chat-token-legend-popover-item span:last-child {
+  grid-column: 2;
+  color: var(--text-secondary, #9aa0a6);
+  line-height: 1.35;
+}
+.ai-chat-token-legend-popover-note {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border-color, #555);
+  color: var(--text-secondary, #9aa0a6);
+  line-height: 1.35;
+}
+.ai-chat-token-legend-draft-mark {
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full, 999px);
+  border: 1px solid var(--border-color, #555);
+  color: var(--text-secondary, #9aa0a6);
+}
+@media (max-width: 720px) {
+  .ai-chat-token-legend-popover-grid { grid-template-columns: 1fr; }
+}
+.ai-chat-message-state-badge {
+  font-size: var(--font-micro);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm, 4px);
+}
+.ai-chat-message-state-badge.is-omitted {
+  background: rgba(150, 150, 150, 0.18);
+  color: var(--text-secondary, #9aa0a6);
+}
+.ai-chat-message-state-badge.is-pinned {
+  background: rgba(120, 170, 255, 0.18);
+  color: var(--accent-color);
+}
+/* Omitted turns read muted (still fully visible + inspectable); pinned turns get an accent rail. */
+.ai-chat-message.is-omitted .ai-chat-bubble {
+  opacity: 0.5;
+}
+.ai-chat-message.is-pinned .ai-chat-bubble {
+  box-shadow: inset 2px 0 0 var(--accent-color);
+}
+
+.ai-chat-bubble--markdown .flowjoe-markdown > :first-child {
+  margin-top: 0;
+}
+
+.ai-chat-bubble--markdown .flowjoe-markdown > :last-child {
+  margin-bottom: 0;
+}
+
+.ai-chat-bubble--markdown .flowjoe-markdown,
+.ai-chat-bubble--markdown .flowjoe-markdown :where(p, li, ul, ol, blockquote, table, th, td, strong, em, a, code) {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.ai-chat-bubble--markdown .flowjoe-markdown p,
+.ai-chat-bubble--markdown .flowjoe-markdown ul,
+.ai-chat-bubble--markdown .flowjoe-markdown ol,
+.ai-chat-bubble--markdown .flowjoe-markdown blockquote,
+.ai-chat-bubble--markdown .flowjoe-markdown pre,
+.ai-chat-bubble--markdown .flowjoe-markdown table {
+  margin: 0.65em 0;
+}
+
+.ai-chat-bubble--markdown .flowjoe-markdown ul,
+.ai-chat-bubble--markdown .flowjoe-markdown ol {
+  padding-left: 1.35em;
+}
+
+.ai-chat-bubble--markdown .flowjoe-markdown h1,
+.ai-chat-bubble--markdown .flowjoe-markdown h2,
+.ai-chat-bubble--markdown .flowjoe-markdown h3,
+.ai-chat-bubble--markdown .flowjoe-markdown h4,
+.ai-chat-bubble--markdown .flowjoe-markdown h5,
+.ai-chat-bubble--markdown .flowjoe-markdown h6 {
+  margin: 0.95em 0 0.45em;
+  line-height: 1.2;
+  color: inherit;
+}
+
+.ai-chat-bubble--markdown .flowjoe-markdown h1 { font-size: 1.28em; }
+.ai-chat-bubble--markdown .flowjoe-markdown h2 { font-size: 1.18em; }
+.ai-chat-bubble--markdown .flowjoe-markdown h3 { font-size: 1.08em; }
+
+.ai-chat-bubble--markdown .flowjoe-markdown code {
+  border: 1px solid color-mix(in srgb, currentColor 22%, transparent);
+  border-radius: var(--radius-sm, 4px);
+  padding: 0.04em 0.32em;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.ai-chat-bubble--markdown .flowjoe-markdown pre {
+  overflow: auto;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg, 8px);
+  padding: 10px 12px;
+  background: rgba(0, 0, 0, 0.24);
+}
+
+.ai-chat-bubble--markdown .flowjoe-markdown pre code {
+  border: 0;
+  padding: 0;
+  background: transparent;
+}
+
+.ai-chat-bubble--markdown .flowjoe-markdown blockquote {
+  border-left: 3px solid currentColor;
+  padding-left: 0.85em;
+  opacity: 0.84;
+}
+
+.ai-chat-bubble--markdown .flowjoe-markdown a {
+  color: inherit;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+/* App-internal deep-links (flowjoe-docs: manual pages, flowjoe-node: jump-to-node — both
+   chat-only) render as small tappable chips so they read as in-app actions, not external web
+   links. Sized by the shared tag-chip token family so the chips track Appearance > Density
+   exactly like every other chip/pill in the app. */
+.ai-chat-bubble--markdown .flowjoe-markdown a[href^="flowjoe-docs:"],
+.ai-chat-bubble--markdown .flowjoe-markdown a[href^="flowjoe-node:"] {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  box-sizing: border-box;
+  gap: var(--control-icon-gap, 4px);
+  height: var(--tag-chip-height);
+  padding: 0 var(--tag-chip-pad-x);
+  border: var(--hairline, 1px) solid var(--border-light);
+  border-radius: var(--tag-chip-radius);
+  background: var(--bg-secondary);
+  text-decoration: none;
+  font-size: var(--tag-chip-font-size);
+  line-height: 1;
+  cursor: pointer;
+}
+
+.ai-chat-bubble--markdown .flowjoe-markdown a[href^="flowjoe-docs:"]::before {
+  content: "📖";
+  font-size: 0.9em;
+}
+
+.ai-chat-bubble--markdown .flowjoe-markdown a[href^="flowjoe-node:"]::before {
+  content: "→";
+  font-size: 0.9em;
+}
+
+.ai-chat-bubble--markdown .flowjoe-markdown a[href^="flowjoe-docs:"]:hover,
+.ai-chat-bubble--markdown .flowjoe-markdown a[href^="flowjoe-node:"]:hover {
+  border-color: var(--accent-color);
+}
+
+.ai-chat-bubble--markdown .flowjoe-markdown table {
+  display: block;
+  max-width: 100%;
+  overflow: auto;
+  border-collapse: collapse;
+}
+
+.ai-chat-bubble--markdown .flowjoe-markdown th,
+.ai-chat-bubble--markdown .flowjoe-markdown td {
+  border: 1px solid color-mix(in srgb, currentColor 24%, transparent);
+  padding: 6px 8px;
+  vertical-align: top;
+}
+
+.ai-chat-message.assistant {
+  .ai-chat-bubble {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border-radius: 4px 12px 12px 12px;
+    box-shadow: var(--elev-resting);
+    border: 1px solid var(--border-color);
+  }
+
+  /* Chat action buttons */
+  & {
+    flex-direction: row !important;
+    align-items: flex-end;
+    flex-wrap: wrap;
+
+    .ai-chat-actions {
+      display: flex;
+      flex-direction: row;
+      gap: var(--icon-row-gap);
+      position: sticky;
+      bottom: 14px;
+      width: max-content;
+      max-width: calc(100% - 8px);
+      margin-left: 4px;
+      align-items: center;
+      align-self: flex-end;
+      margin-bottom: 0;
+      z-index: 4;
+    }
+
+    .ai-chat-message.user .ai-chat-actions {
+      margin-left: 0;
+      margin-right: 10px;
+      align-items: flex-start;
+      align-self: flex-start;
+    }
+
+    .ai-chat-action-btn {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: 4px 8px 4px 8px;
+      margin: 0;
+      font-size: var(--font-control);
+      border-radius: var(--radius-sm, 4px);
+      transition: all var(--transition-speed) ease;
+
+      &:hover {
+        color: var(--accent-color);
+        background: var(--bg-tertiary);
+      }
+
+      &.copied {
+        color: var(--success-color);
+      }
+    }
+  }
+}
+
+.ai-chat-action-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 4px 8px 4px 8px;
+  margin: 0 1px;
+  font-size: var(--font-control);
+  border-radius: var(--radius-sm, 4px);
+  transition: color var(--transition-speed) ease, background var(--transition-speed) ease;
+  outline: none !important;
+  box-shadow: none !important;
+
+  &:hover {
+    color: var(--accent-color);
+    background: var(--bg-tertiary);
+  }
+
+  &.has-selected-chat-text {
+    color: var(--accent-color);
+    background: color-mix(in srgb, var(--accent-color) 18%, transparent);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent-color) 42%, transparent) !important;
+  }
+
+  &:focus {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  &.copied {
+    color: var(--success-color);
+  }
+
+  &.is-playing {
+    color: var(--accent-color);
+    background: color-mix(in srgb, var(--accent-color) 18%, transparent);
+  }
+}
+
+/* Token counter */
+.ai-chat-token-counter {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-align: right;
+  margin-top: 4px;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm, 4px);
+  background: var(--bg-secondary);
+  cursor: help;
+}
+
+/* Fix review phase token counter to be vertically centered with buttons */
+.ai-spell-check-review-footer {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+}
+
+.ai-spell-check-review-footer .ai-spell-check-action-footer-left {
+  flex: 0 0 auto !important;
+}
+
+.ai-spell-check-review-footer #ai-spell-check-review-actions {
+  flex: 0 0 auto !important;
+}
+
+/* Ensure token counter stays visible with larger fonts */
+
+
+/* Fix clear conversation button text centering */
+
+/* Fix outline highlight being cut off on selected fields at largest font size */
+
+/* Ensure focus outlines are fully visible on all font sizes */
+
+#ai-spell-check-preview-token-count,
+#ai-spell-check-result-token-count,
+#summary-modal-spellcheck-token-count,
+#preview-modal-spellcheck-token-count,
+#summary-modal-token-count,
+#preview-modal-token-count {
+  font-weight: 600;
+  color: var(--text-primary);
+  padding-left: 6px;
+}
+
+/* Spelling check token counters */
+.ai-spell-check-token-counter {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-align: left;
+  margin: 0;
+  padding: 0 0 0 8px;
+  flex: 0 1 auto;
+  min-height: 1.4em;
+  line-height: 1.4;
+  white-space: nowrap;
+  cursor: help;
+}
+
+.ai-chat-token-counter[data-tooltip][data-position="top"][data-align="right"]::after,
+.ai-spell-check-token-counter[data-tooltip][data-position="top"][data-align="right"]::after {
+  left: auto;
+  right: 0;
+  bottom: calc(100% + 17px);
+  transform: translateX(0);
+  width: max-content;
+  max-width: 360px;
+  text-align: left;
+}
+
+.ai-chat-token-counter[data-tooltip][data-position="top"][data-align="right"]::before,
+.ai-spell-check-token-counter[data-tooltip][data-position="top"][data-align="right"]::before {
+  left: auto;
+  right: 12px;
+  bottom: calc(100% + 17px);
+  transform: translateY(-16px);
+  z-index: var(--flowjoe-z-tooltip-max) !important;
+}
+
+.ai-chat-token-counter[data-tooltip][data-position="top"][data-align="left"]::after,
+.ai-spell-check-token-counter[data-tooltip][data-position="top"][data-align="left"]::after {
+  left: 0;
+  right: auto;
+  bottom: calc(100% + 15px);
+  transform: translateX(0);
+  width: max-content;
+  max-width: 360px;
+  text-align: left;
+  z-index: var(--flowjoe-z-tooltip-low) !important;
+}
+
+.ai-chat-token-counter[data-tooltip][data-position="top"][data-align="left"]::before,
+.ai-spell-check-token-counter[data-tooltip][data-position="top"][data-align="left"]::before {
+  content: "";
+  position: absolute;
+  top: auto;
+  bottom: calc(100% + 1px);
+  left: 12px;
+  right: auto;
+  transform: translateX(0);
+  border-width: 8px;
+  border-style: solid;
+  border-color: var(--tooltip-bg) transparent transparent transparent;
+  filter: drop-shadow(0 1.5px 0 var(--tooltip-border));
+  z-index: var(--flowjoe-z-tooltip) !important;
+}
+
+#ai-spell-check-preview-token-count,
+#ai-spell-check-result-token-count,
+#summary-modal-spellcheck-token-count,
+#preview-modal-spellcheck-token-count,
+#summary-modal-token-count,
+#preview-modal-token-count {
+  font-weight: 600;
+  color: var(--text-primary);
+  padding-left: 6px;
+}
+
+@media (max-width: 900px) {
+  #ai-spell-check-panel {
+    max-width: calc(100vw - 16px);
+    padding: 16px;
+  }
+
+  .ai-mode-tabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    overflow: visible;
+    gap: 0;
+  }
+
+  .ai-mode-tab {
+    width: auto;
+    margin-right: 0;
+    bottom: 0;
+    min-height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: normal;
+    line-height: 1.15;
+    padding: 8px 4px 9px;
+  }
+}
+
+#ai-spell-check-panel #ai-chat-input::placeholder,
+#ai-spell-check-panel #ai-generate-prompt::placeholder,
+#ai-spell-check-panel #ai-transcribe-result::placeholder,
+#ai-spell-check-panel #ai-spell-check-preview::placeholder,
+#ai-spell-check-panel #ai-spell-check-result::placeholder {
+  font-size: inherit;
+  line-height: inherit;
+}
+
+#ai-spell-check-panel #ai-chat-messages .ai-chat-message.user .ai-chat-bubble {
+  background: var(--bg-secondary);
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color);
+  border-right: 3px solid var(--accent-color);
+}
+
+#ai-spell-check-panel #ai-chat-messages .ai-chat-message.assistant .ai-chat-bubble {
+  background: var(--bg-secondary);
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color);
+  border-left: 3px solid var(--accent-color);
+}
+
+#ai-spell-check-panel #ai-chat-messages .ai-chat-message.assistant {
+  row-gap: 6px;
+  column-gap: 4px;
+}
+
+#ai-spell-check-panel #ai-chat-messages .ai-chat-message.assistant:is(.is-actions-wrapped, .is-measuring-actions-wrap) .ai-chat-actions {
+  position: static;
+  bottom: auto;
+}
+
+#ai-spell-check-panel #ai-chat-messages .ai-chat-message .ai-chat-actions {
+  flex-wrap: wrap;
+  row-gap: 2px;
+}
+
+#ai-spell-check-panel #ai-chat-messages .ai-chat-message .ai-chat-actions .ai-chat-msg-token-chip {
+  order: -1;
+  flex: 0 0 100%;
+  margin: 0;
+  align-self: center;
+  text-align: center;
+}
+
+#ai-spell-check-panel #ai-chat-messages .ai-chat-message.user .ai-chat-actions {
+  justify-content: flex-end;
+  align-content: flex-end;
+}
+
+#ai-spell-check-panel #ai-chat-messages .ai-chat-message.user .ai-chat-actions .ai-chat-msg-token-chip {
+  order: 99;
+  flex: 0 0 auto;
+  margin-left: 6px;
+  text-align: right;
+}
+
+#ai-spell-check-panel #ai-chat-messages .ai-chat-message.assistant .ai-chat-actions .ai-chat-msg-token-chip {
+  text-align: left;
+}
+
+#ai-spell-check-panel #ai-chat-messages .ai-chat-message.assistant:is(.is-actions-wrapped, .is-measuring-actions-wrap) .ai-chat-actions .ai-chat-msg-token-chip {
+  order: 99;
+  flex: 0 0 auto;
+  margin-left: 6px;
+  text-align: left;
+}
+
+#ai-spell-check-panel #ai-chat-messages .ai-chat-welcome {
+  background: var(--bg-secondary);
+  color: var(--text-primary) !important;
+}
+
+#ai-spell-check-panel #ai-chat-messages .ai-chat-welcome .welcome-icon {
+  font-size: inherit;
+  color: inherit;
+}
+
+#ai-spell-check-panel #ai-chat-messages .ai-chat-bubble--markdown .flowjoe-markdown,
+#ai-spell-check-panel #ai-chat-messages .ai-chat-bubble--markdown .flowjoe-markdown :where(*) {
+  font-family: inherit;
+  font-size: inherit !important;
+  line-height: inherit !important;
+  color: inherit !important;
+}
+
+/* Shared preview/summary modal font scaling. */
+
+#ai-spell-check-panel .ai-spell-check-response-badge,
+#image-modal .ai-spell-check-response-badge {
+  align-items: center;
+  justify-content: center;
+  place-items: center;
+  line-height: 1 !important;
+}
+}

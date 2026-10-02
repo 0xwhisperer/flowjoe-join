@@ -1,0 +1,349 @@
+/* G6b guest page: image generation (mockup browser-collaboration-guest-surfaces.html states 5a-5m).
+   The Image Generation tab, preview, history drawer and prompt list are the app's own markup and stylesheets (loaded in index.html); only what the
+   guest page must add is here. Tokens only (the app's theme variables), logical properties (RTL safe), no important flags, no inline styles.
+   Keyboard focus: the app strips every button's own ring (a global forced reset on button:focus-visible), so each control here draws its ring on
+   a pseudo-element in --text-primary (the collab pattern, readable on every theme), exactly like .cx-confirm and the rail items. */
+
+/* Raw lengths that remain have no token in the app: focus-ring offsets (the collab ring pattern), the 16px viewport gutter the app's own popups keep, the drag/resize handles'
+   own geometry, and the 1px clip of the hidden live region. Type and spacing use the app's tokens (--font-control, --font-meta, --pad-modal, --modal-row-gap*). */
+
+/* ---- visually hidden live region (progress, results and countdown ends are announced here) ---- */
+.gs-img-sr {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---- what the app does with inline display writes on the preview, done with classes (the guest page writes no style from script) ---- */
+#generate-panel.gs-has-image #ai-generate-preview-image {
+  display: block;
+}
+#generate-panel.gs-has-image #ai-generate-preview-placeholder {
+  display: none;
+}
+#generate-panel.gs-has-result #ai-generate-save {
+  display: flex;
+}
+/* The preview box is the placeholder's square from the first moment: the card fills the stage and the picture fills the card's square, contained, so a picture
+   arriving (even a landscape one) moves nothing (measured: no layout shift). The size line keeps its height while empty. */
+#generate-panel .ai-generate-preview-card {
+  flex: 1 1 auto;
+  inline-size: 100%;
+  min-inline-size: 100%;
+}
+#generate-panel.gs-has-image #ai-generate-preview-image {
+  inline-size: 100%;
+  block-size: auto;
+  object-fit: contain;
+}
+#generate-panel #ai-generate-preview-meta {
+  min-block-size: 1.4em;
+}
+/* The Send to Gallery pill appears on hover or keyboard focus; a touch screen has no hover, so it stays shown there */
+@media (hover: none) {
+  #generate-panel.gs-has-result #ai-generate-save {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+#ai-generate-save:disabled {
+  cursor: default;
+}
+#generate-panel .gs-joe-note {
+  margin-block: 2px;
+}
+.gs-img-model-wrap {
+  display: block;
+  inline-size: 100%;
+}
+.gs-img-model-wrap.cx-locked {
+  opacity: var(--disabled-opacity-control, 0.45);
+  cursor: not-allowed;
+}
+#ai-generate-prompt:disabled,
+#ai-generate-prompt[readonly] {
+  cursor: not-allowed;
+}
+#ai-generate-prompt:disabled {
+  opacity: var(--disabled-opacity-control, 0.45); /* a disabled control is exempt from text contrast; the reason is in the placeholder and the status line */
+}
+#ai-generate-submit.cx-locked,
+#ai-generate-new.cx-locked,
+#ai-generate-save.cx-locked {
+  opacity: var(--disabled-opacity-control, 0.45);
+  cursor: not-allowed;
+}
+#ai-generate-submit:disabled {
+  cursor: not-allowed;
+}
+
+/* ---- legibility: the app draws some quiet text in a tertiary ink that falls under 4.5:1 in several guest themes (measured as drawn: the Keep-it-quiet hint
+   at 60% opacity, the status line, accent-coloured titles). Here those lines use the readable tokens; the colours of error and success keep their hue. ---- */
+#generate-panel .ai-generate-prompt-hint {
+  color: var(--text-secondary);
+  opacity: 1;
+}
+#generate-panel .ai-generate-status {
+  color: var(--text-secondary);
+}
+#generate-panel .ai-generate-status[data-state="error"] {
+  color: color-mix(in srgb, var(--danger-color) 20%, var(--text-primary));
+}
+#generate-panel .ai-generate-status[data-state="success"] {
+  color: color-mix(in srgb, var(--success-color) 20%, var(--text-primary));
+}
+#generate-panel :is(.ai-spell-check-label, .ai-generate-option-title, .ai-generate-preview-meta) {
+  color: var(--text-secondary);
+}
+.gs-img-host .ai-generate-prompt-history-body {
+  color: var(--text-primary);
+  background: var(--bg-tertiary); /* the app darkens it with black, which sinks dark ink in the light themes (3.65:1 in ghibli-1) */
+}
+.gs-img-host .ai-image-history-saved-badge {
+  color: color-mix(in srgb, var(--accent-color) 40%, var(--text-primary));
+}
+.gs-img-host .ai-image-history-title,
+.gs-img-host .ai-chat-history-scope,
+.gs-img-host .ai-generate-prompt-history-meta {
+  color: color-mix(in srgb, var(--accent-color) 55%, var(--text-primary));
+}
+
+/* ---- focus rings ---- */
+#ai-generate-submit,
+#ai-generate-new,
+#ai-generate-history,
+#ai-generate-save,
+#ai-generate-prompt-history-chip,
+.gs-img-host .ai-chat-action-btn,
+.gs-img-host .close-btn,
+.gs-img-host .ai-generate-history-copy-btn,
+.gs-img-host .gs-ph-pic {
+  position: relative;
+}
+#ai-generate-submit:focus-visible,
+#ai-generate-new:focus-visible,
+#ai-generate-history:focus-visible,
+#ai-generate-save:focus-visible,
+#ai-generate-prompt-history-chip:focus-visible,
+.gs-img-host .ai-chat-action-btn:focus-visible,
+.gs-img-host .close-btn:focus-visible,
+.gs-img-host .ai-generate-history-copy-btn:focus-visible,
+.gs-img-host .gs-ph-pic:focus-visible {
+  outline: none;
+}
+#ai-generate-submit:focus-visible::after,
+#ai-generate-new:focus-visible::after,
+#ai-generate-history:focus-visible::after,
+#ai-generate-save:focus-visible::after,
+#ai-generate-prompt-history-chip:focus-visible::after,
+.gs-img-host .ai-chat-action-btn:focus-visible::after,
+.gs-img-host .close-btn:focus-visible::after,
+.gs-img-host .ai-generate-history-copy-btn:focus-visible::after,
+.gs-img-host .gs-ph-pic:focus-visible::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border: 2px solid var(--text-primary);
+  border-radius: calc(var(--radius-sm, 4px) + 3px);
+  pointer-events: none;
+}
+/* the tab strip clips outside rings, so the Image Generation tab's ring sits inside it */
+#gs-tab-images {
+  position: relative;
+}
+#gs-tab-images:focus-visible {
+  outline: none;
+}
+#gs-tab-images:focus-visible::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border: 2px solid var(--text-primary);
+  border-radius: inherit;
+  pointer-events: none;
+}
+.gs-img-host .ai-generate-prompt-history-entry:focus-visible,
+.gs-img-host .ai-image-history-search-wrap input:focus-visible {
+  outline: 2px solid var(--text-primary);
+  outline-offset: -2px;
+}
+
+/* ---- the drawer and the prompt list: one host, above Joe's column, below the toast layer (the mockup's z-index) ---- */
+.gs-img-host .ai-image-history-drawer,
+.gs-img-host .ai-generate-prompt-history-popup {
+  z-index: 100150;
+}
+/* the real drawer's top is 92% opaque, which lets Joe's header text show through where the drawer sits over it; solid here (the mockup's proposed tweak) */
+.gs-img-host .ai-image-history-drawer-inner {
+  background: linear-gradient(180deg, var(--bg-secondary), var(--bg-primary));
+}
+/* Narrow windows: the app overlays Joe over the gallery (half the window), too narrow for the drawer; it takes the width the window allows */
+body.joe-dock-overlay .gs-img-host .ai-image-history-drawer {
+  inline-size: min(520px, calc(100vw - 32px));
+}
+.gs-img-host .gs-img-prompts {
+  inset-block-start: calc(var(--topbar-height, 56px) + 56px);
+  inset-inline-end: 16px;
+  inline-size: min(460px, calc(100vw - 32px));
+  min-inline-size: 0;
+  max-inline-size: calc(100vw - 32px);
+  max-block-size: min(520px, calc(100vh - var(--topbar-height, 56px) - 80px));
+}
+/* Drag and resize (page only): the popup is moved and sized with custom properties the script sets (CSSOM, no style text), so the strict policy holds. The
+   move handle takes the arrow keys too; Alt + arrows resize. The window is clamped to the viewport by the script. */
+.gs-img-host .gs-img-prompts {
+  box-sizing: border-box; /* the size set by the script is the window's whole width and height */
+  transform: translate(var(--gs-pop-dx, 0px), var(--gs-pop-dy, 0px));
+  inline-size: var(--gs-pop-w, min(460px, calc(100vw - 32px)));
+}
+.gs-img-host .gs-img-prompts.is-sized {
+  block-size: var(--gs-pop-h);
+  max-inline-size: calc(100vw - 16px);
+  max-block-size: calc(100vh - 16px);
+}
+.gs-img-prompts .ai-chat-history-header {
+  grid-template-columns: auto 1fr auto; /* the move handle sits in the app's grip column */
+  cursor: default;
+}
+.gs-img-move {
+  position: relative;
+  display: inline-grid;
+  grid-auto-flow: column;
+  gap: 3px;
+  place-content: center;
+  inline-size: 28px;
+  block-size: 28px;
+  padding: 0;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm, 4px);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: grab;
+  touch-action: none;
+}
+.gs-img-move span {
+  inline-size: 3px;
+  block-size: 12px;
+  border-radius: 2px;
+  background: currentColor;
+}
+.gs-img-move:hover {
+  color: var(--text-primary);
+  border-color: var(--text-secondary);
+}
+.gs-img-move:focus-visible {
+  outline: none;
+}
+.gs-img-move:focus-visible::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border: 2px solid var(--text-primary);
+  border-radius: calc(var(--radius-sm, 4px) + 3px);
+  pointer-events: none;
+}
+/* the grip sits in the popup's corner, which clips (overflow hidden): its ring is drawn inside it, like the tab's */
+.gs-img-resize:focus-visible {
+  outline: none;
+}
+.gs-img-resize:focus-visible::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border: 2px solid var(--text-primary);
+  border-radius: var(--radius-sm, 4px);
+  pointer-events: none;
+}
+.gs-img-resize {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline-end: 0;
+  inline-size: 24px; /* a pointer target of at least 24 px */
+  block-size: 24px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: nwse-resize;
+  touch-action: none;
+}
+.gs-img-resize::before {
+  content: "";
+  position: absolute;
+  inset-block-end: 7px;
+  inset-inline-end: 7px;
+  inline-size: 10px;
+  block-size: 10px;
+  border-inline-end: 2px solid currentColor;
+  border-block-end: 2px solid currentColor;
+}
+[dir="rtl"] .gs-img-resize {
+  cursor: nesw-resize;
+}
+.gs-img-prompts .gs-ph-note {
+  margin: 0 0 var(--modal-row-gap);
+  color: var(--text-secondary);
+  font-size: var(--font-control);
+}
+.gs-img-prompts .ai-generate-prompt-history-entry .ai-generate-prompt-history-body {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.gs-img-prompts .ai-chat-history-empty {
+  padding: var(--pad-modal);
+  color: var(--text-secondary);
+  text-align: center;
+  font-size: var(--font-control);
+}
+
+/* ---- history rows ---- */
+.ai-image-history-item .gs-hist-hidden {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: var(--font-control);
+  font-style: italic;
+  overflow-wrap: anywhere;
+}
+.ai-image-history-item.gs-mine {
+  border-color: color-mix(in srgb, var(--accent-color) 45%, var(--border-color));
+}
+.ai-image-history-item .ai-image-history-prompt,
+.ai-image-history-item .ai-image-history-title {
+  overflow-wrap: anywhere;
+}
+.gs-img-thumb-empty {
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  inline-size: 100%;
+  min-block-size: 72px;
+  padding: var(--modal-row-gap-tight);
+  border: 1px dashed var(--cx-edge-strong);
+  border-radius: var(--radius-lg, 8px);
+  color: var(--text-secondary);
+  font-size: var(--font-meta);
+  text-align: center;
+}
+.ai-image-history-empty {
+  padding: var(--pad-modal);
+  color: var(--text-secondary);
+  text-align: center;
+  font-size: var(--font-control);
+}
+
+/* ---- reduced motion: the app's shimmer on the preview while a picture is made, and the Send pill's fade, stand still (the "Generating…" button and status say it) ---- */
+@media (prefers-reduced-motion: reduce) {
+  #generate-panel .ai-generate-preview-card.is-generating::before,
+  #generate-panel .ai-generate-preview-card.is-generating::after,
+  #generate-panel .ai-generate-preview-placeholder.is-generating::before,
+  #generate-panel .ai-generate-preview-placeholder.is-generating::after {
+    animation: none;
+  }
+  #generate-panel .ai-generate-save-overlay {
+    transition: none;
+  }
+}

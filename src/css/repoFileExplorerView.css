@@ -1,0 +1,273 @@
+/* Repository file-tree view and its toolbar. */
+
+/* Every REAL render of this button in file-explorer mode runs with body.canvas-reposition-active
+   ABSENT: renderRepoFileExplorer is only reached from bootstrapGalleryView's file-explorer branch
+   (imageGallery.js), which unconditionally calls the canvas gallery's close() first when switching
+   into file-explorer mode — close() is closeReposition() in canvasGalleryView.js, which REMOVES
+   REPOSITION_BODY_CLASS from <body> before this button is ever appended. So the
+   body.canvas-reposition-active override below is dead for this button's own real usage (kept only
+   as defense in depth) and the BASE rule always governs its position in practice.
+   That base rule is safe on its own: in the base (non-reposition) DOM, #selected-node-name is
+   `position: sticky; top: 0` and a normal-flow SIBLING of #image-display under #node-details
+   (styles-gallery-horizontal.css) — not an absolutely-overlaid full-viewport header. #image-display
+   itself therefore starts in the viewport BELOW the header's own box, so this button's
+   `top: 8px`, measured relative to #image-display (its own containing block), lands
+   below the header with no vertical overlap — confirmed live via getBoundingClientRect() on both
+   elements (header bottom < button top) in the browser.
+   The REAL click-interception bug was not vertical overlap: it was `pointer-events`. This button
+   carries .canvas-overlay-ui (required so canvasGalleryView.js's capture-phase pointerdown redirect
+   exempts it — see repoFileExplorerView.js's buildRepoFileExplorerToggleButton comment), and
+   .canvas-overlay-ui's own rule (`pointer-events: none`) lives in a JS-injected <style id=
+   "canvas-reposition-style"> tag that canvasGalleryView.js's ensureRepositionStyles() appends to
+   <head> the first time canvas/reposition mode ever builds (confirmed: this app's default gallery
+   layout is canvas, so this injected tag is present on essentially every real session). A <style>
+   tag appended to <head> at runtime comes AFTER this file's <link>-loaded stylesheet in DOM/cascade
+   order, so at equal specificity (one class each) the injected `pointer-events: none` always beat
+   this rule's plain `pointer-events: auto` — confirmed live via getComputedStyle: pointer-events
+   measured "none" on this exact button with body.canvas-reposition-active absent, which is why
+   elementFromPoint() at the button's own visual center resolved to the file list sitting behind it
+   instead of the button, and Playwright's click() timed out waiting for actionability. Because that
+   injected rule has no !important, `!important` here is enough to always win regardless of body
+   class or DOM/cascade order — this must stay in the BASE rule (not only the reposition-mode
+   override below), since the base rule is what actually applies for every real file-explorer
+   render. */
+.repo-file-explorer-toggle-button {
+  position: absolute;
+  top: var(--canvas-chrome-inset, 8px);
+  left: var(--canvas-chrome-inset, 8px);
+  z-index: var(--canvas-chrome-z, 40);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: var(--canvas-overlay-border);
+  border-radius: var(--canvas-overlay-radius, 8px);
+  background: var(--canvas-overlay-bg);
+  box-shadow: var(--canvas-overlay-shadow, 0 8px 18px rgba(0, 0, 0, 0.28));
+  pointer-events: auto !important;
+}
+
+/* Defense in depth only — closeReposition() always removes this class before renderRepoFileExplorer
+   runs, so this override does not apply to any real file-explorer render today (see the base rule's
+   comment above). Kept so the button still lands in a sane spot — immediately beside (to the left of)
+   the toolbar, sharing its exact `top` expression — if that invariant is ever broken.
+   USER DECISION 2026-09-26 (REPO_NODES_DESIGN.md "Stage 4b"): the button is a sibling of the toolbar,
+   positioned immediately before (to the left of) it, not one row below — see
+   canvasGalleryView.js's `body.${REPOSITION_BODY_CLASS} .repo-file-explorer-toggle-button +
+   .canvas-overlay-ui.canvas-toolbar` rule, which shifts the toolbar's own `left` right by exactly this
+   button's width + one gap so the two never drift apart. `left` here stays the plain chrome inset —
+   unchanged from the base rule — since the toolbar moves to make room, not this button. */
+body.canvas-reposition-active .repo-file-explorer-toggle-button {
+  top: calc(var(--canvas-bc-overlap, var(--canvas-bc-overlap-fallback)) + var(--canvas-scrubber-band, 0px)) !important;
+  left: var(--canvas-chrome-inset) !important;
+  pointer-events: auto !important;
+}
+
+/* Real gap found live 2026-09-26: in actual file-explorer-mode usage, body.canvas-reposition-active
+   is absent (per the toggle button's own base-rule comment above), so the button sits at the plain
+   base position — top/left: var(--canvas-chrome-inset) (8px), 32x32px — directly over this list's own
+   top-left corner, since the list previously filled the container edge-to-edge with `inset: 0` and no
+   awareness of the button floating above it. Confirmed live: the first row's icon/text rendered
+   directly under the button's own icon, unreadable. Fix: reserve a top strip tall enough for the
+   button (32px) plus the same chrome inset on both sides, so the list's own content starts clear of
+   it — matches the same "chrome needs its own reserved space" pattern canvasGalleryView.js's
+   getRepositionChromeSafeRect() already uses for canvas-mode framing, applied here to a plain block
+   layout instead of a camera viewport. */
+.repo-file-explorer-list {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  background: transparent;
+}
+
+.repo-file-explorer-header {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start;
+  gap: 8px;
+  height: 36px !important;
+  min-height: 36px !important;
+  max-height: 36px !important;
+  box-sizing: border-box;
+  padding: 0 var(--pad-card) !important;
+  border-bottom: var(--hairline) solid var(--border-color);
+  background: var(--bg-secondary);
+}
+
+.repo-file-explorer-header-toggle {
+  position: static !important;
+  align-self: center !important;
+  flex: 0 0 32px;
+  z-index: auto;
+  margin-left: 0;
+}
+
+.repo-file-explorer-heading {
+  align-self: center !important;
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  line-height: 1;
+  color: var(--text-primary);
+  font-size: 1.2em;
+  font-weight: 600;
+}
+
+.repo-file-explorer-actions {
+  display: flex !important;
+  align-items: center !important;
+  align-self: center !important;
+  gap: var(--icon-row-gap-dense);
+  margin-left: auto;
+}
+
+.repo-file-explorer-action {
+  width: var(--icon-btn-size);
+  height: var(--icon-btn-size);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 var(--icon-btn-size);
+  margin: 0;
+  border: 0;
+  border-radius: var(--icon-btn-radius);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: var(--icon-glyph);
+}
+
+.repo-file-explorer-action:hover {
+  background: var(--hover-bg);
+  color: var(--text-primary);
+}
+
+.repo-file-explorer-create-modal #modal-extra-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0 0 16px;
+}
+
+.repo-file-explorer-create-label {
+  color: var(--text-secondary);
+  font-size: var(--font-control);
+  font-weight: 600;
+}
+
+.repo-file-explorer-create-input {
+  width: 100%;
+  min-width: 0;
+  height: 44px;
+  box-sizing: border-box;
+  margin: 0;
+  padding: var(--pad-compact);
+  border: 1px solid color-mix(in srgb, var(--border-color) 82%, transparent);
+  border-radius: var(--radius-xl, 10px);
+  background: color-mix(in srgb, var(--bg-secondary) var(--modal-glass-ai-field-secondary-mix), transparent);
+  color: var(--text-primary);
+  font: inherit;
+  box-shadow: inset 0 1px 1px color-mix(in srgb, var(--shadow-heavy) 36%, transparent);
+}
+
+.repo-file-explorer-create-input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent-color) 24%, transparent), inset 0 1px 1px color-mix(in srgb, var(--shadow-heavy) 36%, transparent);
+}
+
+.repo-file-explorer-content {
+  padding-bottom: 12px;
+}
+
+.repo-file-explorer-folder {
+  width: 100%;
+  min-height: 34px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 5px 12px 5px calc(12px + var(--repo-explorer-depth, 0) * 18px);
+  border: 0;
+  border-bottom: 1px solid var(--border-light);
+  background: transparent;
+  color: var(--text-primary);
+  text-align: left;
+  cursor: pointer;
+}
+
+.repo-file-explorer-folder:hover {
+  background: var(--hover-bg);
+}
+
+.repo-file-explorer-folder i:first-child {
+  width: 12px;
+  color: var(--text-secondary);
+  font-size: 11px;
+}
+
+.repo-file-explorer-folder i:nth-child(2) {
+  color: var(--text-secondary);
+}
+
+.repo-file-explorer-row {
+  display: flex;
+  align-items: center;
+  gap: var(--header-gap, 12px);
+  padding: var(--pad-menu-item, 8px 12px);
+  padding-left: calc(12px + var(--repo-explorer-depth, 0) * 18px);
+  border-bottom: 1px solid var(--border-light);
+  cursor: pointer;
+  color: var(--text-primary);
+  transition: background var(--transition-speed, 0.15s);
+}
+
+.repo-file-explorer-list .repo-file-explorer-row:last-child {
+  border-bottom: none;
+}
+
+.repo-file-explorer-row:hover {
+  background: var(--hover-bg);
+}
+
+.repo-file-explorer-row-icon {
+  flex: 0 0 auto;
+  width: 16px;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+/* The primary name + secondary path stack vertically, same visual split as
+   .activity-entry-reason (primary) over .activity-entry-meta (secondary). */
+.repo-file-explorer-row-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.repo-file-explorer-row-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  color: var(--text-primary);
+}
+
+.repo-file-explorer-row-path {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.repo-file-explorer-empty {
+  padding: calc(var(--pad-compact, 6px) * 3);
+  color: var(--text-secondary);
+  text-align: center;
+}

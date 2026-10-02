@@ -1,0 +1,106 @@
+@layer app {
+@media (max-width: 1180px) {
+  .ai-generate-grid,
+  .ai-transcribe-grid {
+    flex-direction: column;
+    height: auto;
+    overflow: visible;
+  }
+
+  .ai-generate-controls,
+  .ai-generate-preview-panel,
+  .ai-transcribe-controls,
+  .ai-transcribe-result-panel {
+    flex: 0 0 auto;
+    width: 100%;
+    height: auto;
+  }
+
+  #ai-spell-check-panel:not([data-fullscreen="true"]) .ai-generate-prompt-card {
+    flex-basis: clamp(260px, 36vh, 420px);
+    min-height: clamp(260px, 36vh, 420px);
+  }
+
+  .ai-generate-preview-stage {
+    min-height: min(56vw, 460px);
+  }
+
+  .ai-transcribe-result-card {
+    min-height: clamp(280px, 38vh, 460px);
+  }
+
+  #ai-spell-check-panel[data-fullscreen="true"] .ai-generate-grid,
+  #ai-spell-check-panel[data-fullscreen="true"] .ai-transcribe-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: auto !important;
+    align-items: stretch !important;
+  }
+
+  #ai-spell-check-panel[data-fullscreen="true"] .ai-generate-controls,
+  #ai-spell-check-panel[data-fullscreen="true"] .ai-generate-preview-panel,
+  #ai-spell-check-panel[data-fullscreen="true"] .ai-transcribe-controls,
+  #ai-spell-check-panel[data-fullscreen="true"] .ai-transcribe-result-panel {
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    height: auto !important;
+  }
+
+  #ai-spell-check-panel[data-fullscreen="true"] .ai-generate-prompt-card {
+    flex: 0 0 clamp(260px, 34vh, 460px) !important;
+    min-height: clamp(260px, 34vh, 460px) !important;
+  }
+
+  #ai-spell-check-panel[data-fullscreen="true"] .ai-generate-preview-stage {
+    min-height: min(56vw, 520px) !important;
+  }
+
+  #ai-spell-check-panel[data-fullscreen="true"] .ai-transcribe-result-card {
+    min-height: min(54vw, 520px) !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .ai-generate-options-pickers {
+    grid-template-columns: 1fr;
+  }
+
+  .ai-generate-options-pickers .ai-generate-option-model,
+  .ai-generate-options-pickers .ai-generate-option-quality,
+  .ai-generate-options-pickers .ai-generate-option-format,
+  .ai-generate-options-pickers .ai-generate-option-background,
+  .ai-generate-options-pickers .ai-generate-option-size,
+  .ai-generate-options-pickers .ai-generate-option-style {
+    grid-column: 1;
+  }
+
+  .ai-generate-reference-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .ai-transcribe-options-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ai-transcribe-source-content,
+  .ai-transcribe-bottom-row,
+  .ai-transcribe-result-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ai-transcribe-source-thumb-wrap {
+    width: 132px;
+    height: 132px;
+  }
+
+  .ai-generate-option,
+  .ai-generate-option-reference,
+  .ai-transcribe-option {
+    min-width: 0;
+    width: 100%;
+  }
+}
+
+}

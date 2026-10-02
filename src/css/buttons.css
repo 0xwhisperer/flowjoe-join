@@ -1,0 +1,3856 @@
+@layer app {
+/*
+ * FlowJoe - Button Styles
+ * Consolidated styles for all button types in the application
+ */
+
+/* Base button styles */
+button {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  padding: 5px 10px;
+  border-radius: var(--icon-btn-radius, 4px);
+  color: var(--text-primary);
+  cursor: pointer;
+  margin: 5px;
+}
+
+button:hover {
+  background-color: var(--hover-bg);
+  color: var(--accent-color);
+  border-color: var(--accent-color);
+}
+
+/* Icon button base class - used by all button types */
+.icon-btn {
+  width: var(--icon-btn-size);
+  height: var(--icon-btn-size);
+  min-width: var(--icon-btn-size);
+  border-radius: var(--icon-btn-radius, 4px);
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  padding: 0;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin: 0;
+  font-size: 0;
+  transition: all var(--transition-speed) var(--transition-timing);
+}
+
+.icon-btn i {
+  font-size: var(--icon-glyph);
+  color: inherit;
+  pointer-events: none;
+  line-height: 1;
+}
+
+/* Gallery-wide collapse toggles (Collapse all media / tag bins / notes — breadcrumbs
+   header and the canvas toolbar): the button's OWN glyph (image / tags / note) sits
+   centered, and a small state chevron rides its bottom-right corner — down when
+   everything is collapsed (click expands), up otherwise (click collapses). The
+   chevron is the FIRST <i> on purpose: nodeDetails' syncCollapseBtn and
+   galleryChromeMasterToggles' sync both flip `button.querySelector("i")`, so the
+   state icon must stay first in DOM order; CSS moves it to the corner. USER
+   DECISION 2026-09-09: the chevron direction was the readable state cue on the
+   media button and every collapse-all button should carry one with its glyph. */
+.icon-btn.gallery-toggle-composite {
+  position: relative;
+  overflow: visible;
+}
+
+.icon-btn.gallery-toggle-composite > i:first-child {
+  position: absolute;
+  right: 1px;
+  bottom: 1px;
+  font-size: calc(var(--icon-glyph) * 0.5);
+  line-height: 1;
+}
+
+.icon-btn.gallery-toggle-composite > i.gallery-toggle-glyph {
+  font-size: calc(var(--icon-glyph) * 0.86);
+  transform: translate(-1.5px, -1.5px);
+}
+
+.icon-btn:hover,
+.icon-btn:focus {
+  background-color: var(--hover-bg);
+  color: var(--accent-color);
+  border-color: var(--accent-color);
+}
+
+.virtual-gallery-save-btn {
+  height: 32px;
+  min-height: 32px;
+  box-sizing: border-box;
+  padding: 0 12px;
+  border-radius: var(--icon-btn-radius, 4px);
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.virtual-gallery-save-btn:hover,
+.virtual-gallery-save-btn:focus {
+  background-color: var(--hover-bg);
+  color: var(--accent-color);
+  border-color: var(--accent-color);
+}
+
+/* Small icon buttons */
+.icon-btn.small {
+  width: var(--icon-btn-size-sm);
+  height: var(--icon-btn-size-sm);
+  min-width: var(--icon-btn-size-sm);
+  min-height: var(--icon-btn-size-sm);
+  font-size: var(--icon-glyph-sm);
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Tree Toolbar Buttons (info, add node, add image, delete) */
+.tree-toolbar {
+  display: flex;
+  flex-direction: column;
+  /* gap: 0; */
+  margin-bottom: 15px;
+  /* padding: 0 0 0 0; */
+  position: sticky;
+  /* top: 0; */
+  z-index: 100;
+  margin: 0 0 15px 0;
+  padding: 0 5px 0 0;
+  overflow: visible !important; /* Allow tooltips to escape */
+  /* padding-top: 5px; Add minimal padding to prevent content jump */
+  /* margin-top: -5px; Compensate for padding to maintain layout */
+}
+
+/* Buttons row inside toolbar */
+.toolbar-buttons-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /* Minimum gap between the left (info/sort) and right (add/image/search/trash)
+     clusters so they never touch when the tree is narrowed. justify-content
+     space-between still spreads them apart when there's room; this is the floor.
+     getTreeNavMinimumWidthPx() reads this gap, so the resize min-width includes
+     it — the panel can't be dragged narrow enough to collapse it. */
+  gap: var(--header-gap);
+  width: 100%;
+}
+
+/* Right button container */
+.toolbar-left-buttons,
+.toolbar-right-buttons {
+  display: flex;
+  align-items: center;
+  gap: var(--header-gap);
+}
+
+.tree-toolbar::after {
+  content: '';
+  position: absolute;
+  bottom: calc(-1 * var(--tree-nav-vertical-gap, 10px));
+  left: var(--tree-nav-left, 6px);
+  right: 5px;
+  height: var(--hairline);
+  background-color: var(--border-color);
+}
+
+.tree-toolbar .icon-btn {
+  width: var(--icon-btn-size);
+  height: var(--icon-btn-size);
+  border-radius: var(--icon-btn-radius, 4px);
+  border: 1px solid var(--border-color);
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-speed) ease;
+  font-size: var(--icon-glyph);
+  padding: 0;
+  position: relative;
+}
+
+.tree-toolbar .icon-btn:hover {
+  background: var(--hover-bg);
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+
+.tree-toolbar .icon-btn:active {
+  transform: translateY(1px);
+}
+
+.info-btn {
+  font-style: italic;
+}
+
+/* Add root button */
+.add-root-btn {
+  margin-bottom: 0px;
+  width: var(--icon-btn-size);
+  height: var(--icon-btn-size);
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  /* font-size: 16px; */
+}
+
+#add-root {
+  display: none;
+}
+
+/* Topbar Buttons (new flow, import, export, bulk import, settings) */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background: var(--topbar-bg);
+  padding: 14px 16px 14px 4px;
+  border: none;
+  gap: var(--header-gap); /* owner call: pill + global audio player share the header button rhythm */
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  margin: 0;
+  z-index: 1000; /* Above background elements */
+  grid-column: 1 / -1;
+  grid-row: 1;
+  box-sizing: border-box;
+  font-family: "Fira Mono", "Courier New", Courier, monospace;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  box-shadow: 0 1px 4px var(--shadow-light);
+  min-height: var(--topbar-height);
+  height: var(--topbar-height);
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  overflow: visible; /* Allow tooltips to escape */
+}
+
+/* Left background - matches tree color when open, tertiary when closed */
+.header-bg-left {
+  position: fixed;
+  top: 40px;
+  left: 0;
+  width: 8px;
+  bottom: 0;
+  background: var(--bg-secondary);
+  z-index: 5;
+  transition: all var(--transition-speed) ease-in-out;
+}
+
+/* Directly target the left background element when tree is collapsed */
+.tree-collapsed .header-bg-left,
+.tree-collapsed > .header-bg-left,
+.tree-collapsed ~ .header-bg-left,
+.tree-section.collapsed ~ .header-bg-left,
+.container.tree-collapsed .header-bg-left,
+.container.tree-collapsed > .header-bg-left,
+.container.tree-collapsed ~ .header-bg-left,
+body.tree-collapsed .header-bg-left,
+body.tree-collapsed > .header-bg-left {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+  position: absolute !important;
+  clip: rect(0, 0, 0, 0) !important;
+  margin: -1px !important;
+  padding: 0 !important;
+  border: 0 !important;
+}
+
+/* When tree is open, ensure it's using secondary color and 8px width */
+:not(.tree-collapsed) > .header-bg-left,
+:not(.tree-collapsed) .header-bg-left,
+body:not(.tree-collapsed) .header-bg-left,
+.container:not(.tree-collapsed) .header-bg-left {
+  display: block;
+  visibility: visible;
+  opacity: 1;
+  background: var(--bg-secondary);
+  width: 8px;
+  min-width: 8px;
+  max-width: 8px;
+  height: auto;
+  position: fixed;
+  top: 40px;
+  bottom: 0;
+  left: 0;
+  z-index: 5;
+  pointer-events: auto;
+  clip: auto;
+  margin: 0;
+}
+
+/* Right background (content color) */
+.header-bg-right {
+  position: fixed;
+  top: 40px;
+  right: 0;
+  width: 8px;
+  bottom: 0;
+  background: var(--bg-primary);
+  z-index: 5;
+}
+
+/* Remove topbar border radius when tree is collapsed to eliminate artifact */
+.container.tree-collapsed .topbar {
+  border-bottom-left-radius: 0px !important;
+}
+
+.logo-svg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin-right: 8px;
+  flex: 0 0 auto;
+}
+
+.logo-svg img {
+  display: block;
+  /* Fill the 44px .logo-svg box instead of overflowing it. Was a hardcoded 50px inside a 44px
+     parent, so the mark bled 3px past each side and its visible left edge landed 3px closer to
+     the window edge than .topbar's own left padding — which read as the header's left inset not
+     matching its right. object-fit: contain keeps the artwork's aspect ratio. */
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.topbar h1 {
+  font-size: 1.5em;
+  margin: 0;
+  font-weight: 600;
+  color: var(--accent-color);
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+.topbar-brand-stack {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--text-stack-gap);
+  min-width: 0;
+  margin: 1px 8px 0 -10px;
+}
+
+.topbar-subtext {
+  max-width: 240px;
+  color: var(--text-secondary);
+  font-size: var(--font-micro);
+  line-height: 11px;
+  letter-spacing: 0.04em;
+  opacity: 0.78;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.topbar-unsaved-indicator {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: var(--control-height-sm);
+  padding: 0 14px;
+  border-radius: var(--radius-full, 999px);
+  border: 1px solid color-mix(in srgb, var(--accent-color) 42%, var(--border-color));
+  background: color-mix(in srgb, var(--bg-tertiary) 86%, var(--accent-color) 14%);
+  color: var(--accent-color);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent-color) 12%, transparent);
+  font-size: var(--font-control);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  cursor: pointer;
+  transition: opacity var(--transition-speed) var(--transition-timing);
+}
+
+.header-audio-player {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* Width tracks height (was a fixed 30px) so the resting pill stays circular instead of
+     stretching wider relative to its height as --control-height-sm shrinks under density —
+     that mismatch is what pushed the play icon visually off-center at Compact/Dense. */
+  width: var(--control-height-sm);
+  min-width: var(--control-height-sm);
+  height: var(--control-height-sm);
+  min-height: var(--control-height-sm);
+  top: 0;
+  left: 2px;
+  padding: 0;
+  border-radius: var(--radius-full, 999px);
+  border: 1px solid color-mix(in srgb, var(--accent-color) 42%, var(--border-color));
+  background: color-mix(in srgb, var(--bg-tertiary) 86%, var(--accent-color) 14%);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent-color) 12%, transparent);
+  overflow: visible;
+  transition:
+    width var(--transition-speed) var(--transition-timing),
+    min-width var(--transition-speed) var(--transition-timing),
+    height var(--transition-speed) var(--transition-timing),
+    top var(--transition-speed) var(--transition-timing),
+    border-radius var(--transition-speed) var(--transition-timing),
+    opacity var(--transition-speed) var(--transition-timing),
+    transform var(--transition-speed) var(--transition-timing);
+}
+
+.header-audio-player:hover,
+.header-audio-player.is-playlist-open,
+.header-audio-player.is-seek-open {
+  width: 128px;
+  min-width: 128px;
+}
+
+.header-audio-player.is-seek-open {
+  height: 56px;
+  top: 14px;
+  border-radius: var(--radius-2xl, 12px);
+  border-color: color-mix(in srgb, var(--accent-color) 58%, var(--border-color));
+  background: color-mix(in srgb, var(--bg-tertiary) 82%, var(--accent-color) 18%);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--accent-color) 18%, transparent),
+    0 8px 18px color-mix(in srgb, black 28%, transparent);
+}
+
+.header-audio-player.is-drag-target {
+  width: 128px;
+  min-width: 128px;
+  border-color: color-mix(in srgb, var(--accent-color) 72%, var(--border-color));
+  background: color-mix(in srgb, var(--accent-color) 20%, var(--bg-tertiary));
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--accent-color) 26%, transparent),
+    0 0 18px color-mix(in srgb, var(--accent-color) 22%, transparent);
+}
+
+.header-audio-player.is-hidden {
+  display: none;
+}
+
+.header-audio-player audio {
+  display: none;
+}
+
+.header-audio-btn {
+  position: absolute;
+  /* Percentage + translateY(-50%) instead of a fixed 14px (half of the OLD 28px-tall pill) —
+     that literal stopped matching the pill's real half-height once --control-height-sm shrank
+     under density, pulling the buttons off-center. 50% always matches the current pill height. */
+  top: 50%;
+  margin: 0;
+  min-width: 20px;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border-radius: var(--radius-full, 999px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  font-size: 10px;
+  line-height: 1;
+  transform: translateY(-50%);
+  transition:
+    opacity var(--transition-speed) var(--transition-timing),
+    transform var(--transition-speed) var(--transition-timing),
+    background-color var(--transition-speed) var(--transition-timing),
+    border-color var(--transition-speed) var(--transition-timing),
+    color var(--transition-speed) var(--transition-timing);
+}
+
+.header-audio-btn i {
+  font-size: 10px;
+}
+
+#header-audio-restart-btn {
+  left: 5px;
+}
+
+#header-audio-play-btn {
+  /* Centers the 20px button in the pill's RESTING width. Was a fixed 5px (then briefly 3px),
+     tuned for the old fixed-30px pill — now that the pill's width tracks --control-height-sm
+     (shrinks under density), a fixed offset stopped centering the button and pushed it visibly
+     toward one edge. calc() keeps it centered at every density step; the hover-expanded state
+     (128px wide, multiple buttons) is unaffected since only the resting width term matters here. */
+  right: calc((var(--control-height-sm) - 20px) / 2);
+  transform: translateY(-50%);
+}
+
+#header-audio-next-btn {
+  left: 29px;
+}
+
+#header-audio-rate-btn {
+  left: 53px;
+  font-size: 9px;
+  letter-spacing: 0.02em;
+  font-weight: 600;
+  padding-inline: 2px;
+  min-width: 22px;
+  width: 22px;
+  height: 20px;
+}
+
+#header-audio-playlist-btn {
+  left: 79px;
+}
+
+#header-audio-restart-btn,
+#header-audio-next-btn,
+#header-audio-rate-btn,
+#header-audio-playlist-btn {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-50%) scale(0.82);
+}
+
+.header-audio-player:hover #header-audio-restart-btn,
+.header-audio-player:hover #header-audio-next-btn,
+.header-audio-player:hover #header-audio-rate-btn,
+.header-audio-player:hover #header-audio-playlist-btn,
+.header-audio-player.is-playlist-open #header-audio-restart-btn,
+.header-audio-player.is-playlist-open #header-audio-next-btn,
+.header-audio-player.is-playlist-open #header-audio-rate-btn,
+.header-audio-player.is-playlist-open #header-audio-playlist-btn,
+.header-audio-player.is-seek-open #header-audio-restart-btn,
+.header-audio-player.is-seek-open #header-audio-next-btn,
+.header-audio-player.is-seek-open #header-audio-rate-btn,
+.header-audio-player.is-seek-open #header-audio-playlist-btn,
+.header-audio-player.is-drag-target #header-audio-restart-btn,
+.header-audio-player.is-drag-target #header-audio-next-btn,
+.header-audio-player.is-drag-target #header-audio-rate-btn,
+.header-audio-player.is-drag-target #header-audio-playlist-btn {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(-50%) scale(1);
+}
+
+.header-audio-btn-primary {
+  color: var(--text-primary);
+  border-color: var(--border-color);
+  background: var(--bg-tertiary);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, white 6%, transparent);
+}
+
+.header-audio-player:hover .header-audio-btn-primary,
+.header-audio-player.is-playing .header-audio-btn-primary {
+  color: var(--accent-color);
+  border-color: color-mix(in srgb, var(--accent-color) 50%, var(--border-color));
+  background: color-mix(in srgb, var(--accent-color) 12%, var(--bg-tertiary));
+}
+
+.header-audio-play-tooltip {
+  position: absolute;
+  top: calc(100% + 5px);
+  right: 0;
+  z-index: var(--flowjoe-z-tooltip) !important;
+  /* No min-width floor: the old 240px minimum made the bubble far wider than
+     its (now single-line) text, so it sprawled left of the play button and the
+     arrow read as misaligned. max-content hugs the text; long translations
+     still wrap at the max-width cap. */
+  max-width: min(320px, calc(100vw - 24px));
+  width: max-content;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm, 4px);
+  border: 1.5px solid var(--tooltip-border);
+  background: var(--tooltip-bg);
+  /* Same bubble recipe as .flowjoe-tooltip (tooltip.css) — bg/border/ink must track it
+     together, so this reads --tooltip-text with the same --accent-color fallback. */
+  color: var(--tooltip-text, var(--accent-color));
+  box-shadow: var(--elev-raised);
+  font-family: var(--app-font-family, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+  font-size: var(--tooltip-font-size, calc(14px * var(--font-scale, 1)));
+  line-height: 1.5;
+  text-align: center;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-2px);
+  transition:
+    opacity var(--transition-speed) ease,
+    visibility var(--transition-speed) ease,
+    transform var(--transition-speed) ease;
+}
+
+.header-audio-play-tooltip::before {
+  content: "";
+  position: absolute;
+  top: -16px;
+  right: 14px;
+  border-width: 8px;
+  border-style: solid;
+  border-color: transparent transparent var(--tooltip-bg) transparent;
+  filter: drop-shadow(0 -1.5px 0 var(--tooltip-border));
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity var(--transition-speed) ease,
+    visibility var(--transition-speed) ease;
+}
+
+#header-audio-play-btn:hover ~ .header-audio-play-tooltip,
+#header-audio-play-btn:hover ~ .header-audio-play-tooltip::before {
+  opacity: 1;
+  visibility: visible;
+}
+
+#header-audio-play-btn:hover ~ .header-audio-play-tooltip {
+  transform: translateY(0);
+}
+
+body.hide-nav-tooltips .header-audio-play-tooltip,
+body.hide-nav-tooltips .header-audio-play-tooltip::before {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+.header-audio-seek-panel {
+  position: absolute;
+  left: 9px;
+  right: 9px;
+  bottom: 5px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-3px);
+  transition:
+    opacity 0.14s ease,
+    transform 0.14s ease,
+    visibility 0s linear 0.14s;
+}
+
+.header-audio-player.is-seek-open .header-audio-seek-panel {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+  transition:
+    opacity 0.14s ease,
+    transform 0.14s ease,
+    visibility 0s linear 0s;
+}
+
+.header-audio-seek-range {
+  --header-audio-seek-progress: 0%;
+  width: 100%;
+  min-height: 20px;
+  margin: 0;
+  padding: 6px 0;
+  box-sizing: border-box;
+  cursor: pointer;
+  accent-color: var(--accent-color);
+  background: transparent;
+  -webkit-appearance: none;
+  appearance: none;
+  touch-action: pan-y;
+}
+
+.header-audio-seek-range:disabled {
+  cursor: default;
+  opacity: var(--disabled-opacity-control);
+}
+
+.header-audio-seek-range::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: var(--radius-full, 999px);
+  border: 1px solid var(--header-seek-track-border);
+  background:
+    linear-gradient(
+      90deg,
+      var(--header-seek-progress-fill) 0%,
+      var(--header-seek-progress-fill) var(--header-audio-seek-progress),
+      color-mix(in srgb, var(--bg-primary) 36%, transparent) var(--header-audio-seek-progress),
+      color-mix(in srgb, var(--bg-primary) 36%, transparent) 100%
+    );
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.16),
+    inset 0 1px 2px rgba(0, 0, 0, 0.12);
+}
+
+.header-audio-seek-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  margin-top: -5px;
+  border-radius: var(--radius-full, 999px);
+  border: 2px solid var(--header-seek-thumb-border);
+  background: var(--header-seek-thumb-fill);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.24);
+}
+
+.header-audio-seek-range::-moz-range-track {
+  height: 6px;
+  border-radius: var(--radius-full, 999px);
+  border: 1px solid var(--header-seek-track-border);
+  background: color-mix(in srgb, var(--bg-primary) 36%, transparent);
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.16),
+    inset 0 1px 2px rgba(0, 0, 0, 0.12);
+}
+
+.header-audio-seek-range::-moz-range-progress {
+  height: 6px;
+  border-radius: var(--radius-full, 999px);
+  background: var(--header-seek-progress-fill);
+}
+
+.header-audio-seek-range::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-full, 999px);
+  border: 2px solid var(--header-seek-thumb-border);
+  background: var(--header-seek-thumb-fill);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.24);
+}
+
+.header-audio-playlist-popover {
+  --playlist-content-inset: 6px; /* heading/tabs/secondary-actions horizontal alignment + corner-button clearance math ONLY — do not repurpose for body/list padding, see --playlist-body-padding below */
+  /* Dedicated body/content padding for the track and saved-playlist lists, loosened toward the
+     shared modal body-padding convention (--pad-modal 20px on the generic #modal; Preview/Summary
+     goes a little wider still) without going all the way there. This is a
+     compact floating/draggable popover (max-height ~440px, resizable down further), not a
+     full-screen-centered modal — 20-24px would eat a disproportionate share of a small panel's
+     vertical real estate and leave noticeably fewer rows visible before scrolling. 14px roughly
+     doubles the old cramped 6px (a real, meaningful loosening) while staying proportionate to the
+     panel's own 8px outer padding and small scale. Judgment call, not a shared token, since no
+     other surface has this shape. */
+  --playlist-body-padding: 14px;
+  /* The body gutter IS the shared modal body-padding token (--pad-modal, 20px) — the SAME inset the
+     AI Assistant / Preview / Summary panels use around their body content. Not a bespoke playlist
+     value: changing --pad-modal now moves the playlist body margin in lockstep with every modal. */
+  --playlist-body-gutter: var(--pad-modal);
+  --playlist-toolbar-control-size: var(--icon-btn-size);
+  --playlist-font-scale: calc(var(--font-scale, 1) * var(--flowjoe-surface-font-scale, 1));
+  --playlist-art-size: calc(60px * var(--playlist-font-scale, 1));
+  --playlist-number-column: minmax(calc(2.8ch - 2px), max-content);
+  position: fixed;
+  display: none;
+  flex-direction: column;
+  align-items: stretch;
+  box-sizing: border-box;
+  max-height: min(440px, calc(100vh - 84px));
+  /* Zero panel padding — the title bar is a flush full-width band at the top edge (naturally flush,
+     no negative margins), and the body carries its own uniform gutter. This is the Preview/Summary
+     modal's flush recipe (panel has no padding; titlebar and body are full-bleed flex children). */
+  padding: 0;
+  border: 1px solid var(--border-color);
+  /* Shared modal/panel outer corner radius (styles-variables.css --modal-panel-radius), converging
+     with the rest of the app's modal shells (AI Assistant, Preview/Summary, generic #modal). Real
+     value change: 10px (--radius-xl) -> 12px (--modal-panel-radius) — this popover was the one
+     outlier still on its own radius token. */
+  border-radius: var(--modal-panel-radius);
+  background-color: var(--bg-secondary);
+  background:
+    radial-gradient(
+      ellipse at 14% 0%,
+      color-mix(in srgb, var(--accent-color) 6%, transparent) 0%,
+      transparent 36%
+    ),
+    radial-gradient(
+      ellipse at 92% 92%,
+      color-mix(in srgb, var(--text-primary) 4%, transparent) 0%,
+      transparent 40%
+    ),
+    color-mix(in srgb, var(--bg-secondary) var(--modal-glass-ai-panel-mix, 90%), transparent);
+  backdrop-filter: blur(var(--modal-glass-blur, 10px)) saturate(var(--modal-glass-saturate, 1.08));
+  -webkit-backdrop-filter: blur(var(--modal-glass-blur, 10px)) saturate(var(--modal-glass-saturate, 1.08));
+  box-shadow: var(--elev-floating);
+  z-index: var(--flowjoe-z-surface-above-topbar);
+  overflow: hidden;
+  isolation: isolate;
+  background-clip: padding-box;
+}
+
+.header-audio-playlist-popover.open {
+  display: flex;
+}
+
+.header-audio-playlist-popover.is-panel-resizing,
+.header-audio-playlist-popover.is-panel-dragging {
+  transition: none !important;
+}
+
+.header-audio-playlist-popover.is-fullscreen {
+  inset: 12px;
+  width: auto !important;
+  max-height: none;
+  height: auto;
+}
+
+.header-audio-playlist-popover.is-fullscreen .context-menu-corner-pin {
+  display: none !important;
+}
+
+.header-audio-playlist-popover.is-fullscreen .header-audio-playlist-resize-handle {
+  display: none;
+}
+
+body.surface-effects-disabled .header-audio-playlist-popover {
+  box-shadow: none;
+}
+
+.header-audio-playlist-resize-handle {
+  position: absolute;
+  z-index: 3;
+  pointer-events: auto;
+  background: transparent;
+}
+
+.header-audio-playlist-resize-handle[data-edge="e"],
+.header-audio-playlist-resize-handle[data-edge="w"] {
+  top: 10px;
+  bottom: 10px;
+  width: 8px;
+  cursor: ew-resize;
+}
+
+.header-audio-playlist-resize-handle[data-edge="e"] {
+  right: 0;
+}
+
+.header-audio-playlist-resize-handle[data-edge="w"] {
+  left: 0;
+}
+
+.header-audio-playlist-resize-handle[data-edge="n"],
+.header-audio-playlist-resize-handle[data-edge="s"] {
+  left: 10px;
+  right: 10px;
+  height: 8px;
+  cursor: ns-resize;
+}
+
+.header-audio-playlist-resize-handle[data-edge="n"] {
+  top: 0;
+}
+
+.header-audio-playlist-resize-handle[data-edge="s"] {
+  bottom: 0;
+}
+
+.header-audio-playlist-resize-handle[data-edge="ne"],
+.header-audio-playlist-resize-handle[data-edge="nw"],
+.header-audio-playlist-resize-handle[data-edge="se"],
+.header-audio-playlist-resize-handle[data-edge="sw"] {
+  width: 14px;
+  height: 14px;
+}
+
+.header-audio-playlist-resize-handle[data-edge="ne"] {
+  top: 0;
+  right: 0;
+  cursor: nesw-resize;
+}
+
+.header-audio-playlist-resize-handle[data-edge="nw"] {
+  top: 0;
+  left: 0;
+  cursor: nwse-resize;
+}
+
+.header-audio-playlist-resize-handle[data-edge="se"] {
+  right: 0;
+  bottom: 0;
+  cursor: nwse-resize;
+}
+
+.header-audio-playlist-resize-handle[data-edge="sw"] {
+  left: 0;
+  bottom: 0;
+  cursor: nesw-resize;
+}
+
+.header-audio-playlist-titlebar {
+  /* The slim title-bar BAND — a real full-width horizontal band flush to the panel's top and side
+     edges, a direct child of the panel (which now has zero padding), exactly like #image-modal-
+     titlebar. It uses the shared --modal-header-padding / --modal-header-min-height and a full-width
+     bottom divider. Title on the left, window controls on the right (.header-audio-playlist-heading is
+     the space-between row inside). The titlebar BACKGROUND (glass + glass-disabled fallback) comes
+     from the shared modal-titlebar group in styles-tree.css, which now lists this class alongside the
+     other modal titlebars — so it stays in lockstep with them, no local duplicate. */
+  flex: 0 0 auto;
+  padding: var(--modal-header-padding);
+  min-height: var(--modal-header-min-height);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  border-bottom: var(--modal-panel-border);
+  background-clip: padding-box;
+  /* Round the band's top corners to match the panel's own rounded top corners (bottom edge is the
+     divider into the body). */
+  border-radius: calc(var(--modal-panel-radius) - 1px) calc(var(--modal-panel-radius) - 1px) 0 0;
+  position: relative;
+  cursor: grab;
+}
+
+.header-audio-playlist-popover.is-panel-dragging .header-audio-playlist-titlebar {
+  cursor: grabbing;
+}
+
+.header-audio-playlist-body {
+  /* The panel body — a direct child of the panel, below the title-bar band. It carries the ONE
+     shared gutter (--playlist-body-gutter) on the left/right/bottom, so every region inside it
+     (subtitle, tabs, search toolbar, track-list card) shares a single aligned column — the playlist's
+     analogue of the reference modal panel's uniform body padding. */
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  padding: var(--playlist-body-gutter);
+  box-sizing: border-box;
+}
+
+.header-audio-playlist-drag-handle.context-menu-drag-strip {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  flex: 0 0 auto;
+  pointer-events: none;
+}
+
+.header-audio-playlist-heading {
+  /* Inner row of the title-bar band — title text on the left, pin/fullscreen/close controls on the
+     right. The band (.header-audio-playlist-titlebar) supplies the shared padding/min-height/
+     background/divider; this is just the horizontal title↔controls row inside it, the exact shape
+     of every other modal's titlebar content (title + window controls, nothing else). */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: 16px;
+  min-width: 0;
+  position: static;
+}
+
+.header-audio-playlist-main {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+}
+
+.header-audio-playlist-kicker {
+  min-width: 0;
+  cursor: pointer;
+  /* Shared modal title typography — same tokens as #ai-spell-check-header h3 / #image-modal-heading
+     (1.1rem / weight 600 / normal case), so the playlist title reads identically to every other
+     modal's title. Was a bespoke 14px uppercase 0.08em "kicker"; unified here. */
+  font-size: var(--modal-title-font-size);
+  line-height: 1.2;
+  font-weight: var(--modal-title-font-weight);
+  letter-spacing: 0.01em;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.header-audio-playlist-title-count {
+  /* The "(N)" count in the title bar — same de-emphasis the tab labels use for their "(N)": the
+     count is a touch lighter/quieter than the title word next to it. */
+  color: var(--text-secondary);
+  font-weight: var(--modal-title-font-weight);
+}
+
+.header-audio-playlist-subtitle {
+  /* The count line + Source/Tags line, as the first body row below the title bar. No horizontal
+     inset of its own — it aligns to the body's shared gutter (--playlist-body-gutter), like every
+     region in the body. */
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+
+.header-audio-playlist-popover:is(.flowjoe-font-scale-large, .flowjoe-font-scale-larger, .flowjoe-font-scale-largest) .header-audio-playlist-kicker {
+  font-size: calc(14px * var(--playlist-font-scale, 1));
+}
+
+.header-audio-playlist-count {
+  /* Second subtitle line — Mode • Sort. Non-bold, secondary color: it's the quieter detail line
+     under the bold Source line above it. */
+  font-size: calc(14px * var(--playlist-font-scale, 1));
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+
+/* The playback-mode chip in the count line — the mode icon (shuffle/sequential/repeat, matching the
+   mode button) inline right before its "… Mode" label, so the label is visibly tied to that button. */
+.header-audio-playlist-count-mode {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.header-audio-playlist-count-mode i {
+  font-size: 0.9em;
+  color: var(--text-secondary);
+}
+
+.header-audio-playlist-popover:is(.flowjoe-font-scale-large, .flowjoe-font-scale-larger, .flowjoe-font-scale-largest) .header-audio-playlist-count {
+  font-size: calc(14px * var(--playlist-font-scale, 1));
+}
+
+.header-audio-playlist-count-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.header-audio-playlist-count-row .header-audio-playlist-count {
+  min-width: 0;
+  flex: 0 0 auto;
+  overflow: visible;
+  text-overflow: clip;
+  white-space: nowrap;
+}
+
+.header-audio-playlist-source {
+  /* First subtitle line — the Source, now the bold/primary emphasis line directly under the title
+     bar (the item count moved up into the title, so Source leads here). */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  min-height: 18px;
+  font-size: calc(14px * var(--playlist-font-scale, 1));
+  line-height: 1.25;
+  font-weight: 600;
+  color: var(--text-primary);
+  overflow: hidden;
+}
+
+.header-audio-playlist-source > span:not(.header-audio-playlist-tags) {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.header-audio-playlist-popover:is(.flowjoe-font-scale-large, .flowjoe-font-scale-larger, .flowjoe-font-scale-largest) .header-audio-playlist-source {
+  font-size: calc(14px * var(--playlist-font-scale, 1));
+}
+
+.header-audio-playlist-search-input {
+  font-size: var(--search-input-font-size);
+}
+
+.header-audio-playlist-popover .header-audio-playlist-search-input {
+  align-self: stretch;
+  appearance: none;
+  -webkit-appearance: none;
+  padding: var(--search-input-padding);
+  border: var(--search-input-border);
+  border-radius: var(--search-input-radius);
+  background: var(--search-input-bg);
+  box-sizing: border-box;
+}
+
+.header-audio-playlist-popover:is(.flowjoe-font-scale-large, .flowjoe-font-scale-larger, .flowjoe-font-scale-largest) .header-audio-playlist-search-input {
+  font-size: var(--search-input-font-size);
+}
+
+.header-audio-playlist-source-action {
+  flex: 0 0 auto;
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  height: 18px;
+  min-height: 18px;
+  margin: 0;
+  border: none;
+  background: transparent;
+  color: var(--accent-color);
+  font: inherit;
+  font-size: calc(14px * var(--playlist-font-scale, 1));
+  font-weight: 700;
+  line-height: 1;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.header-audio-playlist-source-action:hover {
+  color: var(--text-primary);
+}
+
+.header-audio-playlist-tabs {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--border-color) 82%, transparent);
+  background-color: var(--bg-secondary);
+  background: color-mix(in srgb, var(--bg-secondary) var(--modal-glass-ai-card-mix, 34%), transparent);
+  overflow: hidden;
+  border-radius: var(--radius-md, 6px) var(--radius-md, 6px) 0 0;
+}
+
+.header-audio-playlist-tab-actions {
+  flex: 0 0 auto;
+  /* Center against the tab row (same as the settings gear) so the ∞ mode button and the gear sit on
+     one horizontal centerline, not stretched to the full strip height. */
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 8px;
+  padding: 0;
+  border: none !important;
+  border-color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.header-audio-playlist-tab {
+  appearance: none;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(38px * var(--playlist-font-scale, 1));
+  background-color: var(--bg-primary);
+  background: color-mix(in srgb, var(--bg-primary) var(--modal-glass-ai-chat-messages-mix, 44%), transparent);
+  border-top: 1px solid color-mix(in srgb, var(--border-color) 82%, transparent);
+  border-left: 1px solid color-mix(in srgb, var(--border-color) 82%, transparent);
+  border-right: 1px solid color-mix(in srgb, var(--border-color) 82%, transparent);
+  border-bottom: none;
+  border-radius: var(--radius-md, 6px) var(--radius-md, 6px) 0 0;
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: calc(14px * var(--playlist-font-scale, 1));
+  font-weight: 500;
+  line-height: 1;
+  padding: 0 4px;
+  cursor: pointer;
+  transition: color var(--transition-speed), background var(--transition-speed), border-color var(--transition-speed);
+  letter-spacing: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  bottom: -1px;
+  margin-right: -1px;
+}
+
+.header-audio-playlist-tab:last-child {
+  margin-right: 0;
+}
+
+.header-audio-playlist-tab:hover {
+  color: var(--text-primary);
+  background-color: var(--bg-tertiary);
+  background: color-mix(in srgb, var(--bg-secondary) var(--modal-glass-ai-field-secondary-mix, 54%), transparent);
+}
+
+.header-audio-playlist-tab.active {
+  background-color: var(--bg-secondary);
+  background: color-mix(in srgb, var(--bg-secondary) var(--modal-glass-ai-panel-mix, 90%), transparent);
+  color: var(--accent-color);
+  border-top-color: var(--accent-color);
+  border-left-color: color-mix(in srgb, var(--border-color) 88%, transparent);
+  border-right-color: color-mix(in srgb, var(--border-color) 88%, transparent);
+  border-bottom-color: var(--bg-secondary);
+  font-weight: 600;
+  z-index: 1;
+}
+
+.header-audio-playlist-tab:focus-visible {
+  outline: none;
+  box-shadow: none;
+  z-index: 2;
+}
+
+.header-audio-playlist-tab-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  line-height: 1;
+  transform: translateY(1px);
+}
+
+.header-audio-playlist-tab-count {
+  color: var(--text-secondary);
+  flex: 0 0 auto;
+  line-height: 1;
+}
+
+.header-audio-playlist-settings-btn {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: 0 0 var(--playlist-toolbar-control-size);
+  width: var(--playlist-toolbar-control-size);
+  min-width: var(--playlist-toolbar-control-size);
+  height: var(--playlist-toolbar-control-size);
+  /* Vertically center against the mode (∞) button, not stretch to the full tab-strip height (which
+     includes the 1px tab-overlap/border and pulls the gear visibly low). */
+  align-self: center;
+  margin: 0 0 0 8px;
+  padding: 0;
+  border: none !important;
+  border-radius: 0;
+  background: transparent !important;
+  color: var(--text-secondary);
+  box-shadow: none !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: color var(--transition-speed) ease;
+  outline: none !important;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.header-audio-playlist-settings-btn:hover,
+.header-audio-playlist-settings-btn:focus,
+.header-audio-playlist-settings-btn:focus-visible,
+.header-audio-playlist-settings-btn:active {
+  border: none !important;
+  border-color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--accent-color);
+  outline: none !important;
+}
+
+.header-audio-playlist-settings-btn::-moz-focus-inner {
+  border: 0;
+}
+
+.header-audio-playlist-settings-btn i {
+  font-size: var(--icon-glyph);
+  line-height: 1;
+  pointer-events: none;
+}
+
+body.glass-effects-disabled .header-audio-playlist-tabs {
+  background: var(--bg-secondary);
+  border-bottom-color: var(--border-color);
+}
+
+body.glass-effects-disabled .header-audio-playlist-tab {
+  background: var(--bg-primary);
+  border-top-color: var(--border-color);
+  border-left-color: var(--border-color);
+  border-right-color: var(--border-color);
+}
+
+body.glass-effects-disabled .header-audio-playlist-tab:hover,
+body.glass-effects-disabled .header-audio-playlist-tab.active {
+  background: var(--bg-secondary);
+}
+
+body.glass-effects-disabled .header-audio-playlist-tab.active {
+  border-bottom-color: var(--bg-secondary);
+}
+
+.header-audio-playlist-window-actions {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--header-gap); /* owner call: window titlebar rows share the app header rhythm */
+  position: relative;
+  z-index: 2;
+}
+
+.header-audio-playlist-controls {
+  /* Right-hand controls of the slim title row — the corner pin/fullscreen/close buttons are
+     vertically centered in the bar exactly like #image-modal-window-controls in the Preview modal.
+     No absolute positioning: they're the flex end of the title row (.header-audio-playlist-heading
+     is `justify-content: space-between`). */
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+.header-audio-playlist-window-actions .close-btn,
+.header-audio-playlist-window-actions .floating-pin-btn {
+  position: relative;
+  top: auto;
+  right: auto;
+  z-index: 1;
+  margin: 0;
+}
+/* Titlebar context: window-corner buttons are CLASS-1 chrome (32), overriding the
+   menu-context small size that button.floating-pin-btn carries. */
+.header-audio-playlist-window-actions button.close-btn,
+.header-audio-playlist-window-actions button.floating-pin-btn {
+  width: var(--icon-btn-size);
+  min-width: var(--icon-btn-size);
+  height: var(--icon-btn-size);
+  min-height: var(--icon-btn-size);
+}
+
+.header-audio-playlist-secondary-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  /* This is a SEARCH row (font button + magnifier + search field + sort/favorite/save/× controls), so
+     it uses the shared --search-toolbar-gap — the SAME token the gallery breadcrumb tools row and the
+     tree/gallery search rows use — for one uniform gap across every element in the row. The inner
+     search-wrap below uses the same token, so the whole row shares a single rhythm. */
+  gap: var(--search-toolbar-gap);
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.header-audio-playlist-secondary-actions .close-btn {
+  position: relative;
+  margin: 0;
+}
+
+.header-audio-playlist-secondary-actions .floating-pin-btn,
+.header-audio-playlist-tab-actions .header-audio-playlist-mode-btn,
+.header-audio-playlist-search-wrap .header-audio-playlist-font-btn,
+.header-audio-playlist-search-wrap .header-audio-playlist-time-btn,
+.header-audio-playlist-search-wrap .header-audio-playlist-sort-btn,
+.header-audio-playlist-search-wrap .header-audio-playlist-search-icon,
+.header-audio-playlist-save-btn {
+  width: var(--playlist-toolbar-control-size);
+  min-width: var(--playlist-toolbar-control-size);
+  height: var(--playlist-toolbar-control-size);
+  min-height: var(--playlist-toolbar-control-size);
+  margin: 0;
+  padding: 0;
+  border-radius: var(--icon-btn-radius, 4px);
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-audio-playlist-secondary-actions .floating-pin-btn:hover:not(:disabled),
+.header-audio-playlist-secondary-actions .floating-pin-btn:focus-visible:not(:disabled),
+.header-audio-playlist-tab-actions .header-audio-playlist-mode-btn:hover:not(:disabled),
+.header-audio-playlist-tab-actions .header-audio-playlist-mode-btn:focus-visible:not(:disabled),
+.header-audio-playlist-search-wrap .header-audio-playlist-font-btn:hover:not(:disabled),
+.header-audio-playlist-search-wrap .header-audio-playlist-font-btn:focus-visible:not(:disabled),
+.header-audio-playlist-search-wrap .header-audio-playlist-time-btn:hover:not(:disabled),
+.header-audio-playlist-search-wrap .header-audio-playlist-time-btn:focus-visible:not(:disabled),
+.header-audio-playlist-search-wrap .header-audio-playlist-time-btn.is-active:not(:disabled),
+.header-audio-playlist-search-wrap .header-audio-playlist-sort-btn:hover:not(:disabled),
+.header-audio-playlist-search-wrap .header-audio-playlist-sort-btn:focus-visible:not(:disabled),
+.header-audio-playlist-search-wrap .header-audio-playlist-sort-btn.is-active:not(:disabled),
+.header-audio-playlist-search-wrap .header-audio-playlist-search-icon:hover,
+.header-audio-playlist-search-wrap .header-audio-playlist-search-icon:focus-visible,
+.header-audio-playlist-secondary-actions .header-audio-playlist-favorite-sort-btn.is-active:not(:disabled),
+.header-audio-playlist-save-btn:hover:not(:disabled),
+.header-audio-playlist-save-btn:focus-visible:not(:disabled) {
+  background-color: var(--hover-bg);
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+  outline: none;
+}
+
+.header-audio-playlist-secondary-actions .floating-pin-btn i,
+.header-audio-playlist-tab-actions .header-audio-playlist-mode-btn i,
+.header-audio-playlist-search-wrap .header-audio-playlist-font-btn i,
+.header-audio-playlist-search-wrap .header-audio-playlist-time-btn i,
+.header-audio-playlist-search-wrap .header-audio-playlist-sort-btn i,
+.header-audio-playlist-favorite-sort-btn i,
+.header-audio-playlist-search-wrap .header-audio-playlist-search-icon i,
+.header-audio-playlist-save-btn i {
+  font-size: var(--icon-glyph);
+  line-height: 1;
+}
+
+.header-audio-playlist-save-btn {
+  position: relative;
+}
+
+.header-audio-playlist-save-btn span {
+  position: absolute;
+  left: 17px;
+  top: 5px;
+  width: 12px;
+  height: 12px;
+  border-radius: var(--radius-full, 999px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent-color);
+  /* --text-on-accent: the WCAG-picked per-theme token for content on an accent fill.
+     Was --bg-primary, which is only defined inside node-themes.css (scoped to node
+     themes), so it resolved to nothing here and the glyph inherited a near-accent color. */
+  color: var(--text-on-accent);
+  font-size: 6px;
+  font-weight: 800;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.header-audio-playlist-secondary-actions .header-audio-playlist-search-wrap.gallery-search-wrap {
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
+  margin: 0;
+  /* The shared search-row rhythm token (--search-toolbar-gap) between the font-size button, magnifier,
+     and the search bar — the SAME token the gallery, tree, and browser-link search rows use, so this
+     search row matches them exactly. (It resolves to --header-gap by definition in styles-variables.) */
+  gap: var(--search-toolbar-gap);
+}
+
+.header-audio-playlist-search-wrap .header-audio-playlist-font-btn {
+  flex: 0 0 auto;
+}
+
+.header-audio-playlist-search-wrap .header-audio-playlist-time-btn,
+.header-audio-playlist-search-wrap .header-audio-playlist-sort-btn {
+  flex: 0 0 auto;
+  font-weight: 800;
+  font-size: var(--font-control);
+  letter-spacing: 0;
+  line-height: 1;
+}
+
+.header-audio-playlist-search-wrap .header-audio-playlist-search-icon {
+  flex: 0 0 auto;
+  pointer-events: auto;
+}
+
+.header-audio-playlist-search-wrap .header-audio-playlist-search-icon.active {
+  color: var(--search-icon-active-color);
+}
+
+.header-audio-playlist-popover .header-audio-playlist-search-wrap .header-audio-playlist-search-bar {
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
+  max-width: none;
+  height: var(--search-bar-height);
+  min-height: var(--search-bar-height);
+  margin-left: 0;
+  gap: var(--search-bar-gap);
+  padding: var(--search-bar-padding);
+  background: var(--search-bar-bg);
+  border: var(--search-bar-border);
+  border-radius: var(--search-bar-radius);
+}
+
+.header-audio-playlist-popover .header-audio-playlist-search-wrap .header-audio-playlist-search-clear {
+  width: var(--search-clear-size);
+  min-width: var(--search-clear-size);
+  height: auto;
+  flex: 0 0 var(--search-clear-size);
+  padding: 0;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 1;
+}
+
+/* Center the "×" glyph itself (whether it's a text node or an <i>) in the compact clear button. */
+.header-audio-playlist-popover .header-audio-playlist-search-wrap .header-audio-playlist-search-clear > * {
+  margin: 0;
+  line-height: 1;
+}
+
+.header-audio-playlist-search-clear:disabled {
+  cursor: default;
+  opacity: var(--disabled-opacity-control);
+}
+
+.header-audio-playlist-remove-selected-btn {
+  position: relative;
+  width: var(--playlist-toolbar-control-size);
+  min-width: var(--playlist-toolbar-control-size);
+  height: var(--playlist-toolbar-control-size);
+  min-height: var(--playlist-toolbar-control-size);
+  margin: 0;
+  padding: 0;
+  color: var(--accent-color);
+  border-color: color-mix(in srgb, var(--accent-color) 58%, var(--border-color));
+  background: color-mix(in srgb, var(--accent-color) 10%, var(--bg-tertiary));
+}
+
+.header-audio-playlist-remove-selected-btn i {
+  font-size: var(--icon-glyph);
+}
+
+.header-audio-playlist-remove-selected-btn span {
+  position: absolute;
+  left: 17px;
+  top: 5px;
+  width: 12px;
+  height: 12px;
+  border-radius: var(--radius-full, 999px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent-color);
+  /* --text-on-accent: the WCAG-picked per-theme token for content on an accent fill.
+     Was --bg-primary, which is only defined inside node-themes.css (scoped to node
+     themes), so it resolved to nothing here and the glyph inherited a near-accent color. */
+  color: var(--text-on-accent);
+  font-size: 6px;
+  font-weight: 800;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.header-audio-playlist-save-btn:disabled {
+  opacity: var(--disabled-opacity-control);
+  cursor: default;
+}
+
+.header-audio-playlist-mode-btn .stack-audio-loop-single-badge {
+  position: absolute;
+  left: 17px;
+  top: 5px;
+  width: 12px;
+  height: 12px;
+  border-radius: var(--radius-full, 999px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 6px;
+  font-weight: 700;
+  text-align: center;
+  background: var(--accent-color);
+  /* See the --text-on-accent note above: --bg-primary is node-theme-scoped, not global. */
+  color: var(--text-on-accent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent-color) 60%, transparent);
+  pointer-events: none;
+}
+
+.header-audio-playlist-mode-btn {
+  position: relative;
+}
+
+.header-audio-playlist-list {
+  position: relative;
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  gap: var(--list-row-gap);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  overflow-anchor: none;
+  padding: var(--playlist-body-padding);
+  background-color: var(--bg-primary);
+  background: color-mix(in srgb, var(--bg-primary) var(--modal-glass-ai-chat-messages-mix), transparent);
+  border: 1px solid color-mix(in srgb, var(--border-color) 82%, transparent);
+  border-radius: var(--radius-sm, 4px);
+  isolation: isolate;
+  background-clip: padding-box;
+}
+
+.header-audio-playlist-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--playlist-number-column) var(--playlist-art-size) minmax(0, 1fr) 112px;
+  align-items: start;
+  gap: 8px;
+  min-height: calc(74px * var(--playlist-font-scale, 1));
+  padding: calc(8px * var(--playlist-font-scale, 1)) 8px;
+  border: 1px solid color-mix(in srgb, var(--border-color) 82%, transparent);
+  border-radius: var(--radius-sm, 4px);
+  color: var(--text-primary);
+  background-color: var(--bg-secondary);
+  background: color-mix(in srgb, var(--bg-secondary) var(--modal-glass-ai-card-mix), transparent);
+  cursor: pointer;
+  box-sizing: border-box;
+  overflow: visible;
+}
+
+.header-audio-playlist-row:hover,
+.header-audio-playlist-row:focus-within {
+  background-color: var(--bg-tertiary);
+  background: color-mix(in srgb, var(--bg-secondary) var(--modal-glass-ai-field-secondary-mix, 54%), transparent);
+}
+
+.header-audio-playlist-row.is-current {
+  background: color-mix(in srgb, var(--accent-color) 22%, var(--bg-primary));
+  box-shadow:
+    inset 3px 0 0 var(--accent-color),
+    inset 0 0 0 1px color-mix(in srgb, var(--accent-color) 32%, transparent);
+}
+
+.browser-link-gallery-row.header-audio-playlist-row {
+  grid-template-columns: var(--browser-link-gallery-art-size, var(--playlist-art-size)) minmax(0, 1fr) max-content;
+  flex: 0 0 auto;
+  height: auto;
+  min-height: calc(74px * var(--playlist-font-scale, 1));
+  padding: 8px;
+}
+
+/* This list shares row/base styling with the audio playlist popover via .header-audio-playlist-list,
+   whose own padding reads var(--playlist-body-padding) — a token defined only inside
+   .header-audio-playlist-popover. Outside that scope it resolves to nothing (0), and because
+   buttons.css loads after styles-browser.css, that same-specificity .header-audio-playlist-list
+   rule silently wins over styles-browser.css's dedicated .browser-link-gallery-list padding (13px,
+   symmetric top/bottom, tuned against duck-height overshoot — see that file's comment), zeroing it.
+   Restore the browser gallery's own value here using its own token (already scoped to
+   .browser-link-gallery, styles-browser.css) so the two files don't fight over one property. */
+.browser-link-gallery-list.header-audio-playlist-list {
+  padding: var(--playlist-content-inset);
+  padding-bottom: var(--playlist-content-inset);
+}
+
+.header-audio-playlist-row.is-selected {
+  border-style: dashed;
+  border-color: color-mix(in srgb, var(--accent-color) 72%, var(--border-color));
+  box-shadow: none;
+  background: color-mix(in srgb, var(--accent-color) 18%, var(--bg-primary));
+}
+
+.header-audio-playlist-row.is-selected:hover,
+.header-audio-playlist-row.is-selected:focus-within {
+  background: color-mix(in srgb, var(--accent-color) 22%, var(--bg-primary));
+}
+
+.header-audio-playlist-row.is-current.is-selected.is-playing {
+  border-style: solid;
+  background: color-mix(in srgb, var(--accent-color) 24%, var(--bg-primary));
+}
+
+.header-audio-playlist-row.is-playing::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0.42;
+  animation: header-audio-playing-pulse 1.35s ease-in-out infinite;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--accent-color) 34%, transparent),
+    inset 0 0 18px color-mix(in srgb, var(--accent-color) 18%, transparent);
+}
+
+.header-audio-saved-playlist.is-playing::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0.42;
+  animation: header-audio-playing-pulse 1.35s ease-in-out infinite;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--accent-color) 34%, transparent),
+    inset 0 0 18px color-mix(in srgb, var(--accent-color) 18%, transparent);
+}
+
+@keyframes header-audio-playing-pulse {
+  0%,
+  100% {
+    opacity: 0.36;
+    box-shadow:
+      inset 0 0 0 1px color-mix(in srgb, var(--accent-color) 30%, transparent),
+      inset 0 0 14px color-mix(in srgb, var(--accent-color) 14%, transparent);
+  }
+  50% {
+    opacity: 0.78;
+    box-shadow:
+      inset 0 0 0 1px color-mix(in srgb, var(--accent-color) 52%, transparent),
+      inset 0 0 28px color-mix(in srgb, var(--accent-color) 28%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .header-audio-playlist-row.is-playing::after,
+  .header-audio-saved-playlist.is-playing::after {
+    animation: none;
+  }
+}
+
+.header-audio-playlist-row.is-dragging {
+  opacity: 0.52;
+}
+
+.header-audio-playlist-row.is-drop-target {
+  background: color-mix(in srgb, var(--accent-color) 16%, var(--bg-primary));
+}
+
+.header-audio-playlist-row.playlist-drop-glow,
+.header-audio-saved-playlist.playlist-drop-glow,
+.header-audio-source-playlist.playlist-drop-glow {
+  animation: glowSwell 0.8s ease-in-out;
+  will-change: transform, box-shadow;
+  transform-origin: center center;
+  position: relative;
+  z-index: 8;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .header-audio-playlist-row.playlist-drop-glow,
+  .header-audio-saved-playlist.playlist-drop-glow,
+  .header-audio-source-playlist.playlist-drop-glow {
+    animation: none;
+  }
+}
+
+.header-audio-playlist-marker,
+.header-audio-playlist-actions button,
+.header-audio-playlist-drag-grip {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  border-radius: var(--radius-sm, 4px);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-secondary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.header-audio-playlist-marker {
+  align-self: start;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: auto;
+  min-width: 0;
+  height: auto;
+  min-height: 0;
+  margin-top: 0;
+  padding-top: 2px;
+}
+
+.header-audio-playlist-actions button,
+.header-audio-playlist-drag-grip {
+  cursor: pointer;
+}
+
+.header-audio-playlist-favorite-btn.is-active,
+.header-audio-playlist-favorite-btn.is-active i,
+.header-audio-playlist-favorite-sort-btn.is-active,
+.header-audio-playlist-favorite-sort-btn.is-active i,
+.header-audio-playlist-row-playback-btn.is-playing,
+.header-audio-playlist-row-playback-btn.is-playing i {
+  color: var(--accent-color);
+}
+
+.header-audio-playlist-actions {
+  gap: var(--icon-row-gap-dense);
+  align-self: center;
+  justify-content: flex-end;
+  min-height: 0;
+}
+
+.header-audio-playlist-row:not(.browser-link-gallery-row) .header-audio-playlist-actions {
+  justify-self: end;
+  width: 112px;
+  max-width: 112px;
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.header-audio-playlist-marker {
+  color: var(--accent-color);
+  cursor: default;
+}
+
+.header-audio-playlist-number {
+  display: inline-block;
+  max-width: none;
+  overflow: visible;
+  text-overflow: clip;
+  white-space: nowrap;
+  font-size: calc(14px * var(--playlist-font-scale, 1));
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.header-audio-playlist-row.is-current .header-audio-playlist-number {
+  color: var(--accent-color);
+}
+
+.header-audio-playlist-popover:is(.flowjoe-font-scale-large, .flowjoe-font-scale-larger, .flowjoe-font-scale-largest) .header-audio-playlist-number,
+.header-audio-playlist-popover:is(.flowjoe-font-scale-large, .flowjoe-font-scale-larger, .flowjoe-font-scale-largest) .header-audio-playlist-empty {
+  font-size: calc(14px * var(--playlist-font-scale, 1));
+}
+
+.header-audio-playlist-drag-grip {
+  cursor: grab;
+}
+
+.header-audio-playlist-drag-grip:hover {
+  background: transparent;
+}
+
+.header-audio-playlist-drag-grip:hover i {
+  color: var(--accent-color);
+}
+
+.header-audio-playlist-drag-grip:active {
+  cursor: grabbing;
+}
+
+.header-audio-playlist-empty {
+  margin: 10px 2px 4px;
+  padding: 18px 12px;
+  border-radius: var(--radius-sm, 4px);
+  color: var(--text-secondary);
+  background: var(--bg-primary);
+  text-align: center;
+  font-size: calc(14px * var(--playlist-font-scale, 1));
+  font-weight: 600;
+}
+
+.header-audio-saved-list {
+  position: relative;
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  gap: var(--list-row-gap);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  overflow-anchor: none;
+  padding: var(--playlist-body-padding);
+  background-color: var(--bg-primary);
+  background: color-mix(in srgb, var(--bg-primary) var(--modal-glass-ai-chat-messages-mix), transparent);
+  border: 1px solid color-mix(in srgb, var(--border-color) 82%, transparent);
+  border-radius: var(--radius-sm, 4px);
+  isolation: isolate;
+  background-clip: padding-box;
+}
+
+.header-audio-saved-empty {
+  margin: 10px 2px 4px;
+  padding: 18px 12px;
+  border-radius: var(--radius-sm, 4px);
+  color: var(--text-secondary);
+  background: var(--bg-primary);
+  text-align: center;
+  font-size: calc(14px * var(--playlist-font-scale, 1));
+  font-weight: 600;
+}
+
+.header-audio-saved-empty span {
+  display: block;
+}
+
+.header-audio-playlist-popover.is-fullscreen .header-audio-saved-empty span {
+  display: inline;
+}
+
+.header-audio-playlist-popover.is-fullscreen .header-audio-saved-empty span + span::before {
+  content: " ";
+}
+
+.header-audio-saved-playlist,
+.header-audio-source-playlist {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--playlist-number-column) var(--playlist-art-size) minmax(0, 1fr) 92px;
+  align-items: start;
+  gap: 8px;
+  min-height: calc(74px * var(--playlist-font-scale, 1));
+  padding: calc(8px * var(--playlist-font-scale, 1)) 8px;
+  border: 1px solid color-mix(in srgb, var(--border-color) 82%, transparent);
+  border-radius: var(--radius-sm, 4px);
+  background-color: var(--bg-secondary);
+  background: color-mix(in srgb, var(--bg-secondary) var(--modal-glass-ai-card-mix), transparent);
+  color: var(--text-primary);
+  cursor: grab;
+  box-sizing: border-box;
+  overflow: visible;
+}
+
+.header-audio-saved-playlist.is-current,
+.header-audio-source-playlist.is-current {
+  background: color-mix(in srgb, var(--accent-color) 22%, var(--bg-primary));
+  box-shadow:
+    inset 3px 0 0 var(--accent-color),
+    inset 0 0 0 1px color-mix(in srgb, var(--accent-color) 32%, transparent);
+}
+
+.header-audio-saved-playlist.is-current:hover,
+.header-audio-saved-playlist.is-current:focus-within {
+  background: color-mix(in srgb, var(--accent-color) 24%, var(--bg-primary));
+}
+
+.header-audio-saved-playlist.is-selected {
+  border-style: dashed;
+  border-color: color-mix(in srgb, var(--accent-color) 72%, var(--border-color));
+  background: color-mix(in srgb, var(--accent-color) 18%, var(--bg-primary));
+  box-shadow: none;
+}
+
+.header-audio-source-playlist {
+  cursor: pointer;
+}
+
+.header-audio-source-playlist + .header-audio-saved-playlist,
+.header-audio-source-playlist + .header-audio-saved-empty {
+  margin-top: 2px;
+}
+
+.header-audio-source-playlist.is-disabled {
+  opacity: 0.62;
+}
+
+.header-audio-saved-playlist.is-dragging {
+  opacity: 0.52;
+  cursor: grabbing;
+}
+
+.header-audio-saved-playlist.is-drop-target {
+  background: color-mix(in srgb, var(--accent-color) 16%, var(--bg-primary));
+}
+
+.header-audio-saved-playlist.is-selected,
+.header-audio-saved-playlist.is-selected:hover,
+.header-audio-saved-playlist.is-selected:focus-within {
+  border-style: dashed;
+  border-color: color-mix(in srgb, var(--accent-color) 72%, var(--border-color));
+  box-shadow: none;
+  background: color-mix(in srgb, var(--accent-color) 18%, var(--bg-primary));
+}
+
+.header-audio-saved-playlist.is-selected:hover,
+.header-audio-saved-playlist.is-selected:focus-within {
+  background: color-mix(in srgb, var(--accent-color) 22%, var(--bg-primary));
+}
+
+.header-audio-saved-playlist.is-current.is-selected.is-playing {
+  border-style: solid;
+  background: color-mix(in srgb, var(--accent-color) 24%, var(--bg-primary));
+}
+
+.header-audio-saved-playlist .header-audio-playlist-marker,
+.header-audio-source-playlist .header-audio-playlist-marker {
+  display: inline-flex;
+  /* Center the collapse chevron and the number on one shared line (was flex-start, which top-aligned
+     the taller chevron button above the number). */
+  align-items: center;
+  gap: 4px;
+  min-width: calc(18px + 2.8ch);
+}
+
+/* The saved-playlist expand/collapse chevron reuses the tree's shared .collapse-btn / .collapse-btn-
+   glyph component (styled accent button + CSS-drawn rotating glyph), so it looks identical to the
+   tree node collapse chevrons. Only the left margin is dropped here (it sits flush in this row). The
+   second selector out-specifies body.tree-branch-toggle-flat .collapse-btn (which sets margin-left:5px)
+   so the chevron stays flush against the number in BOTH the default and flat branch-toggle styles. */
+.header-audio-saved-playlist-expand-btn.collapse-btn,
+body.tree-branch-toggle-flat .header-audio-saved-playlist-expand-btn.collapse-btn {
+  margin-left: 0;
+}
+
+.header-audio-saved-playlist-tracks {
+  display: flex;
+  flex-direction: column;
+  gap: var(--list-row-gap);
+  margin: 2px 0 0 calc(var(--playlist-art-size) / 2);
+  padding: 6px 0 6px 16px;
+  border-left: 2px solid color-mix(in srgb, var(--border-color) 70%, transparent);
+}
+
+.header-audio-saved-playlist-tracks-remove-selected-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  margin: 0 0 2px;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm, 4px);
+  border: 1px solid color-mix(in srgb, var(--accent-color) 58%, var(--border-color));
+  background: color-mix(in srgb, var(--accent-color) 10%, var(--bg-tertiary));
+  color: var(--accent-color);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.header-audio-saved-playlist-tracks-remove-selected-btn:hover {
+  background: color-mix(in srgb, var(--accent-color) 18%, var(--bg-tertiary));
+}
+
+:is(.header-audio-playlist-row, .header-audio-saved-playlist, .header-audio-source-playlist):hover,
+:is(.header-audio-playlist-row, .header-audio-saved-playlist, .header-audio-source-playlist):focus-within {
+  background-color: var(--bg-tertiary);
+  background: color-mix(in srgb, var(--accent-color) 14%, color-mix(in srgb, var(--bg-secondary) var(--modal-glass-ai-field-secondary-mix, 54%), transparent));
+}
+
+:is(.header-audio-playlist-row, .header-audio-saved-playlist, .header-audio-source-playlist):active {
+  background: color-mix(in srgb, var(--accent-color) 16%, var(--bg-primary));
+}
+
+:is(.header-audio-playlist-row, .header-audio-saved-playlist, .header-audio-source-playlist).is-current {
+  background: color-mix(in srgb, var(--accent-color) 22%, var(--bg-primary));
+  box-shadow:
+    inset 3px 0 0 var(--accent-color),
+    inset 0 0 0 1px color-mix(in srgb, var(--accent-color) 32%, transparent);
+}
+
+:is(.header-audio-playlist-row, .header-audio-saved-playlist, .header-audio-source-playlist).is-current:hover,
+:is(.header-audio-playlist-row, .header-audio-saved-playlist, .header-audio-source-playlist).is-current:focus-within {
+  background: color-mix(in srgb, var(--accent-color) 24%, var(--bg-primary));
+}
+
+:is(.header-audio-playlist-row, .header-audio-saved-playlist).is-selected {
+  border-style: dashed;
+  border-color: color-mix(in srgb, var(--accent-color) 72%, var(--border-color));
+  box-shadow: none;
+  background: color-mix(in srgb, var(--accent-color) 18%, var(--bg-primary));
+}
+
+:is(.header-audio-playlist-row, .header-audio-saved-playlist).is-selected:hover,
+:is(.header-audio-playlist-row, .header-audio-saved-playlist).is-selected:focus-within {
+  background: color-mix(in srgb, var(--accent-color) 22%, var(--bg-primary));
+}
+
+:is(.header-audio-playlist-row, .header-audio-saved-playlist).is-current.is-selected.is-playing {
+  border-style: solid;
+  background: color-mix(in srgb, var(--accent-color) 24%, var(--bg-primary));
+}
+
+.header-audio-saved-playlist-main {
+  min-width: 0;
+  align-self: start;
+  display: grid;
+  grid-template-rows: auto auto auto;
+  gap: calc(2px * var(--playlist-font-scale, 1));
+  overflow: visible;
+}
+
+.header-audio-playlist-art {
+  position: relative;
+  width: var(--playlist-art-size);
+  height: var(--playlist-art-size);
+  min-width: var(--playlist-art-size);
+  align-self: start;
+  overflow: hidden;
+  border-radius: var(--radius-md, 6px);
+  border: 1px solid color-mix(in srgb, var(--border-color) 82%, transparent);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--accent-color) 16%, var(--bg-tertiary)), var(--bg-primary));
+  box-sizing: border-box;
+  isolation: isolate;
+}
+
+.header-audio-playlist-art img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  opacity: 0;
+  transition: opacity var(--transition-speed) ease;
+}
+
+.header-audio-playlist-art.has-art img {
+  opacity: 1;
+}
+
+.header-audio-playlist-art.is-placeholder img {
+  opacity: 1;
+}
+
+.header-audio-playlist-art-fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: color-mix(in srgb, var(--text-secondary) 72%, transparent);
+  font-size: calc(16px * var(--playlist-font-scale, 1));
+}
+
+.header-audio-playlist-art.has-art .header-audio-playlist-art-fallback {
+  display: none;
+}
+
+.header-audio-playlist-art.is-placeholder .header-audio-playlist-art-fallback {
+  display: none;
+}
+
+.header-audio-saved-playlist-title {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: calc(14px * var(--playlist-font-scale, 1));
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--text-primary);
+}
+
+.header-audio-playlist-popover:is(.flowjoe-font-scale-large, .flowjoe-font-scale-larger, .flowjoe-font-scale-largest) .header-audio-playlist-tab,
+.header-audio-playlist-popover:is(.flowjoe-font-scale-large, .flowjoe-font-scale-larger, .flowjoe-font-scale-largest) .header-audio-saved-playlist-title,
+.header-audio-playlist-popover:is(.flowjoe-font-scale-large, .flowjoe-font-scale-larger, .flowjoe-font-scale-largest) .header-audio-saved-playlist-title-input {
+  font-size: calc(14px * var(--playlist-font-scale, 1));
+}
+
+.header-audio-saved-playlist-title-input {
+  /* SAME shared input style as the gallery slot title (.image-title) and the flow/node name editors —
+     NOT a box: transparent bg, only a bottom-border underline with rounded bottom corners, the
+     app-wide text-input height, accent bold text. Identical to .header-audio-playlist-rename-input. */
+  field-sizing: content;
+  display: inline-block;
+  align-self: start;
+  justify-self: start;
+  width: auto;
+  min-width: 4ch;
+  max-width: 100%;
+  min-height: var(--text-input-height);
+  box-sizing: border-box;
+  margin: 0;
+  padding: 6px 8px 4px;
+  border: none;
+  border-bottom: 1px solid var(--border-light);
+  border-radius: 0 0 var(--radius-sm, 4px) var(--radius-sm, 4px);
+  background: transparent;
+  color: var(--accent-color);
+  font: inherit;
+  line-height: 1.3;
+  outline: none;
+}
+
+.header-audio-saved-playlist-title-input:focus {
+  border-bottom-color: var(--accent-color);
+  background-color: var(--bg-secondary);
+}
+
+.header-audio-saved-playlist-meta {
+  margin-top: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: calc(14px * var(--playlist-font-scale, 1));
+  line-height: 1.2;
+  color: var(--text-secondary);
+}
+
+.header-audio-source-playlist-meta {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.header-audio-source-target-label {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.header-audio-source-separator,
+.header-audio-source-tag-prefix,
+.header-audio-playlist-source-label {
+  flex: 0 0 auto;
+}
+
+.header-audio-source-playlist-meta .header-audio-playlist-tags {
+  flex: 1 1 auto;
+  flex-wrap: nowrap;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.header-audio-source-playlist-meta .header-audio-playlist-tags span {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.header-audio-saved-playlist-now-playing {
+  margin-top: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: calc(14px * var(--playlist-font-scale, 1));
+  line-height: 1.2;
+  color: var(--accent-color);
+  font-weight: 700;
+}
+
+.header-audio-saved-playlist-now-playing span {
+  color: var(--text-primary);
+}
+
+.header-audio-playlist-popover:is(.flowjoe-font-scale-large, .flowjoe-font-scale-larger, .flowjoe-font-scale-largest) .header-audio-saved-playlist-meta,
+.header-audio-playlist-popover:is(.flowjoe-font-scale-large, .flowjoe-font-scale-larger, .flowjoe-font-scale-largest) .header-audio-saved-playlist-now-playing {
+  font-size: calc(14px * var(--playlist-font-scale, 1));
+}
+
+.header-audio-playlist-popover:is(.flowjoe-font-scale-large, .flowjoe-font-scale-larger, .flowjoe-font-scale-largest) .header-audio-saved-empty {
+  font-size: calc(14px * var(--playlist-font-scale, 1));
+}
+
+.header-audio-saved-playlist-actions {
+  display: inline-flex;
+  align-items: center;
+  align-self: center;
+  justify-content: flex-end;
+  gap: var(--icon-row-gap-dense);
+}
+
+.header-audio-saved-playlist-actions button {
+  appearance: none;
+  width: 24px;
+  min-width: 24px;
+  height: 24px;
+  min-height: 24px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-sm, 4px);
+  background: transparent;
+  color: var(--text-secondary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.header-audio-saved-playlist-actions button:hover,
+.header-audio-saved-playlist-actions button:focus-visible {
+  background: transparent;
+  border-color: transparent;
+  color: var(--accent-color);
+  outline: none;
+  box-shadow: none;
+}
+
+.header-audio-playlist-context-menu {
+  position: fixed;
+  display: none;
+  min-width: 180px;
+  max-width: min(320px, calc(100vw - 16px));
+  padding: var(--pad-menu);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md, 6px);
+  background: var(--bg-secondary);
+  /* no box-shadow here on purpose — this menu is in the unified :is(...) menu rule
+     (styles-tree.css), whose important-flagged var(--elev-floating) always won; the literal
+     that used to sit here was dead. */
+  z-index: var(--flowjoe-z-surface-above-topbar);
+  box-sizing: border-box;
+  font-family: var(--app-font-family);
+}
+
+.header-audio-playlist-context-menu.open {
+  display: block;
+}
+
+.header-audio-playlist-context-title {
+  padding: 7px 40px 0 10px;
+  font-size: var(--font-control);
+  line-height: 1.25;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.header-audio-playlist-context-subtitle {
+  padding: 6px 10px 8px;
+  font-size: var(--font-control);
+  line-height: 1.25;
+  font-weight: 700;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 6px;
+}
+
+.header-audio-playlist-context-item {
+  appearance: none;
+  width: 100%;
+  margin: 0;
+  padding: var(--pad-menu-item);
+  border: none;
+  border-radius: var(--radius-sm, 4px);
+  background: transparent;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  font-family: var(--app-font-family);
+  font-size: var(--font-control);
+  font-weight: 400;
+  line-height: 1.25;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--transition-speed) ease;
+}
+
+.header-audio-playlist-context-item i {
+  width: 16px;
+  color: var(--accent-color);
+  text-align: center;
+}
+
+.header-audio-playlist-context-item .header-audio-playlist-context-flyout-arrow {
+  width: 12px;
+  margin-left: auto;
+  color: var(--text-secondary);
+}
+
+.header-audio-playlist-context-item span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.header-audio-playlist-context-item:hover,
+.header-audio-playlist-context-item:focus-visible {
+  background: var(--hover-bg);
+  color: var(--text-primary);
+  border: none;
+}
+
+.header-audio-playlist-context-item.is-danger,
+.header-audio-playlist-context-item.is-danger i {
+  color: var(--danger-color, #dc3545);
+}
+
+.header-audio-playlist-context-item:disabled {
+  opacity: var(--disabled-opacity-control);
+  cursor: default;
+}
+
+.header-audio-playlist-context-item:disabled:hover {
+  background: transparent;
+}
+
+.header-audio-playlist-actions button:hover:not(:disabled) {
+  border-color: transparent;
+  background: transparent;
+}
+
+.header-audio-playlist-actions button:hover:not(:disabled) i {
+  color: var(--accent-color);
+}
+
+.header-audio-playlist-actions button:disabled {
+  opacity: var(--disabled-opacity-control);
+  cursor: default;
+}
+
+.header-audio-playlist-text {
+  /* Three lines (title / subtitle / tag+node) distributed evenly within the album-art height, so the
+     tag chip never hangs below the cover. The column is exactly the art height and the rows share the
+     leftover space equally (space-between), giving uniform line spacing that fits the thumbnail. */
+  display: grid;
+  min-width: 0;
+  grid-template-rows: auto auto auto;
+  align-content: space-between;
+  align-self: stretch;
+  min-height: var(--playlist-art-size);
+  overflow: visible;
+}
+
+.header-audio-playlist-title,
+.header-audio-playlist-subtitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.header-audio-playlist-title {
+  font-size: calc(14px * var(--playlist-font-scale, 1));
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--text-primary);
+}
+
+.header-audio-playlist-popover:is(.flowjoe-font-scale-large, .flowjoe-font-scale-larger, .flowjoe-font-scale-largest) .header-audio-playlist-title,
+.header-audio-playlist-popover:is(.flowjoe-font-scale-large, .flowjoe-font-scale-larger, .flowjoe-font-scale-largest) .header-audio-playlist-rename-input {
+  font-size: calc(14px * var(--playlist-font-scale, 1));
+}
+
+.header-audio-playlist-rename-input {
+  /* SAME shared input style as the gallery slot title (.image-title), the flow/node name, and every
+     other tree/gallery inline editor: NOT a box — transparent background, no side/top borders, only a
+     bottom-border underline with the bottom corners rounded, the app-wide text-input height, accent
+     bold text. Auto-grows to the edited text only (field-sizing:content + auto width), never the
+     whole row. Font size/weight are inherited from the adjacent .header-audio-playlist-title (the
+     static label it replaces), not hardcoded. */
+  field-sizing: content;
+  display: inline-block;
+  justify-self: start;
+  width: auto;
+  min-width: 4ch;
+  max-width: 100%;
+  min-height: var(--text-input-height);
+  box-sizing: border-box;
+  margin: 0;
+  padding: 6px 8px 4px;
+  border: none;
+  border-bottom: 1px solid var(--border-light);
+  border-radius: 0 0 var(--radius-sm, 4px) var(--radius-sm, 4px);
+  background: transparent;
+  color: var(--accent-color);
+  font: inherit;
+  line-height: 1.3;
+  outline: none;
+}
+
+.header-audio-playlist-rename-input:focus {
+  border-bottom-color: var(--accent-color);
+  background-color: var(--bg-secondary);
+}
+
+.browser-link-gallery-rename-input.header-audio-playlist-rename-input {
+  width: calc(var(--browser-link-title-edit-ch, 12) * 1ch);
+  inline-size: calc(var(--browser-link-title-edit-ch, 12) * 1ch);
+  max-width: none;
+  min-width: 8ch;
+  height: auto;
+  margin: 0;
+  padding: 0 0 2px;
+  border: 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--accent-color) 72%, var(--border-color));
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  field-sizing: content;
+}
+
+.browser-link-gallery-rename-input.header-audio-playlist-rename-input:focus {
+  border-color: var(--accent-color);
+  box-shadow: none;
+  background: transparent;
+}
+
+.header-audio-playlist-subtitle {
+  font-size: calc(14px * var(--playlist-font-scale, 1));
+  line-height: 1.25;
+  color: var(--text-secondary);
+}
+
+.header-audio-playlist-origin {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  color: var(--text-secondary);
+  font-size: calc(14px * var(--playlist-font-scale, 1));
+  line-height: 1.2;
+  min-width: 0;
+  overflow: visible;
+}
+
+.header-audio-playlist-popover:is(.flowjoe-font-scale-large, .flowjoe-font-scale-larger, .flowjoe-font-scale-largest) .header-audio-playlist-subtitle,
+.header-audio-playlist-popover:is(.flowjoe-font-scale-large, .flowjoe-font-scale-larger, .flowjoe-font-scale-largest) .header-audio-playlist-origin,
+.header-audio-playlist-popover:is(.flowjoe-font-scale-large, .flowjoe-font-scale-larger, .flowjoe-font-scale-largest) .header-audio-playlist-tags {
+  font-size: calc(14px * var(--playlist-font-scale, 1));
+}
+
+.header-audio-playlist-origin button {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: var(--accent-color);
+  font: inherit;
+  font-weight: 700;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.header-audio-playlist-tags {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  min-width: 0;
+}
+
+.header-audio-playlist-node-label {
+  min-width: 0;
+  display: inline;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  white-space: normal;
+}
+
+.header-audio-playlist-node-label button {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  white-space: normal;
+  text-align: left;
+}
+
+.header-audio-playlist-tags > span:not(.gallery-tag-chip) {
+  border: 1px solid color-mix(in srgb, var(--tag-accent, var(--accent-color)) 42%, var(--border-color));
+  border-radius: var(--tag-chip-radius); /* mini tag pill — tag type, not an icon button */
+  background: color-mix(in srgb, var(--tag-accent, var(--accent-color)) 10%, transparent);
+  padding: 1px 4px;
+  color: var(--text-secondary);
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.header-audio-playlist-tag-chip {
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+}
+
+.header-audio-playlist-popover:is(.flowjoe-font-scale-large, .flowjoe-font-scale-larger, .flowjoe-font-scale-largest) .header-audio-playlist-subtitle {
+  font-size: calc(14px * var(--playlist-font-scale, 1));
+}
+
+.header-audio-playlist-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--icon-row-gap-dense);
+  height: auto;
+}
+
+.topbar-unsaved-indicator.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0);
+}
+
+.topbar-settings-group {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  min-height: 32px;
+  gap: var(--header-gap);
+}
+
+.topbar-settings-separator {
+  width: 1px;
+  height: 32px;
+  flex: 0 0 1px;
+  background-color: var(--topbar-border);
+  pointer-events: none;
+}
+
+/* When the audio player is hidden it's `display:none`, so the flex `gap` (--header-gap, 12px)
+   already spaces the Changes indicator from the file-menu button. An earlier translateX(12px)
+   "nudge" here shifted the pill the wrong way — into that gap — making it touch the folder
+   button. No transform is needed; the natural gap is correct. */
+
+.topbar-unsaved-indicator-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: var(--radius-full, 999px);
+  background: currentColor;
+  position: relative;
+  /* Static glow; the expanding ring lives on ::after as a transform/opacity ripple
+     (compositor-only — the old keyframes animated box-shadow and repainted every frame). */
+  box-shadow: 0 0 10px color-mix(in srgb, currentColor 28%, transparent);
+  /* Paused-by-default: the pill hides via opacity (not display), so a running
+     animation would keep compositing behind the invisible pill all session.
+     .is-visible flips play-state to running (rule below) — paused costs nothing
+     and resumes mid-cycle on show, closest to the old always-running look.
+     (Known sub-300ms delta: during the hide fade the ripple freezes where it
+     used to keep rippling.) */
+  animation: topbar-unsaved-pulse 1.45s ease-out infinite;
+  animation-play-state: paused;
+}
+
+.topbar-unsaved-indicator-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: color-mix(in srgb, currentColor 40%, transparent);
+  animation: topbar-unsaved-ripple 1.45s ease-out infinite;
+  animation-play-state: paused;
+}
+
+.topbar-unsaved-indicator.is-visible .topbar-unsaved-indicator-dot,
+.topbar-unsaved-indicator.is-visible .topbar-unsaved-indicator-dot::after {
+  animation-play-state: running;
+}
+
+.topbar-unsaved-indicator-text {
+  line-height: 1;
+}
+
+@keyframes topbar-unsaved-pulse {
+  0% {
+    transform: scale(0.92);
+  }
+  38% {
+    transform: scale(1.18);
+  }
+  100% {
+    transform: scale(0.98);
+  }
+}
+
+@keyframes topbar-unsaved-ripple {
+  0% {
+    transform: scale(1);
+    opacity: 0.85;
+  }
+  38% {
+    transform: scale(2.3);
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(3.2);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Kills the animation itself; the .is-visible play-state rule then has
+     nothing to run, so equal-specificity + later-in-file is sufficient. */
+  .topbar-unsaved-indicator-dot,
+  .topbar-unsaved-indicator-dot::after {
+    animation: none;
+  }
+}
+
+/* Animate header right section when settings panel opens */
+.topbar > div[style*="margin-left: auto"] {
+  transition: transform var(--transition-speed-slow) ease-in-out;
+}
+
+body.settings-panel-open .topbar > div[style*="margin-left: auto"] {
+  transform: translateX(calc(-1 * var(--settings-panel-width, min(440px, 100vw))));
+}
+
+/* Gallery Delete Button - remove any special styling, use base .icon-btn */
+
+/* Gallery Scroll Buttons (scroll left/right) */
+.breadcrumbs-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--cta-row-gap);
+  margin-left: auto;
+  flex-shrink: 0;
+  min-width: max-content;
+  position: relative;
+}
+
+.breadcrumbs-primary-tools {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--cta-row-gap);
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+.breadcrumbs-primary-tools .gallery-search-wrap {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.breadcrumbs-primary-tools .gallery-search-bar {
+  max-width: 0;
+}
+
+.breadcrumbs-primary-tools .gallery-search-bar.open {
+  max-width: min(34vw, 360px);
+}
+
+.breadcrumbs-actions .icon-btn {
+  min-width: 32px;
+}
+
+/* Disabled state — use background/color instead of opacity so tooltips stay fully visible */
+.breadcrumbs-actions .icon-btn[disabled],
+.breadcrumbs-actions .icon-btn.disabled {
+  background: var(--disabled-bg);
+  color: var(--disabled-text);
+  border-color: var(--border-color);
+  cursor: not-allowed;
+}
+
+/* Breadcrumbs wrapper styling */
+.breadcrumbs-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  font-weight: normal;
+  /* margin: 0;
+  gap: var(--header-gap); */
+}
+
+/* Universal margin reset for all breadcrumbs elements - only horizontal margins */
+/* .breadcrumbs-wrapper *,
+.breadcrumbs-left * {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+} */
+
+.breadcrumbs-left {
+  display: flex;
+  align-items: center;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: visible;
+  /* State tags are controls in the gallery header row, not inline breadcrumb text.
+     Keep their spacing on the established 10px CTA-row rhythm. */
+  gap: var(--cta-row-gap);
+}
+
+.breadcrumbs-wrapper.breadcrumbs-tight .breadcrumbs-text {
+  font-size: calc(14px * var(--font-scale));
+}
+
+.breadcrumbs-wrapper.breadcrumbs-two-line {
+  align-items: flex-start;
+}
+
+.breadcrumbs-wrapper.breadcrumbs-two-line .breadcrumbs-left {
+  align-items: flex-start;
+}
+
+.breadcrumbs-wrapper.breadcrumbs-two-line .breadcrumbs-text {
+  white-space: nowrap;
+  display: flex;
+  flex-wrap: nowrap;
+  line-height: 1.15;
+  overflow: hidden;
+  text-overflow: clip;
+  max-height: none;
+}
+
+/* Arrow buttons in tree nodes */
+.arrow-btn {
+  font-size: var(--font-control);
+  padding: 10px;
+  width: 16px;
+  height: 16px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  cursor: pointer;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+}
+
+.arrow-btn:hover {
+  background: var(--hover-bg);
+}
+
+.arrow-btn:disabled {
+  background: var(--disabled-bg);
+  color: var(--disabled-text);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Image control buttons */
+.add-image-btn,
+.copy-image-btn,
+.replace-image-btn,
+.delete-image-btn,
+.wireframe-btn,
+.stack-image-btn,
+.ai-query-btn,
+.move-img-btn {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 2px 5px;
+  border-radius: var(--icon-btn-radius, 4px); /* unified square-button radius (was radius-sm) */
+  cursor: pointer;
+  font-size: var(--font-control);
+  width: 100%;
+  display: block;
+  text-align: center;
+  height: var(--icon-btn-size-sm);
+}
+
+.copy-image-btn,
+.wireframe-btn,
+.add-to-stack-btn,
+.stack-image-btn,
+.add-image-position .replace-image-btn,
+.add-image-position .delete-image-btn,
+.add-image-position .ai-query-btn {
+  font-size: var(--font-control);
+  padding: 2px 4px;
+  opacity: 0.8;
+  height: var(--icon-btn-size-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.wireframe-btn,
+.stack-image-btn,
+.add-image-position .replace-image-btn,
+.add-image-position .delete-image-btn,
+.add-image-position .ai-query-btn {
+  padding: 2px 4px 2px 4px;
+}
+
+/* Make the first three buttons in image controls square */
+.move-left-btn,
+.move-right-btn,
+.stack-image-btn,
+.add-image-position .replace-image-btn,
+.add-image-position .delete-image-btn,
+.add-image-position .ai-query-btn {
+  width: var(--icon-btn-size-sm);
+  height: var(--icon-btn-size-sm);
+  min-width: var(--icon-btn-size-sm);
+  min-height: var(--icon-btn-size-sm);
+}
+
+/* Ensure Replace and Remove buttons maintain consistent height */
+.replace-image-btn,
+.delete-image-btn {
+  height: var(--icon-btn-size-sm);
+  min-height: var(--icon-btn-size-sm);
+}
+
+.copy-image-btn:not(:disabled):hover {
+  opacity: 1;
+  background-color: var(--hover-bg);
+  color: var(--accent-color);
+  border-color: var(--accent-color);
+}
+
+.add-image-btn:disabled,
+.copy-image-btn:disabled,
+.ai-query-btn:disabled,
+.move-left-btn:disabled,
+.move-right-btn:disabled,
+.stack-image-btn:disabled,
+.replace-image-btn:disabled,
+.delete-image-btn:disabled,
+.wireframe-btn:disabled {
+  background: var(--disabled-bg);
+  color: var(--disabled-text);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.image-controls button:not(.ai-query-btn):not(.copy-image-btn):not(.add-to-stack-btn):hover,
+.add-to-stack-btn:hover {
+  background-color: var(--hover-bg);
+  color: var(--accent-color);
+  border-color: var(--accent-color);
+}
+
+.image-controls button:disabled {
+  background: var(--disabled-bg);
+  color: var(--disabled-text);
+  cursor: not-allowed;
+}
+
+/* Wireframe button visibility - remove conflicting styles, let it use the main .wireframe-btn styles */
+
+/* Let wireframe button use the main hover styles from .image-controls button rules */
+
+/* Let wireframe button use the main disabled styles from .image-controls button rules */
+
+.show-wireframe-buttons .wireframe-btn:not(:disabled) {
+  display: inline-block !important;
+}
+
+.hide-wireframe-buttons .wireframe-btn {
+  display: none !important;
+}
+
+/* Special AI and utility buttons */
+.ai-query-btn {
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 4px 10px;
+  font-size: var(--font-control);
+  transition: color var(--transition-speed);
+  margin-right: auto;
+}
+
+.ai-query-btn:hover {
+  color: var(--accent-color);
+}
+
+.add-image-position :is(
+  .stack-image-btn,
+  .replace-image-btn,
+  .delete-image-btn,
+  .ai-query-btn,
+  .wireframe-btn
+) {
+  appearance: none;
+  margin: 0 !important; /* spacing comes from the rail's own gap (--gallery-slot-rail-gap), not per-button margins */
+  padding: 2px 4px !important;
+  background-color: var(--bg-tertiary) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-primary) !important;
+  border-radius: var(--icon-btn-radius, 4px) !important; /* unified square-button radius */
+  width: var(--icon-btn-size-sm) !important;
+  min-width: var(--icon-btn-size-sm) !important;
+  max-width: var(--icon-btn-size-sm) !important;
+  height: var(--icon-btn-size-sm) !important;
+  min-height: var(--icon-btn-size-sm) !important;
+  max-height: var(--icon-btn-size-sm) !important; /* !important kept: fj-rail-collapse.css's earlier rail-fix layer depends on this winning over its own collapsed-state rule */
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  line-height: 1;
+  opacity: 0.8;
+  cursor: pointer;
+  transition: opacity var(--transition-speed) ease, background-color var(--transition-speed) ease, border-color var(--transition-speed) ease, color var(--transition-speed) ease, transform 0.08s ease;
+}
+
+.add-image-position :is(
+  .stack-image-btn,
+  .replace-image-btn,
+  .delete-image-btn,
+  .ai-query-btn,
+  .wireframe-btn
+):disabled,
+.add-image-position :is(
+  .stack-image-btn,
+  .replace-image-btn,
+  .delete-image-btn,
+  .ai-query-btn,
+  .wireframe-btn
+).disabled,
+.add-image-position :is(
+  .stack-image-btn,
+  .replace-image-btn,
+  .delete-image-btn,
+  .ai-query-btn,
+  .wireframe-btn
+)[aria-disabled="true"] {
+  background: var(--disabled-bg) !important;
+  color: var(--disabled-text) !important;
+  cursor: not-allowed !important;
+  opacity: var(--disabled-opacity-field) !important;
+  transform: none !important;
+}
+
+.add-image-position :is(
+  .stack-image-btn,
+  .replace-image-btn,
+  .delete-image-btn,
+  .ai-query-btn,
+  .wireframe-btn
+) i {
+  font-size: var(--icon-glyph-sm);
+  line-height: 1;
+  pointer-events: none;
+}
+
+.add-image-position :is(
+  .stack-image-btn,
+  .replace-image-btn,
+  .delete-image-btn,
+  .ai-query-btn,
+  .wireframe-btn
+):not(:disabled):hover,
+.add-image-position :is(
+  .stack-image-btn,
+  .replace-image-btn,
+  .delete-image-btn,
+  .ai-query-btn,
+  .wireframe-btn
+):not(:disabled):focus-visible {
+  opacity: 1;
+  background-color: var(--hover-bg) !important;
+  color: var(--accent-color) !important;
+  border-color: var(--accent-color) !important;
+  outline: none;
+}
+
+.add-image-position :is(
+  .stack-image-btn,
+  .replace-image-btn,
+  .delete-image-btn,
+  .ai-query-btn,
+  .wireframe-btn
+):not(:disabled):active {
+  transform: translateY(1px);
+}
+
+.copy-notes-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 4px 6px;
+  margin-left: 5px;
+  border-radius: var(--radius-md, 6px);
+  transition: all var(--transition-speed);
+  font-size: var(--font-control);
+  opacity: 0.8;
+}
+
+.copy-notes-btn:hover {
+  color: var(--accent-color);
+  background-color: var(--white-overlay-hover);
+}
+
+/* Refresh button for settings */
+.refresh-btn {
+  background: none;
+  border: 1px solid var(--border-color);
+  border-radius: var(--icon-btn-radius);
+  color: var(--text-primary);
+  font-size: 14px;
+  width: var(--icon-btn-size-sm);
+  height: var(--icon-btn-size-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  transition: all var(--transition-speed) ease;
+}
+
+.refresh-btn:hover {
+  background-color: var(--hover-bg);
+  color: var(--accent-color);
+  border-color: var(--accent-color);
+}
+
+/* Small utility buttons */
+.small-button {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: none;
+  border-radius: var(--radius-md, 6px);
+  padding: 2px 8px;
+  font-size: var(--font-control);
+  cursor: pointer;
+  margin-left: 8px;
+  transition: background-color var(--transition-speed) var(--transition-timing);
+}
+
+.small-button:hover {
+  background-color: var(--hover-bg);
+}
+
+/* Button focus styles */
+button:focus,
+button:focus-visible,
+[role="button"]:focus,
+[role="button"]:focus-visible,
+.icon-btn:focus,
+.icon-btn:focus-visible,
+.add-root-btn:focus,
+.add-root-btn:focus-visible,
+.add-image-btn:focus,
+.add-image-btn:focus-visible,
+.arrow-btn:focus,
+.arrow-btn:focus-visible {
+  outline: none !important;
+  outline-offset: 0 !important;
+  box-shadow: none !important;
+}
+
+button:focus,
+button:focus-visible,
+.icon-btn:focus,
+.icon-btn:focus-visible,
+.add-root-btn:focus,
+.add-root-btn:focus-visible,
+.add-image-btn:focus,
+.add-image-btn:focus-visible,
+.arrow-btn:focus,
+.arrow-btn:focus-visible {
+  border-color: var(--accent-color) !important;
+}
+
+.header-audio-playlist-tag-chip .gallery-tag-chip-main:focus,
+.header-audio-playlist-tag-chip .gallery-tag-chip-main:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: transparent !important;
+}
+
+/* Move tree title container below toolbar */
+.tree-title-container {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  padding: 0 5px 0 var(--tree-nav-left, 6px);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Flow Summary button — a 22px (--icon-btn-size-xs) square left of the flow-name field inside
+   .tree-title-container; the row's flex centering aligns it with the field's text, and being
+   shorter than the field it never grows the row (guarded by a flow-summary-modal e2e test).
+   Colors come from theme tokens (no hardcoded values); it sits at the muted base color and only
+   takes the accent highlight on hover / active / keyboard focus — matching the design system's
+   .icon-btn:hover. Lives in a loaded stylesheet (not injected by JS) so it is fully styled on
+   first paint — no flash. */
+.flow-summary-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: 1.2em;
+  width: var(--icon-btn-size-xs);
+  height: var(--icon-btn-size-xs);
+  padding: 0;
+  margin: 0 8px 0 0;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: end;
+  justify-content: center;
+  transition: color var(--transition-speed) ease;
+}
+.flow-summary-btn:hover,
+.flow-summary-btn:focus-visible,
+.flow-summary-btn:active,
+.flow-summary-btn.active {
+  color: var(--accent-color);
+}
+/* "Hide from Joe" (Privacy From Joe): an additive accent badge dot (NOT an icon swap — the base
+   icon must not change on load) signalling the flow summary is private from Joe. Tooltip says so too. */
+.flow-summary-btn.is-hidden-from-joe {
+  position: relative;
+  color: var(--accent-color);
+}
+.flow-summary-btn.is-hidden-from-joe::after {
+  content: "";
+  position: absolute;
+  top: 6px;
+  right: -3px;
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-full, 999px);
+  background: var(--accent-color);
+  box-shadow: 0 0 0 2px var(--bg-primary, #1a1a1a);
+  pointer-events: none;
+}
+
+/* ── File Menu Dropdown ── */
+.file-menu-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 280px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl, 10px);
+  box-shadow: var(--elev-floating);
+  z-index: var(--flowjoe-z-tooltip);
+  padding: var(--pad-menu); /* was a drifted 6px */
+  box-sizing: border-box;
+  flex-direction: column;
+  align-items: stretch;
+  display: none;
+}
+
+.file-menu-dropdown.open {
+  display: flex;
+}
+
+.file-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-sizing: border-box;
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm, 4px);
+  padding: var(--pad-menu-item); /* was 10px 12px */
+  cursor: pointer;
+  text-align: left;
+  color: var(--text-primary);
+  transition: background var(--transition-speed);
+}
+
+.file-menu-item:hover {
+  background: var(--hover-bg, var(--bg-primary));
+}
+
+.file-menu-item-icon {
+  width: 28px;
+  height: var(--control-height-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-color);
+  font-size: var(--icon-glyph);
+  flex-shrink: 0;
+}
+
+.file-menu-item-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--text-stack-gap);
+  flex: 1;
+  min-width: 0;
+}
+
+.file-menu-item-label {
+  font-size: var(--font-control);
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.file-menu-item-desc {
+  font-size: var(--font-meta);
+  color: var(--text-secondary);
+  line-height: 1.3;
+}
+
+.file-menu-recent-section {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.file-menu-divider {
+  height: var(--hairline);
+  background: var(--border-color);
+  margin: 6px 4px;
+}
+
+.file-menu-section-label {
+  font-size: var(--font-micro);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  padding: 2px 12px 4px;
+}
+
+.file-menu-recent-item .file-menu-item-label {
+  font-size: var(--font-control);
+  font-weight: 500;
+}
+
+.file-menu-recent-item .file-menu-item-icon {
+  font-size: var(--icon-glyph-sm);
+  color: var(--text-secondary);
+}
+
+/* Owner identity avatar (TEMPORARY dev-mode "Sharing as"; look = approved presence/share-modal mockups).
+   Left of the Changes pill. Hidden unless ownerAvatarController.js shows it (desktop + owner list loaded). */
+.cx-presence {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.cx-presence[hidden] {
+  display: none;
+}
+.cx-stack {
+  display: flex;
+  align-items: center;
+  padding: 4px;
+}
+.cx-av {
+  --size: 30px;
+  --mk: var(--mark-1);
+  position: relative;
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  background: var(--mk);
+  color: var(--avatar-ink);
+  box-shadow: inset 0 0 0 1px var(--cx-edge);
+  font: 700 calc(var(--size) * 0.38) / 1 system-ui, -apple-system, "Segoe UI", sans-serif;
+  letter-spacing: 0.02em;
+  user-select: none;
+  font-style: normal;
+}
+.cx-av.is-you {
+  box-shadow:
+    inset 0 0 0 1px var(--cx-edge),
+    0 0 0 2px var(--ring, var(--cx-ring)),
+    0 0 0 3.5px var(--accent-color);
+}
+.cx-av.is-empty {
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  box-shadow: inset 0 0 0 1px var(--border-color);
+  outline: 1.5px dashed color-mix(in srgb, var(--accent-color) 60%, transparent);
+  outline-offset: 2px;
+  font-size: 11px;
+}
+.cx-av .crown {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--accent-color);
+  color: var(--text-on-accent);
+  font-size: 7.5px;
+  box-shadow: 0 0 0 2px var(--ring, var(--cx-ring));
+}
+.cx-member {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: transform 0.16s ease;
+  --ring: var(--cx-ring);
+}
+.cx-member .cx-av.is-you {
+  box-shadow:
+    inset 0 0 0 1px var(--cx-edge),
+    0 0 0 2.5px var(--cx-ring),
+    0 0 0 4px var(--accent-color);
+}
+.cx-member:hover,
+.cx-member:focus-visible,
+.cx-member[aria-expanded="true"] {
+  transform: translateY(-2px);
+  z-index: 2;
+}
+.cx-member[aria-expanded="true"] .cx-av.is-you {
+  box-shadow:
+    inset 0 0 0 1px var(--cx-edge),
+    0 0 0 2.5px var(--cx-ring),
+    0 0 0 4px var(--text-primary);
+}
+.cx-seat {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  box-sizing: border-box;
+  width: 30px;
+  height: 30px;
+  margin: 0 0 0 6px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1.5px dashed var(--border-color);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 11px;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    color 0.15s,
+    background 0.15s;
+}
+.cx-seat:hover,
+.cx-seat:focus-visible {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+  background: color-mix(in srgb, var(--accent-color) 10%, transparent);
+}
+.cx-seat[aria-disabled="true"] {
+  opacity: var(--disabled-opacity-control);
+  cursor: not-allowed;
+}
+.cx-seat[aria-disabled="true"]:hover {
+  border-color: var(--border-color);
+  color: var(--text-secondary);
+  background: transparent;
+}
+.cx-member:focus-visible,
+.cx-seat:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 3px;
+}
+/* O5 owner presence (approved presence mockup, owner variants): guests overlap the owner avatar, a "+N" button
+   opens the everyone list, hover cards show who is doing what. Dots/typing/away are the avatar's presence states. */
+.cx-av.mk-1 {
+  --mk: var(--mark-1);
+}
+.cx-av.mk-2 {
+  --mk: var(--mark-2);
+}
+.cx-av.mk-3 {
+  --mk: var(--mark-3);
+}
+.cx-av.mk-4 {
+  --mk: var(--mark-4);
+}
+.cx-av.mk-5 {
+  --mk: var(--mark-5);
+}
+.cx-av.mk-6 {
+  --mk: var(--mark-6);
+}
+.cx-av.mk-7 {
+  --mk: var(--mark-7);
+}
+.cx-av.mk-8 {
+  --mk: var(--mark-8);
+}
+.cx-av.mk-9 {
+  --mk: var(--mark-9);
+}
+.cx-av.mk-10 {
+  --mk: var(--mark-10);
+}
+.cx-av.mk-11 {
+  --mk: var(--mark-11);
+}
+.cx-av.mk-12 {
+  --mk: var(--mark-12);
+}
+.cx-av.st-typing .dot {
+  width: auto;
+  height: auto;
+  padding: 2px 3px;
+  right: -6px;
+  bottom: -4px;
+  border-radius: var(--radius-full);
+  display: flex;
+  gap: 2px;
+  background: var(--bg-tertiary);
+}
+.cx-av.st-typing .dot b {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--text-primary);
+  animation: cx-blip 1.2s infinite;
+}
+.cx-av.st-typing .dot b:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.cx-av.st-typing .dot b:nth-child(3) {
+  animation-delay: 0.3s;
+}
+@keyframes cx-blip {
+  0%,
+  60%,
+  100% {
+    opacity: 0.3;
+    transform: none;
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-1px);
+  }
+}
+.cx-av.st-away {
+  background: color-mix(in srgb, var(--mk) 30%, var(--mark-away));
+}
+.cx-av.st-away .dot {
+  background: var(--bg-tertiary);
+  box-shadow:
+    inset 0 0 0 2px var(--text-secondary),
+    0 0 0 2px var(--ring, var(--cx-ring));
+}
+.cx-stack .cx-member + .cx-member,
+.cx-stack .cx-member + .cx-more {
+  margin-inline-start: -8px; /* overlap: the mockup's 8px, no token fits */
+}
+.cx-member .cx-av {
+  box-shadow:
+    inset 0 0 0 1px var(--cx-edge),
+    0 0 0 2.5px var(--cx-ring);
+}
+.cx-member[aria-expanded="true"] .cx-av,
+.cx-member[data-card="1"] .cx-av {
+  box-shadow:
+    inset 0 0 0 1px var(--cx-edge),
+    0 0 0 2.5px var(--cx-ring),
+    0 0 0 4px var(--text-primary);
+}
+.cx-more {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  font: 650 var(--font-meta) var(--cx-mono);
+  box-shadow:
+    inset 0 0 0 1px var(--border-color),
+    0 0 0 2.5px var(--cx-ring);
+}
+.cx-more:hover,
+.cx-more[aria-expanded="true"] {
+  background: var(--accent-color);
+  color: var(--text-on-accent);
+}
+.cx-more {
+  position: relative;
+}
+.cx-more:focus-visible {
+  background: var(--accent-color);
+  color: var(--text-on-accent);
+}
+/* The app-wide button focus strip forces outline/shadow off on the button itself only: the ring is a pseudo-element. */
+.cx-more:focus-visible::after {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  border: 2px solid var(--text-primary);
+  border-radius: 50%;
+}
+/* The app-wide "button:focus-visible" rule strips a button's own outline/box-shadow, so the keyboard ring is drawn on the avatar inside. */
+.cx-member:focus-visible .cx-av {
+  box-shadow:
+    inset 0 0 0 1px var(--cx-edge),
+    0 0 0 2.5px var(--cx-ring),
+    0 0 0 4.5px var(--text-primary);
+}
+.cx-card,
+.cx-panel {
+  position: absolute;
+  top: calc(100% + 10px);
+  inset-inline-end: 0;
+  z-index: var(--flowjoe-z-tooltip);
+  box-sizing: border-box;
+  text-align: start;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl, 10px);
+  box-shadow: var(--elev-floating);
+  font-size: var(--font-control);
+  line-height: 1.45;
+  --ring: var(--bg-secondary);
+}
+.cx-card::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: -14px;
+  height: 14px; /* bridges the gap to the avatar so the pointer never leaves the card's hover area */
+}
+.cx-card[hidden],
+.cx-panel[hidden] {
+  display: none;
+}
+.cx-card {
+  width: min(278px, calc(100vw - 32px));
+  padding: 12px;
+}
+.cx-panel {
+  width: min(330px, calc(100vw - 32px));
+  padding: 6px;
+}
+.cx-head {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+}
+.cx-head > div:last-child {
+  min-width: 0;
+}
+.cx-name {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  font-weight: 700;
+}
+.cx-name-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cx-you {
+  flex: none;
+  margin-inline-start: 6px;
+  padding: 1px 6px;
+  border-radius: var(--radius-full);
+  background: var(--accent-color);
+  color: var(--text-on-accent);
+  font: 650 var(--font-micro) var(--cx-mono);
+}
+.cx-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 4px;
+}
+.cx-card .cx-chip.owner {
+  border-color: color-mix(in srgb, var(--accent-color) 55%, transparent);
+  color: var(--text-primary);
+}
+.cx-card .cx-chip.owner i,
+.cx-panel .cx-chip.owner i {
+  color: var(--accent-color);
+}
+.cx-rows {
+  display: grid;
+  gap: 6px;
+  margin-top: 10px;
+  padding-top: 9px;
+  border-top: 1px solid var(--border-light);
+}
+.cx-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  color: var(--text-secondary);
+  font-size: var(--font-control);
+}
+.cx-row > i {
+  width: 14px;
+  text-align: center;
+  font-size: var(--font-meta);
+}
+.cx-row .grow {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cx-link {
+  flex: none;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent-color);
+  cursor: pointer;
+  font-size: var(--font-meta);
+  font-weight: 650;
+}
+.cx-link:hover,
+.cx-link:focus-visible {
+  text-decoration: underline;
+}
+.cx-link[aria-disabled="true"] {
+  opacity: var(--disabled-opacity-control);
+  cursor: not-allowed;
+  text-decoration: none;
+}
+.cx-panel h6 {
+  display: flex;
+  justify-content: space-between;
+  margin: 6px 8px;
+  color: var(--text-secondary);
+  font-size: var(--font-meta);
+  font-weight: 650;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+.cx-panel h6 .cx-count {
+  font-family: var(--cx-mono);
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.cx-prow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 8px;
+  border-radius: var(--radius-md, 7px);
+}
+.cx-prow:hover {
+  background: var(--hover-bg);
+}
+.cx-prow .who {
+  flex: 1;
+  min-width: 0;
+}
+.cx-prow .who b {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+.cx-prow .who small {
+  display: block;
+  overflow: hidden;
+  color: var(--text-secondary);
+  font-size: var(--font-meta);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cx-presence.is-compact .cx-pill .t {
+  display: none;
+}
+.cx-presence.is-compact .cx-pill {
+  padding: 0 8px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cx-av.st-typing .dot b {
+    animation: none;
+  }
+  .cx-member {
+    transition: none;
+  }
+  .cx-member:hover,
+  .cx-member:focus-visible,
+  .cx-member[aria-expanded="true"] {
+    transform: none;
+  }
+}
+/* The menu is the File menu's own dropdown (.file-menu-dropdown/.file-menu-item); only width and the
+   identity header, check column, locked note and disabled rows are new. */
+.owner-menu {
+  width: 300px;
+  max-width: calc(100vw - 32px);
+}
+.owner-menu-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: var(--pad-menu-item);
+}
+.owner-menu-who {
+  display: flex;
+  flex-direction: column;
+  gap: var(--text-stack-gap);
+  min-width: 0;
+}
+.owner-menu-name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  color: var(--text-primary);
+  font-size: var(--font-control);
+}
+.owner-menu-name strong {
+  font-weight: 700;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.owner-menu-tag {
+  flex: none;
+  padding: 1px 6px;
+  border: 1px dashed currentColor;
+  border-radius: 5px;
+  color: var(--accent-color);
+  font: 700 10px var(--cx-mono);
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+.owner-menu-address {
+  color: var(--text-secondary);
+  font: 11px var(--cx-mono);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.owner-menu-check {
+  width: 16px;
+  flex: none;
+  color: var(--accent-color);
+  font-size: var(--icon-glyph-sm);
+  text-align: center;
+}
+.owner-menu-item:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: -2px;
+  background: var(--hover-bg, var(--bg-primary));
+}
+.owner-menu-item[aria-disabled="true"] {
+  opacity: var(--disabled-opacity-control);
+  cursor: not-allowed;
+}
+.owner-menu-item[aria-disabled="true"]:hover {
+  background: none;
+}
+.owner-menu-locked {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 4px 12px 8px;
+  color: var(--text-secondary);
+  font-size: var(--font-meta);
+}
+/* Narrow windows: the new "+" seat gives way first; the avatar and every original control stay put. */
+@media (max-width: 1180px) {
+  .cx-presence .cx-seat {
+    display: none;
+  }
+}
+}

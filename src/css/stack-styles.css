@@ -1,0 +1,1318 @@
+@layer app {
+  /* Stack Navigation Styles */
+
+  /* Image stack container - flex column, no longer the positioning context */
+  .image-stack-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    transition: transform var(--transition-speed) ease;
+  }
+
+  /* image-frame wraps the img + all its overlays (indicators, LED, stack-navigation).
+   inline-block so it shrinks to the image's rendered width;
+   position:relative so every position:absolute child is relative to the image bounds. */
+  .image-frame {
+    position: relative;
+    display: inline-block;
+    line-height: 0; /* Remove any gap below the img */
+    overflow: visible;
+  }
+
+  /* Ensure items in stacks are properly positioned */
+  .image-stack-container img {
+    display: block;
+    border-radius: var(--radius-lg, 8px);
+    transition: opacity 1s ease-in-out;
+  }
+
+  /* In the gallery specifically, corner radius scales with the slot size
+   (--gallery-slot-scale) so a bigger/smaller slot doesn't keep the same fixed
+   rounding as every other card size. Revert: delete this rule. */
+  .image-gallery .image-stack-container img {
+    border-radius: calc(var(--radius-lg, 8px) * var(--gallery-slot-scale, 1));
+  }
+
+  /* image-frame is the positioning context for all overlays */
+
+  /* Media tile is the width container for progressive stack-nav compaction */
+  .image-frame {
+    container-type: inline-size;
+    container-name: gallery-media;
+  }
+
+  .stack-navigation {
+    position: absolute;
+    top: auto !important;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-width: 100%;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: max-content;
+    background: var(--stack-navigation-scrim) !important;
+    padding: var(--stack-nav-pad);
+    display: flex;
+    /* Three regions — left button group, counter, right button group — not a flat
+     row of N unequal-width children. space-between/center on a flat row centers
+     the ROW, not the counter: with an uneven button count on each side (which
+     stackNavFit.js's progressive hiding guarantees will happen) the counter
+     drifts toward whichever side has fewer buttons. Giving .stack-nav-group-left
+     and .stack-nav-group-right equal flex:1 reserves equal-width regions on
+     each side regardless of how many buttons live (or are hidden) inside them,
+     so the counter — a plain centered flex item between the two groups — stays
+     dead-center at every width and every hide-priority stage. */
+    justify-content: center;
+    align-items: center;
+    gap: var(--stack-nav-gap);
+    flex-wrap: nowrap;
+    opacity: 0;
+    transition: opacity var(--transition-speed) ease-in-out;
+    z-index: 10;
+    border-radius: 0 0 8px 8px;
+    box-sizing: border-box;
+    /* Clip chrome to the media tile — never paint past slot edges */
+    overflow: hidden;
+    min-width: 0;
+  }
+
+  .stack-audio-playback-controls {
+    position: absolute;
+    top: var(--audio-stack-toggle-top) !important;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    opacity: 0;
+    transition: opacity var(--transition-speed) ease-in-out;
+    z-index: 16 !important;
+    pointer-events: none;
+  }
+
+  .stack-audio-playback-controls button {
+    width: var(--media-top-control-size, 30px);
+    height: var(--media-top-control-height, 30px);
+    border-radius: var(--media-top-control-radius, 10px);
+    border: 1px solid var(--gallery-glass-control-border-resting);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--bg-tertiary) 35%, transparent), color-mix(in srgb, var(--bg-secondary) 25%, transparent));
+    color: var(--text-primary);
+    backdrop-filter: blur(10px) saturate(1.04);
+    -webkit-backdrop-filter: blur(10px) saturate(1.04);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: var(--gallery-glass-control-shadow-resting);
+    transition:
+      transform var(--transition-speed) ease,
+      background-color var(--transition-speed) ease,
+      color var(--transition-speed) ease,
+      border-color var(--transition-speed) ease,
+      box-shadow var(--transition-speed) ease;
+    pointer-events: none;
+  }
+
+  .stack-audio-playback-controls .stack-audio-mode-btn {
+    width: var(--media-top-control-size, 36px);
+    min-width: var(--media-top-control-size, 36px);
+    height: var(--media-top-control-height, 32px);
+    padding: 0;
+    border-radius: var(--media-top-control-radius, 12px);
+    gap: 0;
+    font-size: clamp(10px, calc(var(--image-gallery-width, 300px) * 0.04), 12px);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    position: relative;
+    background: linear-gradient(135deg, color-mix(in srgb, var(--bg-tertiary) 42%, transparent), color-mix(in srgb, var(--bg-secondary) 28%, transparent));
+    border: 1px solid var(--gallery-glass-control-border-active);
+    color: color-mix(in srgb, var(--text-primary) 88%, var(--gallery-warm-highlight-tint) 12%);
+  }
+
+  .stack-audio-playback-controls .stack-audio-mode-btn::after {
+    content: attr(data-mode-label);
+    position: absolute;
+    left: calc(100% + 6px);
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 4px 7px;
+    border-radius: var(--radius-lg, 8px);
+    border: 1px solid var(--gallery-glass-control-border-resting);
+    background: linear-gradient(135deg, var(--stack-audio-mode-tooltip-bg-start), var(--stack-audio-mode-tooltip-bg-end));
+    color: color-mix(in srgb, var(--text-primary) 84%, var(--gallery-warm-highlight-tint) 16%);
+    backdrop-filter: blur(10px) saturate(1.04);
+    -webkit-backdrop-filter: blur(10px) saturate(1.04);
+    font-size: clamp(9px, calc(var(--image-gallery-width, 300px) * 0.032), 10px);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    max-width: min(72px, calc(var(--image-gallery-width, 300px) - 76px));
+    overflow: hidden;
+    text-overflow: ellipsis;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition-speed) ease;
+    box-shadow: var(--stack-audio-mode-tooltip-shadow);
+  }
+
+  .stack-audio-playback-controls .stack-audio-mode-btn:hover::after,
+  .stack-audio-playback-controls .stack-audio-mode-btn:focus-visible::after {
+    opacity: 1;
+  }
+
+  .stack-audio-playback-controls .stack-audio-mode-btn i {
+    font-size: 13px;
+    text-shadow: var(--stack-audio-mode-icon-shadow);
+  }
+
+  .stack-audio-playback-controls .stack-audio-mode-btn .stack-audio-loop-single-badge {
+    position: absolute;
+    left: 19px;
+    top: 6px;
+    width: 12px;
+    height: 12px;
+    border-radius: var(--radius-full, 999px);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 6px;
+    font-weight: 700;
+    text-align: center;
+    background: var(--accent-color);
+    /* --text-on-accent is the WCAG-picked per-theme token for content on an accent fill.
+     --bg-primary is only defined in node-themes.css (node-theme scoped), so it resolved
+     to nothing here and the count inherited a near-accent color. */
+    color: var(--text-on-accent);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent-color) 60%, transparent);
+    pointer-events: none;
+  }
+
+  .stack-audio-playback-controls button:hover {
+    background: linear-gradient(135deg, color-mix(in srgb, var(--bg-tertiary) 56%, transparent), color-mix(in srgb, var(--accent-color) 38%, transparent));
+    border-color: var(--gallery-glass-control-border-hover);
+    color: var(--text-primary);
+    transform: translateY(-1px);
+    box-shadow: var(--gallery-glass-control-shadow-hover);
+  }
+
+  .stack-audio-playback-controls button.is-active {
+    background: linear-gradient(135deg, color-mix(in srgb, var(--accent-color) 42%, var(--bg-tertiary) 58%), color-mix(in srgb, var(--accent-color) 28%, var(--bg-secondary) 72%));
+    border: 1px solid var(--gallery-glass-control-border-active);
+    color: var(--text-primary);
+    box-shadow: var(--gallery-glass-control-shadow-resting);
+  }
+
+  .stack-audio-playback-controls button.is-hidden {
+    display: none;
+  }
+
+  .stack-scrub-control {
+    position: absolute;
+    --stack-scrub-inline-inset: 10%;
+    left: var(--stack-scrub-inline-inset);
+    right: var(--stack-scrub-inline-inset);
+    top: calc(50% - 15px);
+    bottom: auto;
+    min-height: var(--control-height-sm);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 9px;
+    border: 1px solid color-mix(in srgb, var(--accent-color) 42%, rgba(255, 255, 255, 0.16));
+    border-radius: var(--radius-lg, 8px);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--bg-secondary) 74%, rgba(0, 0, 0, 0.18)), color-mix(in srgb, var(--bg-tertiary) 68%, transparent));
+    color: var(--text-primary);
+    opacity: 0;
+    transform: translateY(0);
+    pointer-events: none;
+    z-index: 15;
+    box-sizing: border-box;
+    cursor: default;
+    touch-action: none;
+    backdrop-filter: blur(10px) saturate(1.1);
+    -webkit-backdrop-filter: blur(10px) saturate(1.1);
+    box-shadow:
+      0 10px 22px rgba(0, 0, 0, 0.28),
+      0 0 18px color-mix(in srgb, var(--accent-color) 16%, transparent),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    transition:
+      opacity var(--transition-speed) ease,
+      transform var(--transition-speed) ease,
+      border-color var(--transition-speed) ease;
+  }
+
+  .stack-scrub-control:hover,
+  .stack-scrub-control:focus-visible,
+  .stack-scrub-control.dragging,
+  .stack-scrub-control.position-dragging {
+    border-color: color-mix(in srgb, var(--accent-color) 72%, rgba(255, 255, 255, 0.18));
+  }
+
+  .stack-scrub-control.position-dragging {
+    cursor: grabbing;
+  }
+
+  .stack-scrub-track {
+    position: relative;
+    height: 8px;
+    min-width: 42px;
+    margin: 0 5px;
+    border-radius: var(--radius-full, 999px);
+    background: color-mix(in srgb, var(--bg-primary) 64%, rgba(255, 255, 255, 0.12));
+    box-shadow:
+      inset 0 1px 3px rgba(0, 0, 0, 0.45),
+      inset 0 0 0 1px color-mix(in srgb, var(--border-light) 70%, transparent);
+    cursor: pointer;
+  }
+
+  .stack-scrub-fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 0;
+    border-radius: inherit;
+    background: linear-gradient(90deg, color-mix(in srgb, var(--accent-color) 82%, var(--text-primary) 18%), color-mix(in srgb, var(--accent-color) 48%, var(--text-primary) 52%));
+    box-shadow: 0 0 14px color-mix(in srgb, var(--accent-color) 38%, transparent);
+  }
+
+  .stack-scrub-thumb {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 16px;
+    height: 16px;
+    border-radius: var(--radius-full, 999px);
+    background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--text-primary) 96%, white 4%), color-mix(in srgb, var(--bg-input) 82%, var(--accent-color) 18%));
+    border: 2px solid color-mix(in srgb, var(--accent-color) 86%, var(--text-primary) 14%);
+    transform: translate(-50%, -50%);
+    box-shadow:
+      var(--stack-scrub-thumb-shadow),
+      0 0 12px color-mix(in srgb, var(--accent-color) 46%, transparent);
+    cursor: ew-resize;
+  }
+
+  body.slot-scrubber-thumb-3d .stack-scrub-thumb.theme-swatch {
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+    box-shadow: var(--theme-swatch-bevel-shadow), var(--stack-scrub-thumb-shadow);
+  }
+
+  body.slot-scrubber-themed.slot-scrubber-thumb-flat .stack-scrub-thumb.theme-swatch::after {
+    display: none;
+  }
+
+  body.slot-scrubber-themed.slot-scrubber-thumb-flat .stack-scrub-thumb.theme-swatch {
+    background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--text-primary) 96%, white 4%), color-mix(in srgb, var(--bg-input) 82%, var(--accent-color) 18%)) !important;
+    border: 1px solid color-mix(in srgb, var(--accent-color) 86%, var(--text-primary) 14%);
+    overflow: visible;
+    box-shadow:
+      var(--stack-scrub-thumb-shadow),
+      0 0 12px color-mix(in srgb, var(--accent-color) 46%, transparent);
+  }
+
+  body.slot-scrubber-themed .stack-scrub-thumb.theme-swatch,
+  body.slot-scrubber-themed.slot-scrubber-thumb-flat .stack-scrub-thumb.theme-swatch {
+    border-color: transparent;
+  }
+
+  .stack-scrub-readout {
+    min-width: 38px;
+    font-size: var(--font-meta);
+    line-height: 1;
+    font-weight: 700;
+    text-align: right;
+    color: color-mix(in srgb, var(--text-primary) 88%, var(--accent-color) 12%);
+    white-space: nowrap;
+    cursor: grab;
+    touch-action: none;
+  }
+
+  .stack-scrub-control.position-dragging .stack-scrub-readout {
+    cursor: grabbing;
+  }
+
+  body.hide-slot-scrubbers .stack-scrub-control {
+    display: none !important;
+  }
+
+  body.slot-scrubber-top .stack-scrub-control {
+    left: var(--stack-scrub-inline-inset);
+    right: var(--stack-scrub-inline-inset);
+    top: calc(16.666% - 15px);
+    bottom: auto;
+    transform: translateY(0);
+  }
+
+  body.slot-scrubber-middle .stack-scrub-control {
+    left: var(--stack-scrub-inline-inset);
+    right: var(--stack-scrub-inline-inset);
+    top: calc(50% - 15px);
+    bottom: auto;
+    transform: translateY(0);
+  }
+
+  body.slot-scrubber-bottom .stack-scrub-control {
+    left: var(--stack-scrub-inline-inset);
+    right: var(--stack-scrub-inline-inset);
+    top: calc(83.333% - 15px);
+    bottom: auto;
+    transform: translateY(0);
+  }
+
+  body.slot-scrubber-top .image-item:has(.image-frame:hover) .stack-scrub-control,
+  body.slot-scrubber-top .image-stack-container:has(.image-frame:hover) .stack-scrub-control,
+  body.slot-scrubber-top .image-item:has(.stack-scrub-control:hover) .stack-scrub-control,
+  body.slot-scrubber-top .image-stack-container:has(.stack-scrub-control:hover) .stack-scrub-control,
+  body.slot-scrubber-top .stack-scrub-control:focus-visible,
+  body.slot-scrubber-top .stack-scrub-control.dragging,
+  body.slot-scrubber-top .image-gallery.keyboard-navigation-active .image-item.image-stack.stack-focused .stack-scrub-control {
+    transform: translateY(0);
+  }
+
+  body.slot-scrubber-original .stack-scrub-control {
+    border-color: var(--slot-scrubber-legacy-control-border);
+    background: var(--slot-scrubber-legacy-control-bg);
+    color: white;
+    box-shadow: var(--slot-scrubber-legacy-control-shadow);
+  }
+
+  body.slot-scrubber-original .stack-scrub-control:hover,
+  body.slot-scrubber-original .stack-scrub-control:focus-visible,
+  body.slot-scrubber-original .stack-scrub-control.dragging {
+    border-color: var(--slot-scrubber-legacy-control-border-active);
+  }
+
+  body.slot-scrubber-original .stack-scrub-track {
+    background: var(--slot-scrubber-legacy-track-bg);
+    box-shadow: var(--slot-scrubber-legacy-track-shadow);
+  }
+
+  body.slot-scrubber-original .stack-scrub-fill {
+    background: var(--slot-scrubber-legacy-fill-bg);
+    box-shadow: var(--slot-scrubber-legacy-fill-shadow);
+  }
+
+  body.slot-scrubber-original .stack-scrub-thumb {
+    background: var(--slot-scrubber-legacy-thumb-bg);
+    border-color: var(--slot-scrubber-legacy-thumb-border);
+    overflow: visible;
+    box-shadow: var(--slot-scrubber-legacy-thumb-shadow);
+  }
+
+  body.slot-scrubber-original .stack-scrub-thumb::after {
+    display: none;
+  }
+
+  body.slot-scrubber-original.slot-scrubber-thumb-3d .stack-scrub-thumb {
+    background: var(--slot-scrubber-legacy-thumb-3d-bg);
+    border-color: var(--slot-scrubber-legacy-thumb-border);
+    overflow: hidden;
+    box-shadow: var(--slot-scrubber-legacy-thumb-3d-shadow);
+  }
+
+  body.slot-scrubber-original.slot-scrubber-thumb-3d .stack-scrub-thumb::after {
+    display: block;
+  }
+
+  body.slot-scrubber-original .stack-scrub-readout {
+    color: var(--slot-scrubber-legacy-readout-color);
+  }
+
+  .image-item:has(.image-frame:hover) .stack-scrub-control,
+  .image-stack-container:has(.image-frame:hover) .stack-scrub-control,
+  .image-item:has(.stack-scrub-control:hover) .stack-scrub-control,
+  .image-stack-container:has(.stack-scrub-control:hover) .stack-scrub-control,
+  .stack-scrub-control:focus-visible,
+  .stack-scrub-control.dragging,
+  .stack-scrub-control.position-dragging,
+  .image-gallery.keyboard-navigation-active .image-item.image-stack.stack-focused .stack-scrub-control {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  /* Create a hover zone limited to just the image */
+  .image-frame img:hover ~ .stack-navigation,
+  .stack-navigation:hover {
+    opacity: 1;
+  }
+
+  /* Make all buttons consistent and transparent when inactive */
+  .stack-navigation button {
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: var(--stack-nav-btn-pad);
+    font-size: var(--stack-nav-btn-font);
+    border-radius: var(--radius-sm, 4px);
+    transition:
+      background-color var(--transition-speed) ease,
+      color var(--transition-speed) ease,
+      border-color var(--transition-speed) ease,
+      transform var(--transition-speed) ease;
+    margin: 0;
+    flex: 0 0 auto;
+    min-width: 0;
+    line-height: 1;
+  }
+
+  .stack-navigation .stack-help-btn {
+    position: relative;
+    z-index: 10001;
+  }
+
+  /* Consistent hover styles for all buttons */
+  .stack-navigation button:hover {
+    background: var(--white-overlay-hover);
+    color: white;
+  }
+
+  .stack-navigation button:disabled {
+    background: var(--disabled-bg);
+    color: var(--disabled-text);
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  /* Special hover colors for specific buttons */
+  .stack-navigation .stack-prev-btn:hover,
+  .stack-navigation .stack-next-btn:hover {
+    color: var(--stack-nav-active-color);
+  }
+
+  .stack-navigation .stack-move-up-btn:hover,
+  .stack-navigation .stack-move-down-btn:hover {
+    color: var(--stack-nav-active-color);
+  }
+
+  .stack-navigation .stack-remove-btn:hover {
+    color: var(--danger-color, #dc3545);
+  }
+
+  .stack-navigation .stack-help-btn:hover {
+    color: var(--stack-nav-active-color);
+  }
+
+  .stack-navigation .stack-flatten-btn:hover {
+    color: var(--stack-nav-active-color);
+  }
+
+  .stack-navigation .image-counter {
+    font-size: var(--stack-nav-counter-font);
+    color: white;
+    margin: var(--stack-nav-counter-margin);
+    min-width: var(--stack-nav-counter-min);
+    max-width: 40%;
+    text-align: center;
+    display: inline-block;
+    /* Fixed-size, not growable — the two .stack-nav-group siblings are the
+     flex:1 regions that do the centering; see the comment on .stack-navigation. */
+    flex: 0 0 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 1.2;
+  }
+
+  /* Equal-width left/right regions around .image-counter — see the centering
+   rationale on .stack-navigation above. Each group lays out its own buttons
+   with the same gap the outer bar used to apply directly between buttons;
+   stackNavFit.js's naturalWidth() sums button widths across BOTH groups plus
+   (button-count - 1) gaps, so nesting them one level deeper here doesn't
+   change that total as long as the gap value stays shared. */
+  .stack-navigation .stack-nav-group {
+    display: flex;
+    align-items: center;
+    gap: var(--stack-nav-gap);
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .stack-navigation .stack-nav-group-left {
+    justify-content: flex-start;
+  }
+
+  .stack-navigation .stack-nav-group-right {
+    justify-content: flex-end;
+  }
+
+  /*
+ * Progressive stack-nav compaction from ACTUAL media width (canvas Fit cards,
+ * narrow menu widths, density). These container queries only tighten chrome
+ * (padding/font/gap) as the card narrows — which buttons actually show is
+ * decided by src/js/stackNavFit.js, which measures the bar's real content
+ * width against the frame and hides from the outside in (keyboard-nav
+ * toggle, then move up/down, then remove/flatten — prev/counter/next never
+ * hide) only once the tightened chrome still doesn't fit. That reacts to
+ * the card's true rendered width instead of a fixed pixel guess, so a card
+ * zoomed larger on canvas always gets everything it has room for.
+ */
+  @container gallery-media (max-width: 340px) {
+    .stack-navigation {
+      --stack-nav-pad-y: 4px;
+      --stack-nav-pad-x: 3px;
+      --stack-nav-gap: 0px;
+      --stack-nav-btn-pad-y: 2px;
+      --stack-nav-btn-pad-x: 4px;
+      --stack-nav-btn-font: var(--font-control);
+      --stack-nav-counter-font: var(--font-meta);
+      --stack-nav-counter-min: 2.25em;
+    }
+  }
+  @container gallery-media (max-width: 260px) {
+    .stack-navigation {
+      --stack-nav-pad-y: 3px;
+      --stack-nav-pad-x: 2px;
+      --stack-nav-btn-pad-y: 2px;
+      --stack-nav-btn-pad-x: 3px;
+      --stack-nav-btn-font: 11px;
+      --stack-nav-counter-font: var(--font-micro);
+      --stack-nav-counter-min: 2em;
+    }
+  }
+  @container gallery-media (max-width: 190px) {
+    .stack-navigation {
+      --stack-nav-pad-y: 2px;
+      --stack-nav-pad-x: 2px;
+      --stack-nav-btn-pad-y: 2px;
+      --stack-nav-btn-pad-x: 2px;
+      --stack-nav-btn-font: 10px;
+    }
+  }
+
+  /* Buttons stackNavFit.js determines don't fit, even after the chrome above tightens. */
+  .stack-navigation .stack-nav-fit-hidden {
+    display: none;
+  }
+
+  /* Pulse animation for stack navigation */
+  @keyframes pulse-highlight {
+    0% {
+      box-shadow: 0 0 0 0 color-mix(in srgb, var(--stack-nav-active-color) 0%, transparent);
+      transform: scale(1);
+    }
+    50% {
+      box-shadow: 0 0 0 8px color-mix(in srgb, var(--stack-nav-active-color) 50%, transparent);
+      transform: scale(1.02);
+    }
+    100% {
+      box-shadow: 0 0 0 0 color-mix(in srgb, var(--stack-nav-active-color) 0%, transparent);
+      transform: scale(1);
+    }
+  }
+
+  .image-stack-container.pulse-highlight {
+    animation: pulse-highlight 0.5s ease-in-out;
+    border-radius: var(--radius-sm, 4px);
+  }
+
+  .image-counter.pulse-highlight {
+    animation: pulse-highlight 0.5s ease-in-out;
+    border-radius: var(--radius-sm, 4px);
+    color: var(--stack-nav-active-color) !important;
+  }
+
+  .stack-navigation .image-counter.pulse-highlight {
+    animation: pulse-highlight 0.5s ease-in-out;
+    border-radius: var(--radius-sm, 4px);
+  }
+
+  /* Apply highlight INSIDE media elements using outline with negative offset - NO clipping, NO layout shift */
+  .image-item.image-stack.stack-focused .image-stack-container img,
+  .image-item.image-stack.stack-focused .image-stack-container video,
+  .image-item.image-stack.stack-focused .image-stack-container iframe,
+  .image-item.image-stack.stack-focused .image-stack-container .gallery-inline-audio,
+  .image-item.image-stack.stack-focused .image-stack-container .gallery-inline-doc,
+  .image-item.image-stack.stack-focused .image-stack-container .gallery-inline-media {
+    outline: 2px solid color-mix(in srgb, var(--stack-nav-active-color) 70%, transparent);
+    outline-offset: -2px;
+    border-radius: var(--radius-lg, 8px);
+  }
+
+  @keyframes pulse-separator {
+    0% {
+      opacity: 0.3;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0.3;
+    }
+  }
+
+  /* Stack Help Button Styles */
+  .stack-help-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 20;
+    overflow: visible;
+  }
+
+  /* Tooltip inside .stack-help-btn, pops above and to the right of the button */
+  .stack-keyboard-help {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 0;
+    transform: none;
+    width: var(--tooltip-max-width, 240px);
+    /* Opaque, not glass: this tooltip can sit over an inline iframe (doc/CSV preview),
+     and backdrop-filter composites iframe content through as its blur source on some
+     GPU paths — a solid surface avoids that class of bleed-through entirely. */
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-xl, 10px);
+    padding: 12px;
+    color: var(--text-primary);
+    display: none;
+    z-index: var(--flowjoe-z-tooltip);
+    box-shadow: var(--elev-floating);
+    text-align: left;
+    pointer-events: none;
+    white-space: normal;
+  }
+
+  /* Style for arrow keys in the keyboard shortcut tooltip */
+  .stack-keyboard-help kbd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-xs, 2px);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--stack-help-kbd-shadow);
+    margin: 0 6px 0 0;
+    padding: 0;
+    vertical-align: middle;
+    flex-shrink: 0;
+  }
+
+  .stack-keyboard-help kbd svg {
+    width: 14px;
+    height: 14px;
+    display: block;
+  }
+
+  /* Arrow pointing down toward the keyboard button. --stack-keyboard-help-arrow-left is set
+   inline (in JS, alongside the tooltip's own fixed position) to the button's true horizontal
+   center; 16px is just the resting-state fallback for when the tooltip hasn't been shown yet. */
+  .stack-keyboard-help::after {
+    content: "";
+    position: absolute;
+    bottom: -9px;
+    left: var(--stack-keyboard-help-arrow-left, 16px);
+    transform: none;
+    border-width: 10px 10px 0;
+    border-style: solid;
+    border-color: var(--bg-secondary) transparent transparent; /* arrow tracks the HUD surface's base color */
+    pointer-events: none;
+  }
+
+  .stack-help-btn:hover .stack-keyboard-help,
+  .stack-keyboard-help.force-visible,
+  .stack-keyboard-help.show-tooltip {
+    display: block;
+  }
+
+  .stack-keyboard-help.force-visible {
+    /* Position will be set dynamically with JavaScript */
+    display: block;
+    z-index: 1000;
+  }
+
+  .stack-keyboard-help h4 {
+    margin: 0 0 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent-color);
+  }
+
+  .stack-keyboard-help ul {
+    margin: 0;
+    padding: 0 0 0 16px;
+    list-style-type: disc;
+  }
+
+  .stack-keyboard-help li {
+    margin: 4px 0;
+    font-size: 13px;
+  }
+
+  /* Stack Navigation Visibility */
+  .stack-navigation {
+    opacity: 0;
+    transition: opacity var(--transition-speed) ease-in-out;
+    cursor: grab !important;
+  }
+
+  /* Global width-menu floors (still apply when menu is 240/160) — tighten chrome only.
+   These no longer force-hide any button directly: the width-menu setting sets
+   .image-frame's width to the same px value, so stackNavFit.js's measurement
+   (src/js/stackNavFit.js) already reaches the same outcome in list view — and,
+   unlike a hardcoded display:none here, also handles canvas/Fit zoom rendering
+   the same card far larger than the menu's logical width without stranding
+   buttons hidden that would otherwise fit. */
+  body.hide-move-buttons {
+    --stack-nav-pad-y: 4px;
+    --stack-nav-pad-x: 4px;
+    --stack-nav-btn-pad-y: 3px;
+    --stack-nav-btn-pad-x: 4px;
+    --stack-nav-btn-font: var(--font-control);
+    --stack-nav-counter-font: var(--font-meta);
+    --stack-nav-counter-min: 2.25em;
+  }
+
+  body.hide-thumbnail-extras {
+    --stack-nav-pad-y: 3px;
+    --stack-nav-pad-x: 2px;
+    --stack-nav-btn-pad-y: 2px;
+    --stack-nav-btn-pad-x: 3px;
+    --stack-nav-btn-font: 10px;
+    --stack-nav-counter-font: var(--font-micro);
+    --stack-nav-counter-min: 2em;
+  }
+
+  /* The workspace font-size button scales gallery content, not stack-nav overlay text. */
+  #image-display:is(.flowjoe-font-scale-large, .flowjoe-font-scale-larger, .flowjoe-font-scale-largest) .stack-navigation .image-counter {
+    font-size: 12px !important;
+  }
+
+  body.hide-move-buttons #image-display:is(.flowjoe-font-scale-large, .flowjoe-font-scale-larger, .flowjoe-font-scale-largest) .stack-navigation .image-counter {
+    font-size: var(--font-meta) !important;
+  }
+
+  body.hide-thumbnail-extras #image-display:is(.flowjoe-font-scale-large, .flowjoe-font-scale-larger, .flowjoe-font-scale-largest) .stack-navigation .image-counter {
+    font-size: var(--font-micro) !important;
+  }
+
+  .image-gallery {
+    position: relative;
+  }
+
+  .image-gallery.keyboard-navigation-active .image-item.image-stack.stack-focused .stack-navigation {
+    opacity: 1;
+  }
+
+  /* Default style for the breadcrumb separator line */
+  /* .content-divider {
+  height: var(--hairline);
+  background-color: rgba(255, 255, 255, 0.1);
+  margin-top: 8px;
+  margin-bottom: -12px;
+  width: 100%;
+} */
+
+  /* Pulsing effect for the breadcrumb separator line when keyboard navigation is active */
+  .content-divider.pulsing-separator-active {
+    background: linear-gradient(to right, transparent, color-mix(in srgb, var(--stack-nav-active-color) 80%, transparent), transparent);
+    animation: pulse-separator 2s infinite ease-in-out;
+  }
+
+  .image-item:has(.image-frame:hover) .stack-navigation,
+  .image-stack-container:has(.image-frame:hover) .stack-navigation,
+  .image-item:has(.stack-audio-playback-controls:hover) .stack-navigation,
+  .image-stack-container:has(.stack-audio-playback-controls:hover) .stack-navigation,
+  .image-item:has(.image-stack-indicator:hover) .stack-navigation,
+  .image-stack-container:has(.image-stack-indicator:hover) .stack-navigation {
+    opacity: 1;
+  }
+
+  .image-item:has(.image-frame:hover) .stack-audio-playback-controls,
+  .image-stack-container:has(.image-frame:hover) .stack-audio-playback-controls,
+  .image-frame.media-playing:hover .stack-audio-playback-controls,
+  .image-stack-container:has(.image-frame:hover) .image-frame.media-playing .stack-audio-playback-controls,
+  .stack-audio-playback-controls:hover,
+  .image-item:has(.stack-audio-playback-controls:hover) .stack-audio-playback-controls,
+  .image-stack-container:has(.stack-audio-playback-controls:hover) .stack-audio-playback-controls,
+  .image-item:has(.stack-audio-playback-controls:hover) .image-frame.media-playing .stack-audio-playback-controls,
+  .image-stack-container:has(.stack-audio-playback-controls:hover) .image-frame.media-playing .stack-audio-playback-controls {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .image-item:has(.image-frame:hover) .stack-audio-playback-controls button,
+  .image-stack-container:has(.image-frame:hover) .stack-audio-playback-controls button,
+  .image-frame.media-playing:hover .stack-audio-playback-controls button,
+  .image-stack-container:has(.image-frame:hover) .image-frame.media-playing .stack-audio-playback-controls button,
+  .stack-audio-playback-controls:hover button,
+  .image-item:has(.stack-audio-playback-controls:hover) .stack-audio-playback-controls button,
+  .image-stack-container:has(.stack-audio-playback-controls:hover) .stack-audio-playback-controls button,
+  .image-item:has(.stack-audio-playback-controls:hover) .image-frame.media-playing .stack-audio-playback-controls button,
+  .image-stack-container:has(.stack-audio-playback-controls:hover) .image-frame.media-playing .stack-audio-playback-controls button {
+    pointer-events: auto;
+  }
+
+  .image-item:has(.image-frame:hover) .image-stack-indicator,
+  .image-stack-container:has(.image-frame:hover) .image-stack-indicator,
+  .image-stack-indicator:hover,
+  .image-item:has(.image-stack-indicator:hover) .image-stack-indicator,
+  .image-stack-container:has(.image-stack-indicator:hover) .image-stack-indicator {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Multi-select mode: keep stack nav visually inert and block hover/slide behavior. */
+  body.image-selection-mode .stack-navigation,
+  body.image-selection-mode .stack-scrub-control,
+  body.image-selection-mode .stack-audio-playback-controls,
+  body.image-selection-mode .image-item:hover .stack-navigation,
+  body.image-selection-mode .image-item:hover .stack-scrub-control,
+  body.image-selection-mode .image-item:hover .stack-audio-playback-controls,
+  body.image-selection-mode .image-stack-container:hover .stack-navigation,
+  body.image-selection-mode .image-stack-container:hover .stack-scrub-control,
+  body.image-selection-mode .image-stack-container:hover .stack-audio-playback-controls,
+  body.image-selection-mode .image-frame img:hover ~ .stack-navigation,
+  body.image-selection-mode .stack-scrub-control:hover,
+  body.image-selection-mode .stack-navigation:hover,
+  body.image-selection-mode .stack-audio-playback-controls:hover,
+  body.image-selection-mode .image-gallery.keyboard-navigation-active .image-item.image-stack.stack-focused .stack-navigation,
+  body.image-selection-mode .image-gallery.keyboard-navigation-active .image-item.image-stack.stack-focused .stack-scrub-control,
+  body.image-selection-mode .stack-navigation.visible,
+  body.image-selection-mode .stack-scrub-control.dragging,
+  body.image-selection-mode .stack-audio-playback-controls.visible {
+    opacity: 0.28 !important;
+    pointer-events: none !important;
+    animation: none !important;
+    transition: none !important;
+  }
+
+  body.image-selection-mode .stack-navigation button,
+  body.image-selection-mode .stack-navigation .image-counter {
+    opacity: 0.65 !important;
+  }
+
+  /* Keep stack navigation visible during drag operations */
+  .image-item.dragging .stack-navigation,
+  .image-item.batch-drag-member .stack-navigation {
+    opacity: 0.5;
+    pointer-events: none;
+    cursor: grabbing !important;
+  }
+
+  .image-item.dragging .stack-scrub-control,
+  .image-item.batch-drag-member .stack-scrub-control {
+    opacity: 0.25;
+    pointer-events: none;
+  }
+
+  .image-item.dragging .stack-audio-playback-controls,
+  .image-item.batch-drag-member .stack-audio-playback-controls {
+    opacity: 0.25;
+    pointer-events: none;
+  }
+
+  .image-stack-indicator-wrapper {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    pointer-events: none;
+    /* z-index 70 ensures stack indicator appears above image content
+     but below modals and overlays. Parent .image-frame should not
+     create a stacking context (no transform/opacity/filter) to allow
+     this z-index to work correctly. */
+    z-index: 70;
+  }
+
+  .image-stack-indicator {
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: default;
+    background-color: var(--stack-overlay-badge-bg-resting);
+    border-radius: var(--radius-sm, 4px);
+    padding: 3px;
+    pointer-events: none;
+  }
+
+  .image-stack-indicator:hover {
+    background-color: var(--stack-overlay-badge-bg-hover);
+  }
+
+  /* Match the "+" add-slot button's square footprint (height AND min-width, both driven by
+   the same --canvas-rail-btn-size the rail buttons use) so the two sit uniform side by
+   side — the badge only grows WIDER than that floor for a multi-digit count ("12", "100"),
+   never shorter/taller than its neighbor. Scale (via --gallery-slot-scale, baked into
+   --canvas-rail-btn-size itself) applies to both the same way. Revert: delete this rule. */
+  .image-gallery .enum-image-unit .image-stack-indicator {
+    height: var(--canvas-rail-btn-size, 18.8px);
+    min-width: var(--canvas-rail-btn-size, 18.8px);
+    padding: 0 calc(3px * var(--gallery-slot-scale, 1));
+    box-sizing: border-box;
+  }
+
+  .image-gallery .enum-image-unit .stack-count-number {
+    font-size: calc(0.7em * var(--gallery-slot-scale, 1));
+  }
+
+  /* Force visible state for stack navigation */
+  .stack-navigation.visible {
+    opacity: 1;
+  }
+
+  .image-modal-media-overlay {
+    position: absolute;
+    pointer-events: none;
+    z-index: 90;
+    border-radius: var(--radius-lg, 8px);
+    overflow: visible;
+    transform: translateY(0);
+  }
+
+  .image-modal-media-overlay .image-stack-indicator,
+  .image-modal-media-overlay .image-info-icon-wrapper,
+  .image-modal-media-overlay .cropped-image-badge,
+  .image-modal-media-overlay .image-modal-stack-scrub-control,
+  .image-modal-media-overlay .image-modal-stack-navigation {
+    opacity: 0;
+    transition: opacity var(--transition-speed) ease;
+  }
+
+  #image-container:hover .image-modal-media-overlay .image-stack-indicator,
+#image-container:hover .image-modal-media-overlay .image-info-icon-wrapper,
+#image-container:hover .image-modal-media-overlay .cropped-image-badge,
+#image-container:hover .image-modal-media-overlay .image-modal-stack-scrub-control,
+#image-container:hover .image-modal-media-overlay .image-modal-stack-navigation,
+.image-modal-media-overlay:focus-within .image-stack-indicator,
+.image-modal-media-overlay:focus-within .image-info-icon-wrapper,
+.image-modal-media-overlay:focus-within .cropped-image-badge,
+.image-modal-media-overlay:focus-within .image-modal-stack-scrub-control,
+.image-modal-media-overlay:focus-within .image-modal-stack-navigation,
+/* Keyboard mode: force all overlay elements visible (matches gallery keyboard-navigation-active) */
+#image-container.modal-keyboard-focused .image-modal-media-overlay .image-stack-indicator,
+#image-container.modal-keyboard-focused .image-modal-media-overlay .image-info-icon-wrapper,
+#image-container.modal-keyboard-focused .image-modal-media-overlay .cropped-image-badge,
+#image-container.modal-keyboard-focused .image-modal-media-overlay .image-modal-stack-scrub-control,
+#image-container.modal-keyboard-focused .image-modal-media-overlay .image-modal-stack-navigation {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .image-modal-stack-indicator-wrapper {
+    top: 5px;
+    left: 5px;
+    pointer-events: auto;
+  }
+
+  .image-modal-info-wrapper {
+    top: 5px;
+    right: 5px;
+    pointer-events: auto;
+  }
+
+  .image-modal-info-wrapper .image-info-card {
+    top: calc(100% + 4px);
+    right: 0;
+  }
+
+  .image-modal-stack-chip {
+    /* Reset button defaults to match gallery .image-stack-indicator div */
+    border: none;
+    font: inherit;
+    pointer-events: auto;
+    background-color: var(--stack-overlay-badge-bg-resting);
+    border-radius: var(--radius-sm, 4px);
+    padding: 3px;
+    margin: 0;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: default;
+  }
+
+  .image-modal-stack-chip:hover {
+    background-color: var(--stack-overlay-badge-bg-hover);
+  }
+
+  .image-modal-media-overlay .cropped-image-badge {
+    top: 8px;
+    max-width: calc(100% - 96px);
+  }
+
+  #image-modal-inline-media-host .image-frame > .cropped-image-badge {
+    display: none !important;
+  }
+
+  /* MODAL EMBED CONTRACT (USER RULE, 2026-06-11): nothing in the media pane gets cropped.
+   The slot's link-card preview cover-fills its square — correct in a slot, but when the
+   clone hosts in the modal pane the og image (e.g. a portrait book cover) is taller than
+   the pane shape and cover-crops its bottom. The modal contain-fits it instead, top-aligned
+   like every other modal media. */
+  #image-modal-inline-media-host .gallery-inline-link-preview {
+    object-fit: contain;
+    object-position: top center;
+  }
+
+  /* MODAL EMBED CONTRACT: slot-side edge-bleed hacks (provider-targeted 2px negative margins,
+   calc(100%+4px) oversizing, clip-path rounding — e.g. the kickstarter/canva/x rules in
+   styles.css) must NOT ride the hosted clone into the modal pane: the modal letterboxes or
+   fills by inline style, and the leftover negative margins shift the iframe off its fitted
+   box. ID specificity beats every slot-side selector; the layout pass's inline !important
+   styles (video/fixed-card contain-fit) still win where set. */
+  #image-modal-inline-media-host .image-frame .gallery-inline-embed {
+    clip-path: none;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .image-modal-stack-navigation {
+    pointer-events: none;
+    z-index: 4;
+  }
+
+  .image-modal-stack-scrub-control {
+    left: var(--stack-scrub-inline-inset);
+    right: var(--stack-scrub-inline-inset);
+    top: calc(50% - 15px);
+    bottom: auto;
+    transform: translateY(0);
+    z-index: 5;
+  }
+
+  body.slot-scrubber-top .image-modal-stack-scrub-control {
+    left: var(--stack-scrub-inline-inset);
+    right: var(--stack-scrub-inline-inset);
+    top: calc(16.666% - 15px);
+    bottom: auto;
+    transform: translateY(0);
+  }
+
+  body.slot-scrubber-middle .image-modal-stack-scrub-control {
+    left: var(--stack-scrub-inline-inset);
+    right: var(--stack-scrub-inline-inset);
+    top: calc(50% - 15px);
+    bottom: auto;
+    transform: translateY(0);
+  }
+
+  body.slot-scrubber-bottom .image-modal-stack-scrub-control {
+    left: var(--stack-scrub-inline-inset);
+    right: var(--stack-scrub-inline-inset);
+    top: calc(83.333% - 15px);
+    bottom: auto;
+    transform: translateY(0);
+  }
+
+  .image-modal-stack-scrub-control.dragging,
+  .image-modal-media-overlay:focus-within .image-modal-stack-scrub-control,
+  #image-container:hover .image-modal-media-overlay .image-modal-stack-scrub-control,
+  #image-container.modal-keyboard-focused .image-modal-media-overlay .image-modal-stack-scrub-control {
+    transform: translateY(0);
+  }
+
+  /* Always show overlay badges inside the preview modal (matches gallery behavior) */
+  #image-modal .image-modal-media-overlay .image-modal-stack-navigation,
+  #image-modal .image-modal-media-overlay .image-stack-indicator,
+  #image-modal .image-modal-media-overlay .image-info-icon-wrapper,
+  #image-modal .image-modal-media-overlay .cropped-image-badge,
+  #image-container:hover .image-modal-media-overlay .image-modal-stack-navigation,
+  #image-container:hover .image-modal-media-overlay .image-modal-stack-scrub-control,
+  #image-container:hover .image-modal-media-overlay .image-stack-indicator,
+  #image-container:hover .image-modal-media-overlay .image-info-icon-wrapper,
+  #image-container:hover .image-modal-media-overlay .cropped-image-badge,
+  .image-modal-media-overlay:focus-within .image-modal-stack-navigation,
+  .image-modal-media-overlay:focus-within .image-modal-stack-scrub-control,
+  .image-modal-media-overlay:focus-within .image-stack-indicator,
+  .image-modal-media-overlay:focus-within .image-info-icon-wrapper,
+  .image-modal-media-overlay:focus-within .cropped-image-badge {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Preview modal hosted audio/video controls sit above the separate modal stack nav. */
+  #image-modal-inline-media-host .image-item-preview-modal-media[data-modal-stack-media="1"] .image-frame.media-playing:hover .gallery-inline-audio-controls {
+    transform: translateY(-48px);
+  }
+
+  #image-modal-inline-media-host .image-item-preview-modal-media[data-modal-stack-media="1"][data-modal-preview-host="video"] .gallery-inline-video-controls {
+    bottom: 58px !important;
+    z-index: 24;
+    transform: translateY(0) !important;
+  }
+
+  /* Hide any keyboard icons and notifications in the notes field */
+  .image-notes .fa-keyboard,
+  .image-notes + .fa-keyboard,
+  .image-notes::before,
+  .image-notes::after {
+    display: none !important;
+  }
+
+  /* Prevent keyboard mode notifications when notes field is active */
+  .image-notes:focus ~ #notification-container .notification[data-type="keyboard-mode"],
+  #notification-container .notification[data-type="keyboard-mode"] {
+    display: none !important;
+  }
+
+  /* Button highlight when activated by keyboard — only the pressed control. */
+  @keyframes keyboard-button-press {
+    0% {
+      background-color: var(--white-overlay-hover);
+    }
+    50% {
+      background-color: color-mix(in srgb, var(--stack-nav-active-color) 50%, transparent);
+    }
+    100% {
+      background-color: var(--white-overlay-hover);
+    }
+  }
+
+  .stack-navigation button.keyboard-activated,
+  #image-modal-overlay-stack-nav button.keyboard-activated {
+    animation: keyboard-button-press 0.3s ease;
+    color: var(--stack-nav-active-color);
+  }
+
+  /* Keyboard shortcuts help tooltip */
+  .stack-help-btn {
+    position: relative;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 4px;
+    margin-left: 5px;
+    border-radius: var(--radius-sm, 4px);
+    transition: all var(--transition-speed) ease;
+  }
+
+  .stack-help-btn:hover {
+    background-color: var(--white-overlay-hover);
+  }
+
+  /* Image Move Indicator Styles */
+  .image-move-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--stack-overlay-badge-bg-resting);
+    color: white;
+    font-size: 16em; /* Twice as big */
+    font-weight: bold;
+    opacity: 0;
+    transition: opacity var(--transition-speed) ease-in-out;
+    pointer-events: none;
+    z-index: 100;
+    border-radius: var(--radius-lg, 8px);
+    font-family: "Fira Mono", "Courier New", Courier, monospace;
+  }
+
+  .image-move-indicator.active {
+    animation: fade-in-fade-out 1.5s ease-out forwards;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  .image-move-indicator .move-arrow {
+    display: none; /* Hide the arrow */
+  }
+
+  .image-move-indicator .move-position-number {
+    font-size: 1em; /* Relative to parent's new larger font size */
+  }
+
+  @keyframes fade-in-fade-out {
+    0% {
+      opacity: 0;
+    }
+    20% {
+      opacity: 0.5;
+    } /* Fade in to 50% transparency */
+    25% {
+      opacity: 0.5;
+    } /* Hold at peak opacity briefly */
+    100% {
+      opacity: 0;
+    } /* Fade out */
+  }
+
+  .stack-help-btn.active {
+    background-color: var(--white-overlay-hover);
+  }
+
+  .stack-navigation .stack-help-btn.active {
+    color: var(--stack-nav-active-color);
+  }
+
+  .stack-count-number {
+    /* Positioned by parent flexbox */
+    color: white;
+    font-size: 0.7em; /* Slightly larger for better visibility */
+    /* font-weight: bold; */
+    line-height: 1;
+    z-index: 11; /* Above the stack indicator */
+    background-color: transparent;
+    outline: none;
+    box-shadow: none;
+    padding: 3px 2px;
+    /* The parent .image-stack-indicator flex-centers this span's BOX, but display/rounded
+     theme fonts carry tall ascender headroom, so the digit's INK sat ~1-2px below the
+     badge's center (plus the old asymmetric 2px-top/1px-bottom padding's own 0.5px bias).
+     Trimming the text box to cap-height/alphabetic-baseline makes the box hug the digit
+     ink itself, so flex centering centers what the eye sees. Digits have no descenders,
+     so cap/alphabetic bounds them exactly. Harmless no-op in engines without text-box.
+     The symmetric 3px vertical padding keeps every AUTO-HEIGHT host of this span — the
+     preview modal's .image-modal-stack-chip and the sphere gallery's cloned .image-frame
+     badge (no .enum-image-unit ancestor, so stack-styles' --canvas-rail-btn-size height
+     pin doesn't reach it) — at its pre-trim footprint: old 1em + 3px ≈ new cap + 6px.
+     Gallery slot badges are height-pinned, so their box is centered either way. */
+    text-box-trim: trim-both;
+    text-box-edge: cap alphabetic;
+  }
+  .stacked-image {
+    transition: opacity var(--transition-speed-slow) ease;
+  }
+
+  /* Style for the image during drop animation */
+  /* Stack navigation fade-up animation */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Style for stack navigation when it becomes visible */
+  .stack-navigation.visible {
+    animation: fadeInUp 0.3s ease-out forwards;
+  }
+}
+
+/* Scrub-time media-height lock (imageStackListeners.js sets the class + var at
+   pointerdown, removes both at release): while the slot scrubber is being
+   dragged, previewed items render inside the STARTING item's media height so
+   the strip never jumps under the pointer; the landed item takes its natural
+   height on release. */
+/* The second selector exists purely to OUT-SPECIFY canvas mode's own
+   `body.canvas-reposition-active .image-gallery .enum-image-unit .image-frame
+   { height: auto !important }` — both are !important, so specificity decides,
+   and the lock must win for the freeze to hold on the canvas board. */
+.enum-image-unit.stack-scrub-height-locked .image-frame,
+body.canvas-reposition-active .image-gallery .enum-image-unit.stack-scrub-height-locked .image-frame {
+  height: var(--scrub-locked-media-h) !important;
+  min-height: var(--scrub-locked-media-h) !important;
+  max-height: var(--scrub-locked-media-h) !important;
+  overflow: hidden;
+}

@@ -1,0 +1,64 @@
+@layer app {
+/* In-chat "move it" offer shown after Joe places an image via addImageSlots (generate_image /
+   stage_media). appendImageSlotRedirectAffordance in joePatchApprovalController.js. Mirrors
+   AIAssistModalSchedulerRunnow.css's structure/classes for visual consistency. */
+.ai-image-redirect {
+  margin: 6px 0 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--ai-accent);
+  border-radius: var(--radius-xl, 10px);
+  background: color-mix(in srgb, var(--ai-accent) 10%, transparent);
+}
+.ai-image-redirect-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.ai-image-redirect-label {
+  font-size: var(--font-control);
+  opacity: 0.9;
+}
+.ai-image-redirect-remove {
+  flex-shrink: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  opacity: 0.55;
+  font-size: 16px;
+  line-height: 1;
+  padding: 0 2px;
+  cursor: pointer;
+}
+.ai-image-redirect-remove:hover {
+  opacity: 1;
+}
+.ai-image-redirect-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+.ai-image-redirect-status {
+  font-size: 12px;
+  opacity: 0.85;
+}
+.ai-image-redirect-btn {
+  font-size: var(--font-control);
+  padding: 5px 14px;
+  border: none;
+  border-radius: var(--radius-sm, 4px);
+  background: var(--ai-accent);
+  color: var(--text-on-ai-accent);
+  cursor: pointer;
+}
+.ai-image-redirect-btn:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+.ai-image-redirect-btn:disabled {
+  opacity: var(--disabled-opacity-field);
+  cursor: default;
+}
+}

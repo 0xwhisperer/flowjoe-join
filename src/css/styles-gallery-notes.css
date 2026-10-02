@@ -1,0 +1,2222 @@
+@layer app {
+/* Public Rumble page links get a distinct treatment so users know
+   they may need the direct embed URL from Rumble's Share button.
+   USER RULE: theme accent, not brand orange. */
+.gallery-inline-link-card[data-rumble-public-page="true"] {
+  border-color: var(--accent-color, #ff9500);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent-color, #ff9500) 30%, transparent);
+}
+
+.gallery-inline-link-card[data-rumble-public-page="true"] .gallery-inline-link-provider {
+  /* USER RULE: no custom colors in embed wrappers — theme chip, not brand orange. */
+  background: color-mix(in srgb, var(--text-primary) 24%, transparent);
+  color: var(--text-primary, #e0e0e0);
+  font-weight: 600;
+}
+
+.gallery-inline-link-rich,
+.gallery-inline-link-meta-fallback,
+.gallery-inline-link-image-shell {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  overflow: hidden;
+}
+
+.gallery-inline-link-rich {
+  display: block;
+}
+
+.gallery-inline-link-image-shell {
+  display: none;
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.gallery-inline-link-meta-fallback {
+  display: none;
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  padding: clamp(26px, 5%, 34px);
+  box-sizing: border-box;
+  /* USER RULE (2026-06-11): no custom colors in embed wrappers — same theme-driven panel as the
+     modal's media backdrop (was hardcoded #171b22/#222833/#141820, the "different background"
+     OG cards showed). */
+  background: linear-gradient(135deg, var(--bg-primary, #1a1a1a) 0%, var(--bg-secondary, #2a2a2a) 100%);
+  border-radius: inherit;
+  color: var(--text-primary, #e0e0e0);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.gallery-inline-link-site-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 100%;
+  min-width: 0;
+  margin-bottom: 8px;
+}
+
+.gallery-inline-link-favicon {
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  min-height: 16px;
+  display: none;
+  border-radius: var(--radius-sm, 4px);
+  object-fit: contain;
+  background: color-mix(in srgb, var(--bg-primary) 72%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--text-primary) 10%, transparent);
+  flex-shrink: 0;
+}
+
+.image-gallery.vertical-layout .gallery-inline-link-favicon,
+.image-gallery.vertical-notes-layout .gallery-inline-link-favicon,
+.image-gallery .image-frame .gallery-inline-link-card .gallery-inline-link-favicon {
+  width: 16px;
+  max-width: 16px !important;
+  height: 16px;
+  min-width: 16px;
+  min-height: 16px;
+  cursor: default !important;
+}
+
+.image-gallery.vertical-layout .gallery-inline-link-meta-fallback .gallery-inline-link-favicon,
+.image-gallery.vertical-notes-layout .gallery-inline-link-meta-fallback .gallery-inline-link-favicon,
+.image-gallery .image-frame .gallery-inline-link-card .gallery-inline-link-meta-fallback .gallery-inline-link-favicon {
+  width: 18px !important;
+  max-width: 18px !important;
+  height: 18px !important;
+  min-width: 18px !important;
+  min-height: 18px !important;
+  border-radius: var(--radius-sm, 4px);
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.22),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+
+.gallery-inline-link-site {
+  display: block;
+  min-width: 0;
+  /* USER RULE: theme font colors always — slot/modal parity with renderModalMetadataLinkCard. */
+  color: var(--text-secondary, #999);
+  font-size: 13px;
+  font-weight: 680;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gallery-inline-link-copy {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  max-width: min(100%, 560px);
+  min-width: 0;
+  height: 100%;
+  min-height: 0;
+  max-height: none;
+  margin: 0 auto;
+  padding: 0;
+  box-sizing: border-box;
+  text-align: left;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  text-shadow: none;
+}
+
+.gallery-inline-link-card[data-link-state="loading"] .gallery-inline-link-copy::after {
+  content: none;
+  position: absolute;
+  right: 14px;
+  top: 14px;
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-full, 999px);
+  border: 2px solid color-mix(in srgb, var(--text-secondary) 22%, transparent);
+  border-top-color: var(--gallery-loader-ring-color);
+  animation: link-loader-spin 0.9s linear infinite;
+}
+
+.gallery-inline-link-title {
+  display: -webkit-box;
+  color: var(--text-primary, #e0e0e0);
+  font-weight: 730;
+  font-size: 26px;
+  line-height: 1.14;
+  letter-spacing: 0;
+  max-width: 100%;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+.gallery-inline-link-description,
+.gallery-inline-link-rich-host {
+  color: var(--text-secondary, #999);
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.38;
+  overflow-wrap: anywhere;
+}
+
+.gallery-inline-link-meta-fallback .gallery-inline-link-rich-host {
+  display: none;
+}
+
+.gallery-inline-link-description {
+  display: -webkit-box;
+  max-width: 100%;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.gallery-inline-link-url {
+  display: block;
+  align-self: stretch;
+  width: 100%;
+  max-width: 100%;
+  margin-top: 4px;
+  padding: 8px 10px;
+  box-sizing: border-box;
+  border: 1px solid rgba(241, 244, 248, 0.1);
+  border-radius: var(--radius-sm, 4px);
+  color: rgba(241, 244, 248, 0.78);
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 15px;
+  font-weight: 620;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  box-shadow: none;
+}
+
+.gallery-inline-link-meta-fallback .gallery-inline-link-url {
+  display: none;
+}
+
+/* S1f: a card added by Joe (a scheduled task, a connected assistant) whose preview waits for a click —
+   address-only, with the full address shown and a Load preview button; no preview image, no favicon. */
+.gallery-inline-link-card[data-link-preview-gated="1"] .gallery-inline-link-meta-fallback .gallery-inline-link-url {
+  display: block;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-overflow: clip;
+  user-select: text;
+}
+.gallery-inline-link-card[data-link-preview-gated="1"] .gallery-inline-link-description {
+  display: none;
+}
+.gallery-inline-link-load-preview {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  padding: 6px 12px;
+  border: 1px solid color-mix(in srgb, var(--text-primary) 22%, transparent);
+  border-radius: var(--radius-sm, 4px);
+  background: color-mix(in srgb, var(--text-primary) 10%, transparent);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.gallery-inline-link-load-preview:hover {
+  background: color-mix(in srgb, var(--text-primary) 18%, transparent);
+}
+.gallery-inline-link-load-preview:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+.gallery-inline-link-preview {
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  object-fit: cover;
+  border-radius: var(--radius-lg, 8px);
+  clip-path: inset(0 round 8px);
+  position: relative;
+  z-index: 1;
+}
+
+.image-gallery.vertical-layout .gallery-inline-link-preview,
+.image-gallery.vertical-notes-layout .gallery-inline-link-preview,
+.image-gallery .image-frame .gallery-inline-link-card .gallery-inline-link-preview {
+  width: 100%;
+  max-width: none !important;
+  height: 100%;
+  min-width: 0 !important;
+  min-height: 0 !important;
+}
+
+.gallery-inline-link-rich {
+  position: relative;
+  z-index: 1;
+}
+
+.gallery-inline-link-card[data-link-state="rich"][data-has-image="1"] .gallery-inline-link-copy,
+.gallery-inline-link-card[data-link-state="rich"][data-has-image="1"] .gallery-inline-link-site-row,
+.gallery-inline-link-card[data-link-state="rich"][data-has-image="1"] .gallery-inline-link-title,
+.gallery-inline-link-card[data-link-state="rich"][data-has-image="1"] .gallery-inline-link-description,
+.gallery-inline-link-card[data-link-state="rich"][data-has-image="1"] .gallery-inline-link-url,
+.gallery-inline-link-card[data-link-state="rich"][data-has-image="1"] .gallery-inline-link-rich-host {
+  display: none !important;
+}
+
+
+.image-frame .gallery-inline-link-card[data-link-state="rich"],
+.image-frame .gallery-inline-link-card[data-link-state="rich"] .gallery-inline-link-rich,
+.image-frame .gallery-inline-link-card[data-link-state="rich"] .gallery-inline-link-image-shell,
+.image-frame .gallery-inline-link-card[data-link-state="rich"] .gallery-inline-link-preview {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  box-sizing: border-box;
+  opacity: 1 !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  mix-blend-mode: normal !important;
+  border-radius: inherit;
+  overflow: hidden;
+  clip-path: inset(0 round 8px);
+  contain: paint;
+}
+
+.image-frame .gallery-inline-embed,
+.image-frame .gallery-inline-doc,
+.image-frame .gallery-inline-pdf-renderer {
+  opacity: 1 !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  mix-blend-mode: normal !important;
+  border-radius: inherit;
+  overflow: hidden;
+  clip-path: inset(0 round 8px);
+  contain: paint;
+}
+
+.image-frame .gallery-inline-pdf-renderer {
+  overflow: auto;
+}
+
+.image-frame > iframe.gallery-inline-embed.gallery-inline-media {
+  position: absolute !important;
+  inset: 0 !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  margin: 0 !important;
+  transform: none !important;
+  box-sizing: border-box !important;
+  border: 0 !important;
+  border-radius: inherit !important;
+  overflow: hidden !important;
+  clip-path: inset(0 round 8px) !important;
+  contain: paint !important;
+}
+
+.image-item.has-empty-inline-media-card .gallery-inline-link-rich,
+.image-item.has-empty-inline-media-card .gallery-inline-link-meta-fallback,
+.image-item.has-empty-inline-media-card .gallery-inline-link-provider,
+.image-item.has-empty-inline-media-card .gallery-inline-link-host {
+  display: none !important;
+}
+
+/* Create a wrapper for image and navigation that moves together */
+.image-stack-container {
+  transition: transform var(--transition-speed) ease;
+}
+
+/* Only apply hover effects when hovering over the slot/frame itself */
+.image-frame:hover,
+.image-frame:has(.stack-navigation:hover),
+.add-image-slot:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--gallery-slot-hover-lift-shadow);
+  -webkit-box-shadow: var(--gallery-slot-hover-lift-shadow);
+  -moz-box-shadow: var(--gallery-slot-hover-lift-shadow);
+}
+
+.image-frame.no-hover-transform:hover,
+.image-frame.no-hover-transform:has(.stack-navigation:hover) {
+  transform: none;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+}
+
+.image-frame.has-inline-scroll-lane:has(.gallery-inline-doc[data-bound-preview-mode^="slot-"]),
+.image-frame.has-inline-scroll-lane:has(.gallery-inline-pdf-renderer[data-bound-preview-mode^="slot-"]),
+#image-modal.image-modal-pdf-active #image-modal-pdf-frame {
+  transform: none !important;
+  transition: none !important;
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+  -moz-box-shadow: none !important;
+}
+
+.image-item.multi-selected .image-frame:hover,
+.image-item.multi-selected .image-frame:has(.stack-navigation:hover),
+.image-item.scrubber-preview-target .image-frame:hover,
+.image-item.scrubber-preview-target .image-frame:has(.stack-navigation:hover),
+.image-item.external-import-slot-hover .image-frame:hover,
+.image-item.external-import-slot-hover .image-frame:has(.stack-navigation:hover) {
+  transform: none;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+}
+
+/* Cancel the transform when the info wrapper is hovered so it doesn't create
+   a stacking context that traps the info card behind sibling elements */
+.image-frame:has(.image-info-icon-wrapper:hover) {
+  transform: none;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+}
+
+/* Cancel the transform when the stack indicator is hovered so it doesn't create
+   a stacking context that traps the tooltip behind sibling elements */
+.image-frame:has(.image-stack-indicator:hover) {
+  transform: none;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+}
+
+
+
+/* Fallback for browsers that don't support :has() */
+@supports not (selector(:has(*))) {
+
+  .image-frame:hover,
+  .add-image-slot:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--gallery-slot-hover-lift-shadow);
+    -webkit-box-shadow: var(--gallery-slot-hover-lift-shadow);
+    -moz-box-shadow: var(--gallery-slot-hover-lift-shadow);
+  }
+}
+
+/* Fallback for browsers that don't support :has() */
+@supports not (selector(:has(*))) {
+  .image-frame.no-hover-transform:hover {
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+  }
+}
+
+/* Ensure controls are always visible and move with image */
+.image-item {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: transform var(--transition-speed) ease;
+  width: fit-content;
+}
+
+.image-item>img {
+  position: relative;
+  opacity: 1 !important;
+  /* Override any opacity settings */
+  visibility: visible !important;
+  /* Force visibility */
+  padding-right: 0 !important;
+  justify-content: space-between;
+}
+
+.image-controls {
+  position: relative;
+  opacity: 1 !important;
+  /* Override any opacity settings */
+  visibility: visible !important;
+  /* Force visibility */
+  padding-right: 0 !important;
+  justify-content: space-between;
+}
+
+
+/* NO opacity animation on images, ever — the ONLY opacity animation in a
+   stack flip is the outgoing snapshot's fade-out (user-directed). Pixels
+   appear the instant they exist. */
+.image-item img.lazy {
+  filter: none;
+  opacity: 0;
+  transition: none;
+}
+
+.image-item img.loaded {
+  filter: none;
+  opacity: 1;
+  transition: none;
+}
+
+/* Non-image gallery slots should never flash the base placeholder/missing image
+   layer while their real inline shell is initializing on reload. */
+.image-item img.lazy[data-media-type="audio"],
+.image-item img.lazy[data-media-type="video"],
+.image-item img.lazy[data-media-type="url"],
+.image-item img.lazy[data-media-type="document"],
+.image-item img.lazy[data-media-type="pdf"],
+.image-item img.loaded[data-media-type="audio"],
+.image-item img.loaded[data-media-type="video"],
+.image-item img.loaded[data-media-type="url"],
+.image-item img.loaded[data-media-type="document"],
+.image-item img.loaded[data-media-type="pdf"] {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Missing badge + hover card */
+.missing-image-badge {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 12;
+  pointer-events: auto;
+}
+
+.cropped-image-badge {
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 22;
+  pointer-events: none;
+}
+
+#image-modal-calendar-host {
+  box-sizing: border-box !important;
+  max-width: 100% !important;
+}
+
+.missing-badge-label {
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: 16px;
+  padding: 0 6px;
+  border-radius: var(--radius-xl, 10px);
+  font-size: var(--font-micro);
+  font-family: inherit;
+  font-weight: normal;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  background: color-mix(in srgb, var(--accent-color) 30%, var(--bg-tertiary) 70%);
+  border: 1px solid color-mix(in srgb, var(--accent-color) 40%, transparent);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* Scale the media-type chip with the slot on resize — not the shared --font-micro
+   token, which is also used for badges/captions outside the gallery. Revert:
+   delete this rule. */
+.image-gallery .enum-image-unit .missing-badge-label {
+  height: calc(16px * var(--gallery-slot-scale, 1));
+  padding: 0 calc(6px * var(--gallery-slot-scale, 1));
+  font-size: calc(10px * var(--font-scale, 1) * var(--gallery-slot-scale, 1));
+}
+
+.missing-info-card {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%) translateY(-8px);
+  background-color: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 8px 10px;
+  border-radius: var(--radius-lg, 8px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  font-size: var(--font-hover-tooltip-body);
+  min-width: 280px;
+  max-width: 340px;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s ease,
+    transform 0.2s ease;
+  pointer-events: none;
+  z-index: 20002;
+}
+
+.missing-image-badge:hover .missing-info-card {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+.missing-image-badge[data-badge-state="placeholder"] .missing-info-card {
+  display: none;
+}
+
+/* Multi-select mode: keep media surfaces inert so batch selection never
+   accidentally opens playback, hover cards, or badge actions. Dragging and
+   slot context menu still route through the card/frame beneath. */
+body.image-selection-mode .image-frame .gallery-inline-media,
+body.image-selection-mode .image-frame .gallery-inline-link-card,
+body.image-selection-mode .image-frame .gallery-inline-audio-card,
+body.image-selection-mode .image-frame .gallery-inline-video-idle-glyph,
+body.image-selection-mode .image-frame .gallery-inline-audio-idle-glyph,
+body.image-selection-mode .image-frame .gallery-inline-audio-controls,
+body.image-selection-mode .image-frame .gallery-inline-video-controls,
+body.image-selection-mode .image-frame .gallery-inline-video-top-controls,
+body.image-selection-mode .image-frame .gallery-inline-video-menu-panel,
+body.image-selection-mode .image-frame .gallery-inline-video-volume-cluster,
+body.image-selection-mode .image-frame .gallery-inline-audio-volume-cluster,
+body.image-selection-mode .image-frame .image-counter,
+body.image-selection-mode .image-frame .stack-count-number,
+body.image-selection-mode .image-frame .compression-status,
+body.image-selection-mode .image-frame .image-info-icon-wrapper,
+body.image-selection-mode .image-frame .image-info-icon,
+body.image-selection-mode .image-frame .missing-image-badge,
+body.image-selection-mode .image-frame .cropped-image-badge {
+  pointer-events: none !important;
+}
+
+body.image-selection-mode .image-frame .gallery-inline-video-idle-glyph,
+body.image-selection-mode .image-frame .gallery-inline-audio-idle-glyph,
+body.image-selection-mode .image-frame .gallery-inline-audio-controls,
+body.image-selection-mode .image-frame .gallery-inline-video-controls,
+body.image-selection-mode .image-frame .gallery-inline-video-top-controls,
+body.image-selection-mode .image-frame .gallery-inline-video-menu-panel,
+body.image-selection-mode .image-frame .image-counter,
+body.image-selection-mode .image-frame .stack-count-number,
+body.image-selection-mode .image-frame .compression-status,
+body.image-selection-mode .image-frame .image-info-icon-wrapper,
+body.image-selection-mode .image-frame .missing-image-badge,
+body.image-selection-mode .image-frame .cropped-image-badge {
+  opacity: 0.5 !important;
+}
+
+.missing-info-card .info-row {
+  display: flex;
+  align-items: center;
+  padding: 2px 0;
+  line-height: 1.3;
+  white-space: normal;
+}
+
+/* Missing cards should follow the same sizing model as regular images. */
+.image-item.missing-image-warning .image-frame,
+.image-item.missing-image-warning .image-frame>img {
+  width: var(--image-gallery-width, 320px);
+  max-width: none;
+  background: transparent !important;
+  outline: none !important;
+}
+
+.image-item.missing-image-warning .image-frame>img {
+  padding: 0 !important;
+  margin: 0 !important;
+  box-sizing: border-box;
+  object-fit: contain;
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  outline: none !important;
+}
+
+
+/* Modal missing badge positioning */
+#image-container {
+  position: relative;
+}
+
+/* Modal keyboard navigation media highlight - matches gallery (outline inside element) */
+#image-container.modal-keyboard-focused img,
+#image-container.modal-keyboard-focused video,
+#image-container.modal-keyboard-focused iframe,
+#image-container.modal-keyboard-focused .gallery-inline-audio,
+#image-container.modal-keyboard-focused .gallery-inline-doc,
+#image-container.modal-keyboard-focused .gallery-inline-media,
+#image-container.modal-keyboard-focused .image-frame,
+#image-container.modal-keyboard-focused .image-item-preview-modal-media {
+  outline: 2px solid color-mix(in srgb, var(--stack-nav-active-color) 70%, transparent);
+  outline-offset: -2px;
+  border-radius: var(--radius-lg, 8px);
+}
+
+/* Pulse highlight animation for modal reorder glow effect (matches gallery) */
+@keyframes modal-pulse-highlight {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--stack-nav-active-color) 70%, transparent);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 0 8px color-mix(in srgb, var(--stack-nav-active-color) 30%, transparent);
+    transform: scale(1.01);
+  }
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--stack-nav-active-color) 0%, transparent);
+    transform: scale(1);
+  }
+}
+
+#image-container.pulse-highlight {
+  animation: modal-pulse-highlight 0.5s ease;
+}
+
+/* Smooth display/src transitions for modal media elements */
+#image-container img,
+#image-container video,
+#image-container iframe,
+#image-container audio {
+  transition: opacity var(--transition-speed) ease;
+}
+
+#image-container .missing-image-badge {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 12;
+  pointer-events: auto;
+}
+
+/* Suppress navigation tooltips when any modal is open */
+body.modal-open [title]:hover::after,
+body.modal-open .tooltip,
+body.modal-open .nav-tooltip {
+  display: none !important;
+}
+
+/* Gallery focus indicator */
+.gallery-has-focus {
+  position: relative;
+}
+
+.gallery-has-focus::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(to right,
+      transparent 0%,
+      transparent 10%,
+      #64d8ff33 25%,
+      #64d8ff 45%,
+      #ffffff99 50%,
+      #64d8ff 55%,
+      #64d8ff33 75%,
+      transparent 90%,
+      transparent 100%);
+  background-size: 300% 100%;
+  background-position: 0% 0%;
+  animation: gallery-focus-indicator 4s ease-in-out infinite;
+  z-index: 10;
+}
+
+@keyframes gallery-focus-indicator {
+  0% {
+    background-position: 0% 0%;
+  }
+
+  50% {
+    background-position: 100% 0%;
+  }
+
+  100% {
+    background-position: 0% 0%;
+  }
+}
+
+/* Tree focus indicator */
+.tree-has-focus {
+  position: relative;
+}
+
+.tree-has-focus::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(to right, var(--tree-focus-accent-color), color-mix(in srgb, var(--tree-focus-accent-color) 50%, transparent), var(--tree-focus-accent-color));
+  animation: tree-focus-indicator 2s infinite;
+  z-index: 10;
+}
+
+@keyframes tree-focus-indicator {
+  0% {
+    opacity: 0.3;
+  }
+
+  50% {
+    opacity: 0.8;
+  }
+
+  100% {
+    opacity: 0.3;
+  }
+}
+
+/* Stack navigation - Moved to stack-styles.css */
+
+/* Style for image controls */
+.image-controls {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  cursor: default;
+  z-index: 1;
+  padding: 0;
+  margin: 4px 0 -4px 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Container for left-aligned buttons — starts flush with image left edge */
+.image-controls-left {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: var(--icon-row-gap-dense);
+  margin: -5px;
+}
+
+/* Container for right-aligned buttons — pushed to image right edge */
+.image-controls-right {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  margin-right: 4px;
+  justify-content: space-evenly;
+}
+
+.delete-image-btn {
+  margin-right: 0;
+}
+
+.image-controls button:not(.ai-query-btn) {
+  transition: opacity var(--transition-speed) ease;
+}
+
+/* Wireframe button visibility is controlled by JavaScript */
+.wireframe-btn {
+  transition: opacity var(--transition-speed) ease;
+}
+
+/* Button container inside enum-image-unit */
+.image-gallery .enum-image-unit .add-image-position {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: var(--icon-btn-size-sm) !important;
+  margin: -8px 0 0 0;
+  position: relative;
+  isolation: isolate;
+  flex-shrink: 0;
+  gap: var(--gallery-slot-rail-gap);
+}
+
+.image-gallery .enum-image-unit .add-image-position > * {
+  position: relative;
+  z-index: 2;
+}
+
+.image-gallery .enum-image-unit .add-image-position.drop-target {
+  z-index: 10004;
+}
+
+.image-gallery .enum-image-unit .add-image-position.drop-target > * {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* EVERY rail button must be margin-zero — the rail's vertical rhythm comes from ONE source,
+   the container's gap (--gallery-slot-rail-gap). A name missing from this list falls back to
+   the global `button {margin: 5px}` default (buttons.css), which stacks on top of the gap and
+   breaks the even spacing (this is exactly how the + and copy buttons drifted to 12/17px gaps
+   while their five siblings sat at a clean 10px). */
+.add-image-position .add-image-btn,
+.add-image-position .copy-image-btn,
+.add-image-position .edit-tags-btn,
+.add-image-position .stack-image-btn,
+.add-image-position .replace-image-btn,
+.add-image-position .delete-image-btn,
+.add-image-position .ai-query-btn,
+.add-image-position .wireframe-btn,
+.add-image-position .add-to-stack-btn {
+  margin: 0;
+}
+
+/* Ghost slot — size follows gallery width setting (full => 480px). */
+.add-image-slot {
+  --play-disc-size: clamp(52px, calc(var(--image-gallery-width, 300px) * 0.34), 90px);
+  --inline-idle-disc-size: calc(var(--play-disc-size) * 0.74);
+  flex: 0 0 auto;
+  align-self: flex-start;
+  width: var(--image-gallery-slot-width, var(--image-gallery-width, 320px));
+  height: var(--image-gallery-slot-width, var(--image-gallery-width, 320px));
+  min-width: 80px;
+  min-height: 80px;
+  position: relative;
+  border: 1px solid color-mix(in srgb, var(--accent-color) 18%, var(--border-color));
+  border-radius: var(--radius-lg, 8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 1;
+  transition: none;
+  margin: 0 0px;
+  box-sizing: border-box;
+  background: radial-gradient(120% 110% at 50% 12%,
+      color-mix(in srgb, var(--accent-color) 34%, transparent),
+      color-mix(in srgb, var(--bg-secondary) 84%, rgba(0, 0, 0, 0.5)));
+  box-shadow: var(--gallery-media-card-edge-highlight);
+  overflow: hidden;
+}
+
+.add-image-slot-disc {
+  pointer-events: none;
+}
+
+.add-image-slot:hover .add-image-slot-disc {
+  pointer-events: none;
+}
+
+.add-image-slot-icon {
+  color: inherit;
+  pointer-events: none;
+  transition: opacity var(--transition-speed) ease, color var(--transition-speed) ease;
+  font-size: inherit;
+  width: 1em;
+  height: 1em;
+}
+
+.add-image-slot-icon--action {
+  transform: translate(var(--gallery-center-icon-add-action-offset-x), var(--gallery-center-icon-add-action-offset-y));
+  font-size: inherit;
+  width: 1em;
+  height: 1em;
+}
+
+.add-image-slot:hover .add-image-slot-icon {
+  color: inherit;
+}
+
+/* Enumerator column for the add-image-slot in vertical layout */
+.add-image-slot-enum {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  max-width: 24px;
+  flex-shrink: 0;
+}
+
+/* Vertical layout: slot sits inline with the image-item */
+.image-gallery.vertical-layout .enum-image-unit .add-image-slot {
+  margin: 0;
+}
+
+/* Style for image notes */
+.image-notes {
+  width: 100%;
+  /* Not var(--gallery-slot-text-font-size) below (font-size/min-height/height/line-height) —
+     that variable is computed once at :root and inherits as an already-resolved value, so a
+     per-slot override of --gallery-slot-scale (e.g. canvas drag-resize, set inline on one card)
+     can never reach it. The direct calc() form re-resolves --gallery-slot-scale per element,
+     including a per-card override; --gallery-notes-font-size below is that same value shared
+     across the 4 declarations that need it so they can't drift from each other. */
+  --gallery-notes-font-size: calc(14px * var(--font-scale, 1) * var(--gallery-slot-scale, 1));
+  min-height: calc((var(--gallery-notes-font-size) * var(--notes-line-height) * 2) + 16px);
+  height: calc((var(--gallery-notes-font-size) * var(--notes-line-height) * 2) + 16px);
+  resize: none;
+  padding: 8px 10px;
+  /* Overridden below (.image-gallery .image-notes) to scale with the slot size — kept here as
+     the fixed fallback for non-gallery contexts (e.g. #image-modal-notes). */
+  background-color: transparent;
+  color: var(--text-primary);
+  border: none;
+  border-top: none;
+  border-bottom: 1px solid transparent;
+  font-family: inherit;
+  font-size: var(--gallery-notes-font-size);
+  font-weight: 400;
+  font-synthesis: none;
+  margin-top: 4px;
+  box-sizing: border-box;
+  overflow: hidden;
+  line-height: calc(var(--gallery-notes-font-size) * var(--notes-line-height));
+  border-radius: var(--radius-md, 6px);
+  resize: none;
+  white-space: pre-wrap;
+  white-space: break-spaces;
+  overflow-wrap: anywhere;
+  word-wrap: anywhere;
+  transition: none;
+  -webkit-transition: none;
+  -moz-transition: none;
+  -ms-transition: none;
+  -o-transition: none;
+}
+
+.image-notes::placeholder {
+  color: var(--text-secondary);
+  font-weight: normal;
+  opacity: 0.5;
+}
+
+/* In the gallery, notes padding scales with the slot size (--gallery-slot-scale) to match the
+   font-size/height above, which already scale via --gallery-slot-text-font-size. Revert: delete
+   this rule (the base 8px/10px in .image-notes above still applies everywhere). */
+.image-gallery .image-notes {
+  padding: calc(8px * var(--gallery-slot-scale, 1)) calc(10px * var(--gallery-slot-scale, 1));
+}
+
+body.notes-justified :is(.image-notes, #image-modal-notes, .gallery-search-notes-overlay, .image-notes-content, .notes-list-format-overlay, .gallery-notes-spellcheck-diff) {
+  text-align: justify;
+  text-align-last: auto;
+  unicode-bidi: plaintext;
+}
+
+body:not(.notes-justified) :is(.image-notes, #image-modal-notes, .gallery-search-notes-overlay, .image-notes-content, .notes-list-format-overlay, .gallery-notes-spellcheck-diff) {
+  text-align: start;
+  unicode-bidi: plaintext;
+}
+
+.image-notes-content {
+  font-weight: 400;
+  font-synthesis: none;
+}
+
+/* Per-family note weight tuning (some serif faces render optically heavy). */
+:root[data-font-family="merriweather"] .image-notes,
+:root[data-font-family="merriweather"] .image-notes-content {
+  font-weight: 300;
+}
+
+:root[data-font-family="playfair-display"] .image-notes,
+:root[data-font-family="playfair-display"] .image-notes-content,
+:root[data-font-family="cormorant-garamond"] .image-notes,
+:root[data-font-family="cormorant-garamond"] .image-notes-content,
+:root[data-font-family="source-serif-4"] .image-notes,
+:root[data-font-family="source-serif-4"] .image-notes-content,
+:root[data-font-family="book-antiqua"] .image-notes,
+:root[data-font-family="book-antiqua"] .image-notes-content,
+:root[data-font-family="lora"] .image-notes,
+:root[data-font-family="lora"] .image-notes-content,
+:root[data-font-family="fraunces"] .image-notes,
+:root[data-font-family="fraunces"] .image-notes-content,
+:root[data-font-family="bodoni-moda"] .image-notes,
+:root[data-font-family="bodoni-moda"] .image-notes-content,
+:root[data-font-family="spectral"] .image-notes,
+:root[data-font-family="spectral"] .image-notes-content,
+:root[data-font-family="newsreader"] .image-notes,
+:root[data-font-family="newsreader"] .image-notes-content,
+:root[data-font-family="bitter"] .image-notes,
+:root[data-font-family="bitter"] .image-notes-content {
+  letter-spacing: 0.008em;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Constrain notes width to image width in all gallery layouts */
+.image-gallery.vertical-layout .image-notes,
+.image-gallery:not(.vertical-layout):not(.vertical-notes-layout) .image-notes {
+  max-width: var(--image-gallery-width, 320px);
+}
+
+/* Style for image notes when focused */
+.image-gallery .image-notes:focus {
+  outline: none;
+  background-color: var(--bg-secondary);
+  background-image: linear-gradient(to bottom,
+      transparent 0%,
+      transparent 20%,
+      var(--accent-color) 50%,
+      transparent 80%,
+      transparent 100%);
+  background-repeat: no-repeat;
+  background-size: 1px 300%;
+  background-position: left 0%;
+  animation: notes-border-sweep 4s ease-in-out infinite;
+  border-radius: var(--radius-md, 6px);
+  border: none;
+  border-top: 1px solid var(--border-light);
+  /* Keep the top border gray */
+  border-bottom: 1px solid var(--accent-color);
+  /* Only the bottom border changes to accent color */
+  scroll-padding-block: 2lh;
+}
+
+#image-display[data-gallery-source-type="tag-query"] .image-title[disabled],
+#image-display[data-gallery-source-type="tag-query"] .image-notes[disabled] {
+  background: transparent;
+  color: inherit;
+  cursor: not-allowed;
+  opacity: 1;
+  -webkit-text-fill-color: currentColor;
+  pointer-events: auto;
+  user-select: none;
+}
+
+#image-display[data-gallery-source-type="tag-query"] .add-image-slot.disabled {
+  opacity: var(--disabled-opacity-field);
+  cursor: not-allowed;
+  pointer-events: auto;
+}
+
+#image-modal-title[disabled],
+#image-modal-notes[disabled] {
+  opacity: 1;
+  color: inherit;
+  -webkit-text-fill-color: currentColor;
+  cursor: default;
+  pointer-events: none;
+  user-select: none;
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.notes-list-format-host {
+  position: relative;
+}
+
+.image-gallery.vertical-notes-layout .image-notes-column.notes-list-format-host {
+  overflow: visible;
+}
+
+.notes-list-format-overlay {
+  position: absolute;
+  display: none;
+  box-sizing: border-box;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 4;
+  margin: 0;
+  background: transparent;
+  color: var(--text-primary);
+  white-space: pre-wrap;
+  white-space: break-spaces;
+  overflow-wrap: anywhere;
+  word-wrap: anywhere;
+  word-break: normal;
+  font-synthesis: none;
+}
+
+.notes-list-format-overlay.is-active {
+  display: block;
+}
+
+.notes-list-format-overlay a.notes-link {
+  pointer-events: auto;
+  color: var(--accent-color, #ff9500);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--accent-color, #ff9500) 40%, transparent);
+  text-underline-offset: 2px;
+  cursor: pointer;
+  border-radius: var(--radius-xs, 2px);
+}
+
+.notes-list-format-overlay a.notes-link:hover {
+  text-decoration-color: var(--accent-color, #ff9500);
+}
+
+.image-notes:focus + .notes-list-format-overlay,
+.image-notes.gallery-notes-spellcheck-source-hidden + .notes-list-format-overlay {
+  display: none !important;
+}
+
+.image-notes.notes-list-format-active:not(:focus) {
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  caret-color: var(--text-primary);
+}
+
+.notes-list-format-host > .image-notes.notes-list-format-active:focus {
+  position: relative;
+  z-index: 5;
+  color: var(--text-primary) !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
+  background-color: var(--bg-secondary);
+}
+
+.image-notes.notes-list-format-active:focus,
+.image-notes.notes-list-format-active:not(:focus) {
+  padding-bottom: 8px !important;
+}
+
+.image-notes.notes-list-format-active:not(:focus)::selection {
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+.image-notes.notes-list-format-active:focus::selection {
+  color: var(--text-primary) !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
+  background: rgba(255, 153, 0, 0.34);
+}
+
+#image-display[data-gallery-source-type="tag-query"] .image-notes.notes-list-format-active[disabled],
+#image-modal-notes.image-notes.notes-list-format-active[disabled] {
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+.image-notes-column.is-collapsed .notes-list-format-overlay {
+  display: none !important;
+}
+
+.notes-list-format-line {
+  min-height: 1em;
+  white-space: pre-wrap;
+  white-space: break-spaces;
+}
+
+.notes-list-format-line--ordered,
+.notes-list-format-line--unordered {
+  display: flex;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.notes-list-format-marker {
+  flex: 0 0 auto;
+  white-space: pre-wrap;
+  white-space: break-spaces;
+}
+
+.notes-list-format-marker--ordered {
+  color: var(--text-secondary);
+  opacity: 0.68;
+}
+
+.notes-list-format-body {
+  flex: 1 1 auto;
+  min-width: 0;
+  white-space: pre-wrap;
+  white-space: break-spaces;
+  overflow-wrap: anywhere;
+  word-wrap: anywhere;
+}
+
+/* Matches the Flow/Node Summary breadcrumb's name treatment (.summary-breadcrumb-active,
+   joeImageModalLifecycle.js): weight 600 (not bold/700), no idle border, same 14px/1.4 line-height
+   — the Preview modal's name row used to look visibly different (bolder, accent-bordered input)
+   from the other two summary surfaces; this brings it into the same family while it's still a real
+   editable <input> (padding kept so the click/focus target stays comfortable; a focus-only
+   underline signals it's editable without adding a permanent border like before).
+   !important on the border reset: src/css/dropin/03-shape-soft.css sets a real
+   `border-color: var(--border-color)` on `:is(input, textarea, select, [contenteditable])`, and
+   that file loads WITHOUT an @layer wrapper while this file is `@layer app` — an unlayered rule
+   always wins over a layered one regardless of selector specificity or source order, so this rule's
+   normal (1 ID + 1 class) specificity, which would otherwise easily beat that rule, loses anyway.
+   The sibling :focus rule below needs matching !important for the same reason. */
+#image-modal .image-title {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  background: transparent;
+  /* Copied from the gallery CARD's own title rule (styles-gallery-vertical.css, the
+     `.image-gallery … .image-title` block) — bottom-only, and specifically the dimmer
+     `--border-light` token rather than `--border-color`. Those are distinct per-theme values
+     (#444 vs #555 dark, #edf2f7 vs #e2e8f0 light), so using the wrong one reads as a heavier line
+     even though both are "theme-driven".
+     History: this was originally `border: none !important; border-bottom: 1px solid transparent
+     !important` — invisible until focus, and the !important meant no theme dropin could restyle
+     it. A first correction dropped the !important but copied a FULL border box from the wrong
+     reference. There is no !important here now, so themes win.
+     Note on the token: this matches the gallery card's title in every theme, but WHICH token wins
+     varies by shape — --border-light normally, and --border-color under body.shape-soft, whose
+     unlayered `:is(input, …)` rule outranks both rules. Both fields land on the same value either
+     way, which is the actual goal. */
+  /* `border: none` first, then the bottom edge, so the app-wide `input[type="text"]` chrome
+     (styles-gallery-horizontal.css: `border: 1px solid var(--border-color)`) is fully reset rather
+     than partially overridden. Longhand-after-shorthand in the same declaration block is what makes
+     the reset stick. This rule already out-ranks that generic one on its own: both sit in
+     `@layer app`, and 1 ID + 1 class (1,1,0) beats 1 attribute + 1 type (0,1,1) regardless of
+     source order — verified live (2026-09-04) by disabling every other border-bottom source on
+     this element and watching it still resolve `--border-light`.
+     Measurement trap, recorded so nobody "fixes" this again: themes.css puts
+     `transition: … border-color 0.15s …` on every `input`, so a getComputedStyle read taken right
+     after a theme/shape/density switch returns the mid-transition (or, in a hidden/throttled tab
+     where the animation timeline barely ticks, the still-UNSTARTED) colour — i.e. the old
+     `--border-color` — while the gallery title, read a moment later, has already settled on
+     `--border-light`. That looked exactly like this rule losing the cascade. It wasn't. Read after
+     the transition settles (or with `transition: none` forced) before trusting a mismatch. */
+  border: none;
+  border-bottom: 1px solid var(--border-light);
+  border-radius: 0;
+}
+
+/* Typography/padding for the modal title, pinned at a specificity (1,2,1) that no generic
+   `input[type="text"]` rule can reach, without !important so theme dropins can still restyle it.
+   The three border declarations repeat the rule above and are redundant for the cascade — see the
+   note there: the apparent "modal shows --border-color under shape-modern" divergence that this
+   rule was first written to fix was an in-flight border-color transition being read too early, not
+   a specificity loss. They stay only so this block remains a complete, self-describing copy of the
+   gallery title's box treatment. */
+#image-modal input.image-title[type="text"] {
+  border: none;
+  border-bottom: 1px solid var(--border-light);
+  border-radius: 0;
+  color: var(--accent-color);
+  /* `bold` to match the gallery card's title exactly. Computes to 700 — the previous 600 was a
+     visibly lighter weight than the field this is meant to mirror. */
+  font-weight: bold;
+  font-size: calc(14px * var(--font-scale, 1));
+  line-height: 1.4;
+  font-family: inherit;
+  padding: 6px 8px 4px;
+  min-height: calc((14px * var(--font-scale, 1) * 1.3) + 10px);
+  overflow: visible;
+  outline: none;
+  flex-shrink: 0;
+}
+
+#image-modal .image-title::placeholder {
+  color: var(--text-secondary);
+  font-weight: normal;
+  opacity: 0.5;
+}
+
+#image-modal .image-title:focus {
+  /* Plain declaration, no `!important`. The base rule above no longer uses `!important` either
+     (see its comment — that was what blocked theme dropins from restyling this field), so normal
+     cascade order applies and this simply wins on being the more specific `:focus` selector.
+     Same accent-on-focus behaviour the gallery's own title field uses. */
+  border-bottom-color: var(--accent-color);
+  background-color: color-mix(in srgb, var(--bg-secondary) var(--modal-glass-preview-title-focus-mix), transparent);
+}
+
+#image-modal #image-modal-notes {
+  margin-top: 0;
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  border-top: none;
+  border-bottom: 1px solid transparent;
+  border-radius: var(--radius-md, 6px);
+  box-shadow: none;
+  outline: none;
+}
+
+#image-modal #image-modal-notes:focus {
+  outline: none;
+  box-shadow: none;
+  background-color: var(--bg-secondary);
+  background-image: linear-gradient(to bottom,
+      transparent 0%,
+      transparent 20%,
+      var(--accent-color) 50%,
+      transparent 80%,
+      transparent 100%);
+  background-repeat: no-repeat;
+  background-size: 1px 300%;
+  background-position: left 0%;
+  animation: notes-border-sweep 4s ease-in-out infinite;
+  border: none;
+  border-top: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--accent-color);
+  border-radius: var(--radius-md, 6px);
+}
+
+/* Main page image-notes: allow to expand freely with content */
+.image-notes:not(.modal-notes) {
+  min-height: calc((14px * var(--font-scale) * var(--notes-line-height)) + 16px);
+  max-height: none;
+  height: auto;
+  overflow-y: hidden;
+  resize: none;
+}
+
+/* vertical-notes layout: override base rules so JS height and scrollbar work */
+.image-gallery.vertical-notes-layout .image-notes:not(.modal-notes) {
+  min-height: 0 !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  overflow-y: auto !important;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  margin-top: 8px;
+  border-top: none;
+  border-bottom: none;
+  border-left: none;
+  border-right: none;
+  border-radius: var(--radius-md, 6px);
+  background-color: transparent;
+  padding: 8px;
+}
+
+/* Background + accent bottom border on focus */
+.image-gallery.vertical-notes-layout .image-notes:not(.modal-notes):focus {
+  outline: none;
+  background-color: var(--bg-secondary);
+  border-top: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--accent-color);
+  scroll-padding-block: 2lh;
+}
+
+/* Sweeping highlight travels up and down the left border on focus */
+.image-gallery.vertical-notes-layout .image-notes-column:has(.image-notes:focus)::before {
+  content: none;
+  display: none;
+}
+
+/* No idle border on vertical-notes column — borderless until focused */
+
+/* Modal notes use the same self-painted focus sweep as gallery notes. */
+#modal-notes-wrapper:has(#image-modal-notes:focus)::before {
+  content: none;
+  display: none;
+}
+
+@keyframes notes-border-sweep {
+  0% {
+    background-position: 0% 0%;
+  }
+
+  50% {
+    background-position: 0% 100%;
+  }
+
+  100% {
+    background-position: 0% 0%;
+  }
+}
+
+
+/* Force scrollbar always visible in vertical-notes layout textarea */
+.image-gallery.vertical-notes-layout .image-notes::-webkit-scrollbar {
+  width: 8px;
+  display: block;
+}
+
+.image-gallery.vertical-notes-layout .image-notes::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+  border-radius: var(--radius-sm, 4px);
+}
+
+.image-gallery.vertical-notes-layout .image-notes::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: var(--radius-sm, 4px);
+  min-height: 20px;
+}
+
+.image-gallery.vertical-notes-layout .image-notes::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary, #999);
+}
+
+/* Hide any keyboard icons in the notes field */
+.image-notes .fa-keyboard,
+.image-notes+.fa-keyboard,
+.image-notes::before,
+.image-notes::after {
+  display: none !important;
+}
+
+/* ══════════════════════ Gallery Notes TipTap (Checkpoint 1) ══════════════════════
+   See tiptapGalleryNotesEditor.js's header comment for the full architecture. In
+   short: the real `.image-notes` textarea NEVER leaves the DOM/layout (never
+   display:none) — it stays the genuine sizing/collapse/click-target anchor every
+   existing rule below already targets. `.gallery-notes-tiptap-display` (always-on
+   read-only formatted view) and `.gallery-notes-tiptap-editor` (live TipTap
+   instance, mounted lazily on click) are ABSOLUTE-positioned siblings occupying the
+   textarea's own box inside the column, not normal-flow insertions — so nothing
+   that measures/collapses/hides `.image-notes` needs to change to also notice them,
+   except the handful of `:is()` widenings below for rules with a genuine "hide the
+   column's rendered content" intent. */
+
+.gallery-notes-tiptap-host {
+  position: relative;
+}
+
+.gallery-notes-tiptap-display,
+.gallery-notes-tiptap-editor {
+  position: absolute;
+  /* top/left/width/height are set imperatively from the textarea's own
+     offsetTop/offsetLeft/offsetWidth/offsetHeight (syncGalleryNotesOverlayGeometry
+     in tiptapGalleryNotesEditor.js) — NOT inset:0, since the positioned ancestor
+     is the whole .image-notes-column (titlebar + textarea), not just the textarea's
+     own box. See this file's header comment above for why. */
+  top: 0;
+  left: 0;
+  box-sizing: border-box;
+  overflow-y: auto;
+  overflow-x: hidden;
+  pointer-events: none;
+  /* Match the textarea's own metrics exactly (same calc() as .image-notes above —
+     kept in lockstep intentionally; a per-slot --gallery-slot-scale override must
+     reach both the same way). */
+  padding: 8px 10px;
+  padding: calc(8px * var(--gallery-slot-scale, 1)) calc(10px * var(--gallery-slot-scale, 1));
+  font-family: inherit;
+  font-size: calc(14px * var(--font-scale, 1) * var(--gallery-slot-scale, 1));
+  line-height: calc(calc(14px * var(--font-scale, 1) * var(--gallery-slot-scale, 1)) * var(--notes-line-height));
+  color: var(--text-primary);
+  white-space: pre-wrap;
+  white-space: break-spaces;
+  overflow-wrap: anywhere;
+  word-wrap: anywhere;
+}
+
+/* CORRECTED (Blocker 5, adversarial-audit round): a PRIOR round set this to pointer-events:auto so
+   the display would receive the click and forward it (via its own mousedown listener) to
+   textarea.focus(). That made real mouse clicks mount the editor, but it also meant EVERY
+   DOM-target-based click/right-click/keydown resolution (Playwright locators included — they use
+   the identical elementFromPoint hit-testing a real browser uses to resolve event.target) landed on
+   THIS element, not `.image-notes` — six genuinely-failing e2e tests on real user-facing contracts
+   (keyboard-shortcut suppression, gallery notes context-menu spell-check/copy/paste/retargeting)
+   were the direct, confirmed-live result; a real end user's right-click/Tab-focus/keyboard-shortcut
+   interactions were equally affected, not just tests. pointer-events:none here lets every click
+   fall straight through to the real `.image-notes` textarea underneath — the SAME element every
+   pre-existing `.closest(".image-notes")` check already expects — with no resolver widening needed
+   anywhere. The lazy-mount trigger moved with it: it's bound directly on the textarea's own
+   `mousedown` now (bindGalleryNotesPointerMountTrigger in tiptapGalleryNotesEditor.js), not on this
+   element, since the textarea receives that event directly again. */
+.gallery-notes-tiptap-display {
+  cursor: text;
+  pointer-events: none;
+}
+
+.gallery-notes-tiptap-display :is(p, ul, ol, blockquote, pre, h1, h2, h3, h4, h5, h6) {
+  margin: 0 0 0.4em 0;
+}
+
+.gallery-notes-tiptap-display :is(p, ul, ol, blockquote, pre, h1, h2, h3, h4, h5, h6):last-child {
+  margin-bottom: 0;
+}
+
+.gallery-notes-tiptap-display ul,
+.gallery-notes-tiptap-display ol {
+  padding-left: 1.4em;
+}
+
+/* Links in the AT-REST display.
+   The live editor already themes its links (`.tiptap-flowjoe-editor a` in tiptap-editor.css), but
+   the read-only display is plain sanitized markdown-it output and had NO rule — so a link in a note
+   fell through to the user-agent stylesheet's purple/blue, which is illegible on the dark themes.
+   Mirrors the editor's treatment so a note looks identical focused and blurred. */
+.gallery-notes-tiptap-display a,
+.gallery-notes-tiptap-display a[href] {
+  color: var(--accent-color);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  /* A link in an at-rest note must be CLICKABLE. The display itself stays pointer-events:none (see
+     the long Blocker-5 note above — every other click has to fall through to the `.image-notes`
+     textarea so the field focuses and the editor lazy-mounts). Re-enabling events on anchors ONLY
+     is the narrowest possible opt-out: the hit-test resolution the Blocker-5 fix protects still
+     lands on `.image-notes` for all non-anchor content, so the e2e contracts it cites (right-click
+     spell-check, Tab focus, keyboard-shortcut suppression) are unaffected — none of them target a
+     hyperlink. The click itself is handled by handleGalleryNotesDisplayLinkClick in
+     tiptapGalleryNotesEditor.js, which opens the URL via the app's in-app browser. */
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.gallery-notes-tiptap-display a:visited {
+  /* The UA's visited purple is the specific colour the user reported; the app treats a link's
+     identity as theme accent regardless of history. */
+  color: var(--accent-color);
+}
+
+.gallery-notes-tiptap-display a:hover {
+  color: var(--accent-hover);
+}
+
+/* SLICE C2 — keep the at-rest display and the live editor the SAME HEIGHT for the same markdown.
+   Without this, clicking a note visibly shrank its card and blurring re-expanded it.
+
+   Root cause (measured, 50-item list): every <li> is 18.9px tall in BOTH surfaces and carries
+   margin-bottom:0 in both — yet the display's <ul> measured 1909px against the editor's 945px,
+   almost exactly 2x. The two renderers emit different HTML *text*, not different boxes:
+
+     display (markdown-it):  <ul>\n<li>alpha</li>\n<li>beta</li>\n</ul>
+     editor  (TipTap):       <ul class="tight"><li><p>alpha</p></li><li><p>beta</p></li></ul>
+
+   The shared overlay rule above sets `white-space: break-spaces`, which is CORRECT and
+   load-bearing: an author's own newlines and runs of spaces must render verbatim. But under
+   break-spaces markdown-it's PRETTY-PRINTING newlines BETWEEN tags are not collapsed either —
+   each one paints as a real extra line box, doubling every list. TipTap emits no inter-tag
+   whitespace, so it was never affected.
+
+   DO NOT FIX THIS WITH `white-space: normal` HERE. An earlier C2 round did exactly that, guarded
+   by `:has(> :is(p, ul, ol, ...))` on the theory that a plain-text note has no block children and
+   would keep break-spaces. That theory is FALSE: renderReadOnlyDisplay calls
+   markdownRenderer.render(), and markdown-it wraps EVERY non-empty input in <p> — 'hello world'
+   becomes "<p>hello world</p>\n". So the guard matched 100% of notes and silently collapsed
+   authored whitespace in all of them, in every layout: "line one\nline two" rendered as
+   "line one line two", and "a     b" as "a b". Real data loss on screen, in users' existing notes.
+
+   The whitespace is a problem in the RENDERED HTML STRING, not in how text is painted, so it is
+   fixed there — see collapseInterBlockWhitespace() in tiptapGalleryNotesEditor.js, which strips
+   whitespace-only text nodes BETWEEN block tags and leaves every text node's own content byte-for-
+   byte untouched. This overlay keeps `break-spaces` in all cases. */
+
+/* Second half of the same parity fix. TipTap wraps every list item and blockquote line in its own
+   <p> (<li><p>text</p></li>, <blockquote><p>text</p></blockquote>) where markdown-it emits the text
+   directly. Those nested <p>s pick up the `margin: 0 0 0.4em 0` block rule below, adding ~0.4em per
+   item that the display never has — the remaining divergence after the whitespace fix above
+   (blockquote measured 37.8px live vs 18.9px at rest). Zero them out: the spacing between LIST
+   ITEMS is the list's own concern, and the <p> here is a structural wrapper, not a paragraph the
+   user wrote. A genuine multi-paragraph blockquote keeps its spacing via the :not(:last-child)
+   sibling rule. */
+.gallery-notes-tiptap-editor :is(li, blockquote) > p {
+  margin: 0;
+}
+
+.gallery-notes-tiptap-editor :is(li, blockquote) > p:not(:last-child) {
+  margin-bottom: 0.4em;
+}
+
+/* Third and last piece of the parity fix. TipTap always appends a trailing empty <p> after a
+   block-level last node (its trailing-node/gap-cursor affordance — it is what lets you click
+   BELOW a list to start a new paragraph, so it is real and must not be removed). markdown-it
+   emits no such node, so the editor's last real block is never `:last-child` and keeps the
+   0.4em bottom margin the display drops. Zero it for a block followed only by that trailing
+   empty paragraph, which recovers 0.4em of the divergence; the empty paragraph's own ~one line
+   is the deliberate, documented residual (see the tolerance in the parity e2e test). */
+.gallery-notes-tiptap-editor .ProseMirror > :is(ul, ol, blockquote, pre, h1, h2, h3, h4, h5, h6):has(+ p:last-child > br.ProseMirror-trailingBreak:only-child) {
+  margin-bottom: 0;
+}
+
+/* Empty display (no notes yet) — MUST be removed from the box entirely, not merely left blank.
+   This comment used to claim the textarea's native placeholder "shows through visually with
+   nothing painted over it". That was wrong, and there was no rule here backing it up: the display
+   is an absolutely-positioned overlay sized to the textarea's whole box, so even with empty
+   innerHTML it still COVERED the textarea and hid the placeholder. A user reported the symptom
+   against Slice C1 — an empty Slot Notes field showed nothing at rest, and "Enter main slot notes
+   here..." only appeared on click (which hides the display via the focused-without-editor path).
+
+   `display: none` hands the box back to the real textarea, so its own `placeholder` attribute —
+   set from i18n, and different for a slot vs a stack item — renders with no duplication of the
+   translated string anywhere in this feature, and updates on language change for free.
+   Pointer-events were already none, so click-to-mount behaviour is unchanged. */
+/* EMPTY NOTE — the overlay paints the placeholder itself (renderReadOnlyDisplay writes the
+   textarea's own `placeholder` string into it as textContent). Values are copied from
+   `.image-notes::placeholder` above (:962-966) so the painted text is indistinguishable from the
+   native one the user sees in every other text field; the font, size, line-height and padding come
+   from the shared overlay rule, which already mirrors the textarea's metrics exactly. */
+.gallery-notes-tiptap-display.gallery-notes-tiptap-display--empty {
+  color: var(--text-secondary);
+  font-weight: normal;
+  opacity: 0.5;
+}
+
+
+/* Live editor: real interaction surface (ProseMirror's contenteditable). */
+.gallery-notes-tiptap-editor {
+  pointer-events: auto;
+  cursor: text;
+  z-index: 2;
+}
+
+.gallery-notes-tiptap-editor .ProseMirror {
+  outline: none;
+  min-height: 100%;
+}
+
+.gallery-notes-tiptap-editor .ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  color: var(--text-secondary);
+  opacity: 0.5;
+  font-weight: normal;
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.gallery-notes-tiptap-editor :is(p, ul, ol, blockquote, pre, h1, h2, h3, h4, h5, h6) {
+  margin: 0 0 0.4em 0;
+}
+
+.gallery-notes-tiptap-editor :is(p, ul, ol, blockquote, pre, h1, h2, h3, h4, h5, h6):last-child {
+  margin-bottom: 0;
+}
+
+.gallery-notes-tiptap-editor ul,
+.gallery-notes-tiptap-editor ol {
+  padding-left: 1.4em;
+}
+
+/* Editor scrollbar — the editor mount is its own scroll container (the underlying
+   textarea is masked, not scrollable-visible), so it needs its own scrollbar rules
+   rather than widening the textarea's ::-webkit-scrollbar selector. */
+.image-gallery.vertical-notes-layout .gallery-notes-tiptap-editor::-webkit-scrollbar,
+.image-gallery.vertical-notes-layout .gallery-notes-tiptap-display::-webkit-scrollbar {
+  width: 8px;
+  display: block;
+}
+
+.image-gallery.vertical-notes-layout .gallery-notes-tiptap-editor::-webkit-scrollbar-track,
+.image-gallery.vertical-notes-layout .gallery-notes-tiptap-display::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+  border-radius: var(--radius-sm, 4px);
+}
+
+.image-gallery.vertical-notes-layout .gallery-notes-tiptap-editor::-webkit-scrollbar-thumb,
+.image-gallery.vertical-notes-layout .gallery-notes-tiptap-display::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: var(--radius-sm, 4px);
+  min-height: 20px;
+}
+
+/* Masks the real textarea's own glyphs (still fully laid out) while the display
+   or a live editor is the visible layer — same trick as
+   .notes-list-format-active:not(:focus) / .gallery-notes-spellcheck-source-hidden. */
+.image-notes.gallery-notes-tiptap-source-masked {
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  caret-color: transparent !important;
+}
+
+.image-notes.gallery-notes-tiptap-source-masked::selection {
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Hiding the read-only display while a live editor is mounted is driven entirely
+   by JS (mountGalleryNotesEditor sets displayEl.style.display = "none";
+   destroyGalleryNotesEditor restores it) — NOT by a :focus-within rule on the
+   column. A :focus-within rule here is too broad: .image-notes-column also
+   contains the titlebar row (collapse chevron, Slot/Stack toggle buttons) as
+   SIBLINGS of the textarea/display/editor, so focusing the Slot/Stack toggle
+   button itself (a real, common interaction — e.g. clicking it) would satisfy
+   :focus-within on the whole column and hide the display even when no editor is
+   mounted, which is exactly what happened live: after toggling Slot<->Stack, the
+   toggle button retains focus, the display was correctly un-hidden by JS, but this
+   CSS rule kept it hidden anyway because the BUTTON still had focus. The
+   :has(.gallery-notes-tiptap-editor) rule below is kept as a defensive backup — it
+   is accurate (an editor element genuinely exists) where :focus-within was not. */
+.gallery-notes-tiptap-host:has(.gallery-notes-tiptap-editor) .gallery-notes-tiptap-display {
+  display: none;
+}
+
+/* Collapsed notes column: hide both new elements exactly like the textarea itself
+   (the collapse-hide rule below already widens to :is() to include these two). */
+.image-notes-column.is-collapsed .gallery-notes-tiptap-display,
+.image-notes-column.is-collapsed .gallery-notes-tiptap-editor {
+  display: none !important;
+}
+
+/* Global styles for all form inputs in modals and editing */
+#modal input[type="text"],
+#modal input[type="password"],
+#modal textarea,
+textarea:not(.image-notes) {
+  background-color: var(--bg-input);
+  color: var(--text-primary);
+  border: none;
+  border-top: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--border-light);
+  border-radius: var(--radius-xs, 2px);
+  padding: 8px;
+  font-family: inherit;
+  font-size: calc(14px * var(--font-scale));
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Text/password inputs and textareas inside modals get a full four-sided
+   border. The shared rule above uses `border: none` + border-top/bottom only,
+   which leaves full-width fields with no left/right edges — they look clipped
+   at both sides. Scoped to #modal so non-modal textareas keep their own styling.
+   This replaces per-modal one-off fixes (e.g. .modal-panel-url-input). */
+#modal input[type="text"],
+#modal input[type="password"],
+#modal textarea {
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md, 6px);
+}
+
+/* Special styling for node edit inputs.
+   Selector is `input[type="text"].node-edit-input` (specificity 0,1,2), not the plain `.node-edit-input`
+   class (0,1,0), specifically to outrank the generic `input[type="text"]` reset in
+   styles-gallery-horizontal.css (0,1,1: padding:8px, border-radius:6px) regardless of file/rule
+   load order. Before this fix that generic rule silently won on `padding`/`border-radius` for
+   every real .node-edit-input consumer (tree-node rename, breadcrumb rename via
+   .breadcrumb-node-edit-input, and the terminal-tab rename via .terminal-tab-edit in
+   terminalPanel.js), defeating this rule's own padding:0/border-radius:0 as well as the
+   breadcrumb-specific --breadcrumb-edit-input-padding/-radius tokens layered on top. See
+   styles-themes.css's .breadcrumb-node-edit-input and terminalPanel.css's .terminal-tab-edit for
+   the other two consumers that build on this same base class. */
+input[type="text"].node-edit-input {
+  background-color: transparent;
+  color: var(--text-primary);
+  border: none;
+  /* No visible underline (owner call) -- border-bottom kept as a TRANSPARENT 1px rule (not
+     removed outright) so the field's box height/box-sizing math is unchanged and it doesn't
+     shift by 1px when entering/leaving edit mode. */
+  border-bottom: 1px solid transparent;
+  border-radius: 0;
+  padding: 0;
+  margin: 0;
+  font-family: inherit;
+  font-size: inherit;
+  box-sizing: border-box;
+  /* height: calc(2em - 8px);  */
+  line-height: calc(2em - 6px);
+  width: auto;
+  max-width: 100%;
+  flex: 0 1 auto;
+  min-width: 32px;
+}
+
+/* Focus style for all inputs and textareas except node-edit-input */
+#modal input[type="text"]:focus,
+#modal input[type="password"]:focus,
+#modal textarea:focus,
+textarea:not(.image-notes):focus {
+  outline: 1px solid var(--accent-color);
+  outline-offset: 0;
+  background-color: var(--bg-tertiary);
+}
+
+/* Focus style specifically for node edit inputs - no underline (owner call, matches resting
+   state above) -- transparent border-bottom keeps the same box height as resting/blurred. */
+.node-edit-input:focus {
+  outline: none;
+  border: none;
+  border-bottom: 1px solid transparent;
+  background-color: transparent;
+}
+
+/* Override any browser-specific styling */
+#modal input[type="text"]:-webkit-autofill,
+#modal input[type="text"]:-webkit-autofill:hover,
+#modal input[type="text"]:-webkit-autofill:focus,
+#modal input[type="text"]:-webkit-autofill:active,
+#modal input[type="password"]:-webkit-autofill,
+#modal input[type="password"]:-webkit-autofill:hover,
+#modal input[type="password"]:-webkit-autofill:focus,
+#modal input[type="password"]:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px var(--bg-input) inset !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
+}
+
+#modal .node-lock-password-fields,
+#modal .branch-state-modal-shell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--modal-row-gap-loose);
+}
+
+#modal .node-lock-password-fields {
+  margin: 0 0 var(--modal-row-gap-tight);
+}
+
+#modal .node-lock-password-row {
+  position: relative;
+}
+
+#modal .node-lock-password-row input[type="password"],
+#modal .node-lock-password-row input[type="text"] {
+  margin: 0;
+  padding-right: 44px;
+}
+
+#modal .node-lock-password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 2px;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: calc(13px * var(--font-scale));
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border-radius: var(--radius-full, 999px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0px;
+}
+
+#modal .node-lock-password-toggle:hover,
+#modal .node-lock-password-toggle:focus {
+  color: var(--text-primary);
+  background: color-mix(in srgb, var(--bg-tertiary) 84%, transparent);
+  outline: none;
+}
+
+#modal .node-lock-password-helper {
+  margin: 0 0 var(--modal-row-gap-tight);
+  color: var(--text-secondary);
+  font-size: calc(12px * var(--font-scale));
+  line-height: 1.55;
+}
+
+#modal .node-lock-password-message {
+  margin: 0 0 2px; /* no matching token today (TOKEN_NAME_FILTER covers modal-/pad-/icon-btn-/cta-/confirm-modal-/action- prefixes; no --modal-* spacing token resolves to 2px) — genuine bespoke micro-nudge under the intro sentence, left as-is rather than force-fit onto -tight (6px, 3x larger) or invent a new token */
+  color: var(--text-primary);
+  font-size: calc(14px * var(--font-scale));
+  line-height: 1.5;
+}
+
+#modal .node-lock-password-error {
+  margin: 0 0 var(--modal-row-gap-tight);
+  color: var(--danger-color, #dc3545);
+  font-size: calc(12px * var(--font-scale));
+  line-height: 1.45;
+}
+
+#modal .branch-state-modal-list {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl, 10px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: var(--bg-primary);
+  max-height: 220px;
+}
+
+#modal .branch-state-modal-empty {
+  padding: 20px 18px;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+#modal .branch-state-modal-row {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  min-width: 0;
+  border-bottom: 1px solid var(--border-color);
+  background: transparent;
+  transition: background-color var(--transition-speed) ease;
+  cursor: pointer;
+}
+
+#modal .branch-state-modal-row:last-child {
+  border-bottom: none;
+}
+
+#modal .branch-state-modal-row:hover {
+  background: var(--hover-bg);
+}
+
+#modal .branch-state-modal-rail {
+  width: 38px;
+  flex: 0 0 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 6px 10px 12px;
+  box-sizing: border-box;
+  color: var(--accent-color);
+}
+
+#modal .branch-state-modal-content {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 10px 10px 6px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+#modal .branch-state-modal-kind-icon {
+  color: var(--accent-color);
+  width: 16px;
+  flex-shrink: 0;
+}
+
+#modal .branch-state-modal-name {
+  color: var(--text-primary);
+  font-size: calc(14px * var(--font-scale));
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 1;
+}
+
+#modal .branch-state-modal-count,
+#modal .branch-state-modal-meta {
+  color: var(--text-secondary);
+  font-size: calc(12px * var(--font-scale));
+}
+
+#modal .branch-state-modal-meta {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+#modal .branch-state-modal-action {
+  margin-right: 10px;
+  flex: 0 0 auto;
+  text-transform: uppercase;
+  font-size: calc(11px * var(--font-scale));
+  letter-spacing: 0.04em;
+  padding: 6px 10px;
+}
+
+/* All button default focus styles overridden */
+*:focus {
+  outline-color: var(--accent-color) !important;
+}
+
+/* Radio button styling */
+input[type="radio"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: var(--radius-full, 999px);
+  border: 2px solid var(--border-color);
+  margin-right: 5px;
+  outline: none;
+  vertical-align: middle;
+  position: relative;
+  cursor: pointer;
+}
+
+input[type="radio"]:checked {
+  border-color: var(--accent-color);
+}
+
+input[type="radio"]:checked::before {
+  content: "";
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full, 999px);
+  background-color: var(--accent-color);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+input[type="radio"]:focus {
+  box-shadow: var(--focus-ring);
+  border-color: var(--accent-color);
+  outline: none;
+}
+
+/* Checkbox styling — ONE custom-drawn look app-wide, mirroring the radio rule above (this was
+   4 divergent stylings: two byte-identical custom blocks in styles-settings.css, native
+   accent-color checkboxes at 16px AND 14px in the AI modal, and bare browser-default ones).
+   Recolor the checked tick/border in a scope by overriding --checkbox-accent (e.g. the MCP
+   bridge "connected" toggle sets it to --success-color). */
+input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: var(--checkbox-size, 16px);
+  height: var(--checkbox-size, 16px);
+  flex: 0 0 var(--checkbox-size, 16px);
+  border-radius: var(--radius-sm, 4px);
+  border: 1.5px solid color-mix(in srgb, var(--checkbox-accent, var(--accent-color)) 45%, var(--border-color));
+  background: color-mix(in srgb, var(--bg-input) 88%, var(--bg-primary));
+  margin: 0;
+  cursor: pointer;
+  position: relative;
+  transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease, transform var(--transition-speed) ease;
+}
+
+input[type="checkbox"]:hover {
+  border-color: color-mix(in srgb, var(--checkbox-accent, var(--accent-color)) 75%, var(--border-color));
+  background: color-mix(in srgb, var(--bg-input) 72%, var(--bg-primary));
+}
+
+input[type="checkbox"]:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+input[type="checkbox"]:checked {
+  border-color: color-mix(in srgb, var(--checkbox-accent, var(--accent-color)) 86%, var(--text-primary));
+  background: color-mix(in srgb, var(--bg-input) 90%, var(--bg-primary));
+}
+
+input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 1px;
+  width: 4px;
+  height: 8px;
+  border: solid color-mix(in srgb, var(--checkbox-accent, var(--accent-color)) 82%, var(--text-primary));
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+input[type="checkbox"]:disabled {
+  opacity: var(--disabled-opacity-field);
+  cursor: default;
+}
+
+/* Firefox specific radio button focus */
+@-moz-document url-prefix() {
+  input[type="radio"]:focus {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 1px;
+  }
+}
+
+/* Settings Panel Styles */
+:root {
+  /* The vertical left-edge menu lets the panel be a touch narrower than the old top-tabs layout
+     (was 490px) while keeping the content column comfortable. */
+  --settings-panel-width: min(460px, 100vw);
+  /* Width of the left menu column (icon + label). Sized so the longest label ("Appearance")
+     fits without truncation: icon 18 + gap 10 + label ~71 + padding 20 + border 2 + nav padding 16.
+     Collapsed rail width is set on .collapsed below. */
+  --settings-nav-width: 148px;
+  --settings-nav-rail-width: 52px;
+}
+
+body.electron-browser-settings-enabled {
+  --settings-panel-width: min(520px, 100vw);
+}
+
+.settings-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  transform: translateX(calc(100% + 24px));
+  width: var(--settings-panel-width);
+  max-width: var(--settings-panel-width);
+  height: 100vh;
+  /* Full viewport height */
+  background: var(--settings-glass-surface-background);
+  background-color: color-mix(in srgb, var(--bg-secondary) var(--settings-glass-surface-mix), transparent);
+  backdrop-filter: blur(var(--modal-glass-blur)) saturate(var(--modal-glass-saturate));
+  -webkit-backdrop-filter: blur(var(--modal-glass-blur)) saturate(var(--modal-glass-saturate));
+  box-shadow: -2px 0 10px var(--shadow-heavy);
+  transition: transform var(--transition-speed-slow) ease-in-out;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 0px;
+  border-bottom-left-radius: 0;
+  z-index: var(--flowjoe-z-surface-above-topbar-high);
+  /* Higher than topbar */
+  font-size: calc(14px * var(--font-scale));
+  line-height: var(--notes-line-height);
+}
+
+.settings-panel:not(.active):not(.edge-pulse-opening) {
+  box-shadow: none;
+  pointer-events: none;
+}
+
+body.surface-effects-disabled .settings-panel {
+  background: color-mix(in srgb, var(--bg-secondary) var(--settings-glass-surface-mix), transparent);
+}
+
+body.glass-effects-disabled .settings-panel {
+  background: var(--bg-secondary);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.settings-panel.active {
+  transform: translateX(0);
+}
+
+.settings-panel::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1px;
+  height: 28%;
+  border-radius: var(--radius-full, 999px);
+  background:
+    linear-gradient(
+      to bottom,
+      transparent 0%,
+      color-mix(in srgb, var(--accent-color) 0%, transparent) 12%,
+      var(--accent-lightened-86-14) 50%,
+      color-mix(in srgb, var(--accent-color) 0%, transparent) 88%,
+      transparent 100%
+    );
+  box-shadow:
+    0 0 0 transparent,
+    0 0 0 transparent;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(118vh);
+  z-index: 2;
+}
+
+.settings-panel.edge-pulse-opening {
+  overflow: visible;
+}
+
+.settings-panel.edge-pulse-opening::before {
+  animation: settings-edge-open-pulse 0.4s ease-out both;
+}
+
+@keyframes settings-edge-open-pulse {
+  0% {
+    opacity: 0;
+    transform: translateY(118vh);
+    box-shadow:
+      0 0 0 transparent,
+      0 0 0 transparent;
+  }
+  18% {
+    opacity: 1;
+    box-shadow:
+      -4px 0 14px color-mix(in srgb, var(--accent-color) 28%, transparent),
+      4px 0 18px color-mix(in srgb, var(--accent-color) 18%, transparent);
+  }
+  74% {
+    opacity: 0.92;
+    transform: translateY(-12vh);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-34vh);
+    box-shadow:
+      0 0 0 transparent,
+      0 0 0 transparent;
+  }
+}
+
+}

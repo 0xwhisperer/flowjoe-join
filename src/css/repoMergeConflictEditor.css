@@ -1,0 +1,219 @@
+/* repoMergeConflictEditor.css — the editable Monaco conflict-resolution surface (Stage 5 plan Task 4).
+   A full-screen modal overlay, matching this session's established quality bar (activityPanel.css /
+   sourceControlPanel.css's structural discipline: real design tokens only, no invented colors). */
+
+.repo-merge-conflict-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.repo-merge-conflict-modal {
+  display: flex;
+  flex-direction: column;
+  width: min(960px, 92vw);
+  height: min(720px, 88vh);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg, 8px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+}
+
+.repo-merge-conflict-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border-light);
+  flex: none;
+}
+
+.repo-merge-conflict-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.repo-merge-conflict-close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-sm, 4px);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 14px;
+  cursor: pointer;
+  flex: none;
+}
+
+.repo-merge-conflict-close-btn:hover {
+  background: var(--hover-bg);
+  color: var(--text-primary);
+}
+
+.repo-merge-conflict-description {
+  padding: 8px 16px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  flex: none;
+}
+
+.repo-merge-conflict-editor-host {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin: 0 16px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm, 4px);
+  overflow: hidden;
+}
+
+.repo-merge-conflict-error {
+  padding: 6px 16px 0;
+  min-height: 20px;
+  color: var(--error-color, #e5484d);
+  font-size: 12px;
+  flex: none;
+}
+
+.repo-merge-conflict-save-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 16px 0;
+  flex: none;
+}
+
+.repo-merge-conflict-save-btn {
+  padding: 7px 18px;
+  border: none;
+  border-radius: var(--radius-sm, 4px);
+  background: var(--accent-color);
+  color: var(--text-on-accent);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity var(--transition-speed, 0.15s);
+}
+
+.repo-merge-conflict-save-btn:hover {
+  opacity: 0.9;
+}
+
+/* Modify/delete conflicts (Review Focus item 5) — a distinct banner + an explicit "delete this file"
+   choice alongside the ordinary save, so this shape is never confused with an ordinary content
+   conflict (which has no such choice, and always has real content on BOTH sides). */
+
+.repo-merge-conflict-modify-delete-banner {
+  margin: 0 16px 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm, 4px);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  font-size: 12px;
+  flex: none;
+}
+
+.repo-merge-conflict-delete-file-btn {
+  padding: 7px 18px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm, 4px);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 13px;
+  cursor: pointer;
+  transition: background var(--transition-speed, 0.15s);
+}
+
+.repo-merge-conflict-delete-file-btn:hover {
+  background: var(--hover-bg);
+}
+
+.repo-merge-conflict-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--border-light);
+  flex: none;
+}
+
+.repo-merge-conflict-nav-btn {
+  padding: 6px 14px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm, 4px);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 12px;
+  cursor: pointer;
+  transition: background var(--transition-speed, 0.15s);
+}
+
+.repo-merge-conflict-nav-btn:hover:not(:disabled) {
+  background: var(--hover-bg);
+}
+
+.repo-merge-conflict-nav-btn:disabled {
+  cursor: default;
+  opacity: 0.4;
+}
+
+/* Binary conflict (Review Focus item 2) — never attempts Monaco, a plain themed choice instead. */
+
+.repo-merge-conflict-binary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex: 1 1 auto;
+  padding: 24px;
+  text-align: center;
+}
+
+.repo-merge-conflict-binary-message {
+  max-width: 480px;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.repo-merge-conflict-binary-choices {
+  display: flex;
+  gap: 12px;
+}
+
+.repo-merge-conflict-binary-choice-btn {
+  padding: 10px 20px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm, 4px);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 13px;
+  cursor: pointer;
+  transition:
+    background var(--transition-speed, 0.15s),
+    border-color var(--transition-speed, 0.15s);
+}
+
+.repo-merge-conflict-binary-choice-btn:hover {
+  background: var(--hover-bg);
+}
+
+.repo-merge-conflict-binary-choice-selected {
+  border-color: var(--accent-color);
+  background: var(--bg-secondary);
+  font-weight: 600;
+}

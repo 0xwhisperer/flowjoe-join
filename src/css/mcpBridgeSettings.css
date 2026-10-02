@@ -1,0 +1,208 @@
+@layer app {
+/* FlowJoe Forge — MCP Verb Bridge settings card.
+   Full-width readonly fields (URL / token / config snippet) stack their label above the control,
+   unlike the default row .setting-control. Buttons reuse the existing .btn.cleanup-button styling. */
+
+#mcp-bridge-setting-card .mcp-bridge-field-row {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+}
+
+#mcp-bridge-setting-card .mcp-bridge-field-row .setting-input {
+  width: 100%;
+}
+
+#mcp-bridge-setting-card .mcp-bridge-action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--action-row-gap); /* was a drifted 8px; labeled decision rows breathe at 10px */
+  margin: 4px 0 10px;
+}
+
+#mcp-bridge-setting-card .mcp-bridge-snippet {
+  width: 100%;
+  font-family: var(--app-font-family);
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre;
+  overflow-x: auto;
+  resize: vertical;
+}
+
+/* Floating "Agent request" approval prompt — bottom-right, independent of #flowjoe-minimized-pill-tray
+   (AIAssistModalPill.css) so it can clear Joe's heavy internal overlays (200040, --flowjoe-z-ai-adoption)
+   which the tray itself is audited to stay BELOW (200035, docs/REFERENCE/Z-INDEX-HIERARCHY.md §D) — a
+   shared parent would trap this under that ceiling. The `bottom` value below is only the pre-JS
+   fallback for first paint; syncFloatingStackPositions (modalUtils.js) overwrites it with a computed
+   offset every time the tray's pills or this card change, so the whole stack (pills + card, wherever
+   each one physically lives in the DOM) reads narrowest-on-top to widest-on-bottom by measured width —
+   see that function's comment for the full mechanism. */
+.mcp-bridge-approvals {
+  position: fixed;
+  right: 16px;
+  bottom: calc(16px + var(--status-footer-height, 0px) + 4px);
+  z-index: var(--flowjoe-z-ai-adoption);
+  display: flex;
+  flex-direction: column;
+  gap: var(--list-row-gap);
+  width: 340px;
+  max-width: calc(100vw - 32px);
+}
+
+.mcp-bridge-approvals[hidden] {
+  display: none;
+}
+
+.mcp-bridge-approvals-heading {
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--text-primary);
+}
+
+.mcp-bridge-approval-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg, 8px);
+  padding: var(--pad-card-compact);
+  color: var(--text-primary);
+  box-shadow: 0 6px 22px var(--shadow-heavy, rgba(0, 0, 0, 0.5));
+}
+
+.mcp-bridge-approval-summary {
+  font-family: var(--app-font-family);
+  font-size: 12px;
+  margin-bottom: 4px;
+  color: var(--text-primary);
+  word-break: break-word;
+}
+
+.mcp-bridge-approval-reason {
+  font-size: var(--font-meta);
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.mcp-bridge-approval-actions {
+  display: flex;
+  gap: var(--action-row-gap); /* was a drifted 8px; labeled decision rows breathe at 10px */
+}
+
+.mcp-bridge-approval-actions .btn {
+  flex: 1;
+}
+
+/* A2.4 — connect list: one row per detected assistant (name + checkbox / copy-command).
+   The shared .mcp-bridge-action-row container is a horizontal wrapping flex; the connect list must
+   STACK its rows vertically instead, so override the container for the connect-actions element. */
+#mcp-bridge-setting-card #mcp-bridge-connect-actions {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  gap: 0;
+  align-items: stretch;
+  margin: 4px 0 10px;
+}
+
+.mcp-bridge-assistant-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--action-row-gap); /* was a drifted-looking hardcoded 12px, but numerically already equal to --action-row-gap, the token this same file uses twice for identical "gap between row-level controls" intent */
+  padding: 8px 0;
+  min-height: 36px;
+}
+
+.mcp-bridge-assistant-row + .mcp-bridge-assistant-row {
+  border-top: 1px solid var(--border-color, #555);
+}
+
+.mcp-bridge-assistant-row .btn {
+  flex: 0 0 auto;
+  width: auto;
+}
+
+/* Left side: name + (when connected) the wired folder path. */
+.mcp-bridge-assistant-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--text-stack-gap);
+  min-width: 0; /* allow the path to truncate instead of pushing the control off-row */
+  flex: 1 1 auto;
+}
+
+.mcp-bridge-assistant-name {
+  font-weight: 600;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.mcp-bridge-assistant-path {
+  font-size: var(--font-meta);
+  opacity: 0.6;
+  font-family: var(--app-font-family);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* Ellipsize the START so the folder name (end of the path) stays visible. */
+  direction: rtl;
+  text-align: left;
+  unicode-bidi: plaintext;
+}
+
+.mcp-bridge-connect-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: var(--font-control);
+  opacity: 0.9;
+  flex: 0 0 auto;
+}
+
+.mcp-bridge-connect-toggle input[type="checkbox"] {
+  cursor: pointer;
+}
+
+/* Subtle green "Connected" state on ticked rows. */
+.mcp-bridge-connect-toggle.is-connected {
+  opacity: 1;
+}
+
+.mcp-bridge-connect-toggle.is-connected span {
+  color: var(--success-color, #2f9e44);
+  font-weight: 600;
+}
+
+.mcp-bridge-connect-toggle.is-connected input[type="checkbox"] {
+  --checkbox-accent: var(--success-color, #2f9e44); /* recolors the app-wide custom checkbox's tick/border (accent-color is inert under appearance:none) */
+}
+
+.mcp-bridge-assistant-row.is-connected .mcp-bridge-assistant-name::before {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-full, 999px);
+  background: var(--success-color, #2f9e44);
+  margin-right: 7px;
+  vertical-align: middle;
+}
+
+/* Right side: copy-command button + a small "manual setup" caption. */
+.mcp-bridge-manual {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  flex: 0 0 auto;
+}
+
+.mcp-bridge-manual-hint {
+  font-size: var(--font-micro);
+  opacity: 0.5;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+}

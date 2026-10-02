@@ -1,0 +1,1509 @@
+@layer app {
+.gallery-tag-section {
+  width: 100%;
+  min-width: 0;
+  margin: 8px 0 0;
+  box-sizing: border-box;
+}
+
+.gallery-tags-titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  min-height: 24px;
+  height: var(--gallery-section-header-height);
+  padding: var(--gallery-section-header-pad);
+  box-sizing: border-box;
+  border: 1px solid var(--border-light);
+  border-radius: var(--gallery-section-header-radius) var(--gallery-section-header-radius) 0 0;
+  background: var(--bg-secondary);
+  margin: 0 0 var(--slot-under-stack-internal-gap, 8px) 0;
+  cursor: pointer;
+}
+
+.gallery-tag-section:not(:has(.gallery-tag-row)) .gallery-tags-titlebar {
+  margin-bottom: 0;
+  border-bottom: 1px solid var(--border-light);
+  border-radius: var(--gallery-section-header-radius);
+}
+
+/* Scale the bar itself with the slot — not the frozen app-wide token (also sizes the
+   collapsed-media sliver height and every other gallery-slot-scale-agnostic surface).
+   Without this, the header buttons scale up on a large resized slot but the bar around
+   them stays pinned at 26px, clipping the buttons against its own edges. Revert: delete
+   this rule. */
+.image-gallery .gallery-tags-titlebar {
+  height: calc(var(--gallery-section-header-height) * var(--gallery-slot-scale, 1));
+  min-height: calc(24px * var(--gallery-slot-scale, 1));
+  padding: calc(1px * var(--gallery-slot-scale, 1)) calc(4px * var(--gallery-slot-scale, 1)) calc(1px * var(--gallery-slot-scale, 1)) calc(8px * var(--gallery-slot-scale, 1));
+}
+
+.gallery-tags-title-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  height: 100%;
+}
+
+.gallery-tag-bin-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--gallery-header-btn-height); /* sized to the 26px header bar's 22px interior (was --icon-btn-size-sm, whose 24px Comfy step overflowed the bar) */
+  min-width: var(--gallery-header-btn-height);
+  height: var(--gallery-header-btn-height);
+  min-height: var(--gallery-header-btn-height);
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  border: 1px solid transparent;
+  border-radius: var(--icon-btn-radius, 4px);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 11px;
+  line-height: 1;
+}
+
+.gallery-tag-bin-toggle i {
+  color: inherit;
+  font-size: 10px;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.gallery-tag-bin-toggle:hover:not(:disabled),
+.gallery-tag-bin-toggle:focus-visible:not(:disabled),
+.gallery-tag-bin-toggle:active:not(:disabled) {
+  background: var(--hover-bg);
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+  outline: none;
+}
+
+.gallery-tag-bin-toggle:disabled {
+  color: var(--text-muted, #999);
+  cursor: default;
+  opacity: var(--disabled-opacity-control);
+}
+
+/* Scale the chevron with the slot, same as the bar it sits in. Revert: delete this rule. */
+.image-gallery .gallery-tag-bin-toggle {
+  width: calc(var(--gallery-header-btn-height) * var(--gallery-slot-scale, 1));
+  min-width: calc(var(--gallery-header-btn-height) * var(--gallery-slot-scale, 1));
+  height: calc(var(--gallery-header-btn-height) * var(--gallery-slot-scale, 1));
+  min-height: calc(var(--gallery-header-btn-height) * var(--gallery-slot-scale, 1));
+  font-size: calc(11px * var(--font-scale, 1) * var(--gallery-slot-scale, 1));
+}
+
+.image-gallery .gallery-tag-bin-toggle i {
+  font-size: calc(10px * var(--font-scale, 1) * var(--gallery-slot-scale, 1));
+}
+
+.gallery-tags-title {
+  display: inline-flex;
+  line-height: 1;
+  align-items: center;
+  min-width: 0;
+  height: 100%;
+  color: var(--text-primary);
+  /* Not var(--gallery-slot-text-font-size) — see styles-gallery-vertical.css's .image-title
+     rule for why: that variable is frozen at :root and can't respond to a per-slot
+     --gallery-slot-scale override (e.g. canvas drag-resize). */
+  font-size: calc(14px * var(--font-scale, 1) * var(--gallery-slot-scale, 1));
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  transform: translateY(1px);
+}
+
+.gallery-tags-title-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--icon-row-gap-dense);
+  flex: 0 0 auto;
+  height: 100%;
+  margin-left: 6px;
+}
+
+.gallery-tags-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--gallery-header-btn-height); /* fits the 26px header bar's 22px interior (was a hard-coded 24px that outgrew the unified bar) */
+  min-width: var(--gallery-header-btn-height);
+  max-width: var(--gallery-header-btn-height);
+  height: var(--gallery-header-btn-height);
+  min-height: var(--gallery-header-btn-height);
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm, 4px);
+  background: transparent;
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  opacity: 0.84;
+}
+
+.gallery-tags-copy-btn span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  line-height: 1;
+  pointer-events: none;
+  transform: translateY(1px);
+}
+
+.gallery-tags-copy-btn:hover:not(:disabled),
+.gallery-tags-copy-btn:focus-visible:not(:disabled),
+.gallery-tags-copy-btn:active:not(:disabled) {
+  opacity: 1;
+  background-color: var(--hover-bg);
+  color: var(--accent-color);
+  border-color: var(--accent-color);
+  outline: none;
+}
+
+/* Scale with the slot, not the frozen app-wide header-button token (also sizes the Tag
+   Bin/Slot Notes header bars elsewhere in the app). Revert: delete this rule. */
+.image-gallery .gallery-tags-copy-btn {
+  width: calc(var(--gallery-header-btn-height) * var(--gallery-slot-scale, 1));
+  min-width: calc(var(--gallery-header-btn-height) * var(--gallery-slot-scale, 1));
+  max-width: calc(var(--gallery-header-btn-height) * var(--gallery-slot-scale, 1));
+  height: calc(var(--gallery-header-btn-height) * var(--gallery-slot-scale, 1));
+  min-height: calc(var(--gallery-header-btn-height) * var(--gallery-slot-scale, 1));
+  font-size: calc(14px * var(--font-scale, 1) * var(--gallery-slot-scale, 1));
+}
+
+.gallery-tags-manager-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--gallery-header-btn-width);
+  min-width: var(--gallery-header-btn-width);
+  max-width: var(--gallery-header-btn-width);
+  height: var(--gallery-header-btn-height);
+  min-height: var(--gallery-header-btn-height);
+  margin: 0;
+  padding: 2px 8px;
+  box-sizing: border-box;
+  border: 1px solid var(--border-color);
+  border-radius: var(--gallery-header-btn-radius);
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: var(--font-control);
+  font-weight: 400;
+  line-height: 22px;
+  opacity: 0.8;
+  transition: opacity var(--transition-speed) ease;
+}
+
+.gallery-tags-manager-btn:hover:not(:disabled),
+.gallery-tags-manager-btn:focus-visible:not(:disabled),
+.gallery-tags-manager-btn:active:not(:disabled) {
+  opacity: 1;
+  background-color: var(--hover-bg);
+  color: var(--accent-color);
+  border-color: var(--accent-color);
+  outline: none;
+}
+
+.gallery-tags-manager-btn:disabled {
+  background: var(--disabled-bg);
+  color: var(--disabled-text);
+  cursor: not-allowed;
+  pointer-events: none;
+  opacity: var(--disabled-opacity-field);
+}
+
+/* Scale with the slot, not the frozen app-wide header-button tokens (those also size
+   the Tag Bin/Slot Notes header bars everywhere else in the app and must not move just
+   because one gallery slot was resized). Revert: delete this rule. */
+.image-gallery .gallery-tags-manager-btn {
+  width: calc(var(--gallery-header-btn-width) * var(--gallery-slot-scale, 1));
+  min-width: calc(var(--gallery-header-btn-width) * var(--gallery-slot-scale, 1));
+  max-width: calc(var(--gallery-header-btn-width) * var(--gallery-slot-scale, 1));
+  height: calc(var(--gallery-header-btn-height) * var(--gallery-slot-scale, 1));
+  min-height: calc(var(--gallery-header-btn-height) * var(--gallery-slot-scale, 1));
+  padding: calc(2px * var(--gallery-slot-scale, 1)) calc(8px * var(--gallery-slot-scale, 1));
+  font-size: calc(12px * var(--font-scale, 1) * var(--gallery-slot-scale, 1));
+  line-height: calc(var(--gallery-header-btn-height) * var(--gallery-slot-scale, 1));
+}
+
+.gallery-tag-row {
+  display: flex;
+  /* align-items: center; */
+  min-height: 0;
+  margin: 0;
+  padding: 0 var(--gallery-tag-row-pad-x) 0;
+  box-sizing: border-box;
+}
+
+.image-modal-tags {
+  width: 100%;
+  max-width: 100%;
+  align-self: stretch;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: var(--tag-chip-height); /* tracks the chip height by design — was a stale hardcoded 24px that never matched --tag-chip-height at any density tier (22/18/16px) */
+  margin: 0; /* the gap below this row comes from the parent's own gap: var(--modal-row-gap) (#notes-container), not a margin baked into this one row */
+  flex: 0 0 auto;
+  min-width: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.image-modal-tags-main {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: var(--tag-chip-height); /* tracks the chip height by design — see .image-modal-tags above */
+  min-width: 0;
+  flex: 1 1 0%;
+}
+
+.image-modal-tags .gallery-tag-row {
+  display: flex;
+  align-items: center;
+  min-height: var(--tag-chip-height); /* tracks the chip height by design — see .image-modal-tags above */
+  margin: 0;
+  /* The shared .gallery-tag-row carries `padding-left: 6px`, which suits a gallery card but inside
+     the modal pushed the first tag chip 6px right of #image-modal-title and
+     #preview-modal-target-row — all three sit at the same box left, so the chips read as
+     misaligned against the title above and the Slot/Stack row below. Zeroed here (modal scope
+     only) so the notes column has one shared left edge; gallery cards keep the 6px. */
+  padding-left: 0;
+  min-width: 0;
+  flex: 1 1 0%;
+  width: auto;
+  overflow: hidden;
+}
+
+.image-modal-tags .gallery-tag-chip-list {
+  margin: 0;
+  flex: 1 1 auto;
+  width: 100%;
+  max-width: 100%;
+  max-height: none;
+  min-height: var(--tag-chip-height); /* tracks the chip height by design */
+  overflow-x: auto;
+  overflow-y: hidden;
+  align-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+  padding: 0;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.image-modal-tags .gallery-tag-chip {
+  flex: 0 0 auto;
+  max-width: min(260px, 60vw);
+}
+
+.image-modal-tags .gallery-tag-chip-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.image-modal-tags .gallery-tag-chip-list::-webkit-scrollbar {
+  display: none;
+}
+
+.image-modal-tags-scroll-btn {
+  display: none;
+  z-index: 2;
+  width: 32px;
+  height: 24px;
+  min-width: 32px;
+  min-height: 24px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm, 4px);
+  background: var(--bg-tertiary);
+  color: var(--accent-color);
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+  flex: 0 0 auto;
+  font-size: var(--icon-glyph);
+  line-height: 1;
+  transition: all var(--transition-speed) ease;
+}
+
+.image-modal-tags-scroll-btn-left {
+  border-radius: var(--radius-sm, 4px);
+}
+
+.image-modal-tags-scroll-btn-right {
+  border-radius: var(--radius-sm, 4px);
+}
+
+.image-modal-tags.has-tag-overflow .image-modal-tags-scroll-btn {
+  display: inline-flex;
+}
+
+.image-modal-tags-scroll-btn:hover:not(:disabled),
+.image-modal-tags-scroll-btn:focus-visible:not(:disabled),
+.image-modal-tags-scroll-btn:active:not(:disabled) {
+  background: var(--hover-bg);
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+  outline: none;
+}
+
+.image-modal-tags-scroll-btn:disabled {
+  opacity: var(--disabled-opacity-control);
+  cursor: not-allowed;
+  color: var(--text-muted, #999);
+}
+
+.image-modal-tags-scroll-btn i {
+  color: inherit;
+  pointer-events: none;
+}
+
+.image-modal-tags-readonly {
+  color: var(--text-secondary);
+  font-size: calc(11px * var(--font-scale));
+  line-height: 1;
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+
+.image-modal-edit-tags-btn {
+  width: var(--icon-btn-size); /* was a drifted 40px; standard chrome size */
+  height: var(--icon-btn-size);
+  min-width: var(--icon-btn-size);
+  min-height: var(--icon-btn-size);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-color);
+  border-radius: var(--icon-btn-radius, 4px); /* unified square-button radius */
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+  flex: 0 0 auto;
+  line-height: 1;
+  font-size: 14px;
+  font-family: inherit;
+  position: relative;
+  box-sizing: border-box;
+  transition: all var(--transition-speed) ease;
+}
+
+.image-modal-edit-tags-btn i {
+  color: inherit;
+  font-size: var(--icon-glyph);
+  line-height: 1;
+  pointer-events: none;
+}
+
+.image-modal-edit-tags-btn:hover:not(:disabled),
+.image-modal-edit-tags-btn:focus-visible:not(:disabled),
+.image-modal-edit-tags-btn:active:not(:disabled) {
+  background: var(--hover-bg);
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+  outline: none;
+}
+
+.image-modal-edit-tags-btn:disabled {
+  opacity: var(--disabled-opacity-control);
+  cursor: not-allowed;
+  color: var(--text-muted, #999);
+}
+
+.preview-modal-tool-btn {
+  color: var(--text-secondary);
+}
+
+.preview-modal-tool-btn i {
+  color: inherit;
+  pointer-events: none;
+}
+
+.gallery-tag-chip-list,
+.breadcrumb-filter-chip-list,
+.assign-tags-tags-wall {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  min-width: 0;
+  gap: 8px;
+  margin: 8px 0 0 0;
+}
+
+.image-gallery .gallery-tag-chip-list {
+  gap: var(--slot-tag-chip-gap, 8px);
+}
+
+
+.image-gallery:not(.vertical-notes-layout) .gallery-tag-chip-list {
+  min-height: 0;
+  margin: 0;
+}
+
+.image-gallery:not(.vertical-notes-layout) .gallery-tag-chip-list:has(> .gallery-tag-chip:first-child:last-child) {
+  justify-content: center;
+}
+
+.gallery-tag-chip,
+.gallery-tag-empty,
+.breadcrumb-filter-chip,
+.assign-tags-tag-pill,
+.ai-assist-focus-mode-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--tag-chip-height);
+  min-height: var(--tag-chip-height);
+  padding: 0 var(--tag-chip-pad-x);
+  border-radius: var(--tag-chip-radius);
+  font-size: var(--tag-chip-font-size);
+  line-height: 1;
+  letter-spacing: 0.01em;
+  box-sizing: border-box;
+  margin: 0;
+  font-family: inherit;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* Scale the Tag Bin's own chips with the slot — not the shared --tag-chip-*
+   tokens, which also size breadcrumb filter chips and the tag-assignment
+   modal's pills outside any gallery slot. Revert: delete this rule. */
+.image-gallery .enum-image-unit .gallery-tag-chip {
+  height: calc(var(--tag-chip-height) * var(--gallery-slot-scale, 1));
+  min-height: calc(var(--tag-chip-height) * var(--gallery-slot-scale, 1));
+  padding: 0 calc(var(--tag-chip-pad-x) * var(--gallery-slot-scale, 1));
+  font-size: calc(12px * var(--font-scale, 1) * var(--gallery-slot-scale, 1));
+}
+
+.gallery-tag-chip,
+.breadcrumb-filter-chip,
+.assign-tags-tag-pill {
+  border: 1px solid color-mix(in srgb, var(--tag-accent, var(--border-color)) 70%, var(--border-color));
+  background: color-mix(in srgb, var(--tag-accent, var(--bg-tertiary)) var(--tag-chip-fill-mix), var(--bg-tertiary));
+  color: var(--tag-accent-text, var(--text-primary));
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  outline: none;
+}
+
+.gallery-tag-chip-main,
+.gallery-tag-chip-remove-btn {
+  appearance: none;
+  -webkit-appearance: none;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  margin: 0;
+  padding: 0;
+  outline: none;
+}
+
+/* Tag chips are COLORED objects — hover intensifies the tag's OWN color (border to full
+   strength from the resting 70% mix), never the generic accent hover (owner: colored tags
+   look wrong under the app-accent outline). The fill no longer deepens on hover as of
+   2026-07-10 — unified with the resting mix to fix a WCAG AA contrast failure, see
+   --tag-chip-fill-mix-hover's comment in styles-variables.css. */
+.gallery-tag-chip:hover,
+.gallery-tag-chip:focus-visible,
+.breadcrumb-filter-chip:hover,
+.breadcrumb-filter-chip:focus-visible,
+.assign-tags-tag-pill:hover,
+.assign-tags-tag-pill:focus-visible {
+  background-color: color-mix(in srgb, var(--tag-accent, var(--bg-tertiary)) var(--tag-chip-fill-mix-hover), var(--bg-tertiary));
+  color: var(--tag-accent-text, var(--text-primary));
+  border-color: var(--tag-accent, var(--border-color));
+}
+
+.gallery-tag-chip-text,
+.breadcrumb-filter-chip-text {
+  min-width: 0;
+  display: inline-block;
+  margin-top: 0; /* no nudge: the chip's flex centering already puts the label's INK within 0.5px of center at every density and slot scale (pixel-measured 2026-09-09 at 22/18/16px chips × 0.75/1/1.4 slot scale). The old 1px push-down was tuned for a 24px chip and pushed the label visibly low at Compact/Dense. */
+  height: auto;
+  max-width: 100%;
+  line-height: 1.15;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  text-align: center;
+}
+
+.gallery-tag-chip-removable {
+  padding-left: var(--tag-chip-pad-x);
+  padding-right: calc(var(--tag-chip-pad-x) - 2px);
+  gap: 4px;
+}
+
+/* In-gallery chips can wrap a long tag name onto a second line (.gallery-tag-chip-text allows
+   wrapping) — keep the row growable here instead of the canonical fixed height. Font-size and
+   padding also scale with the slot size (--gallery-slot-scale) so chips grow/shrink with the
+   slot instead of staying the app-wide canonical chip size. Revert: drop font-size/padding-x
+   here and the remove-btn size/font-size below. */
+.image-gallery .gallery-tag-chip {
+  height: auto;
+  padding-top: var(--gallery-tag-chip-pad-y);
+  padding-bottom: var(--gallery-tag-chip-pad-y);
+  padding-left: calc(var(--tag-chip-pad-x) * var(--gallery-slot-scale, 1));
+  padding-right: calc(var(--tag-chip-pad-x) * var(--gallery-slot-scale, 1));
+  font-size: calc(var(--tag-chip-font-size) * var(--gallery-slot-scale, 1));
+}
+
+.image-gallery .gallery-tag-chip-removable {
+  padding-left: calc(var(--tag-chip-pad-x) * var(--gallery-slot-scale, 1));
+  padding-right: calc((var(--tag-chip-pad-x) * var(--gallery-slot-scale, 1)) - 2px);
+}
+
+.image-gallery .gallery-tag-chip-remove-btn {
+  width: calc(var(--tag-chip-remove-size) * var(--gallery-slot-scale, 1));
+  height: calc(var(--tag-chip-remove-size) * var(--gallery-slot-scale, 1));
+}
+
+.image-gallery .gallery-tag-chip-remove {
+  font-size: calc(11px * var(--gallery-slot-scale, 1));
+}
+
+.gallery-tag-chip-main {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  color: inherit;
+  cursor: pointer;
+}
+
+.gallery-tag-chip-remove-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tag-chip-remove-size);
+  height: var(--tag-chip-remove-size);
+  border-radius: var(--radius-full, 999px);
+  cursor: pointer;
+  flex: 0 0 auto;
+}
+
+.gallery-tag-chip-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  line-height: 1;
+  opacity: 1;
+  flex: 0 0 auto;
+  /* The × glyph's ink sits below its own line box's center (math-axis glyph in a
+     font whose ascent outweighs its descent), so plain flex centering leaves the ×
+     ~1.5px lower than the label's ink. Lift it with a layout-neutral relative
+     offset rather than a margin: a margin changes the button's margin box and
+     therefore where flex centers it, and pushed the × DOWN by 1px on top of the
+     glyph's own droop (the previous margin-top: 2px). Pixel-measured 2026-09-09:
+     a 1.5px lift put the × ink dead on the label's cap-height center, which the
+     owner read as too HIGH on a live retina screen — a × belongs a hair below the
+     cap center, at the label's math axis. 0.5px lands it there. Owner-tuned. */
+  position: relative;
+  top: -0.5px;
+}
+
+/* Shield the chip's INNER buttons (label + ×) from the app-wide button:hover accent recolor —
+   the chip's hover look (its OWN tag color) is set on the chip container; the inner buttons must
+   inherit it, never take the generic orange. (The ×'s tag-color wash below still wins — higher
+   specificity.) */
+.gallery-tag-chip-main:hover,
+.gallery-tag-chip-main:focus-visible,
+.gallery-tag-chip-remove-btn:hover,
+.gallery-tag-chip-remove-btn:focus-visible {
+  background: transparent;
+  color: inherit;
+  border-color: transparent;
+}
+
+.gallery-tag-chip:hover .gallery-tag-chip-remove-btn,
+.gallery-tag-chip:focus-within .gallery-tag-chip-remove-btn {
+  opacity: 1;
+  background: color-mix(in srgb, var(--tag-accent, var(--accent-color)) 18%, transparent);
+}
+
+.gallery-tag-empty {
+  border: 1px dashed color-mix(in srgb, var(--border-color) 80%, transparent);
+  color: var(--text-secondary);
+}
+
+.breadcrumb-filter-chip.is-untagged,
+.assign-tags-tag-pill.is-partial {
+  border-style: dashed;
+}
+
+.breadcrumb-filter-chip.breadcrumb-filter-chip-static {
+  cursor: default;
+}
+
+.breadcrumb-filter-chip.breadcrumb-filter-chip-static:hover,
+.breadcrumb-filter-chip.breadcrumb-filter-chip-static:focus-visible,
+.breadcrumb-filter-chip.breadcrumb-filter-chip-static:active {
+  background: color-mix(in srgb, var(--tag-accent, var(--bg-tertiary)) 22%, var(--bg-tertiary));
+  color: var(--tag-accent-text, var(--text-primary));
+  border-color: color-mix(in srgb, var(--tag-accent, var(--border-color)) 70%, var(--border-color));
+  transform: none;
+}
+
+/* Secondary (non-tag) filter summary chips — Status/Visibility/Privacy/Lock surfaced on the
+   always-visible tree row. Muted + dashed so they read as informational, distinct from the
+   colored, removable tag chips beside them. Non-interactive (the funnel opens the editor). */
+.breadcrumb-filter-chip.breadcrumb-filter-chip-secondary,
+.breadcrumb-filter-chip.breadcrumb-filter-chip-secondary:hover,
+.breadcrumb-filter-chip.breadcrumb-filter-chip-secondary:focus-visible,
+.breadcrumb-filter-chip.breadcrumb-filter-chip-secondary:active {
+  border-style: dashed;
+  border-color: color-mix(in srgb, var(--border-color) 80%, transparent);
+  background: color-mix(in srgb, var(--bg-tertiary) 55%, transparent);
+  color: var(--text-secondary);
+  cursor: default;
+  transform: none;
+}
+
+.breadcrumb-filter-chip-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tag-chip-remove-size);
+  height: var(--tag-chip-remove-size);
+  margin-left: 4px;
+  border-radius: var(--radius-full, 999px);
+  font-size: 11px;
+  line-height: 1;
+  opacity: 0.78;
+  pointer-events: none;
+  flex: 0 0 auto;
+}
+
+.breadcrumb-filter-chip-removable {
+  padding-left: var(--tag-chip-pad-x);
+  padding-right: calc(var(--tag-chip-pad-x) - 2px);
+}
+
+.breadcrumb-filter-chip:hover .breadcrumb-filter-chip-remove,
+.breadcrumb-filter-chip:focus-visible .breadcrumb-filter-chip-remove {
+  opacity: 1;
+  background: color-mix(in srgb, var(--tag-accent, var(--accent-color)) 18%, transparent);
+}
+
+.assign-tags-input-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.assign-tags-input-wrap {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  height: var(--text-input-height); /* the app-wide single-line input height (anchored on the slot title field) — these rendered ~36px from fat inner padding before */
+  box-sizing: border-box;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg, 8px);
+  padding: 0;
+  margin: 0;
+  transition: background var(--transition-speed) ease, border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+}
+
+.assign-tags-input-wrap.is-focused {
+  background: var(--hover-bg);
+  border-color: var(--accent-color);
+  box-shadow: var(--focus-ring);
+}
+
+.assign-tags-input {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  font-family: var(--app-font-family);
+  font-size: calc(14px * var(--font-scale, 1));
+  height: 100%;
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+
+.assign-tags-input::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.6;
+}
+
+.assign-tags-section-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+.assign-tags-section-label {
+  font-size: var(--font-control);
+  color: var(--text-secondary);
+}
+
+.assign-tags-flyout-shell .assign-tags-section-label {
+  padding-left: 0;
+}
+
+.assign-tags-tags-scroller {
+  max-height: min(40vh, 320px);
+  overflow: auto;
+  border: 1px solid var(--border-color);
+  background: color-mix(in srgb, var(--bg-primary) 88%, transparent);
+  border-radius: var(--radius-lg, 8px);
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.assign-tags-tags-wall {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 6px;
+  align-items: flex-start;
+  align-content: flex-start;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.context-menu-slot-label,
+.assign-tags-slot-label {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  color: var(--accent-color);
+  opacity: 1;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: var(--font-control);
+  font-weight: 400;
+}
+
+.assign-tags-slot-label-text,
+.context-menu-slot-label-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1 1 auto;
+}
+
+.assign-tags-slot-label-suffix {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  color: color-mix(in srgb, var(--accent-color) 78%, var(--text-secondary));
+}
+
+.assign-tags-slot-label-suffix.is-highlighted {
+  color: var(--accent-color);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.assign-tags-header-divider {
+  display: block;
+  width: calc(100% + 8px);
+  height: var(--hairline);
+  margin: 0 -4px 4px -4px;
+  background: color-mix(in srgb, var(--border-color) 88%, transparent);
+  box-sizing: border-box;
+}
+
+.context-menu-slot-label {
+  margin-top: 4px;
+}
+
+.assign-tags-color-menu {
+  position: fixed;
+  padding: 8px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg, 8px);
+  box-shadow: var(--elev-floating);
+  z-index: var(--flowjoe-z-tag-menu);
+}
+
+.assign-tags-color-menu button,
+.assign-tags-merge-menu button {
+  margin: 0;
+}
+
+.assign-tags-color-menu-content {
+  width: 174px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.assign-tags-color-swatch-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 24px);
+  gap: 6px;
+  width: 174px;
+}
+
+.assign-tags-color-menu-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 174px;
+  position: relative;
+  padding-right: 72px;
+  box-sizing: border-box;
+}
+
+.assign-tags-color-menu-title {
+  color: var(--text-primary);
+  font-size: 14px;
+  line-height: 1.25;
+  font-weight: 700;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.assign-tags-color-menu-header .floating-surface-header-actions {
+  position: absolute;
+  top: -18px;
+  right: 0;
+  z-index: 2;
+}
+
+.assign-tags-flyout-shell > .floating-surface-header-actions,
+.node-theme-flyout-shell > .floating-surface-header-actions {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  z-index: 4;
+}
+
+.assign-tags-flyout-shell {
+  position: relative;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.node-theme-flyout-shell {
+  position: relative;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.image-context-menu-flyout.is-manual-size .assign-tags-flyout-shell {
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.image-context-menu-flyout.is-manual-size .assign-tags-flyout-shell .assign-tags-tags-scroller {
+  flex: 1 1 auto;
+  max-height: none;
+  min-height: 0;
+}
+
+.node-theme-flyout-shell .assign-tags-slot-label {
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.node-theme-flyout-shell .assign-tags-slot-label-text {
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.node-theme-flyout-card {
+  padding: 8px 10px;
+  margin: 6px 0;
+  background: var(--bg-tertiary);
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.node-theme-flyout-eyebrow-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.node-theme-flyout-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+}
+
+.node-theme-flyout-eyebrow-preview {
+  color: var(--accent-color);
+}
+
+.node-theme-flyout-card.is-previewing {
+  outline: 1px dashed var(--accent-color);
+  outline-offset: -1px;
+}
+
+.node-theme-flyout-revert-link {
+  border: none;
+  background: transparent;
+  color: var(--accent-color);
+  font-size: 11px;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
+.node-theme-flyout-revert-link:hover,
+.node-theme-flyout-revert-link:focus-visible {
+  background: var(--hover-bg);
+  text-decoration: underline;
+}
+
+.node-theme-flyout-revert-link:disabled {
+  color: var(--text-secondary);
+  cursor: default;
+  text-decoration: none;
+  opacity: 0.6;
+}
+
+.node-theme-flyout-secondary-revert-row {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.node-theme-flyout-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.node-theme-flyout-name-row .theme-swatch {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.node-theme-flyout-name {
+  font-size: var(--font-control);
+  font-weight: 600;
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.node-theme-flyout-name-favorite {
+  color: var(--accent-star, #fbbf24);
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.node-theme-flyout-inherited-note {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.node-theme-flyout-global-strip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  padding-top: 6px;
+  border-top: 1px solid var(--border-color);
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.node-theme-flyout-global-strip .theme-swatch {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  opacity: 0.85;
+}
+
+.node-theme-flyout-global-strip-label {
+  flex-shrink: 0;
+}
+
+.node-theme-flyout-global-strip-value {
+  font-weight: 500;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.assign-tags-flyout-shell > div {
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.assign-tags-flyout-header,
+.assign-tags-flyout-shell .assign-tags-input-row,
+.assign-tags-flyout-shell .assign-tags-input-wrap,
+.assign-tags-flyout-shell .assign-tags-section-header-row,
+.assign-tags-flyout-shell .assign-tags-tags-scroller,
+.assign-tags-flyout-shell .assign-tags-slot-label {
+  min-width: 0;
+}
+
+.assign-tags-flyout-header,
+.assign-tags-flyout-shell .assign-tags-input-row,
+.assign-tags-flyout-shell .assign-tags-section-header-row,
+.assign-tags-flyout-shell .assign-tags-tags-scroller,
+.assign-tags-flyout-shell .assign-tags-slot-label,
+.assign-tags-flyout-shell .assign-tags-input-wrap {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.assign-tags-flyout-header {
+  cursor: grab;
+}
+
+.assign-tags-flyout-header.is-dragging {
+  cursor: grabbing;
+}
+
+.assign-tags-flyout-header :is(button, a, label) {
+  cursor: pointer;
+  user-select: auto;
+}
+
+.assign-tags-flyout-header :is(input, textarea, select) {
+  cursor: auto;
+  user-select: auto;
+}
+
+.assign-tags-color-menu-close {
+  width: var(--icon-btn-size-sm); /* was 28px; context-menu chrome joins the small class */
+  min-width: var(--icon-btn-size-sm);
+  height: var(--icon-btn-size-sm);
+  min-height: var(--icon-btn-size-sm);
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.assign-tags-color-editor-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 174px;
+}
+
+.assign-tags-color-editor-row .assign-tags-input-wrap {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: var(--control-height-sm);
+}
+
+.assign-tags-color-editor-row .assign-tags-input {
+  min-height: var(--control-height-sm);
+  padding: 4px 10px;
+}
+
+.assign-tags-color-editor-save,
+.assign-tags-color-secondary {
+  appearance: none;
+  -webkit-appearance: none;
+  min-height: var(--control-height-sm);
+  border-radius: var(--radius-md, 6px);
+  font-family: var(--app-font-family);
+  font-size: var(--font-control);
+  cursor: pointer;
+  margin: 0;
+}
+
+.assign-tags-color-editor-save {
+  flex: 0 0 auto;
+  padding: 0 12px;
+}
+
+.assign-tags-color-swatch {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  padding: 0;
+  border-radius: var(--radius-sm, 4px);
+  border: 1px solid color-mix(in srgb, var(--swatch-color) 72%, var(--border-color));
+  background: color-mix(in srgb, var(--swatch-color) 82%, var(--bg-tertiary));
+  color: var(--swatch-text, var(--text-primary));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  line-height: 1;
+  font-family: var(--app-font-family);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.assign-tags-merge-select {
+  display: block;
+  width: 100%;
+  height: var(--dropdown-height);
+  border: 1px solid var(--border-color);
+  border-radius: var(--dropdown-radius);
+  background-color: var(--dropdown-bg);
+  color: var(--text-primary);
+  font-family: var(--app-font-family);
+  font-size: calc(14px * var(--font-scale, 1));
+  padding: 0 12px;
+  padding-right: 32px;
+  box-sizing: border-box;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: var(--dropdown-chevron);
+  background-repeat: no-repeat;
+  background-position: right var(--dropdown-chevron-inset) center;
+  background-size: 12px;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  font-kerning: normal;
+  cursor: pointer;
+}
+
+.assign-tags-merge-select-wrap {
+  width: 100%;
+  margin-top: 6px;
+}
+
+.assign-tags-merge-select:hover,
+.assign-tags-merge-select:focus,
+.assign-tags-merge-select:focus-visible,
+.assign-tags-merge-select:active {
+  border-color: var(--accent-color);
+  background-color: var(--bg-tertiary);
+}
+
+.assign-tags-merge-menu {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(280px, calc(100vw - 16px));
+  padding: 10px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg, 8px);
+  box-shadow: var(--elev-floating);
+  z-index: var(--flowjoe-z-tag-submenu);
+}
+
+.assign-tags-merge-menu .assign-tags-color-menu-header {
+  width: 100%;
+  align-items: flex-start;
+}
+
+.assign-tags-merge-label {
+  display: inline-block;
+  margin-top: 2px;
+  color: var(--text-secondary);
+  font-size: var(--font-control);
+}
+
+.assign-tags-merge-copy {
+  color: var(--text-primary);
+  line-height: 1.45;
+  font-size: 13px;
+}
+
+.assign-tags-merge-help {
+  display: inline-block;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  font-size: 12px;
+}
+
+.assign-tags-merge-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--action-row-gap); /* was a drifted 8px; labeled decision rows breathe at 10px */
+}
+
+.assign-tags-color-swatch.is-selected {
+  box-shadow: 0 0 0 1px var(--accent-color);
+  border-color: var(--accent-color);
+}
+
+.assign-tags-color-secondary {
+  border: 1px solid color-mix(in srgb, var(--accent-color) 45%, var(--border-color));
+  background: color-mix(in srgb, var(--accent-color) 10%, var(--bg-tertiary));
+  color: var(--text-primary);
+  width: 174px;
+  box-sizing: border-box;
+}
+
+.assign-tags-color-delete {
+  appearance: none;
+  -webkit-appearance: none;
+  min-height: var(--control-height-sm);
+  border: 1px solid color-mix(in srgb, var(--danger-color, #dc3545) 68%, var(--border-color));
+  border-radius: var(--radius-md, 6px);
+  background: color-mix(in srgb, var(--danger-color, #dc3545) 18%, var(--bg-tertiary));
+  color: var(--text-primary);
+  font-family: var(--app-font-family);
+  font-size: var(--font-control);
+  cursor: pointer;
+  width: 174px;
+  box-sizing: border-box;
+  margin: 0;
+  /* A long tag name in "Delete <name>" must clip with an ellipsis, not overflow the button (the
+     full name stays available via the button's title tooltip). */
+  padding: 4px 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Neutral partner for the red Delete in the inline confirm row — matches its height/padding/radius
+   so the pair reads as one control (the bare .cancel-button class has no styling on this surface). */
+.assign-tags-color-delete-cancel {
+  appearance: none;
+  -webkit-appearance: none;
+  min-height: var(--control-height-sm);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md, 6px);
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  font-family: var(--app-font-family);
+  font-size: var(--font-control);
+  cursor: pointer;
+  padding: 4px 10px;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.assign-tags-color-delete-cancel:hover {
+  background: var(--hover-bg);
+}
+
+.tree-filter-flyout {
+  width: 360px !important;
+  max-width: 360px !important;
+}
+
+.tree-filter-section-title {
+  padding-top: 2px;
+}
+
+.tree-filter-summary-bar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 2px 2px 0;
+}
+
+.tree-filter-summary-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  min-width: 0;
+}
+
+.tree-filter-summary-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tag-chip-height);
+  padding: 2px 6px;
+  border: 1px solid color-mix(in srgb, var(--border-color) 78%, transparent);
+  border-radius: var(--tag-chip-radius);
+  background: color-mix(in srgb, var(--bg-tertiary) 74%, transparent);
+  color: var(--text-secondary);
+  font-size: var(--font-meta);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.tree-filter-summary-empty {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tag-chip-height);
+  padding: 2px 2px;
+  color: var(--text-secondary);
+  font-size: var(--font-meta);
+  line-height: 1;
+  font-style: italic;
+  opacity: 0.65;
+}
+
+.tree-filter-clear-all {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: 0 0 auto;
+  min-height: var(--tag-chip-height); /* row control in the tag-filter chip row — tracks the chip height */
+  padding: 2px 7px;
+  border: 1px solid color-mix(in srgb, var(--accent-color) 55%, var(--border-color));
+  border-radius: var(--tag-chip-radius);
+  background: color-mix(in srgb, var(--accent-color) 10%, var(--bg-tertiary));
+  color: var(--accent-color);
+  font: inherit;
+  font-size: 11px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.tree-filter-clear-all:disabled {
+  opacity: var(--disabled-opacity-control);
+  cursor: default;
+}
+
+.tree-tag-filter-inline-label {
+  font-size: var(--font-control);
+  color: var(--text-secondary);
+  padding-left: 8px;
+  margin-top: 8px;
+}
+
+.tree-tag-filter-search-section,
+.tree-tag-filter-tags-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 2px;
+}
+
+.tree-tag-filter-tags-section .assign-tags-section-header-row {
+  padding-left: 8px;
+}
+
+.tree-tag-filter-tags-section {
+  padding: 0 2px 6px 2px;
+  gap: 2px;
+}
+
+.tree-tag-filter-search-row {
+  margin: 0;
+}
+
+.tree-tag-filter-scroller {
+  max-height: min(40vh, 320px);
+}
+
+.tree-tag-filter-divider {
+  flex: 0 0 100%;
+  height: var(--hairline);
+  margin: 2px 0;
+  background: color-mix(in srgb, var(--border-color) 88%, transparent);
+}
+
+.tree-tag-filter-chip {
+  appearance: none;
+  -webkit-appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--tag-chip-height);
+  padding: 0 var(--tag-chip-pad-x);
+  gap: 4px;
+  border: 1px solid color-mix(in srgb, var(--tag-accent, var(--border-color)) 70%, var(--border-color));
+  border-radius: var(--tag-chip-radius);
+  background: color-mix(in srgb, var(--tag-accent, var(--bg-tertiary)) 22%, var(--bg-tertiary));
+  color: var(--tag-accent-text, var(--text-primary));
+  font-size: var(--tag-chip-font-size);
+  line-height: 1;
+  font-family: inherit;
+  font-weight: inherit;
+  cursor: pointer;
+  max-width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+  margin: 0;
+  vertical-align: top;
+  white-space: nowrap;
+}
+
+.tree-tag-filter-chip.is-selected {
+  border-color: color-mix(in srgb, var(--tag-accent, var(--accent-color)) 72%, var(--accent-color));
+  background: color-mix(in srgb, var(--tag-accent, var(--hover-bg)) 24%, var(--hover-bg));
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent-color) 38%, transparent);
+}
+
+.tree-tag-filter-empty {
+  width: 100%;
+  justify-content: flex-start;
+  padding: 6px 8px;
+}
+
+.tree-tag-source-filter-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 0px;
+  flex: 0 0 auto;
+}
+
+.tree-tag-source-filter-toggle {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 1px solid var(--border-color);
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  border-radius: var(--radius-full, 999px);
+  padding: 4px 10px;
+  min-height: 22px;
+  font-family: var(--app-font-family);
+  font-size: var(--font-control);
+  line-height: 1;
+  cursor: pointer;
+}
+
+.tree-tag-source-filter-toggle.is-selected {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+  background: color-mix(in srgb, var(--accent-color) 16%, var(--bg-primary));
+}
+}

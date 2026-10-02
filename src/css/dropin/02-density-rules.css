@@ -1,0 +1,41 @@
+/* FlowJoe · 02 · density-rules  —  what no token can reach.
+   Phase 2 (2026-07-29) emptied most of this file: every literal it used to
+   re-declare from outside now has a real token in src/css/styles-variables.css
+   (declared at its exact prior value, so nothing moved), and the compact/dense
+   retunes moved into 01-density-compact.css as plain custom-property overrides.
+   What remains below can't be expressed that way, for the reasons given. */
+
+/* ── AIAssistModalChatInput.css · the meters block under the prompt ───
+   --ai-meter-gap / --ai-meters-bottom are already tokens, but they're declared
+   on the #ai-chat-input-area ID rule itself, not on :root. A custom property
+   set on body.density-compact loses to an ID-scoped declaration on the very
+   element that consumes it, so these two cannot move into 01's body block —
+   they have to be re-set on the same element. Not a missing token; a scope one. */
+body.density-compact #ai-chat-input-area {
+  --ai-meter-gap: 7px;      /* was 10px */
+  --ai-meters-bottom: 4px;  /* was 6px */
+}
+/* NEW in Phase 2 (2026-07-29), not a move of an existing rule: before this, the
+   meters block had a compact retune but no dense one, so Dense inherited Comfy's
+   10px/6px and the block read looser than everything around it in the tier that is
+   supposed to be tightest. Same one-notch-further relationship to compact that the
+   rest of the dense ladder uses. Disclosed here because it is a real behaviour
+   change in Dense, not part of the literal-to-token migration. */
+body.density-dense #ai-chat-input-area {
+  --ai-meter-gap: 5px;      /* compact sets 7px */
+  --ai-meters-bottom: 3px;  /* compact sets 4px */
+}
+
+/* ── AIAssistModalSpellCheckShell.css · modal viewport budget ─────
+   REMOVED (2026-07-30) — this used to be a body.density-compact /
+   body.density-dense pair of max-width/max-height overrides on
+   #ai-spell-check-panel. It never actually reached the screen: once the
+   modal opens, joeModalSizingController.js's applyNormalSize() writes
+   max-width/max-height onto the element as an INLINE style (computed by
+   getModalSizeBounds()), which always wins over a class-selector CSS rule
+   regardless of specificity — a class-based CSS-only approach here is a
+   dead end. Density-aware sizing now lives in getModalSizeBounds() itself
+   (joeModalSizingController.js), which is the function that actually
+   controls the modal's size at rest across every AI Assist mode, not just
+   spell-check. See that file for the current margin values and the
+   monotonic Comfy -> Compact -> Dense relationship. */

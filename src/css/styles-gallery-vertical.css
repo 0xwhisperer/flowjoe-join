@@ -1,0 +1,4288 @@
+@layer app {
+  /* Image Gallery Styles */
+  .image-number {
+    margin-top: 5px;
+    /* Match the top padding of the image container */
+    margin-bottom: 5px;
+    text-align: center;
+    font-weight: lighter;
+    font-size: calc(14px * var(--font-scale));
+    font-style: italic;
+    color: var(--text-secondary);
+    opacity: 0.8;
+  }
+
+  .image-gallery {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    overflow-x: auto;
+    overflow-y: visible;
+    white-space: nowrap;
+    gap: 5px;
+    min-height: 120px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    overscroll-behavior-x: contain;
+    /* margin: 8px 0 0 0; */
+    /* padding-top: 3px; */
+    position: relative;
+  }
+
+  .image-gallery.image-gallery--empty {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  /* Keep gallery overflow model stable during drop animations. */
+
+  /* enum-image-unit: pairs the number/buttons with its image — used in both layouts */
+  .image-gallery .enum-image-unit {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: flex-start;
+    gap: 10px;
+    white-space: normal;
+    overflow: visible;
+    box-sizing: border-box;
+    /* Skip layout/paint for off-screen items — huge perf win for large galleries */
+    content-visibility: auto;
+    contain-intrinsic-size: var(--gallery-unit-contain-width, 360px) var(--gallery-unit-contain-height, 520px);
+    /* margin-right: 5px; */
+    margin-left: 5px;
+    margin-top: 5px;
+  }
+
+  .image-gallery .enum-image-unit:hover,
+  .image-gallery .enum-image-unit:focus-within,
+  .image-gallery .enum-image-unit:has(.image-item:hover),
+  .image-gallery .enum-image-unit:has(.image-frame:hover) {
+    content-visibility: visible !important;
+  }
+
+  .image-gallery .enum-image-unit:has(.image-frame.has-inline-scroll-lane .gallery-inline-doc[data-bound-preview-mode^="slot-"], .image-frame.has-inline-scroll-lane .gallery-inline-pdf-renderer[data-bound-preview-mode^="slot-"]) {
+    content-visibility: visible !important;
+  }
+
+  .image-gallery.vertical-notes-layout .enum-image-unit,
+  .image-gallery .enum-image-unit:not(.gallery-awaiting-media):has(.notes-list-format-overlay.is-active) {
+    /* Awaiting-media units are excluded: they are opacity:0 placeholders during a deferred
+     render, and forcing content-visibility on them made every reflow lay out ALL units —
+     a large multiplier on the input freeze while a 50-slot gallery drew. They re-enter this
+     rule the moment the awaiting class is removed at reveal. */
+    content-visibility: visible !important;
+  }
+
+  /* Allow glow effects to overflow - override content-visibility */
+  .image-gallery .enum-image-unit.drop-glow-active,
+  .image-gallery .enum-image-unit:has(.drop-glow) {
+    content-visibility: visible !important;
+  }
+
+  .image-gallery .enum-image-unit.drop-glow-layer-active {
+    content-visibility: visible !important;
+    position: relative;
+    z-index: var(--flowjoe-z-gallery-drop-glow);
+  }
+
+  .image-gallery::-webkit-scrollbar {
+    display: none;
+  }
+
+  .image-gallery {
+    overscroll-behavior-x: contain;
+  }
+
+  /* Vertical layout - same structure as horizontal but wraps */
+  .image-gallery.vertical-layout {
+    flex-wrap: wrap !important;
+    overflow-x: visible;
+    white-space: normal;
+    gap: 5px;
+    padding: 0 0 20px 0;
+  }
+
+  .image-gallery.vertical-layout .enum-image-unit {
+    display: flex;
+    flex: 0 0 auto;
+    margin-top: 5px;
+    content-visibility: visible;
+  }
+
+  /* Hide notes in grid no-notes layout */
+  .image-gallery.vertical-layout .image-notes-column,
+  .image-gallery.vertical-layout .image-notes,
+  .image-gallery.vertical-layout .gallery-tag-section {
+    display: none !important;
+  }
+
+  .image-gallery.vertical-layout .gallery-tag-row {
+    display: none !important;
+    /* align-items: center; */
+    width: var(--image-gallery-width, 320px);
+    min-height: 34px;
+    box-sizing: border-box;
+  }
+
+  .image-gallery.vertical-layout .gallery-tag-chip-list {
+    /* width: 100%; */
+    max-width: 100%;
+  }
+
+  /* ── Vertical + Notes layout ─────────────────────────────────────────────── */
+  /* One image per row; notes fill the remaining width beside the image         */
+  .image-gallery.vertical-notes-layout {
+    flex-wrap: wrap !important;
+    overflow-x: visible;
+    white-space: normal;
+    /* gap: 10px; */
+    padding: 0 0 20px 0;
+  }
+
+  /* Each unit spans the full available width */
+  .image-gallery.vertical-notes-layout .enum-image-unit {
+    display: flex;
+    flex: 1 1 100%;
+    width: 100%;
+    align-items: stretch;
+    min-width: 0;
+    margin-top: 15px;
+    margin-left: 5px;
+  }
+
+  /* image-item: left col = image stacked over controls, right col = notes (image row only) */
+  .image-gallery.vertical-notes-layout .image-item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      "img   title"
+      "img   notes"
+      "tags tags";
+    column-gap: 10px;
+    row-gap: 0;
+    min-width: 0;
+    width: 100%;
+    flex: 1 1 100%;
+    align-items: start;
+  }
+
+  .image-gallery.vertical-notes-layout .image-stack-container {
+    grid-area: img;
+    align-self: start;
+  }
+
+  .image-gallery.vertical-notes-layout .image-controls {
+    grid-area: img;
+    display: flex !important;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 5px;
+    width: 100%;
+    margin: 4px 0 0 0;
+    align-self: end;
+  }
+
+  body.gallery-slot-actions-above .image-gallery.vertical-notes-layout .image-controls {
+    margin-top: 12px;
+  }
+
+  .image-gallery.vertical-notes-layout .gallery-tag-section {
+    grid-area: tags;
+    align-self: start;
+    width: 100%;
+    min-width: 0;
+    margin: var(--slot-under-stack-gap, 8px) 0 0 0;
+  }
+
+  .image-gallery.vertical-notes-layout .gallery-tag-row {
+    display: flex;
+    /* align-items: center; */
+    min-width: 0;
+    width: 100%;
+    min-height: 0;
+  }
+
+  .image-gallery.vertical-notes-layout .gallery-tag-chip-list {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    width: 100%;
+    max-width: 100%;
+    min-height: 0;
+    margin: 0;
+    scrollbar-width: thin;
+  }
+
+  /* Notes column wrapper: takes the grid-area, stacks title + textarea vertically */
+  .image-gallery.vertical-notes-layout .image-notes-column {
+    display: flex;
+    flex-direction: column;
+    grid-area: notes;
+    align-self: stretch;
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+    max-height: none;
+    overflow: hidden;
+    box-sizing: border-box;
+    position: relative;
+  }
+
+  /* Notes textarea: grid placement only — visual styles in the :not(.modal-notes) rule below */
+  .image-gallery.vertical-notes-layout .image-notes {
+    display: block !important;
+    align-self: stretch;
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+    box-sizing: border-box;
+    margin: 8px 0 0 0;
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md, 6px);
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    font-size: calc(14px * var(--font-scale));
+    font-family: inherit;
+    line-height: var(--notes-line-height);
+    resize: none;
+    transition:
+      border-color var(--transition-speed),
+      background-color var(--transition-speed),
+      box-shadow var(--transition-speed);
+  }
+
+  .image-gallery:not(.vertical-layout):not(.vertical-notes-layout) .image-notes-column {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: var(--image-gallery-width, 320px);
+    position: relative;
+  }
+
+  .image-gallery:not(.vertical-layout):not(.vertical-notes-layout) .slot-under-stack {
+    /* --slot-under-stack-gap / --slot-under-stack-internal-gap moved to
+       styles-variables.css (density-stepped 8/6/5) — a local def here would
+       shadow the body.density-* overrides and freeze the gap at 8px. */
+    --slot-under-stack-title-gap: 4px;
+    --slot-tag-chip-gap: 8px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: var(--image-gallery-width, 320px);
+    min-width: 0;
+    margin-top: var(--slot-under-stack-gap);
+    box-sizing: border-box;
+  }
+
+  .image-gallery:not(.vertical-layout):not(.vertical-notes-layout) .slot-under-stack > :is(.image-title, .gallery-tag-section, .image-notes-column) {
+    margin: 0 !important;
+  }
+
+  .image-gallery:not(.vertical-layout):not(.vertical-notes-layout) .slot-under-stack > :is(.image-title, .gallery-tag-section, .image-notes-column) + :is(.image-title, .gallery-tag-section, .image-notes-column) {
+    margin-top: var(--slot-under-stack-gap) !important;
+  }
+
+  body.gallery-title-at-bottom .image-gallery:not(.vertical-layout):not(.vertical-notes-layout) .slot-under-stack > .image-title + :is(.gallery-tag-section, .image-notes-column) {
+    margin-top: var(--slot-under-stack-title-gap) !important;
+  }
+
+  body.gallery-title-at-bottom .image-gallery:not(.vertical-layout):not(.vertical-notes-layout) .slot-under-stack > .gallery-tag-section + .image-notes-column {
+    margin-top: var(--slot-under-stack-gap) !important;
+  }
+
+  body.hide-gallery-tags:not(.gallery-title-at-bottom) .image-gallery:not(.vertical-layout):not(.vertical-notes-layout) .slot-under-stack > .image-title + .image-notes-column {
+    margin-top: 0 !important;
+  }
+
+  body:not(.gallery-title-at-bottom) .image-gallery:not(.vertical-layout):not(.vertical-notes-layout) .slot-under-stack > .image-title + :is(.gallery-tag-section, .image-notes-column) {
+    margin-top: 0 !important;
+  }
+
+  .image-gallery:not(.vertical-layout):not(.vertical-notes-layout) .slot-under-stack .gallery-notes-titlebar + .image-notes {
+    /* Not the shared --slot-under-stack-internal-gap (also sets the Tag Bin bar→chips
+       gap) — the notes field's own top padding already reads as separation from the
+       bar above it, so the shared 6-8px gap on top of THAT padding compounded into
+       excess space. 1px keeps a hairline seam between the bar's bottom border and the
+       field without visually doubling up on padding. */
+    margin-top: 1px;
+  }
+
+  body.hide-gallery-notes-titlebar .image-gallery:not(.vertical-layout):not(.vertical-notes-layout) .slot-under-stack .gallery-notes-titlebar + .image-notes {
+    margin-top: 0;
+  }
+
+  /* Sweeping highlight on focus in horizontal layout — when title is at bottom and notes focused */
+  body.gallery-title-at-bottom .image-gallery:not(.vertical-layout):not(.vertical-notes-layout) .image-notes-column:has(.image-notes:focus)::before {
+    content: none;
+    display: none;
+  }
+
+  .image-gallery:not(.vertical-layout):not(.vertical-notes-layout) .image-title,
+  .image-gallery.vertical-layout .image-title {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border-light);
+    color: var(--accent-color);
+    font-weight: bold;
+    /* Not var(--gallery-slot-text-font-size) on purpose: that variable is computed once at
+       :root and inherits as an already-resolved value, so a per-slot override of
+       --gallery-slot-scale (e.g. canvas drag-resize, set inline on one card) can never
+       reach it. Referencing --gallery-slot-scale directly here lets each element re-resolve
+       it from whatever value it actually inherits, including a per-card override. */
+    font-size: calc(14px * var(--font-scale, 1) * var(--gallery-slot-scale, 1));
+    line-height: 1.3;
+    font-family: inherit;
+    /* Top pad holds glyph position; bottom pad drops the underline for breathing room */
+    padding: var(--gallery-slot-title-padding);
+    /* Not var(--text-input-height) — that token is intentionally shared app-wide (settings
+       inputs, modal fields, buttons all anchor to it) and must NOT shrink/grow just because
+       one gallery slot was resized. This min-height is the same formula, but built from the
+       per-element font-size above so it shrinks/grows WITH the title text instead of pinning
+       it to the un-scaled app-wide height on a small slot. */
+    min-height: calc(calc(14px * var(--font-scale, 1) * var(--gallery-slot-scale, 1)) * 1.3 + var(--gallery-slot-title-pad-top) + var(--gallery-slot-title-pad-bottom));
+    overflow: visible;
+    outline: none;
+    flex-shrink: 0;
+  }
+
+  body.gallery-title-at-bottom .image-gallery:not(.vertical-layout):not(.vertical-notes-layout) .gallery-tag-row + .image-title {
+    margin-top: 8px;
+  }
+
+  body.gallery-title-at-bottom .image-gallery:not(.vertical-layout):not(.vertical-notes-layout) .add-image-position {
+    margin-top: 2px;
+  }
+
+  body.gallery-title-at-bottom .image-gallery:not(.vertical-layout):not(.vertical-notes-layout) .image-item {
+    display: grid;
+    grid-template-areas:
+      "media"
+      "controls"
+      "under-slot";
+    grid-template-columns: minmax(0, 1fr);
+    width: var(--image-gallery-width, 320px);
+    max-width: var(--image-gallery-width, 320px);
+  }
+
+  body.gallery-title-at-bottom .image-gallery:not(.vertical-layout):not(.vertical-notes-layout) .image-stack-container {
+    grid-area: media;
+  }
+
+  body.gallery-title-at-bottom .image-gallery:not(.vertical-layout):not(.vertical-notes-layout) .image-controls {
+    grid-area: controls;
+  }
+
+  body.gallery-title-at-bottom .image-gallery:not(.vertical-layout):not(.vertical-notes-layout) .slot-under-stack {
+    grid-area: under-slot;
+  }
+
+  body.gallery-title-at-bottom .image-gallery:not(.vertical-layout):not(.vertical-notes-layout) .gallery-tag-section {
+    grid-area: auto;
+  }
+
+  body.gallery-title-at-bottom .image-gallery:not(.vertical-layout):not(.vertical-notes-layout) .gallery-tags-titlebar {
+    margin: 0 0 8px 0;
+  }
+
+  body.gallery-title-at-bottom .image-gallery:not(.vertical-layout):not(.vertical-notes-layout) .image-notes-column {
+    display: flex;
+  }
+
+  body.gallery-title-at-bottom .image-gallery:not(.vertical-layout):not(.vertical-notes-layout) .gallery-notes-titlebar {
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  body.gallery-title-at-bottom .image-gallery:not(.vertical-layout):not(.vertical-notes-layout) .image-title {
+    grid-area: auto;
+    margin: 0;
+  }
+
+  body.gallery-title-at-bottom .image-gallery:not(.vertical-layout):not(.vertical-notes-layout) .image-notes {
+    grid-area: auto;
+  }
+
+  .image-gallery:not(.vertical-layout):not(.vertical-notes-layout) .image-title::placeholder {
+    color: var(--text-secondary);
+    font-weight: normal;
+    opacity: 0.5;
+  }
+
+  .image-gallery:not(.vertical-layout):not(.vertical-notes-layout) .image-title:focus {
+    border-bottom-color: var(--accent-color);
+    background-color: var(--bg-secondary);
+  }
+
+  .image-gallery.vertical-layout .image-title::placeholder {
+    color: var(--text-secondary);
+    font-weight: normal;
+    opacity: 0.5;
+  }
+
+  .image-gallery.vertical-layout .image-title:focus {
+    border-bottom-color: var(--accent-color);
+    background-color: var(--bg-secondary);
+  }
+
+  .image-gallery.vertical-notes-layout .image-title {
+    display: block;
+    grid-area: title;
+    width: 100%;
+    box-sizing: border-box;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border-light);
+    color: var(--accent-color);
+    font-weight: bold;
+    /* Not var(--gallery-slot-text-font-size) on purpose: that variable is computed once at
+       :root and inherits as an already-resolved value, so a per-slot override of
+       --gallery-slot-scale (e.g. canvas drag-resize, set inline on one card) can never
+       reach it. Referencing --gallery-slot-scale directly here lets each element re-resolve
+       it from whatever value it actually inherits, including a per-card override. */
+    font-size: calc(14px * var(--font-scale, 1) * var(--gallery-slot-scale, 1));
+    line-height: 1.3;
+    font-family: inherit;
+    padding: 6px 8px 4px;
+    /* Not var(--text-input-height) — that token is intentionally shared app-wide (settings
+       inputs, modal fields, buttons all anchor to it) and must NOT shrink/grow just because
+       one gallery slot was resized. This min-height is the same formula, but built from the
+       per-element font-size above so it shrinks/grows WITH the title text instead of pinning
+       it to the un-scaled app-wide height on a small slot. */
+    min-height: calc(calc(14px * var(--font-scale, 1) * var(--gallery-slot-scale, 1)) * 1.3 + var(--gallery-slot-title-pad-top) + var(--gallery-slot-title-pad-bottom));
+    overflow: visible;
+    outline: none;
+    flex-shrink: 0;
+    align-self: end;
+    margin-bottom: 4px;
+  }
+
+  .image-gallery.vertical-notes-layout .image-title::placeholder {
+    color: var(--text-secondary);
+    font-weight: normal;
+    opacity: 0.5;
+  }
+
+  .image-gallery.vertical-notes-layout .image-title:focus {
+    border-bottom-color: var(--accent-color);
+    background-color: var(--bg-secondary);
+  }
+
+  /* Keep the final add slot from stretching full width */
+  .image-gallery.vertical-notes-layout .final-enum-unit {
+    flex: 0 0 auto;
+    width: auto;
+  }
+
+  /* Style the final enum unit that only has buttons */
+  .image-gallery .final-enum-unit {
+    align-items: flex-start;
+  }
+
+  /* Vertical layout images respect the CSS variable width */
+  .image-gallery.vertical-layout img,
+  .image-gallery.vertical-notes-layout img {
+    width: var(--image-gallery-width, 320px) !important;
+    max-width: none !important;
+    height: auto;
+  }
+
+  /* Style for each image item */
+  .image-gallery .image-item {
+    flex: 0 0 auto;
+    position: relative;
+    overflow: visible;
+    /* Keep image items square before images load */
+    width: var(--image-gallery-width, 320px);
+    min-height: var(--image-gallery-width, 320px);
+    transition:
+      opacity 0.14s ease,
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+    opacity: 1;
+  }
+
+  .image-gallery .enum-image-unit.gallery-awaiting-media {
+    opacity: 0;
+    transform: translateY(8px);
+    pointer-events: none;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .image-gallery .enum-image-unit.gallery-entering {
+      opacity: 0;
+      animation: galleryItemEnter 0.28s ease-out both;
+      will-change: opacity, transform;
+    }
+  }
+
+  @keyframes galleryItemEnter {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Elevate the enum-image-unit containing the hovered info wrapper above all siblings */
+  .image-gallery .enum-image-unit:has(.image-info-icon-wrapper:hover) {
+    z-index: 9999;
+    position: relative;
+  }
+
+  /* Keep missing badge hover card above adjacent cards/buttons/content. */
+  .image-gallery .enum-image-unit:has(.missing-image-badge:hover) {
+    z-index: 10001;
+    position: relative;
+  }
+
+  .image-gallery .enum-image-unit:has(.image-stack-indicator:hover) {
+    z-index: 10002;
+    position: relative;
+  }
+
+  .image-gallery .enum-image-unit:has(.scrubber-preview-target),
+  .image-gallery .enum-image-unit:has(.image-item.multi-selected) {
+    z-index: 10003;
+    position: relative;
+    content-visibility: visible !important;
+  }
+
+  .image-gallery .enum-image-unit.missing-hover-active {
+    z-index: 10001;
+    position: relative;
+  }
+
+  /* Add left margin to the first image to ensure spacing from buttons */
+  .image-item:first-child {
+    margin-left: 15px;
+  }
+
+  .image-gallery .image-item.scrubber-preview-target {
+    position: relative;
+    z-index: 4;
+    margin-bottom: 8px;
+  }
+
+  .image-gallery .add-image-slot.scrubber-preview-target {
+    position: relative;
+    z-index: 4;
+    transform: translateY(-1px);
+  }
+
+  /* Merge / external-import target: keep the shell elevated, but do NOT grow it with
+     margin-bottom (that, plus a full-.image-item ring, was the "highlight sticks past
+     the slot" bug — worst in masonry where .image-item can be wider than .image-frame). */
+  .image-gallery .image-item.external-import-slot-hover {
+    position: relative;
+    z-index: 4;
+  }
+
+  .image-gallery .image-item.internal-slot-merge-hover {
+    position: relative;
+    z-index: 4;
+  }
+
+  .image-gallery .image-item.scrubber-preview-target::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-xl, 10px);
+    pointer-events: none;
+    z-index: 20;
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--accent-color) 68%, var(--border-color)),
+      0 0 14px color-mix(in srgb, var(--accent-color) 30%, transparent),
+      0 0 24px color-mix(in srgb, var(--accent-color) 18%, transparent);
+  }
+
+  .image-gallery .add-image-slot.scrubber-preview-target::after {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    border-radius: var(--radius-2xl, 12px);
+    pointer-events: none;
+    z-index: 20;
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--accent-color) 68%, var(--border-color)),
+      0 0 14px color-mix(in srgb, var(--accent-color) 30%, transparent),
+      0 0 24px color-mix(in srgb, var(--accent-color) 18%, transparent);
+  }
+
+  /* Paint the merge ring on the FRAME (the real slot media), not .image-item.
+     .image-frame does not otherwise use ::before/::after. */
+  .image-gallery .image-item.external-import-slot-hover .image-frame::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-lg, 8px);
+    pointer-events: none;
+    z-index: 10008;
+    box-shadow:
+      inset 0 0 0 2px color-mix(in srgb, var(--accent-color) 72%, var(--border-color)),
+      inset 0 0 18px color-mix(in srgb, var(--accent-color) 12%, transparent);
+  }
+
+  .image-gallery .image-item.external-import-slot-hover .image-frame::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-lg, 8px);
+    pointer-events: none;
+    z-index: 19;
+    background: linear-gradient(180deg, color-mix(in srgb, var(--accent-color) 10%, transparent), color-mix(in srgb, var(--accent-color) 5%, transparent));
+  }
+
+  .image-gallery .image-item.external-import-slot-hover .image-frame {
+    position: relative;
+    z-index: 10006;
+    transform: none;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+  }
+
+  .image-gallery .image-item.external-import-slot-hover .image-frame .external-import-slot-plus {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 46px;
+    height: 46px;
+    transform: translate(-50%, -50%);
+    border-radius: var(--radius-full, 999px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 10007;
+    background: color-mix(in srgb, var(--bg-primary) 58%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent-color) 44%, rgba(255, 255, 255, 0.14));
+    box-shadow:
+      0 8px 24px color-mix(in srgb, black 22%, transparent),
+      inset 0 1px 0 color-mix(in srgb, white 12%, transparent);
+    backdrop-filter: blur(6px) saturate(1.08);
+    -webkit-backdrop-filter: blur(6px) saturate(1.08);
+  }
+
+  .image-gallery .image-item.external-import-slot-hover .image-frame .external-import-slot-plus::before,
+  .image-gallery .image-item.external-import-slot-hover .image-frame .external-import-slot-plus::after {
+    content: "";
+    position: absolute;
+    border-radius: var(--radius-full, 999px);
+    background: var(--import-slot-plus-bg);
+    box-shadow: 0 0 10px color-mix(in srgb, var(--accent-color) 26%, transparent);
+  }
+
+  .image-gallery .image-item.external-import-slot-hover .image-frame .external-import-slot-plus::before {
+    width: 18px;
+    height: 2px;
+  }
+
+  .image-gallery .image-item.external-import-slot-hover .image-frame .external-import-slot-plus::after {
+    width: 2px;
+    height: 18px;
+  }
+
+  .image-gallery .image-item.external-import-slot-hover .image-frame .external-import-slot-plus {
+    display: flex;
+  }
+
+  /* Placeholder for images while loading */
+  /* Force shadow to be visible */
+  .image-item img {
+    background-color: transparent;
+    min-height: 120px;
+    min-width: 80px;
+    cursor: grab !important;
+    position: relative;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    border-radius: var(--radius-lg, 8px);
+    border: 0;
+    transition: all var(--transition-speed) ease;
+  }
+
+  .image-frame {
+    --play-disc-size: clamp(52px, calc(var(--image-gallery-width, 300px) * 0.34), 90px);
+    --inline-idle-disc-size: calc(var(--play-disc-size) * 0.74);
+    --audio-marquee-left-pad: calc(var(--image-gallery-width, 300px) * 0.1);
+    --audio-marquee-right-pad: calc(var(--image-gallery-width, 300px) * 0.1);
+    --audio-marquee-top: calc(var(--image-gallery-width, 300px) * 0.11);
+    --audio-marquee-height: calc(var(--image-gallery-width, 300px) * 0.055);
+    --audio-vol-left: clamp(12px, calc(var(--image-gallery-width, 300px) * 0.042), 16px);
+    --audio-vol-width: clamp(14px, calc(var(--image-gallery-width, 300px) * 0.062), 20px);
+    --audio-vol-height: clamp(84px, calc(var(--image-gallery-width, 300px) * 0.41), 136px);
+    --media-top-control-size: clamp(28px, calc(var(--image-gallery-width, 300px) * 0.2), 36px);
+    --media-top-control-height: clamp(28px, calc(var(--image-gallery-width, 300px) * 0.18), 32px);
+    --media-top-control-radius: clamp(10px, calc(var(--image-gallery-width, 300px) * 0.07), 12px);
+    --media-top-controls-top: clamp(41px, calc(var(--image-gallery-width, 300px) * 0.16 + 5px), 53px);
+    --media-seek-width: min(72%, calc(var(--image-gallery-width, 300px) - 28px), 360px);
+    --audio-stack-toggle-top: 20%;
+    --audio-rate-offset: calc((var(--inline-idle-disc-size) / 2) + 14px);
+    --gallery-inline-scroll-lane-width: clamp(14px, calc(var(--image-gallery-slot-width, var(--image-gallery-width, 300px)) * 0.09375), 36px);
+    position: relative;
+    width: var(--image-gallery-width, 300px);
+    aspect-ratio: 1 / 1;
+    min-height: var(--image-gallery-width, 300px);
+    overflow: hidden;
+    border-radius: var(--radius-lg, 8px);
+  }
+
+  .image-frame.has-inline-media > img {
+    display: none !important;
+  }
+
+  .image-frame .gallery-inline-media {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    border-radius: var(--radius-lg, 8px);
+    border: 0;
+    background: transparent;
+    display: none;
+    box-shadow: none;
+  }
+
+  .image-frame > img,
+  .image-frame > .gallery-inline-media,
+  .image-frame > .gallery-inline-scroll-shield {
+    z-index: 1;
+  }
+
+  /* Embed virtualization poster (galleryEmbedVirtualization.js): full-bleed stand-in shown while
+   a far-offscreen embed is parked. Sits above the (blank) iframe, below slot chrome; never
+   intercepts pointer input. Full-bleed per the devolved-URL-card rule — no inset margins. */
+  .image-frame > .gallery-embed-virtual-poster {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    overflow: hidden;
+    pointer-events: none;
+    background: linear-gradient(135deg, var(--bg-primary, #1a1a1a) 0%, var(--bg-secondary, #2a2a2a) 100%);
+    opacity: 1;
+    transition: opacity var(--transition-speed) ease;
+  }
+
+  .image-frame > .gallery-embed-virtual-poster.gallery-embed-virtual-poster-leaving {
+    opacity: 0;
+  }
+
+  .gallery-embed-virtual-poster-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .gallery-embed-virtual-poster-caption {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 10px 12px;
+    background: var(--gallery-embed-poster-caption-scrim);
+    color: var(--gallery-embed-poster-caption-text);
+  }
+
+  .gallery-embed-virtual-poster-label {
+    font-size: var(--font-meta);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    opacity: 0.8;
+  }
+
+  .gallery-embed-virtual-poster-title {
+    font-size: 13px;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .image-frame > img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .image-gallery .image-item[data-active-slot-visual="image-loaded"],
+  .image-gallery .image-item:not([data-active-slot-visual]):has(.image-frame > img.loaded[data-media-type="image"]) {
+    min-height: 0;
+  }
+
+  .image-gallery .image-item[data-active-slot-visual="image-loaded"],
+  .image-gallery .image-item[data-active-slot-visual="media-framed"],
+  .image-gallery .image-item:not([data-active-slot-visual]):has(.image-frame > img.loaded[data-media-type="image"]) {
+    aspect-ratio: auto !important;
+    min-height: 0 !important;
+    height: auto !important;
+  }
+
+  .image-gallery .image-item[data-active-slot-visual="image-loaded"] .image-frame,
+  .image-gallery .image-item[data-active-slot-visual="media-framed"] .image-frame,
+  .image-gallery .image-item:not([data-active-slot-visual]):has(.image-frame > img.loaded[data-media-type="image"]) .image-frame {
+    min-height: 0 !important;
+    height: auto !important;
+    /* Drop the default 1/1 ratio so the frame shrinks to the loaded image's
+     natural aspect. Non-image media (video/pdf/doc/url) set aspect-ratio
+     inline via JS; inline styles always beat this selector. */
+    aspect-ratio: auto;
+  }
+
+  .image-gallery .image-item[data-active-slot-visual="image-loaded"] .image-frame > img.loaded[data-media-type="image"],
+  .image-gallery .image-item:not([data-active-slot-visual]):has(.image-frame > img.loaded[data-media-type="image"]) .image-frame > img.loaded[data-media-type="image"] {
+    display: block;
+    height: auto;
+  }
+
+  .image-gallery .image-controls,
+  .image-gallery .image-notes-column {
+    opacity: 1;
+    transition: opacity var(--transition-speed) ease;
+  }
+
+  body.hide-gallery-notes .image-gallery:not(.vertical-notes-layout) .image-notes-column,
+  body.hide-gallery-notes .image-gallery .gallery-search-notes-overlay,
+  body.hide-gallery-tags .image-gallery .gallery-tag-section,
+  body.hide-gallery-tags .image-gallery .gallery-tag-row,
+  body.gallery-slot-actions-rail .image-gallery .image-controls,
+  body.hide-gallery-button-bar .image-gallery .image-controls {
+    display: none !important;
+  }
+
+  body:is(.gallery-slot-actions-below, .gallery-slot-actions-above) .image-gallery .add-image-position :is(.edit-tags-btn, .stack-image-btn, .replace-image-btn, .delete-image-btn, .ai-query-btn, .wireframe-btn) {
+    display: none !important;
+  }
+
+  body.gallery-slot-actions-above:not(.gallery-title-at-bottom) .image-gallery:not(.vertical-notes-layout) .image-item {
+    display: flex;
+    flex-direction: column;
+  }
+
+  body.gallery-slot-actions-above .image-gallery:not(.vertical-notes-layout) .image-controls {
+    margin: -8px 0 2px 0;
+    /* padding: 0 0 8px 0; */
+  }
+
+  body.gallery-slot-actions-above:not(.gallery-title-at-bottom) .image-gallery:not(.vertical-notes-layout) .image-controls {
+    order: -1;
+  }
+
+  body.gallery-slot-actions-above.gallery-title-at-bottom .image-gallery:not(.vertical-layout):not(.vertical-notes-layout) .image-item {
+    grid-template-areas:
+      "controls"
+      "media"
+      "slot-title"
+      "tags"
+      "notes-titlebar"
+      "notes";
+  }
+
+  body.gallery-slot-actions-above:not(.gallery-title-at-bottom) .image-gallery:not(.vertical-notes-layout) .add-image-position > .add-image-btn {
+    margin-top: 32px;
+  }
+
+  body.gallery-slot-actions-above:not(.gallery-title-at-bottom) .image-gallery:not(.vertical-notes-layout) .image-stack-container {
+    order: 0;
+  }
+
+  body.gallery-slot-actions-above:not(.gallery-title-at-bottom) .image-gallery:not(.vertical-notes-layout) .image-expand-bar {
+    order: 1;
+  }
+
+  body.hide-gallery-notes-titlebar .image-gallery .gallery-notes-titlebar {
+    display: none !important;
+  }
+
+  body.hide-gallery-notes-titlebar .image-gallery .gallery-notes-titlebar + .image-notes {
+    margin-top: 8px;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+  }
+
+  .image-gallery .image-notes-column.is-collapsed :is(.image-notes, .gallery-notes-tiptap-display, .gallery-notes-tiptap-editor) {
+    display: none !important;
+  }
+
+  .image-gallery .image-notes-column.is-collapsed .gallery-notes-titlebar {
+    border-bottom: 1px solid var(--border-light);
+    border-radius: var(--gallery-section-header-radius);
+  }
+
+  .image-gallery .image-notes-column:not(.is-collapsed) .gallery-notes-titlebar {
+    border-radius: var(--gallery-section-header-radius) var(--gallery-section-header-radius) 0 0;
+  }
+
+  /* Container for progressive notes chrome truncation as the slot narrows.
+     Stages (container queries below) — RIGHT cluster is non-negotiable:
+       full  → chevron + "Slot Notes" + hide-from-Joe + Slot/Stack
+       short → chevron + "Notes" + hide-from-Joe + Slot/Stack
+       bare  → chevron + hide-from-Joe + Slot/Stack  (NO label text)
+     NEVER hide Slot/Stack. NEVER hide hide-from-Joe for width.
+     NEVER paint partial label glyphs over the toggle (overflow clipped + early drop). */
+  .image-notes-column {
+    container-type: inline-size;
+    container-name: gallery-notes-col;
+  }
+
+  .gallery-notes-titlebar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    min-height: 24px;
+    height: var(--gallery-section-header-height);
+    /* margin: 8px 0 0 0; */
+    padding: var(--gallery-section-header-pad);
+    box-sizing: border-box;
+    border: 1px solid var(--border-light);
+    border-radius: var(--gallery-section-header-radius);
+    background: var(--bg-secondary);
+    cursor: pointer;
+    /* Clip any leftover label bleed so text can never walk onto Slot/Stack */
+    overflow: hidden;
+    min-width: 0;
+  }
+
+  /* Scale the bar itself with the slot — see tags.css's .image-gallery
+     .gallery-tags-titlebar for why a frozen bar height is wrong here. */
+  .image-gallery .gallery-notes-titlebar {
+    height: calc(var(--gallery-section-header-height) * var(--gallery-slot-scale, 1));
+    min-height: calc(24px * var(--gallery-slot-scale, 1));
+    padding: calc(1px * var(--gallery-slot-scale, 1)) calc(4px * var(--gallery-slot-scale, 1)) calc(1px * var(--gallery-slot-scale, 1)) calc(8px * var(--gallery-slot-scale, 1));
+  }
+
+  .gallery-notes-titlebar-label-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    /* Take leftover space only; may shrink to chevron width */
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .gallery-notes-collapse-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--gallery-header-btn-height); /* sized to the 26px header bar's 22px interior (was --icon-btn-size-sm, whose 24px Comfy step overflowed the bar) */
+    min-width: var(--gallery-header-btn-height);
+    height: var(--gallery-header-btn-height);
+    min-height: var(--gallery-header-btn-height);
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    border: 1px solid transparent;
+    border-radius: var(--icon-btn-radius, 4px);
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 11px;
+    line-height: 1;
+  }
+
+  .gallery-notes-collapse-toggle i {
+    color: inherit;
+    font-size: 10px;
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .gallery-notes-collapse-toggle:hover:not(:disabled),
+  .gallery-notes-collapse-toggle:focus-visible:not(:disabled),
+  .gallery-notes-collapse-toggle:active:not(:disabled) {
+    background: var(--hover-bg);
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+    outline: none;
+  }
+
+  .gallery-notes-collapse-toggle:disabled {
+    color: var(--text-muted, #999);
+    cursor: default;
+    opacity: var(--disabled-opacity-control);
+  }
+
+  /* Scale the chevron with the slot, same as the bar it sits in. Revert: delete this rule. */
+  .image-gallery .gallery-notes-collapse-toggle {
+    width: calc(var(--gallery-header-btn-height) * var(--gallery-slot-scale, 1));
+    min-width: calc(var(--gallery-header-btn-height) * var(--gallery-slot-scale, 1));
+    height: calc(var(--gallery-header-btn-height) * var(--gallery-slot-scale, 1));
+    min-height: calc(var(--gallery-header-btn-height) * var(--gallery-slot-scale, 1));
+    font-size: calc(11px * var(--font-scale, 1) * var(--gallery-slot-scale, 1));
+  }
+
+  .image-gallery .gallery-notes-collapse-toggle i {
+    font-size: calc(10px * var(--font-scale, 1) * var(--gallery-slot-scale, 1));
+  }
+
+  .gallery-notes-target-toggle {
+    display: inline-flex;
+    align-items: center;
+    flex: 0 0 auto;
+    height: var(--gallery-header-btn-height);
+    min-height: var(--gallery-header-btn-height);
+    max-height: var(--gallery-header-btn-height);
+    box-sizing: border-box;
+    /* padding: 1px;
+  gap: 0; */
+    border: 1px solid var(--border-color);
+    border-radius: var(--gallery-header-btn-radius);
+    background: var(--bg-tertiary); /* same fill as the Manage button — one header-button color scheme */
+    position: relative;
+    overflow: visible;
+    /* margin-right: -2px; */
+    cursor: default;
+  }
+
+  .gallery-notes-target-pill {
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    width: var(--gallery-header-btn-width);
+    height: calc(var(--gallery-header-btn-height) - 4px); /* selection marker: 2px inset inside the toggle track */
+    box-sizing: border-box;
+    border: 1px solid var(--accent-color); /* Manage's highlight recipe — ONE lit-up look for the header family */
+    border-radius: var(--gallery-header-btn-radius); /* SAME radius as the option hover border — the minus-2px nesting formula only read right at 6px; at the owner's 4px it dropped the pill to 2px and mismatched the hover beside it */
+    background: var(--hover-bg); /* same fill as Manage's hover — selected and hovered are the same look */
+    box-shadow: none;
+    transform: translateX(1px);
+    transition:
+      transform var(--transition-speed) ease,
+      width var(--transition-speed) ease;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .gallery-notes-target-option {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--gallery-header-btn-width);
+    min-width: var(--gallery-header-btn-width);
+    max-width: var(--gallery-header-btn-width);
+    height: var(--gallery-header-btn-height);
+    min-height: var(--gallery-header-btn-height);
+    max-height: var(--gallery-header-btn-height);
+    box-sizing: border-box;
+    padding: 0 8px;
+    margin: 0;
+    border: 0px solid transparent;
+    border-radius: var(--gallery-header-btn-radius);
+    background: transparent;
+    color: var(--text-secondary);
+    font-family:
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif;
+    font-size: var(--font-control);
+    font-weight: 400;
+    line-height: 22px;
+    letter-spacing: 0.01em;
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
+    touch-action: manipulation;
+    opacity: 0.8; /* same dimmed-idle as the Manage button — one header-button color scheme */
+    transition:
+      color var(--transition-speed) ease,
+      font-weight var(--transition-speed) ease,
+      opacity var(--transition-speed) ease,
+      background-color var(--transition-speed) ease;
+  }
+
+  .gallery-notes-target-option > i {
+    display: none;
+    width: 10px;
+    min-width: 10px;
+    margin-right: 6px;
+    text-align: center;
+    font-size: 0.72em;
+    line-height: 22px;
+    overflow: hidden;
+    opacity: 0;
+    transform: scale(0.8);
+    pointer-events: none;
+    transition:
+      opacity var(--transition-speed) ease,
+      transform var(--transition-speed) ease;
+  }
+
+  .gallery-notes-target-option > span {
+    display: block;
+    white-space: nowrap;
+    text-align: center;
+    line-height: 22px;
+    transform: none;
+    pointer-events: none;
+  }
+
+  /* Scale the Slot/Stack toggle with the slot, not the frozen app-wide header-button
+     tokens (also size the Tag Bin/Slot Notes header bars elsewhere in the app).
+     Revert: delete this rule block. */
+  .image-gallery .gallery-notes-target-toggle {
+    height: calc(var(--gallery-header-btn-height) * var(--gallery-slot-scale, 1));
+    min-height: calc(var(--gallery-header-btn-height) * var(--gallery-slot-scale, 1));
+    max-height: calc(var(--gallery-header-btn-height) * var(--gallery-slot-scale, 1));
+  }
+
+  .image-gallery .gallery-notes-target-pill {
+    width: calc(var(--gallery-header-btn-width) * var(--gallery-slot-scale, 1));
+    height: calc((var(--gallery-header-btn-height) * var(--gallery-slot-scale, 1)) - 4px);
+  }
+
+  /* While a live canvas resize drag is in progress, the pill's width/transform are
+     rewritten on every drag frame (see canvasGalleryView.js's syncGalleryTextTargetControls
+     resync). The base rule's transition makes each of those rewrites animate toward its new
+     target instead of snapping, so the pill visibly lags/slides independently of the button
+     it's supposed to be locked to. Kill the transition for the duration of the drag. */
+  .canvas-resizing-slot .gallery-notes-target-pill {
+    transition: none;
+  }
+
+  .image-gallery .gallery-notes-target-option {
+    width: calc(var(--gallery-header-btn-width) * var(--gallery-slot-scale, 1));
+    min-width: calc(var(--gallery-header-btn-width) * var(--gallery-slot-scale, 1));
+    max-width: calc(var(--gallery-header-btn-width) * var(--gallery-slot-scale, 1));
+    height: calc(var(--gallery-header-btn-height) * var(--gallery-slot-scale, 1));
+    min-height: calc(var(--gallery-header-btn-height) * var(--gallery-slot-scale, 1));
+    max-height: calc(var(--gallery-header-btn-height) * var(--gallery-slot-scale, 1));
+    padding: 0 calc(8px * var(--gallery-slot-scale, 1));
+    font-size: calc(12px * var(--font-scale, 1) * var(--gallery-slot-scale, 1));
+  }
+
+  .gallery-notes-target-option.active {
+    background: transparent;
+    color: var(--accent-color);
+    font-weight: 400;
+    opacity: 1;
+  }
+
+  .gallery-notes-target-option:hover,
+  .gallery-notes-target-option:focus,
+  .gallery-notes-target-option:focus-visible {
+    border-color: transparent;
+    box-shadow: none;
+    outline: none;
+  }
+
+  /* Owner directive (2026-07-06): Slot/Stack hover changes the BACKGROUND ONLY — no accent
+   border, no accent text, no opacity brightening. The pill alone marks selection. */
+
+  /* Shield a DISABLED option from the app-wide `button:hover` accent styling (buttons.css) —
+   the base rules above are (0,1,0) and lose to button:hover's (0,1,1) during hover. The old
+   "inert hover" rules doubled as this shield; the unified hover rules below only cover the
+   non-disabled case. */
+  .gallery-notes-target-option:disabled:hover,
+  .gallery-notes-target-option:disabled:focus,
+  .gallery-notes-target-option:disabled:focus-visible {
+    background: transparent;
+    color: var(--text-secondary);
+    border-color: transparent;
+  }
+
+  /* Same hover language as the Manage button (accent text on the hover fill) — one header-button
+   color scheme; the active option keeps its accent-pill selected look instead. */
+  .gallery-notes-target-option:not(.active):not(:disabled):hover,
+  .gallery-notes-target-option:not(.active):not(:disabled):focus,
+  .gallery-notes-target-option:not(.active):not(:disabled):focus-visible {
+    background: var(--hover-bg);
+    font-weight: 400;
+  }
+
+  .gallery-notes-target-option.active:hover,
+  .gallery-notes-target-option.active:focus,
+  .gallery-notes-target-option.active:focus-visible {
+    color: var(--accent-color);
+    font-weight: 400;
+  }
+
+  .gallery-notes-target-option.active > i {
+    display: inline-block;
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* The preview modal's Slot/Stack twin: the SAME widget, same classes, ONE sanctioned
+   difference — size. Overriding the family's own height token inside this scope scales the
+   track, options, and pill together; the wider 76px option is the second size knob. */
+  .gallery-notes-target-toggle.preview-modal-text-target-scale {
+    --gallery-header-btn-height: var(--icon-btn-size);
+  }
+
+  .gallery-notes-target-toggle.preview-modal-text-target-scale .gallery-notes-target-option {
+    width: 76px;
+    min-width: 76px;
+    max-width: 76px;
+  }
+
+  .gallery-notes-target-option:disabled {
+    opacity: var(--disabled-opacity-control);
+    cursor: default;
+  }
+
+  .gallery-notes-titlebar-label {
+    display: inline-flex;
+    align-items: center;
+    min-width: 0;
+    max-width: 100%;
+    height: 100%;
+    color: var(--text-primary);
+    /* Not var(--gallery-slot-text-font-size) on purpose: that variable is computed once at
+       :root and inherits as an already-resolved value, so a per-slot override of
+       --gallery-slot-scale (e.g. canvas drag-resize, set inline on one card) can never
+       reach it. Referencing --gallery-slot-scale directly here lets each element re-resolve
+       it from whatever value it actually inherits, including a per-card override. */
+    font-size: calc(14px * var(--font-scale, 1) * var(--gallery-slot-scale, 1));
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: clip;
+    transform: translateY(1px);
+  }
+
+  /* Default: full "Slot Notes" label; short twin stays hidden until narrow. */
+  .gallery-notes-titlebar-label-short {
+    display: none;
+  }
+  .gallery-notes-titlebar-label-full {
+    display: inline;
+  }
+
+  /*
+   * Progressive truncation as the notes column (≈ slot width) shrinks.
+   *
+   * Chrome budget (approx): chevron ~24 + eye ~28 + Slot/Stack ~128 + gaps/pad ~40 ≈ 220px
+   * before any label. So label text needs column widths well above that.
+   *
+   * OWNER RULES:
+   *  - Slot/Stack is NON-NEGOTIABLE — never hide.
+   *  - Hide-from-Joe glyph stays next to Slot/Stack — never drop for width.
+   *  - Label text: "Slot Notes" → "Notes" → gone (no partial "SLOT N" over the toggle).
+   */
+  /* Short label earlier: full "Slot Notes" needs ~80px free after chrome. Both
+     breakpoints below scale by --gallery-slot-scale for consistency with the rest of
+     this campaign's scaled chrome (chevron/eye/Slot-Stack) — NOTE: as of this session,
+     the actual live label text is decided in JS (fitGalleryNotesTitlebarLabel,
+     imageGalleryListeners.js) by real layout measurement, not this container query —
+     the JS write clobbers these -full/-short sibling spans' text on first sync, so this
+     rule currently only governs their brief pre-sync appearance. Kept scaled rather than
+     reverted in case another consumer of these spans exists that this session didn't
+     find; if truly dead, safe to delete. */
+  @container gallery-notes-col (max-width: calc(360px * var(--gallery-slot-scale, 1))) {
+    .gallery-notes-titlebar-label-full {
+      display: none !important;
+    }
+    .gallery-notes-titlebar-label-short {
+      display: inline !important;
+    }
+  }
+  /* No label text at all once "Notes" no longer fits cleanly beside chrome */
+  @container gallery-notes-col (max-width: calc(300px * var(--gallery-slot-scale, 1))) {
+    .gallery-notes-titlebar-label {
+      display: none !important;
+    }
+  }
+  /* Protect the right cluster: eye + Slot/Stack never shrink or hide for width */
+  .gallery-notes-titlebar-right {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex: 0 0 auto;
+    flex-shrink: 0;
+    min-width: 0;
+  }
+  .gallery-notes-hide-from-joe {
+    flex: 0 0 auto;
+    flex-shrink: 0 !important;
+  }
+  .gallery-notes-target-toggle {
+    flex-shrink: 0 !important;
+  }
+  /* Chevron always available for collapse; label text is the only thing that yields */
+  .gallery-notes-collapse-toggle {
+    flex: 0 0 auto;
+    flex-shrink: 0;
+  }
+
+  .gallery-notes-titlebar + .image-notes {
+    margin-top: 4px;
+    border-top: none;
+  }
+
+  .image-frame > .gallery-inline-side-volume,
+  .image-frame > .gallery-inline-video-top-controls,
+  .image-frame > .gallery-inline-video-controls,
+  .image-frame > .gallery-inline-audio-marquee {
+    z-index: 12;
+  }
+
+  .image-frame > .gallery-inline-empty-disc {
+    z-index: 16;
+  }
+
+  .image-frame > .stack-audio-playback-controls,
+  .image-frame > .image-stack-indicator-wrapper {
+    z-index: 20;
+  }
+
+  /* Higher than every other .image-frame child (badges, scrub control, audio controls) so the
+   keyboard-shortcuts tooltip it hosts always wins — see .stack-help-btn's own z-index below. */
+  .image-frame > .stack-navigation {
+    z-index: 60;
+  }
+
+  .image-frame {
+    isolation: isolate;
+    /* isolation:isolate alone doesn't grant an implicit z-index edge over a sibling with an
+     explicit value — without one here .image-frame is z-index:auto and loses to .image-title
+     (z-index:2, a sibling of .image-stack-container — .image-frame's own parent — via
+     .slot-under-stack, both converging under .image-item), dragging .image-frame's whole
+     isolated subtree (stack-navigation, the keyboard-shortcuts tooltip, stack badges)
+     underneath the title on short slots. */
+    z-index: 3;
+    transition:
+      transform var(--transition-speed) ease-out,
+      box-shadow var(--transition-speed) ease-out;
+    --gallery-media-card-surface: radial-gradient(120% 110% at 50% 12%, color-mix(in srgb, var(--accent-color) 34%, transparent), color-mix(in srgb, var(--bg-secondary) 84%, rgba(0, 0, 0, 0.5)));
+  }
+
+  .image-frame .gallery-inline-media-shell {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: var(--radius-lg, 8px);
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+    background: var(--gallery-media-card-surface);
+    border: 1px solid color-mix(in srgb, var(--accent-color) 18%, var(--border-color));
+    box-sizing: border-box;
+    box-shadow: var(--gallery-media-card-edge-highlight);
+  }
+
+  .image-frame .gallery-inline-media-shell::after {
+    content: none;
+  }
+
+  .image-frame.gallery-drag-surface > img,
+  .image-frame.gallery-drag-surface > .gallery-inline-media,
+  .image-frame.gallery-drag-surface > .gallery-inline-link-card,
+  .image-frame.gallery-drag-surface > .gallery-inline-embed,
+  .image-frame.gallery-drag-surface > .gallery-inline-scroll-shield {
+    cursor: grab;
+  }
+
+  .image-frame.gallery-drag-surface {
+    cursor: grab;
+  }
+
+  .image-frame.gallery-drag-surface .gallery-inline-audio-controls,
+  .image-frame.gallery-drag-surface .gallery-inline-video-controls,
+  .image-frame.gallery-drag-surface .gallery-inline-side-volume,
+  .image-frame.gallery-drag-surface .gallery-inline-video-top-controls {
+    cursor: grab;
+  }
+
+  /* A card whose inline doc/embed iframe is showing. Keyed on .is-inline-frame-shown (kept in
+     lockstep with the iframe's inline display by galleryInlineFrameShown.js), NOT on
+     [style*="display: block"]: a style-attribute selector inside :has() makes Blink treat every
+     inline-style write in the document as :has-relevant and re-resolve every visible card
+     (R8 — docs/IMPLEMENTATION/R8_HAS_STYLE_ATTR_RECALC_PLAN.md). */
+  .image-frame.gallery-drag-surface:has(.gallery-inline-doc.is-inline-frame-shown),
+  .image-frame.gallery-drag-surface:has(.gallery-inline-embed.is-inline-frame-shown) {
+    cursor: grab;
+  }
+
+  .image-frame.gallery-drag-surface.dragging > img,
+  .image-frame.gallery-drag-surface.dragging > .gallery-inline-media,
+  .image-frame.gallery-drag-surface.dragging > .gallery-inline-link-card,
+  .image-frame.gallery-drag-surface.dragging > .gallery-inline-embed,
+  .image-frame.gallery-drag-surface.dragging > .gallery-inline-scroll-shield {
+    cursor: grabbing;
+  }
+
+  .image-frame.gallery-drag-surface.dragging {
+    cursor: grabbing;
+  }
+
+  .image-frame.gallery-drag-surface.dragging .gallery-inline-audio-controls,
+  .image-frame.gallery-drag-surface.dragging .gallery-inline-video-controls,
+  .image-frame.gallery-drag-surface.dragging .gallery-inline-side-volume,
+  .image-frame.gallery-drag-surface.dragging .gallery-inline-video-top-controls {
+    cursor: grabbing;
+  }
+
+  .image-frame.gallery-drag-surface.dragging:has(.gallery-inline-doc.is-inline-frame-shown),
+  .image-frame.gallery-drag-surface.dragging:has(.gallery-inline-embed.is-inline-frame-shown) {
+    cursor: grabbing;
+  }
+
+  #image-display[data-gallery-source-type="tag-query"] .image-frame.virtual-readonly-gallery-surface,
+  #image-display[data-gallery-source-type="tag-query"] .image-frame.virtual-readonly-gallery-surface > img,
+  #image-display[data-gallery-source-type="tag-query"] .image-frame.virtual-readonly-gallery-surface > .gallery-inline-media,
+  #image-display[data-gallery-source-type="tag-query"] .image-frame.virtual-readonly-gallery-surface > .gallery-inline-link-card,
+  #image-display[data-gallery-source-type="tag-query"] .image-frame.virtual-readonly-gallery-surface > .gallery-inline-embed,
+  #image-display[data-gallery-source-type="tag-query"] .image-frame.virtual-readonly-gallery-surface > .gallery-inline-scroll-shield,
+  #image-display[data-gallery-source-type="tag-query"] .image-frame.virtual-readonly-gallery-surface .gallery-inline-audio-controls,
+  #image-display[data-gallery-source-type="tag-query"] .image-frame.virtual-readonly-gallery-surface .gallery-inline-video-controls,
+  #image-display[data-gallery-source-type="tag-query"] .image-frame.virtual-readonly-gallery-surface .gallery-inline-side-volume,
+  #image-display[data-gallery-source-type="tag-query"] .image-frame.virtual-readonly-gallery-surface .gallery-inline-video-top-controls {
+    cursor: default !important;
+  }
+
+  #image-display[data-gallery-source-type="tag-query"] .image-move-indicator,
+  #image-display[data-gallery-source-type="tag-query"] .image-expand-bar {
+    display: none !important;
+  }
+
+  .image-frame .gallery-inline-video {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    cursor: default;
+    object-fit: contain;
+    aspect-ratio: auto;
+    background: transparent;
+  }
+
+  /* Removed .gallery-inline-overlay-play - idle glyph now becomes interactive */
+
+  .gallery-inline-video-idle-action svg,
+  .gallery-inline-audio-idle-action svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    fill: currentColor;
+  }
+
+  .gallery-inline-video-idle-action .gallery-inline-glyph-pause,
+  .gallery-inline-audio-idle-action .gallery-inline-glyph-pause,
+  .gallery-inline-video-idle-action[data-state="pause"] .gallery-inline-glyph-play,
+  .gallery-inline-audio-idle-action[data-state="pause"] .gallery-inline-glyph-play {
+    display: none;
+  }
+
+  .gallery-inline-video-idle-action[data-state="pause"] .gallery-inline-glyph-pause,
+  .gallery-inline-audio-idle-action[data-state="pause"] .gallery-inline-glyph-pause {
+    display: block;
+  }
+
+  /* In stacks, lift media controls while stack nav is visible so controls stay usable. */
+  .image-item.image-stack:hover .image-frame .gallery-inline-video-controls,
+  .image-item.image-stack .image-frame:has(.stack-navigation:hover) .gallery-inline-video-controls,
+  .image-item.image-stack .image-frame:has(.stack-navigation.visible) .gallery-inline-video-controls {
+    transform: translateY(-30px);
+  }
+
+  /* Idle glyph hides when media is playing */
+
+  .gallery-inline-video-controls {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: none;
+    grid-template-columns: 1fr;
+    align-items: center;
+    justify-items: center;
+    gap: 4px;
+    min-height: 54px;
+    padding: 8px 10px 10px;
+    z-index: 14;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(0);
+    pointer-events: none;
+    transition:
+      opacity var(--transition-speed) ease,
+      transform var(--transition-speed) ease;
+  }
+
+  .gallery-inline-video-controls *,
+  .gallery-inline-side-volume *,
+  .gallery-inline-video-top-controls *,
+  .gallery-inline-audio-controls *,
+  .gallery-inline-audio-progress,
+  .gallery-inline-video-progress,
+  .gallery-inline-audio-volume,
+  .gallery-inline-video-volume {
+    pointer-events: none;
+  }
+
+  .gallery-inline-video-time {
+    color: var(--text-primary);
+    font-size: 1.2em;
+    font-weight: 500;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+    justify-self: center;
+    text-shadow: var(--gallery-media-timestamp-shadow);
+  }
+
+  .gallery-inline-video-controls-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    justify-items: center;
+    width: 100%;
+    pointer-events: auto;
+  }
+
+  .gallery-inline-video-fullscreen,
+  .gallery-inline-video-menu-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--media-top-control-size, 30px);
+    min-width: var(--media-top-control-size, 30px);
+    height: var(--media-top-control-height, 30px);
+    padding: 0;
+    border-radius: var(--media-top-control-radius, 10px);
+    border: 1px solid var(--gallery-glass-control-border-resting);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--bg-tertiary) 35%, transparent), color-mix(in srgb, var(--bg-secondary) 25%, transparent));
+    color: var(--text-primary);
+    box-shadow: var(--gallery-glass-control-shadow-resting);
+    backdrop-filter: blur(10px) saturate(1.04);
+    -webkit-backdrop-filter: blur(10px) saturate(1.04);
+    cursor: pointer;
+    pointer-events: auto;
+    transition:
+      transform var(--transition-speed) ease,
+      background-color var(--transition-speed) ease,
+      color var(--transition-speed) ease,
+      border-color var(--transition-speed) ease,
+      box-shadow var(--transition-speed) ease;
+  }
+
+  .gallery-inline-video-fullscreen {
+    font-size: 13px;
+  }
+
+  .gallery-inline-video-menu-btn {
+    width: var(--media-top-control-size, 36px);
+    min-width: var(--media-top-control-size, 36px);
+    height: var(--media-top-control-height, 32px);
+    border-radius: var(--media-top-control-radius, 12px);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--bg-tertiary) 42%, transparent), color-mix(in srgb, var(--bg-secondary) 28%, transparent));
+    border: 1px solid var(--gallery-glass-control-border-active);
+    color: color-mix(in srgb, var(--text-primary) 88%, var(--gallery-warm-highlight-tint) 12%);
+  }
+
+  .gallery-inline-video-fullscreen:hover,
+  .gallery-inline-video-menu-btn:hover {
+    background: linear-gradient(135deg, color-mix(in srgb, var(--bg-tertiary) 56%, transparent), color-mix(in srgb, var(--accent-color) 38%, transparent));
+    border-color: var(--gallery-glass-control-border-hover);
+    color: var(--text-primary);
+    transform: translateY(-1px);
+    box-shadow: var(--gallery-glass-control-shadow-hover);
+  }
+
+  .gallery-inline-video-fullscreen:active,
+  .gallery-inline-video-menu-btn:active {
+    transform: translateY(-1px);
+  }
+
+  .gallery-inline-side-volume {
+    position: absolute;
+    left: calc(var(--audio-vol-left) - 2px);
+    top: 48%;
+    transform: translateY(-50%);
+    width: max(24px, calc(var(--audio-vol-width) + 8px));
+    height: calc(var(--audio-vol-height) + 30px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    opacity: 0;
+    visibility: hidden;
+    z-index: 14;
+    transition:
+      opacity var(--transition-speed) ease,
+      transform var(--transition-speed) ease;
+    pointer-events: none;
+  }
+
+  .gallery-inline-video-volume-cluster {
+    display: none;
+    transform: translateY(-50%);
+  }
+
+  .gallery-inline-video-menu-btn {
+    position: relative;
+  }
+
+  .gallery-inline-video-top-controls {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    display: none;
+    align-items: center;
+    gap: 4px;
+    z-index: 16 !important;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity var(--transition-speed) ease-in-out;
+  }
+
+  .image-frame:hover .gallery-inline-video-top-controls {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: none;
+  }
+
+  .image-frame:hover .gallery-inline-video-top-controls * {
+    pointer-events: auto;
+  }
+
+  .gallery-inline-video-speed-readout {
+    font-size: clamp(10px, calc(var(--image-gallery-width, 300px) * 0.04), 12px);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    line-height: 1;
+    color: color-mix(in srgb, var(--text-primary) 88%, var(--gallery-warm-highlight-tint) 12%);
+  }
+
+  .gallery-inline-video-fullscreen i,
+  .gallery-inline-video-menu-btn .gallery-inline-video-speed-readout {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  }
+
+  .image-frame .gallery-inline-embed {
+    aspect-ratio: inherit;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: var(--radius-lg, 8px);
+    overflow: hidden;
+    background: transparent;
+  }
+
+  /* Internet Archive audio embeds render as a thin player strip. Center the
+   iframe box within the slot instead of pinning it to the top. */
+  .image-frame .gallery-inline-embed[src*="archive.org"] {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 46px;
+    transform: translateY(-50%);
+  }
+
+  /* Edge-based drag overlays for video/audio embeds - outer edges draggable, center interactive */
+  .image-frame .gallery-embed-drag-edge {
+    position: absolute;
+    z-index: 5;
+    background: transparent;
+    pointer-events: auto;
+    cursor: grab;
+  }
+
+  .image-frame.gallery-drag-surface.dragging .gallery-embed-drag-edge {
+    cursor: grabbing;
+  }
+
+  /* Top edge - 33% from top */
+  .image-frame .gallery-embed-drag-edge[data-edge-position="top"] {
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 33%;
+  }
+
+  /* Bottom edge - 33% from bottom */
+  .image-frame .gallery-embed-drag-edge[data-edge-position="bottom"] {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 33%;
+  }
+
+  /* Left edge - 33% from left, excluding top/bottom corners */
+  .image-frame .gallery-embed-drag-edge[data-edge-position="left"] {
+    top: 33%;
+    bottom: 33%;
+    left: 0;
+    width: 33%;
+  }
+
+  /* Right edge - 33% from right, excluding top/bottom corners */
+  .image-frame .gallery-embed-drag-edge[data-edge-position="right"] {
+    top: 33%;
+    bottom: 33%;
+    right: 0;
+    width: 33%;
+  }
+
+  .image-frame .gallery-inline-embed[src*="canva.com"] {
+    width: 100%;
+    height: 100%;
+  }
+
+  .image-frame .gallery-inline-embed[src*="read.amazon.com"] {
+    width: 100%;
+    height: 100%;
+  }
+
+  .image-frame .gallery-inline-embed[src*="assets.pinterest.com"] {
+    width: 100%;
+    height: 100%;
+  }
+
+  .image-frame .gallery-inline-embed[src*="x.com"],
+  .image-frame .gallery-inline-embed[src*="twitter.com"],
+  .image-frame .gallery-inline-embed[src*="platform.twitter.com"] {
+    width: calc(100% + 4px);
+    margin-left: -2px;
+    height: calc(100% + 10px);
+    margin-top: -10px;
+    clip-path: inset(10px 0 0 0 round 8px 8px 0 0);
+  }
+
+  .image-frame .gallery-inline-embed[data-x-embed] {
+    width: 100%;
+    margin-left: 0;
+    height: 100%;
+    margin-top: 0;
+    clip-path: none;
+    border: none;
+    background: transparent;
+  }
+
+  /* GoFundMe renders as a same-origin srcdoc (no src attr) flagged via data-gofundme-embed;
+   the [src*=…] form is kept for any legacy direct-URL entries. */
+  .image-frame .gallery-inline-embed[src*="kickstarter.com"],
+  .image-frame .gallery-inline-embed[src*="gofundme.com"],
+  .image-frame .gallery-inline-embed[data-gofundme-embed],
+  .image-frame .gallery-inline-embed[data-reddit-embed],
+  .image-frame .gallery-inline-embed[data-pinterest-embed],
+  .image-frame .gallery-inline-embed[data-instagram-embed],
+  .image-frame .gallery-inline-embed[data-facebook-embed] {
+    width: calc(100% + 4px);
+    margin-left: -2px;
+    height: calc(100% + 4px);
+    margin-top: -2px;
+    clip-path: inset(2px 2px 2px 2px round 8px 8px 8px 8px);
+    border: none;
+    background: transparent;
+  }
+
+  .image-frame .gallery-inline-embed[data-tiktok-embed] {
+    width: calc(100% + 12px);
+    margin-left: -8px;
+    height: calc(100% + 4px);
+    margin-top: -2px;
+    clip-path: inset(2px 2px 2px 8px round 8px 8px 8px 8px);
+    border: none;
+    background: transparent;
+  }
+
+  .image-frame .gallery-inline-scroll-shield {
+    position: absolute;
+    inset: 0 calc(var(--gallery-inline-scroll-lane-width, clamp(14px, calc(var(--image-gallery-slot-width, var(--image-gallery-width, 300px)) * 0.09375), 36px))) 0 0;
+    z-index: 6;
+    pointer-events: auto;
+    background: transparent;
+    border-radius: var(--radius-lg, 8px);
+  }
+
+  .image-frame[data-inline-embed-interaction="top_bottom_lanes"] .gallery-inline-scroll-shield,
+  .image-frame[data-inline-embed-interaction="full_lane"] .gallery-inline-scroll-shield {
+    pointer-events: none;
+  }
+
+  .image-frame[data-inline-embed-interaction="top_bottom_lanes"] .gallery-inline-scroll-shield::before,
+  .image-frame[data-inline-embed-interaction="top_bottom_lanes"] .gallery-inline-scroll-shield::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: calc(var(--gallery-inline-scroll-lane-width, clamp(14px, calc(var(--image-gallery-slot-width, var(--image-gallery-width, 300px)) * 0.09375), 36px)));
+    pointer-events: auto;
+    background: transparent;
+  }
+
+  .image-frame[data-inline-embed-interaction="top_bottom_lanes"] .gallery-inline-scroll-shield::before {
+    top: 0;
+    height: 56px;
+  }
+
+  .image-frame[data-inline-embed-interaction="top_bottom_lanes"] .gallery-inline-scroll-shield::after {
+    bottom: 0;
+    height: 56px;
+  }
+
+  .image-frame[data-inline-embed-interaction="top_bottom_lanes"] .gallery-inline-scroll-lane {
+    pointer-events: auto;
+  }
+
+  .image-frame[data-inline-embed-interaction="full_lane"] .gallery-inline-scroll-shield::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: calc(var(--gallery-inline-scroll-lane-width, clamp(14px, calc(var(--image-gallery-slot-width, var(--image-gallery-width, 300px)) * 0.09375), 36px)));
+    top: 0;
+    bottom: 0;
+    pointer-events: auto;
+    background: transparent;
+  }
+
+  .image-frame .gallery-inline-doc,
+  .image-frame .gallery-inline-pdf-renderer {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    min-height: 0;
+    max-height: 100%;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    pointer-events: none;
+    background: transparent;
+    color-scheme: dark;
+  }
+
+  .image-frame .gallery-inline-pdf-renderer {
+    overflow: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+  }
+
+  .image-frame .gallery-inline-doc[data-bound-preview-mode^="slot-"],
+  .image-frame .gallery-inline-pdf-renderer[data-bound-preview-mode^="slot-"] {
+    height: 100%;
+    min-height: 0;
+    max-height: 100% !important;
+    margin-top: 0;
+    clip-path: none;
+    contain: none;
+    transition: none !important;
+  }
+
+  .image-frame.has-inline-scroll-lane .gallery-inline-doc,
+  .image-frame.has-inline-scroll-lane .gallery-inline-pdf-renderer,
+  .image-frame.has-inline-scroll-lane .gallery-inline-embed {
+    pointer-events: auto;
+  }
+
+  body.gallery-slot-dragging .image-frame .gallery-inline-doc,
+  body.gallery-slot-dragging .image-frame .gallery-inline-pdf-renderer,
+  body.gallery-slot-dragging .image-frame .gallery-inline-embed,
+  body.gallery-slot-dragging .image-frame .gallery-inline-scroll-shield {
+    pointer-events: none !important;
+  }
+
+  /* ── Option-drag export cursor ── */
+  body.gallery-export-drag-ready .image-item .gallery-drag-surface,
+  body.gallery-export-drag-ready .image-item .image-frame,
+  body.gallery-export-drag-ready .image-item .image-frame img,
+  body.gallery-export-drag-ready .image-item .image-frame video,
+  body.gallery-export-drag-ready .image-item .image-frame canvas,
+  body.gallery-export-drag-ready .image-item .image-frame .gallery-inline-audio-controls,
+  body.gallery-export-drag-ready .image-item .image-frame .gallery-inline-doc,
+  body.gallery-export-drag-ready .image-item .image-frame .gallery-inline-pdf-renderer,
+  body.gallery-export-drag-ready .image-item .image-frame .gallery-inline-embed {
+    cursor: alias !important;
+  }
+
+  .flowjoe-pdfjs-viewer {
+    box-sizing: border-box;
+    background: var(--pdfjs-viewer-bg);
+    color: var(--text-primary, #e0e0e0);
+  }
+
+  .flowjoe-pdfjs-pages {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 100%;
+    padding: 0;
+  }
+
+  .flowjoe-pdfjs-page {
+    display: block;
+    max-width: 100%;
+    margin: 0 auto 10px;
+    background: var(--pdfjs-page-bg);
+  }
+
+  .flowjoe-pdfjs-page:last-child {
+    margin-bottom: 0;
+  }
+
+  .flowjoe-pdfjs-status {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    padding: 6px 8px;
+    background: var(--pdfjs-status-bg);
+    color: var(--pdfjs-status-text);
+    font-size: 12px;
+    line-height: 1.2;
+  }
+
+  .gallery-inline-pdf-renderer.flowjoe-pdfjs-viewer--slot {
+    background: var(--bg-tertiary, #333);
+  }
+
+  .gallery-inline-pdf-renderer.flowjoe-pdfjs-viewer--slot .flowjoe-pdfjs-page {
+    box-shadow: none;
+  }
+
+  /* Hide PDF viewer toolbar and controls */
+  .image-frame .gallery-inline-doc {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .image-frame .gallery-inline-doc::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide PDF viewer toolbar (common PDF viewers) */
+  .image-frame .gallery-inline-doc::part(toolbar),
+.image-frame .gallery-inline-doc::part(navigation),
+.image-frame .gallery-inline-doc::part(download),
+.image-frame .gallery-inline-doc::part(print),
+.image-frame .gallery-inline-doc::part(zoom),
+.image-frame .gallery-inline-doc .toolbar,
+.image-frame .gallery-inline-doc .nav,
+.image-frame .gallery-inline-doc .controls,
+.image-frame .gallery-inline-doc .pdfViewer .toolbar,
+.image-frame .gallery-inline-doc .pdfViewer .toolbarContainer,
+.image-frame .gallery-inline-doc .pdfViewer .findbar,
+.image-frame .gallery-inline-doc .pdfViewer .secondaryToolbar,
+/* For PDF.js viewer specifically */
+.image-frame .gallery-inline-doc #toolbar,
+.image-frame .gallery-inline-doc #toolbarContainer,
+.image-frame .gallery-inline-doc #findbar,
+.image-frame .gallery-inline-doc #secondaryToolbar {
+    display: none !important;
+  }
+
+  .image-frame .gallery-inline-audio {
+    position: absolute;
+    width: 1px;
+    height: var(--hairline);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* Shared media card shell - all media cards (audio, link, blank) use this */
+  .gallery-inline-media-card-shell {
+    width: var(--image-gallery-width, 300px);
+    height: var(--image-gallery-width, 300px);
+    display: none;
+    position: relative;
+    overflow: hidden;
+    align-items: stretch;
+    justify-items: stretch;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    padding: 0;
+    background: transparent;
+    z-index: 1;
+  }
+
+  .image-frame .gallery-inline-audio-card {
+    --audio-vol-left: clamp(12px, calc(var(--image-gallery-width, 300px) * 0.042), 16px);
+    --audio-vol-width: clamp(14px, calc(var(--image-gallery-width, 300px) * 0.062), 20px);
+    --audio-vol-height: clamp(84px, calc(var(--image-gallery-width, 300px) * 0.41), 136px);
+    pointer-events: none;
+  }
+
+  .image-gallery .image-frame .gallery-inline-audio-card:not([data-audio-card-ready="1"]) {
+    display: none !important;
+  }
+
+  .gallery-inline-media-revealing {
+    opacity: 0 !important;
+  }
+
+  .image-frame .gallery-inline-video,
+  .image-frame .gallery-inline-embed,
+  .image-frame .gallery-inline-doc,
+  .image-frame .gallery-inline-pdf-renderer,
+  .image-frame .gallery-inline-link-card,
+  .image-frame .gallery-inline-audio-card {
+    opacity: 1;
+    transition: opacity var(--transition-speed) ease;
+  }
+
+  .image-frame .gallery-inline-audio-card::before {
+    content: none;
+  }
+
+  .gallery-inline-audio-cover {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+    object-fit: cover;
+    border: 0;
+    background: var(--bg-secondary, #2a2a2a);
+    pointer-events: none;
+  }
+
+  .gallery-inline-slot-shell {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: var(--radius-lg, 8px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid color-mix(in srgb, var(--accent-color) 18%, var(--border-color));
+    background: transparent;
+    color: var(--accent-color);
+    font-size: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+    z-index: 1;
+    box-shadow: var(--gallery-media-card-edge-highlight);
+  }
+
+  .gallery-inline-slot-shell {
+    background: radial-gradient(120% 110% at 50% 12%, color-mix(in srgb, var(--accent-color) 34%, transparent), color-mix(in srgb, var(--bg-secondary) 84%, rgba(0, 0, 0, 0.5)));
+  }
+
+  .gallery-inline-blank-card {
+    min-height: 0;
+    max-height: 100%;
+  }
+
+  .gallery-inline-blank-card[data-blank-kind="url"] {
+    color: var(--text-primary);
+    z-index: 8;
+    pointer-events: auto;
+  }
+
+  .gallery-inline-blank-card[data-blank-kind="doc"][data-blank-state="idle"],
+  .gallery-inline-blank-card[data-blank-kind="rich-document"][data-blank-state="idle"],
+  .gallery-inline-blank-card[data-blank-kind="rich-document"][data-blank-state="ready"],
+  .gallery-inline-blank-card[data-blank-kind="spreadsheet"][data-blank-state="idle"],
+  .gallery-inline-blank-card[data-blank-kind="spreadsheet"][data-blank-state="ready"],
+  .gallery-inline-blank-card[data-blank-kind="scheduler"][data-blank-state="idle"] {
+    color: var(--text-primary);
+    z-index: 8;
+    pointer-events: none;
+    background: transparent !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .gallery-inline-blank-card[data-blank-kind="url"][data-blank-state="idle"] {
+    background: transparent !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .gallery-inline-blank-card[data-blank-kind="url"][data-shortcut-only="1"] {
+    position: absolute;
+    inset: 0;
+    min-height: 0;
+    background: transparent !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+    z-index: 12;
+    pointer-events: auto;
+  }
+
+  /* Mirror the doc/PDF idle-card pattern when the scroll lane is active: the shield
+   (z 6, all-but-the-lane) already provides the whole-slot click-to-open surface, so
+   the shortcut-only card must NOT sit interactive at z 12 over the lane — it was
+   swallowing wheel events meant for doc-like embeds (e.g. Google Docs previews).
+   The center disc re-enables its own pointer-events below. */
+  .image-frame.has-inline-scroll-lane .gallery-inline-blank-card[data-blank-kind="url"][data-shortcut-only="1"] {
+    pointer-events: none;
+  }
+
+  .gallery-inline-blank-card[data-blank-kind="url"][data-blank-state="loading"],
+  .gallery-inline-blank-card[data-blank-kind="url"][data-blank-state="failed"] {
+    background: var(--gallery-media-card-surface);
+    border: 1px solid color-mix(in srgb, var(--accent-color) 18%, var(--border-color));
+    box-shadow: var(--gallery-media-card-edge-highlight);
+  }
+
+  .gallery-inline-blank-card[data-blank-kind="url"] .gallery-inline-empty-disc {
+    pointer-events: auto;
+  }
+
+  .gallery-inline-blank-card[data-blank-kind="doc"][data-blank-state="idle"] .gallery-inline-empty-disc,
+  .gallery-inline-blank-card[data-blank-kind="rich-document"][data-blank-state="idle"] .gallery-inline-empty-disc,
+  .gallery-inline-blank-card[data-blank-kind="rich-document"][data-blank-state="ready"] .gallery-inline-empty-disc,
+  .gallery-inline-blank-card[data-blank-kind="spreadsheet"][data-blank-state="idle"] .gallery-inline-empty-disc,
+  .gallery-inline-blank-card[data-blank-kind="spreadsheet"][data-blank-state="ready"] .gallery-inline-empty-disc {
+    pointer-events: auto;
+  }
+
+  .gallery-spreadsheet-preview {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-rows: 32px 1fr;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    border: 1px solid color-mix(in srgb, var(--accent-color) 32%, var(--border-color));
+    border-radius: var(--radius-lg, 8px);
+    box-sizing: border-box;
+    background: color-mix(in srgb, var(--bg-primary) var(--preview-surface-lighten-mix), var(--preview-surface-lighten-color));
+    color: var(--text-primary);
+    font: inherit;
+    text-align: left;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 1;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      0 12px 28px rgba(0, 0, 0, 0.22);
+  }
+
+  .gallery-spreadsheet-preview-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+    align-items: center;
+    min-width: 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--border-color) 72%, transparent);
+  }
+
+  .gallery-spreadsheet-preview-title,
+  .gallery-spreadsheet-preview-sheet {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .gallery-spreadsheet-preview-title {
+    color: var(--accent-color);
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .gallery-spreadsheet-preview-sheet {
+    max-width: 96px;
+    color: var(--text-secondary);
+    font-family:
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif;
+    font-size: var(--font-meta);
+    font-weight: 600;
+  }
+
+  .gallery-spreadsheet-preview-grid {
+    display: grid;
+    align-content: start;
+    min-height: 0;
+    margin-top: 10px;
+    border-top: 1px solid color-mix(in srgb, var(--border-color) 80%, transparent);
+    border-left: 1px solid color-mix(in srgb, var(--border-color) 80%, transparent);
+    background: color-mix(in srgb, var(--bg-secondary) var(--preview-surface-lighten-mix), var(--preview-surface-lighten-color));
+    overflow: hidden;
+  }
+
+  .gallery-inline-blank-card[data-blank-kind="spreadsheet"][data-spreadsheet-preview-ready="1"] .gallery-inline-empty-disc {
+    z-index: 3;
+  }
+
+  .gallery-spreadsheet-preview-corner,
+  .gallery-spreadsheet-preview-col,
+  .gallery-spreadsheet-preview-row,
+  .gallery-spreadsheet-preview-cell {
+    min-width: 0;
+    height: 25px;
+    padding: 0 6px;
+    border-right: 1px solid color-mix(in srgb, var(--border-color) 76%, transparent);
+    border-bottom: 1px solid color-mix(in srgb, var(--border-color) 76%, transparent);
+    box-sizing: border-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 24px;
+  }
+
+  .gallery-spreadsheet-preview-corner,
+  .gallery-spreadsheet-preview-col,
+  .gallery-spreadsheet-preview-row {
+    color: var(--text-secondary);
+    background: color-mix(in srgb, var(--bg-tertiary) var(--preview-surface-lighten-mix), var(--preview-surface-lighten-color));
+    font-family:
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  .gallery-spreadsheet-preview-cell {
+    color: var(--text-primary);
+    background: color-mix(in srgb, var(--bg-primary) var(--preview-surface-lighten-mix), var(--preview-surface-lighten-color));
+    font-family:
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  /* Rich document gallery card preview (static, document-like). Center disc remains on top. */
+  .gallery-rich-document-preview {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+    height: 100%;
+    padding: 14px 16px;
+    border: 1px solid color-mix(in srgb, var(--accent-color) 28%, var(--border-color));
+    border-radius: var(--radius-lg, 8px);
+    box-sizing: border-box;
+    background: color-mix(in srgb, var(--bg-primary) var(--preview-surface-lighten-mix), var(--preview-surface-lighten-color));
+    color: var(--text-primary);
+    text-align: left;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 1;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      0 12px 28px rgba(0, 0, 0, 0.22);
+  }
+
+  .gallery-rich-document-preview-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+    min-width: 0;
+    padding-bottom: 6px;
+    border-bottom: 1px solid color-mix(in srgb, var(--border-color) 72%, transparent);
+  }
+
+  .gallery-rich-document-preview-title {
+    font-weight: 700;
+    font-size: 13px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .gallery-rich-document-preview-meta {
+    font-size: var(--font-meta);
+    opacity: 0.7;
+    white-space: nowrap;
+  }
+
+  .gallery-rich-document-preview-line {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 12px;
+    line-height: 1.5;
+    color: color-mix(in srgb, var(--text-primary) 88%, transparent);
+  }
+
+  .gallery-rich-document-preview-line--heading {
+    font-weight: 700;
+    font-size: 13px;
+  }
+
+  .gallery-rich-document-preview-line--list {
+    padding-left: 6px;
+  }
+
+  .gallery-rich-document-preview-line--empty {
+    opacity: 0.55;
+    font-style: italic;
+  }
+
+  /* Calendar gallery card preview (static agenda; never a live FullCalendar). Center disc on top. */
+  .gallery-calendar-preview {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+    height: 100%;
+    padding: 14px 16px;
+    border: 1px solid color-mix(in srgb, var(--accent-color) 28%, var(--border-color));
+    border-radius: var(--radius-lg, 8px);
+    box-sizing: border-box;
+    background: color-mix(in srgb, var(--bg-primary) var(--preview-surface-lighten-mix), var(--preview-surface-lighten-color));
+    color: var(--text-primary);
+    text-align: left;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 1;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      0 12px 28px rgba(0, 0, 0, 0.22);
+  }
+
+  .gallery-calendar-preview-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+    min-width: 0;
+    padding-bottom: 6px;
+    border-bottom: 1px solid color-mix(in srgb, var(--border-color) 72%, transparent);
+  }
+
+  .gallery-calendar-preview-title {
+    font-weight: 700;
+    font-size: 13px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .gallery-calendar-preview-meta {
+    font-size: var(--font-meta);
+    opacity: 0.7;
+    white-space: nowrap;
+  }
+
+  .gallery-calendar-preview-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .gallery-calendar-preview-event {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    min-width: 0;
+    font-size: 12px;
+    line-height: 1.4;
+    color: color-mix(in srgb, var(--text-primary) 88%, transparent);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .gallery-calendar-preview-date {
+    flex: 0 0 auto;
+    font-variant-numeric: tabular-nums;
+    opacity: 0.72;
+    font-size: var(--font-meta);
+  }
+
+  .gallery-calendar-preview-name {
+    flex: 1 1 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .gallery-calendar-preview-badges {
+    flex: 0 0 auto;
+    font-size: var(--font-micro);
+    opacity: 0.6;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
+  .gallery-calendar-preview-empty,
+  .gallery-calendar-preview-more {
+    opacity: 0.55;
+    font-style: italic;
+    font-size: 12px;
+  }
+
+  .gallery-calendar-preview--empty-calendar {
+    gap: 8px;
+    padding: 14px 16px 16px;
+  }
+
+  .gallery-calendar-preview-month {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    grid-auto-rows: minmax(0, 1fr);
+    gap: 1px;
+    padding-top: 2px;
+    overflow: hidden;
+    color: color-mix(in srgb, var(--text-primary) 84%, transparent);
+  }
+
+  .gallery-calendar-preview-weekday,
+  .gallery-calendar-preview-day {
+    min-width: 0;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid color-mix(in srgb, var(--border-color) 68%, transparent);
+    background: color-mix(in srgb, var(--bg-secondary) 72%, transparent);
+    font-size: 11px;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    overflow: hidden;
+  }
+
+  .gallery-calendar-preview-weekday {
+    max-height: 22px;
+    border-color: color-mix(in srgb, var(--accent-color) 24%, var(--border-color));
+    background: color-mix(in srgb, var(--accent-color) 13%, var(--bg-secondary));
+    color: color-mix(in srgb, var(--text-primary) 76%, transparent);
+    font-size: var(--font-micro);
+    font-weight: 700;
+  }
+
+  .gallery-calendar-preview-day.is-muted {
+    color: color-mix(in srgb, var(--text-primary) 32%, transparent);
+    background: color-mix(in srgb, var(--bg-primary) 84%, transparent);
+  }
+
+  .gallery-calendar-preview-foot {
+    margin-top: auto;
+    padding-top: 6px;
+    font-size: var(--font-micro);
+    opacity: 0.6;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    border-top: 1px solid color-mix(in srgb, var(--border-color) 60%, transparent);
+  }
+
+  /* Calendar import-shape picker (Phase 3b). Shown on .ics import via the Add-item path. */
+  .calendar-shape-prompt-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--modal-overlay);
+  }
+
+  .calendar-shape-prompt {
+    width: min(420px, 92vw);
+    max-height: 86vh;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 20px;
+    border-radius: var(--radius-2xl, 12px);
+    border: 1px solid var(--border-color);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    box-shadow: var(--elev-overlay);
+  }
+
+  .calendar-shape-prompt-title {
+    font-weight: 700;
+    font-size: 16px;
+  }
+
+  .calendar-shape-prompt-summary {
+    font-size: 12px;
+    opacity: 0.72;
+  }
+
+  .calendar-shape-prompt-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .calendar-shape-prompt-option {
+    display: flex;
+    flex-direction: column;
+    gap: var(--text-stack-gap);
+    text-align: left;
+    padding: 10px 12px;
+    border-radius: var(--radius-lg, 8px);
+    border: 1px solid var(--border-color);
+    background: color-mix(in srgb, var(--bg-primary) var(--preview-surface-lighten-mix), var(--preview-surface-lighten-color));
+    color: inherit;
+    cursor: pointer;
+  }
+
+  .calendar-shape-prompt-option:hover,
+  .calendar-shape-prompt-option:focus-visible {
+    border-color: var(--accent-color);
+    background: color-mix(in srgb, var(--accent-color) 14%, var(--bg-primary));
+    outline: none;
+  }
+
+  .calendar-shape-prompt-option-label {
+    font-weight: 600;
+    font-size: var(--font-control);
+  }
+
+  .calendar-shape-prompt-option-hint {
+    font-size: var(--font-meta);
+    opacity: 0.66;
+  }
+
+  .calendar-shape-prompt-grouping {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: var(--font-control);
+  }
+
+  .calendar-shape-prompt-grouping-select {
+    flex: 0 0 auto;
+    padding: 4px 8px;
+    border-radius: var(--radius-md, 6px);
+    border: 1px solid var(--border-color);
+    background: var(--bg-primary);
+    color: inherit;
+  }
+
+  .calendar-shape-prompt-footer {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .calendar-shape-prompt-cancel {
+    padding: 7px 14px;
+    border-radius: var(--radius-lg, 8px);
+    border: 1px solid var(--border-color);
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  .calendar-shape-prompt-cancel:hover {
+    border-color: var(--accent-color);
+  }
+
+  .gallery-inline-blank-card[data-blank-kind="url"] .gallery-inline-empty-disc .gallery-inline-empty-rest {
+    opacity: 0;
+  }
+
+  .gallery-inline-blank-card[data-blank-kind="url"] .gallery-inline-empty-disc .gallery-inline-empty-action {
+    opacity: 1;
+  }
+
+  .gallery-inline-blank-card[data-blank-kind="doc"][data-blank-state="idle"] .gallery-inline-empty-disc .gallery-inline-empty-rest,
+  .gallery-inline-blank-card[data-blank-kind="spreadsheet"][data-blank-state="idle"] .gallery-inline-empty-disc .gallery-inline-empty-rest {
+    opacity: 0;
+  }
+
+  .gallery-inline-blank-card[data-blank-kind="doc"][data-blank-state="idle"] .gallery-inline-empty-disc .gallery-inline-empty-action,
+  .gallery-inline-blank-card[data-blank-kind="spreadsheet"][data-blank-state="idle"] .gallery-inline-empty-disc .gallery-inline-empty-action {
+    opacity: 1;
+  }
+
+  .gallery-inline-empty-disc:is(button) {
+    appearance: none;
+    -webkit-appearance: none;
+    padding: 0;
+    margin: 0;
+    color: inherit;
+    box-shadow: none;
+    outline: none;
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .gallery-inline-blank-icon,
+  .gallery-inline-blank-action-set {
+    display: none;
+  }
+
+  .gallery-inline-blank-icon--url {
+    width: var(--gallery-center-icon-url-size);
+    height: var(--gallery-center-icon-url-size);
+    transform: translate(var(--gallery-center-icon-url-offset-x), var(--gallery-center-icon-url-offset-y));
+    display: none;
+  }
+
+  .gallery-inline-blank-card[data-blank-kind="url"] .gallery-inline-blank-icon.gallery-inline-blank-icon--url {
+    width: 100%;
+    height: 100%;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .gallery-inline-blank-card[data-blank-kind="url"] svg.gallery-inline-blank-icon--url {
+    display: block !important;
+    width: 100%;
+    height: 100%;
+  }
+
+  .gallery-inline-blank-icon--url path,
+  .gallery-inline-blank-icon--url circle {
+    fill: currentColor;
+    stroke: currentColor;
+  }
+
+  .gallery-inline-blank-icon--video,
+  .gallery-inline-blank-icon--audio {
+    width: var(--gallery-center-icon-media-size);
+    height: var(--gallery-center-icon-media-size);
+    font-size: var(--gallery-center-icon-media-size);
+    line-height: 1;
+    transform: translate(var(--gallery-center-icon-media-offset-x), var(--gallery-center-icon-media-offset-y));
+    display: none;
+  }
+
+  .gallery-inline-blank-icon--doc,
+  .gallery-inline-blank-icon--spreadsheet,
+  .gallery-inline-blank-icon--calendar,
+  .gallery-inline-blank-icon--scheduler {
+    width: var(--gallery-center-icon-doc-size);
+    height: var(--gallery-center-icon-doc-size);
+    font-size: var(--gallery-center-icon-doc-size);
+    line-height: 1;
+    transform: translate(var(--gallery-center-icon-doc-offset-x), var(--gallery-center-icon-doc-offset-y));
+    display: none;
+  }
+
+  .gallery-inline-blank-icon--doc path,
+  .gallery-inline-blank-icon--spreadsheet path,
+  .gallery-inline-blank-icon--calendar path,
+  .gallery-inline-blank-icon--scheduler path {
+    fill: currentColor;
+  }
+
+  /* Scheduler card whose task is not in the live flowScheduler envelope (imported without its
+   task, or task deleted): dim the card and label it. Plan: "imported inert cards render as
+   'Scheduler unavailable' and cannot run." A present-but-disabled task shows "Paused" instead
+   (covers user pauses and repair states like missing-target / imported-disabled). */
+  .gallery-inline-blank-card[data-blank-kind="scheduler"][data-scheduler-link="unavailable"],
+  .gallery-inline-blank-card[data-blank-kind="scheduler"][data-scheduler-link="paused"] {
+    opacity: 0.55;
+  }
+  .gallery-inline-blank-card[data-blank-kind="scheduler"][data-scheduler-link="unavailable"]::after,
+  .gallery-inline-blank-card[data-blank-kind="scheduler"][data-scheduler-link="paused"]::after {
+    content: "Scheduler unavailable";
+    position: absolute;
+    left: 50%;
+    bottom: 10%;
+    transform: translateX(-50%);
+    font-size: var(--font-meta);
+    line-height: 1.2;
+    white-space: nowrap;
+    color: var(--gallery-meta-text-color);
+    pointer-events: none;
+  }
+  .gallery-inline-blank-card[data-blank-kind="scheduler"][data-scheduler-link="paused"]::after {
+    content: "Paused";
+  }
+
+  /* Last run result on the card (Slice 3): a small status chip from the runner's
+   session cache — "applied" / "proposed" / "failed" / "deferred". */
+  .gallery-inline-blank-card[data-blank-kind="scheduler"][data-scheduler-last-run]::before {
+    content: attr(data-scheduler-last-run);
+    position: absolute;
+    top: 8%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: var(--font-micro);
+    line-height: 1.2;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: var(--radius-full, 999px);
+    border: 1px solid var(--border-color);
+    color: var(--gallery-meta-text-color);
+    pointer-events: none;
+  }
+  .gallery-inline-blank-card[data-blank-kind="scheduler"][data-scheduler-last-run="failed"]::before {
+    color: var(--danger-color, #dc3545);
+    border-color: var(--danger-color, #dc3545);
+  }
+
+  /* Settings → Automation (schedulerPanel.js): task rows, review inbox, run history. */
+  .scheduler-section-title {
+    /* margin is dead here: every real construction site (index.html Tasks/Review Inbox/Recent Runs)
+     nests this inside .setting-header, so one of two higher-specificity rules always wins and sets
+     margin:0 — `.setting-header h4` (0,0,1,1) for Tasks/Review Inbox, or the even more specific
+     `.scheduler-section-head .scheduler-section-title` below (0,0,2,0) for Recent Runs, which also
+     carries the .scheduler-section-head class. Left undeclared rather than removed-and-forgotten;
+     see docs/ARCHIVE/CSS_SPACING_SHADOW_DESIGN_EXPLORATION.md §6 Slice 53. */
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  .scheduler-section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .scheduler-section-head .scheduler-section-title {
+    margin: 0;
+  }
+  .scheduler-json-view {
+    max-height: 50vh;
+    overflow: auto;
+    margin: 0;
+    padding: 12px;
+    border-radius: var(--radius-lg, 8px);
+    background: var(--bg-secondary, #2a2a2a);
+    border: 1px solid var(--border-color);
+    font-family: var(--app-font-family);
+    font-size: 12px;
+    line-height: 1.45;
+    color: var(--text-primary);
+    white-space: pre;
+    text-align: left;
+  }
+  .scheduler-task-row,
+  .scheduler-review-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-color);
+  }
+  .scheduler-task-main,
+  .scheduler-review-main {
+    display: flex;
+    flex-direction: column;
+    gap: var(--text-stack-gap);
+    /* Give the title column a real basis and let it grow: when the action
+     buttons can't fit beside it, the row wraps and the title gets full width
+     instead of being crushed to one character per line. */
+    flex: 1 1 220px;
+    min-width: 0;
+  }
+  .scheduler-task-title,
+  .scheduler-review-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    /* Break only at sensible points; never letter-stack a normal title. */
+    overflow-wrap: anywhere;
+  }
+  .scheduler-task-meta,
+  .scheduler-review-headline {
+    font-size: var(--font-scheduler-review-body);
+    color: var(--text-secondary);
+  }
+  /* Sit the schedule line evenly between the status chip/title row above and the button row below, instead of
+   hugging the title (the row's 8px bottom gap was unmatched above it). */
+  .scheduler-task-meta {
+    margin-top: 6px;
+  }
+  /* Token chips: the per-run estimate/actual on the schedule line, and the actual on each run-history row. Muted,
+   tabular figures, default cursor (they carry a tooltip but aren't clickable). */
+  .scheduler-task-tokens,
+  .scheduler-run-tokens {
+    color: var(--text-secondary, #999);
+    font-variant-numeric: tabular-nums;
+    cursor: help;
+    white-space: nowrap;
+  }
+  /* Task run-state: a prominent pill (green Running / grey Paused / amber Idle-engine-off) so the state is
+   unmistakable at a glance instead of buried as "· paused" grey text. */
+  .scheduler-task-headline {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px 8px;
+  }
+  .scheduler-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: var(--pad-compact); /* was a drifted 1px 8px */
+    border-radius: var(--radius-full, 999px);
+    font-size: var(--font-micro);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    border: 1px solid transparent;
+    flex-shrink: 0;
+  }
+  .scheduler-status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: var(--radius-full, 999px);
+    background: currentColor;
+    flex-shrink: 0;
+  }
+  .scheduler-status-running {
+    color: var(--success-color, #2f9e44);
+    background: color-mix(in srgb, var(--success-color, #2f9e44) 16%, transparent);
+    border-color: color-mix(in srgb, var(--success-color, #2f9e44) 38%, transparent);
+  }
+  .scheduler-status-paused {
+    color: var(--text-secondary);
+    background: color-mix(in srgb, var(--text-secondary) 14%, transparent);
+    border-color: color-mix(in srgb, var(--text-secondary) 32%, transparent);
+  }
+  .scheduler-status-idle {
+    color: var(--warning-color, #e0a046);
+    background: color-mix(in srgb, var(--warning-color, #e0a046) 16%, transparent);
+    border-color: color-mix(in srgb, var(--warning-color, #e0a046) 38%, transparent);
+  }
+  /* A live "running" task gets a gentle pulsing dot (it's actively on a timer). */
+  .scheduler-status-running .scheduler-status-dot {
+    animation: scheduler-pulse 1.8s ease-in-out infinite;
+  }
+  @keyframes scheduler-pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.35;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .scheduler-status-running .scheduler-status-dot {
+      animation: none;
+    }
+  }
+  .scheduler-review-held {
+    display: block;
+    margin-top: 2px;
+    font-size: var(--font-scheduler-review-body);
+    font-weight: 600;
+    color: var(--warning-color, #e0a046);
+  }
+  .scheduler-task-warning {
+    font-size: var(--font-scheduler-review-body);
+    color: var(--warning-color, #e0a046);
+  }
+  .scheduler-review-lines {
+    margin: 4px 0 0;
+    padding-left: 18px;
+    font-size: var(--font-scheduler-review-body);
+    color: var(--text-secondary);
+  }
+  .scheduler-task-actions,
+  .scheduler-review-actions {
+    display: flex;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+  }
+  .scheduler-review-actions {
+    gap: var(--action-row-gap); /* was a drifted 6px; labeled decision rows breathe at 10px */
+  }
+  .scheduler-task-actions {
+    /* NOT an action-row-gap member: this is a COLUMN (see rule below) whose gap separates the
+     button row from the run-status/progress line — the buttons themselves are spaced by the
+     row's space-between. */
+    gap: 6px;
+  }
+  /* Task actions stack the button row over a live "Run now" progress / "Ran at …" line. The block takes a FULL
+   row beneath the title (flex-basis:100% → wraps below it) so its button row can spread the buttons evenly
+   across the whole panel width, rather than being squeezed into a narrow column beside the title. */
+  .scheduler-task-actions {
+    flex-direction: column;
+    align-items: stretch;
+    flex: 1 1 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+  .scheduler-task-actions-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    /* Spread the buttons equidistantly across the full row: equal free space pooled BETWEEN each pair so the
+     gaps are uniform, with the outer buttons flush to the row edges. width:100% gives space-between a bounded
+     track to distribute across; gap:6px is the minimum spacing if the row ever has to wrap. */
+    justify-content: space-between;
+    width: 100%;
+    max-width: 100%;
+  }
+  .scheduler-task-runstatus {
+    font-size: var(--font-meta);
+    color: var(--text-secondary, #999);
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .scheduler-task-runstatus:empty {
+    display: none;
+  }
+  .scheduler-task-runstatus-running {
+    color: var(--text-primary, #e0e0e0);
+  }
+  .scheduler-task-runstatus-running::before {
+    content: "";
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    margin-right: 6px;
+    border-radius: var(--radius-full, 999px);
+    background: var(--accent-color, #ff9500);
+    vertical-align: baseline;
+    animation: scheduler-runstatus-pulse 1s ease-in-out infinite;
+  }
+  @keyframes scheduler-runstatus-pulse {
+    0%,
+    100% {
+      opacity: 0.35;
+      transform: scale(0.8);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .scheduler-task-runstatus-running::before {
+      animation: none;
+    }
+  }
+  /* High-level phase progress bar under the button row — fills as the run climbs think→…→apply. Spans the full
+   width of the (now full-width) action block so it reads as this task's progress across the whole panel. */
+  .scheduler-task-bar {
+    width: 100%;
+    max-width: 100%;
+    height: 4px;
+    margin-top: 4px;
+    border-radius: var(--radius-full, 999px);
+    background: rgba(127, 127, 127, 0.22);
+    overflow: hidden;
+    align-self: stretch;
+  }
+  .scheduler-task-bar-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: var(--radius-full, 999px);
+    background: var(--accent-color, #ff9500);
+    transition: width var(--transition-speed-slow) ease;
+  }
+  .scheduler-task-bar-running .scheduler-task-bar-fill {
+    animation: scheduler-task-bar-shimmer 1.3s ease-in-out infinite;
+  }
+  @keyframes scheduler-task-bar-shimmer {
+    0%,
+    100% {
+      opacity: 0.72;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .scheduler-task-bar-fill {
+      transition: none;
+    }
+    .scheduler-task-bar-running .scheduler-task-bar-fill {
+      animation: none;
+    }
+  }
+  .scheduler-btn {
+    font-size: var(--font-control);
+    padding: 4px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md, 6px);
+    background: transparent;
+    color: var(--text-primary);
+    cursor: pointer;
+    /* Center any leading icon (the Proposal/Task notes glyph) next to the label with a small gap. */
+    display: inline-flex;
+    align-items: center;
+    gap: var(--control-icon-gap); /* unified from 5px — re-converges with .fm-approval-view-json (the pair slice 2 temporarily split) */
+    /* Zero any inherited button margin so the only spacing between action buttons is the row's flex gap
+     (task rows: space-between with a 6px wrap floor; review rows: var(--action-row-gap)) —
+     otherwise inherited margins both spread the buttons apart and force them to wrap off onto extra lines. */
+    margin: 0;
+  }
+  .scheduler-btn-icon {
+    flex: 0 0 auto;
+    opacity: 0.85;
+  }
+  .scheduler-btn:hover:not(:disabled) {
+    background: var(--hover-bg, #444);
+  }
+  .scheduler-btn:disabled {
+    opacity: var(--disabled-opacity-field);
+    cursor: default;
+  }
+  .scheduler-btn-danger {
+    color: var(--danger-color, #dc3545);
+    border-color: var(--danger-color, #dc3545);
+  }
+  .scheduler-run-row {
+    display: flex;
+    gap: 12px;
+    padding: 4px 0;
+    font-size: var(--font-scheduler-review-body);
+    color: var(--text-secondary);
+    border-bottom: 1px dashed var(--border-color);
+  }
+  .scheduler-run-row[data-status="failed"] .scheduler-run-status {
+    color: var(--danger-color, #dc3545);
+  }
+
+  /* Schedule indicators (schedulerIndicators.js): the tree-node clock icon and the
+   gallery slot badge that mark automation-driven nodes/slots. Both open the Tasks
+   panel via the shared .js-open-automation delegate. */
+  .tree-node-schedule-indicator {
+    color: var(--accent-color, #ff9500);
+  }
+  /* Paused: every task on this node is turned off → grey the clock so it reads as dormant, not live. */
+  .tree-node-schedule-indicator--paused {
+    color: var(--text-secondary, #999);
+  }
+  .tree-node-schedule-indicator:hover,
+  .tree-node-schedule-indicator:focus-visible {
+    opacity: 1;
+    filter: brightness(1.15);
+    outline: none;
+  }
+  /* Overlay chip on the slot's media frame (top-right) — clearly marks a slot that a
+   scheduled task targets. Sits above media via z-index; click opens the Tasks panel.
+   Anchored under the metadata LED / collapse-toggle row (top:5px, right:5px, height
+   16px * --gallery-slot-scale in the default/horizontal layout — see styles-browser.css)
+   rather than floating independently, so its right edge lines up with the toggle's and
+   it never collides with that row. In vertical/masonry layout the toggle is display:none
+   (styles-browser.css's .image-gallery.vertical-layout override) so the row's real
+   rendered height is just the LED dot's 6px * scale, not the toggle's 16px * scale — see
+   the vertical-layout override below that accounts for this. */
+  .scheduler-slot-badge {
+    position: absolute;
+    top: calc(5px + (16px * var(--gallery-slot-scale, 1)) + 5px);
+    right: 5px;
+    z-index: 6;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    height: 24px;
+    /* Zero buttons.css's global `button { margin: 5px; }` — left uncleared, the 5px
+       right margin quietly shifted this chip 5px left of the toggle's right edge and
+       inflated the gap under the toggle/LED row by another 5px (same footgun the
+       toggle's own margin:0 comment above already calls out). */
+    margin: 0;
+    padding: 0 9px; /* fixed-height (24px) overlay chip: vertical padding would inflate the box (no border-box); kept bespoke */
+    border: 1px solid var(--accent-color, #ff9500);
+    border-radius: var(--radius-2xl, 12px);
+    background: color-mix(in srgb, var(--accent-color, #ff9500) 88%, #000 12%);
+    color: #fff;
+    font-size: 11px; /* NOT --font-meta: this is a clickable <button> badge (opens the Tasks panel), not passive meta text — PM caught this miscategorization */
+    font-weight: 600;
+    line-height: 1;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+    cursor: pointer;
+  }
+  .scheduler-slot-badge .scheduler-slot-badge-text {
+    white-space: nowrap;
+  }
+  /* Vertical/masonry: the collapse toggle is display:none there (styles-browser.css),
+     so the LED dot alone (6px * scale) is the row's real rendered height — use that
+     instead of the toggle's 16px * scale, or the gap under the LED balloons. */
+  .image-gallery.vertical-layout .scheduler-slot-badge {
+    top: calc(5px + (6px * var(--gallery-slot-scale, 1)) + 5px);
+  }
+  /* Paused state: the slot is governed only by paused task(s) — drop the orange for a muted grey so it reads as
+   "scheduled, but off" at a glance. (Active wins, so this only shows when NO governing task is enabled.) */
+  .scheduler-slot-badge--paused {
+    border-color: color-mix(in srgb, var(--text-secondary, #999) 50%, transparent);
+    background: color-mix(in srgb, var(--text-secondary, #999) 32%, #000 45%);
+    color: var(--text-secondary, #999);
+    opacity: 0.9;
+  }
+  .scheduler-slot-badge:hover,
+  .scheduler-slot-badge:focus-visible {
+    filter: brightness(1.08);
+    outline: none;
+  }
+
+  .gallery-inline-blank-icon--add {
+    width: var(--gallery-center-icon-add-size);
+    height: var(--gallery-center-icon-add-size);
+    font-size: var(--gallery-center-icon-add-size);
+    line-height: 1;
+    transform: translate(var(--gallery-center-icon-add-offset-x), var(--gallery-center-icon-add-offset-y));
+  }
+
+  .gallery-inline-blank-card[data-blank-kind="audio"] .gallery-inline-blank-icon--audio,
+  .gallery-inline-blank-card[data-blank-kind="video"] .gallery-inline-blank-icon--video,
+  .gallery-inline-blank-card[data-blank-kind="doc"] .gallery-inline-blank-icon--doc,
+  .gallery-inline-blank-card[data-blank-kind="rich-document"] .gallery-inline-blank-icon--doc,
+  .gallery-inline-blank-card[data-blank-kind="spreadsheet"] .gallery-inline-blank-icon--spreadsheet,
+  .gallery-inline-blank-card[data-blank-kind="calendar"] .gallery-inline-blank-icon--calendar,
+  .gallery-inline-blank-card[data-blank-kind="calendar-event"] .gallery-inline-blank-icon--calendar,
+  .gallery-inline-blank-card[data-blank-kind="scheduler"] .gallery-inline-blank-icon--scheduler {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .gallery-inline-empty-disc[data-center-kind="audio"] .gallery-inline-blank-icon--audio,
+  .gallery-inline-empty-disc[data-center-kind="video"] .gallery-inline-blank-icon--video,
+  .gallery-inline-empty-disc[data-center-kind="add"] .gallery-inline-blank-icon--add {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .gallery-inline-blank-card[data-blank-action="play"] .gallery-inline-blank-action-set--play,
+  .gallery-inline-blank-card[data-blank-action="open"] .gallery-inline-blank-action-set--open {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .gallery-inline-empty-disc[data-center-action="play"] .gallery-inline-blank-action-set--play {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .gallery-inline-link-card .gallery-inline-blank-action-set--open {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .gallery-inline-blank-card[data-blank-kind="url"] .gallery-inline-blank-rest.gallery-inline-empty-rest {
+    width: var(--gallery-center-icon-url-size);
+    height: var(--gallery-center-icon-url-size);
+    min-width: var(--gallery-center-icon-url-size);
+    min-height: var(--gallery-center-icon-url-size);
+    flex: 0 0 var(--gallery-center-icon-url-size);
+    transform: translate(-50%, -50%) translate(var(--gallery-center-icon-url-offset-x), var(--gallery-center-icon-url-offset-y));
+  }
+
+  .gallery-inline-blank-card[data-blank-kind="url"] .gallery-inline-blank-action.gallery-inline-empty-action {
+    width: var(--gallery-center-icon-url-action-size);
+    height: var(--gallery-center-icon-url-action-size);
+    min-width: var(--gallery-center-icon-url-action-size);
+    min-height: var(--gallery-center-icon-url-action-size);
+    flex: 0 0 var(--gallery-center-icon-url-action-size);
+    transform: translate(-50%, -50%) translate(var(--gallery-center-icon-url-action-offset-x), var(--gallery-center-icon-url-action-offset-y));
+  }
+
+  .gallery-inline-link-card .gallery-inline-blank-rest.gallery-inline-empty-rest {
+    width: var(--gallery-center-icon-url-size);
+    height: var(--gallery-center-icon-url-size);
+    min-width: var(--gallery-center-icon-url-size);
+    min-height: var(--gallery-center-icon-url-size);
+    flex: 0 0 var(--gallery-center-icon-url-size);
+    transform: translate(-50%, -50%) translate(var(--gallery-center-icon-url-offset-x), var(--gallery-center-icon-url-offset-y));
+  }
+
+  .gallery-inline-link-card .gallery-inline-blank-action.gallery-inline-empty-action {
+    width: var(--gallery-center-icon-url-action-size);
+    height: var(--gallery-center-icon-url-action-size);
+    min-width: var(--gallery-center-icon-url-action-size);
+    min-height: var(--gallery-center-icon-url-action-size);
+    flex: 0 0 var(--gallery-center-icon-url-action-size);
+    transform: translate(-50%, -50%) translate(var(--gallery-center-icon-url-action-offset-x), var(--gallery-center-icon-url-action-offset-y));
+  }
+
+  .gallery-inline-empty-disc[data-center-kind="video"] .gallery-inline-blank-action.gallery-inline-empty-action,
+  .gallery-inline-empty-disc[data-center-kind="audio"] .gallery-inline-blank-action.gallery-inline-empty-action {
+    width: var(--gallery-center-icon-media-action-size);
+    height: var(--gallery-center-icon-media-action-size);
+    transform: translate(-50%, -50%) translate(var(--gallery-center-icon-media-action-offset-x), var(--gallery-center-icon-media-action-offset-y));
+  }
+
+  .gallery-inline-empty-disc[data-center-kind="add"] .gallery-inline-blank-action.gallery-inline-empty-action {
+    width: var(--gallery-center-icon-add-action-size);
+    height: var(--gallery-center-icon-add-action-size);
+    transform: translate(-50%, -50%) translate(var(--gallery-center-icon-add-action-offset-x), var(--gallery-center-icon-add-action-offset-y));
+  }
+
+  .gallery-inline-blank-action-set--play,
+  .gallery-inline-blank-action-set--play svg,
+  .gallery-inline-blank-action-set--open,
+  .gallery-inline-blank-action-set--open svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .gallery-inline-blank-action-set--play svg {
+    display: block;
+    fill: currentColor;
+  }
+
+  .gallery-inline-blank-action-set--open svg {
+    display: block;
+    fill: currentColor;
+  }
+
+  .gallery-inline-blank-action-set--play .gallery-inline-glyph-pause,
+  .gallery-inline-blank-card[data-blank-action="play"] .gallery-inline-blank-action[data-state="pause"] .gallery-inline-glyph-play {
+    display: none;
+  }
+
+  .gallery-inline-blank-card[data-blank-action="play"] .gallery-inline-blank-action[data-state="pause"] .gallery-inline-glyph-pause {
+    display: block;
+  }
+
+  .gallery-inline-blank-loader {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: var(--inline-idle-disc-size);
+    height: var(--inline-idle-disc-size);
+    z-index: 14;
+    pointer-events: none;
+  }
+
+  .gallery-inline-blank-loader-ring {
+    width: var(--inline-idle-disc-size);
+    height: var(--inline-idle-disc-size);
+    border-radius: var(--radius-full, 999px);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--bg-primary) 18%, transparent) 0%, color-mix(in srgb, var(--bg-primary) 10%, transparent) 55%, transparent 100%);
+    border: 1px solid color-mix(in srgb, var(--text-primary) 22%, transparent);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    position: relative;
+    box-shadow:
+      0 8px 22px rgba(0, 0, 0, 0.28),
+      inset 0 0 0 1px color-mix(in srgb, var(--accent-color) 10%, transparent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .gallery-inline-blank-loader-ring .gallery-inline-loader-disc {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
+    opacity: 1;
+  }
+
+  .gallery-inline-blank-card[data-blank-kind="url"] .gallery-inline-blank-loader-ring .gallery-inline-loader-disc .gallery-inline-empty-rest {
+    opacity: 1;
+  }
+
+  .gallery-inline-blank-card[data-blank-kind="url"] .gallery-inline-blank-loader-ring .gallery-inline-loader-disc .gallery-inline-empty-action {
+    opacity: 0;
+  }
+
+  .gallery-inline-blank-card[data-blank-kind="video"] .gallery-inline-blank-loader-ring .gallery-inline-loader-disc .gallery-inline-empty-rest,
+  .gallery-inline-blank-card[data-blank-kind="video"] .gallery-inline-blank-loader-ring .gallery-inline-loader-disc .gallery-inline-empty-action,
+  .gallery-inline-blank-card[data-blank-kind="audio"] .gallery-inline-blank-loader-ring .gallery-inline-loader-disc .gallery-inline-empty-rest,
+  .gallery-inline-blank-card[data-blank-kind="audio"] .gallery-inline-blank-loader-ring .gallery-inline-loader-disc .gallery-inline-empty-action,
+  .gallery-inline-blank-card[data-blank-kind="doc"] .gallery-inline-blank-loader-ring .gallery-inline-loader-disc .gallery-inline-empty-rest,
+  .gallery-inline-blank-card[data-blank-kind="doc"] .gallery-inline-blank-loader-ring .gallery-inline-loader-disc .gallery-inline-empty-action {
+    opacity: 0;
+  }
+
+  .gallery-inline-blank-card[data-blank-kind="url"] .gallery-inline-blank-loader-ring .gallery-inline-loader-disc .gallery-inline-blank-icon--url {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .gallery-inline-blank-card[data-blank-kind="doc"] .gallery-inline-blank-loader-ring .gallery-inline-loader-disc .gallery-inline-blank-icon--doc {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .gallery-inline-blank-loader-ring::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: var(--radius-full, 999px);
+    border: 2px solid transparent;
+    border-top-color: var(--gallery-loader-ring-color);
+    animation: link-loader-spin 0.9s linear infinite;
+  }
+
+  .gallery-inline-empty-disc {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: var(--inline-idle-disc-size);
+    height: var(--inline-idle-disc-size);
+    transform: translate(-50%, -50%);
+    border-radius: var(--radius-full, 999px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--bg-primary) 18%, transparent) 0%, color-mix(in srgb, var(--bg-primary) 10%, transparent) 55%, transparent 100%);
+    border: 1px solid color-mix(in srgb, var(--text-primary) 22%, transparent);
+    color: color-mix(in srgb, var(--text-primary) 72%, var(--accent-color) 28%);
+    font-size: clamp(2rem, 8vw, 4rem);
+    font-weight: 700;
+    line-height: 1;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.28);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0.76;
+    box-sizing: content-box;
+    transition:
+      opacity var(--transition-speed) ease,
+      background var(--transition-speed) ease,
+      border-color var(--transition-speed) ease,
+      color var(--transition-speed) ease;
+
+    cursor: pointer;
+    --gallery-center-rest-size: calc(var(--inline-idle-disc-size) * 0.65);
+    --gallery-center-action-size: calc(var(--inline-idle-disc-size) * 0.57);
+    --gallery-center-icon-color: currentColor;
+
+    /* Shared media (video/audio) icon sizing and offset */
+    --gallery-center-icon-media-size: calc(var(--inline-idle-disc-size) * 0.8);
+    --gallery-center-icon-media-action-size: calc(var(--inline-idle-disc-size) * 0.8);
+    --gallery-center-icon-media-offset-x: 0px;
+    --gallery-center-icon-media-offset-y: 0px;
+    --gallery-center-icon-media-action-offset-x: 0px;
+    --gallery-center-icon-media-action-offset-y: 0px;
+
+    --gallery-center-icon-url-size: calc(var(--inline-idle-disc-size) * 0.65);
+    --gallery-center-icon-url-action-size: calc(var(--inline-idle-disc-size) * 0.55);
+    --gallery-center-icon-url-offset-x: 0px;
+    --gallery-center-icon-url-offset-y: 0px;
+    --gallery-center-icon-url-action-offset-x: 0px;
+    --gallery-center-icon-url-action-offset-y: 0px;
+
+    --gallery-center-icon-doc-size: calc(var(--inline-idle-disc-size) * 0.45);
+    --gallery-center-icon-doc-action-size: calc(var(--inline-idle-disc-size) * 0.55);
+    --gallery-center-icon-doc-offset-x: 0px;
+    --gallery-center-icon-doc-offset-y: 0px;
+    --gallery-center-icon-doc-action-offset-x: 0px;
+    --gallery-center-icon-doc-action-offset-y: 0px;
+
+    --gallery-center-icon-add-size: calc(var(--inline-idle-disc-size) * 0.6);
+    --gallery-center-icon-add-action-size: calc(var(--inline-idle-disc-size) * 0.6);
+    --gallery-center-icon-add-offset-x: 0px;
+    --gallery-center-icon-add-offset-y: 0px;
+    --gallery-center-icon-add-action-offset-x: 0px;
+    --gallery-center-icon-add-action-offset-y: 0px;
+  }
+
+  .gallery-inline-empty-rest,
+  .gallery-inline-empty-action {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    transition:
+      opacity var(--transition-speed) ease,
+      color var(--transition-speed) ease,
+      -webkit-text-stroke var(--transition-speed) ease,
+      text-shadow var(--transition-speed) ease;
+    color: var(--gallery-center-icon-color);
+  }
+
+  .gallery-inline-empty-rest {
+    opacity: 1;
+    width: var(--gallery-center-rest-size);
+    height: var(--gallery-center-rest-size);
+  }
+
+  .gallery-inline-empty-action {
+    opacity: 0;
+    width: var(--gallery-center-action-size);
+    height: var(--gallery-center-action-size);
+  }
+
+  /* Override action wrapper size for add button to match icon size */
+  .gallery-inline-empty-disc[data-center-kind="add"] .gallery-inline-empty-action {
+    width: var(--gallery-center-icon-add-action-size);
+    height: var(--gallery-center-icon-add-action-size);
+  }
+
+  /* Override rest icon size for video, audio, and add to match their action icons */
+  .gallery-inline-empty-disc[data-center-kind="video"] .gallery-inline-blank-icon.gallery-inline-empty-rest,
+  .gallery-inline-empty-disc[data-center-kind="audio"] .gallery-inline-blank-icon.gallery-inline-empty-rest,
+  .gallery-inline-empty-disc[data-center-kind="add"] .gallery-inline-blank-icon.gallery-inline-empty-rest {
+    width: var(--gallery-center-icon-media-size);
+    height: var(--gallery-center-icon-media-size);
+  }
+
+  .gallery-inline-empty-disc[data-center-kind="add"] .gallery-inline-blank-icon.gallery-inline-empty-rest {
+    width: var(--gallery-center-icon-add-size);
+    height: var(--gallery-center-icon-add-size);
+  }
+
+  .image-frame:hover .gallery-inline-empty-disc,
+  .add-image-slot:hover .gallery-inline-empty-disc {
+    pointer-events: auto;
+    background: radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--bg-secondary) 44%, transparent) 0%, color-mix(in srgb, var(--bg-secondary) 32%, transparent) 55%, transparent 100%);
+    border-color: var(--gallery-empty-disc-hover-border-compound);
+  }
+
+  .gallery-inline-empty-disc:hover {
+    background: radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--bg-secondary) 50%, transparent) 0%, color-mix(in srgb, var(--bg-secondary) 38%, transparent) 55%, transparent 100%);
+    border-color: var(--gallery-empty-disc-hover-border-direct);
+  }
+
+  .image-frame:hover .gallery-inline-empty-rest,
+  .add-image-slot:hover .gallery-inline-empty-rest,
+  .gallery-inline-empty-disc:hover .gallery-inline-empty-rest,
+  .image-frame.media-playing:hover .gallery-inline-empty-rest {
+    opacity: 0;
+  }
+
+  .image-frame:hover .gallery-inline-empty-action,
+  .add-image-slot:hover .gallery-inline-empty-action,
+  .gallery-inline-empty-disc:hover .gallery-inline-empty-action,
+  .image-frame.media-playing:hover .gallery-inline-empty-action {
+    opacity: 1;
+    color: color-mix(in srgb, var(--gallery-warm-highlight-tint) 82%, var(--accent-color) 18%);
+    -webkit-text-stroke: 1px color-mix(in srgb, var(--bg-secondary) 72%, var(--accent-color) 28%);
+    paint-order: stroke fill;
+    text-shadow: var(--gallery-media-empty-icon-shadow);
+  }
+
+  .gallery-inline-blank-card[data-blank-kind="url"] .gallery-inline-empty-rest,
+  .gallery-inline-blank-card[data-blank-kind="url"] .gallery-inline-empty-action,
+  .gallery-inline-link-card .gallery-inline-empty-rest,
+  .gallery-inline-link-card .gallery-inline-empty-action {
+    color: color-mix(in srgb, var(--gallery-warm-highlight-tint) 82%, var(--accent-color) 18%);
+    -webkit-text-stroke: 1px color-mix(in srgb, var(--bg-secondary) 72%, var(--accent-color) 28%);
+    paint-order: stroke fill;
+    text-shadow: var(--gallery-media-empty-icon-shadow);
+  }
+
+  .gallery-inline-blank-card[data-blank-kind="audio"] .gallery-inline-empty-rest,
+  .gallery-inline-blank-card[data-blank-kind="audio"] .gallery-inline-empty-action,
+  .gallery-inline-blank-card[data-blank-kind="video"] .gallery-inline-empty-rest,
+  .gallery-inline-blank-card[data-blank-kind="video"] .gallery-inline-empty-action,
+  .gallery-inline-blank-card[data-blank-kind="doc"] .gallery-inline-empty-rest,
+  .gallery-inline-blank-card[data-blank-kind="doc"] .gallery-inline-empty-action,
+  .gallery-inline-blank-card[data-blank-kind="rich-document"] .gallery-inline-empty-rest,
+  .gallery-inline-blank-card[data-blank-kind="rich-document"] .gallery-inline-empty-action,
+  .gallery-inline-empty-disc[data-center-kind="audio"] .gallery-inline-empty-rest,
+  .gallery-inline-empty-disc[data-center-kind="audio"] .gallery-inline-empty-action,
+  .gallery-inline-empty-disc[data-center-kind="video"] .gallery-inline-empty-rest,
+  .gallery-inline-empty-disc[data-center-kind="video"] .gallery-inline-empty-action {
+    color: color-mix(in srgb, var(--gallery-warm-highlight-tint) 82%, var(--accent-color) 18%);
+    -webkit-text-stroke: 1px color-mix(in srgb, var(--bg-secondary) 72%, var(--accent-color) 28%);
+    paint-order: stroke fill;
+    text-shadow: var(--gallery-media-empty-icon-shadow);
+  }
+
+  .gallery-inline-audio-cover-fallback::after {
+    content: none;
+  }
+
+  .gallery-inline-audio-cover-fallback {
+    background-image: url("/src/assets/album-art-placeholder.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  .image-item.has-empty-inline-media-card .stack-audio-playback-controls {
+    display: none !important;
+  }
+
+  .image-item.has-empty-inline-media-card .gallery-inline-audio-body,
+  .image-item.has-empty-inline-media-card .gallery-inline-audio-controls,
+  .image-item.has-empty-inline-media-card .gallery-inline-audio-progress,
+  .image-item.has-empty-inline-media-card .gallery-inline-audio-volume-cluster {
+    /* Scope to AUDIO controls only. The shared base class `.gallery-inline-side-volume` was added
+     here in 37b9100e and over-reached: a PLAYING video slot still carries
+     `has-empty-inline-media-card` (its blank-card shell is empty though the <video> is live), so
+     this !important rule was killing the VIDEO volume slider while the seek bar (not in this rule)
+     survived. The video volume is already `display:none` until its binding readies it, so it never
+     needs hiding here. */
+    display: none !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+  .gallery-inline-audio-marquee {
+    position: absolute;
+    left: var(--audio-marquee-left-pad) !important;
+    right: var(--audio-marquee-right-pad) !important;
+    top: var(--audio-marquee-top);
+    height: var(--audio-marquee-height);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-lg, 8px);
+    padding: 0 clamp(10px, calc(var(--image-gallery-width, 300px) * 0.03), 12px);
+    background: linear-gradient(180deg, color-mix(in srgb, white 5%, color-mix(in srgb, var(--bg-primary) 30%, transparent)) 0%, color-mix(in srgb, var(--bg-secondary) 29%, transparent) 48%, color-mix(in srgb, black 4%, color-mix(in srgb, var(--bg-secondary) 31%, transparent)) 100%);
+    border: 1px solid color-mix(in srgb, white 10%, color-mix(in srgb, var(--accent-color) 14%, transparent));
+    box-shadow:
+      inset 0 1px 0 color-mix(in srgb, white 9%, transparent),
+      inset 0 -1px 0 color-mix(in srgb, black 7%, transparent),
+      0 4px 12px rgba(0, 0, 0, 0.05),
+      0 0 0 1px color-mix(in srgb, black 8%, transparent);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    z-index: 15 !important;
+    overflow: hidden;
+    pointer-events: none;
+    visibility: hidden;
+    opacity: 0;
+    transition:
+      opacity var(--transition-speed) ease,
+      visibility var(--transition-speed) ease;
+  }
+
+  .gallery-inline-audio-marquee::before {
+    content: "";
+    position: absolute;
+    inset: 1px 1px auto 1px;
+    height: 44%;
+    border-radius: 7px 7px 12px 12px;
+    background: linear-gradient(180deg, color-mix(in srgb, white 7%, transparent), transparent);
+    opacity: 0.28;
+    pointer-events: none;
+  }
+
+  .gallery-inline-audio-marquee::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(120% 100% at 50% -10%, color-mix(in srgb, var(--accent-color) 4%, transparent), transparent 58%);
+    pointer-events: none;
+    opacity: 0.34;
+  }
+
+  .gallery-inline-audio-marquee.has-content {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .gallery-inline-audio-marquee-viewport {
+    width: 100%;
+    overflow: hidden;
+    min-width: 0;
+    display: flex;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .gallery-inline-audio-marquee-track {
+    display: inline-flex;
+    align-items: center;
+    min-width: max-content;
+    white-space: nowrap;
+    transform: translateX(0);
+    will-change: auto;
+  }
+
+  /* Resting audio slots: title is static (ellipsis). Scroll only while playing.
+     Continuous marquee under gallery zoom/pan and on every idle slot was a
+     major compositor thrash source (esp. canvas/sphere clones). */
+  .gallery-inline-audio-marquee.is-overflowing .gallery-inline-audio-marquee-track {
+    animation: none;
+    transform: translateX(0);
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .gallery-inline-audio-marquee.is-overflowing .gallery-inline-audio-marquee-copy {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .gallery-inline-audio-marquee.is-overflowing .gallery-inline-audio-marquee-gap,
+  .gallery-inline-audio-marquee.is-overflowing .gallery-inline-audio-marquee-copy--clone {
+    display: none;
+  }
+
+  .image-frame.media-playing .gallery-inline-audio-marquee.is-overflowing .gallery-inline-audio-marquee-track {
+    animation: audio-marquee-scroll var(--audio-marquee-duration, 12s) linear infinite;
+    will-change: transform;
+    max-width: none;
+    min-width: max-content;
+  }
+
+  .image-frame.media-playing .gallery-inline-audio-marquee.is-overflowing .gallery-inline-audio-marquee-copy {
+    max-width: none;
+    overflow: visible;
+    text-overflow: clip;
+  }
+
+  .image-frame.media-playing .gallery-inline-audio-marquee.is-overflowing .gallery-inline-audio-marquee-gap,
+  .image-frame.media-playing .gallery-inline-audio-marquee.is-overflowing .gallery-inline-audio-marquee-copy--clone {
+    display: inline;
+  }
+
+  body.gallery-slot-dragging .gallery-inline-audio-marquee {
+    overflow: hidden !important;
+  }
+
+  body.gallery-slot-dragging .gallery-inline-audio-marquee-viewport {
+    overflow: hidden !important;
+  }
+
+  body.gallery-slot-dragging .gallery-inline-audio-marquee-track {
+    animation: none !important;
+    transform: translateX(0) !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    will-change: auto !important;
+  }
+
+  body.gallery-slot-dragging .gallery-inline-audio-marquee-copy {
+    max-width: 100% !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  body.gallery-slot-dragging .gallery-inline-audio-marquee-gap,
+  body.gallery-slot-dragging .gallery-inline-audio-marquee-copy--clone {
+    display: none !important;
+  }
+
+  .gallery-inline-audio-marquee-copy,
+  .gallery-inline-audio-marquee-gap {
+    color: color-mix(in srgb, var(--text-primary) 96%, var(--gallery-warm-highlight-tint) 4%);
+    font-size: clamp(11px, calc(var(--image-gallery-width, 300px) * 0.038), 13px);
+    line-height: 1;
+    letter-spacing: 0.01em;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.32);
+  }
+
+  .gallery-inline-audio-marquee-copy {
+    font-weight: 600;
+  }
+
+  .gallery-inline-audio-marquee-gap {
+    display: none;
+    padding: 0 0.45rem;
+    color: color-mix(in srgb, var(--accent-color) 70%, var(--text-primary) 30%);
+  }
+
+  .gallery-inline-audio-marquee-copy--clone {
+    display: none;
+  }
+
+  /* Playing overflow clone visibility is owned by the media-playing rules above. */
+
+  @keyframes audio-marquee-scroll {
+    0%,
+    14% {
+      transform: translateX(0);
+    }
+
+    72%,
+    86% {
+      transform: translateX(calc(-1 * var(--audio-marquee-shift, 0px)));
+    }
+
+    100% {
+      transform: translateX(calc(-1 * var(--audio-marquee-shift, 0px)));
+    }
+  }
+
+  .gallery-inline-audio-body {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    min-width: 0;
+    display: grid;
+    grid-template-rows: auto auto;
+    gap: 6px;
+    padding: 8px 10px 10px;
+    background: none;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .gallery-inline-audio-title {
+    color: var(--text-primary);
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    pointer-events: none;
+  }
+
+  .gallery-inline-audio-subtitle {
+    color: var(--text-secondary);
+    font-size: 0.86em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    pointer-events: none;
+  }
+
+  .gallery-inline-audio-viz {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    transform: none;
+    width: 99%;
+    margin: 0 0 0 2px;
+    height: 100%;
+    border-radius: 8px 8px 0 0;
+    clip-path: inset(0 round 8px -8px 0 100px);
+    border: 0;
+    background: transparent;
+    display: block;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0;
+    transition: opacity var(--transition-speed) ease;
+  }
+
+  .image-frame .cropped-image-badge {
+    z-index: 50 !important;
+  }
+
+  .image-frame .cropped-image-badge .missing-badge-label {
+    position: relative;
+    z-index: 51;
+  }
+
+  .gallery-inline-audio-controls {
+    position: static;
+    display: grid;
+    grid-template-columns: 1fr;
+    align-items: center;
+    justify-items: center;
+    gap: 4px;
+    min-height: 54px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(0);
+    pointer-events: none;
+    transition:
+      opacity var(--transition-speed) ease,
+      transform var(--transition-speed) ease;
+  }
+
+  .gallery-inline-audio-play {
+    display: none;
+  }
+
+  .gallery-inline-audio-time {
+    color: var(--text-primary);
+    font-size: 1.2em;
+    font-weight: 500;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+    justify-self: center;
+    text-shadow: var(--gallery-media-timestamp-shadow);
+  }
+
+  .gallery-inline-audio-rate-btn {
+    position: absolute;
+    top: 50% !important;
+    left: calc(50% + (50% - 80px)) !important;
+    bottom: auto !important;
+    transform: translate(-50%, -50%);
+    min-width: 34px;
+    height: 22px;
+    padding: 0 7px;
+    border-radius: var(--radius-full, 999px);
+    border: 1px solid var(--audio-rate-btn-border);
+    background: color-mix(in srgb, var(--bg-tertiary) 78%, var(--accent-color) 22%);
+    color: var(--text-primary);
+    font-size: 0.75em;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+    z-index: 16;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+      opacity var(--transition-speed) ease,
+      transform var(--transition-speed) ease;
+  }
+
+  .gallery-inline-audio-rate-btn:hover {
+    background: color-mix(in srgb, var(--bg-tertiary) 65%, var(--accent-color) 35%);
+  }
+
+  .image-item:has(.image-frame:hover) .gallery-inline-audio-rate-btn,
+  .image-frame.media-playing:hover .gallery-inline-audio-rate-btn,
+  .image-item:has(.stack-audio-playback-controls:hover) .gallery-inline-audio-rate-btn {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  body.image-selection-mode .gallery-inline-audio-rate-btn {
+    opacity: 0.28 !important;
+    pointer-events: none !important;
+  }
+
+  .gallery-inline-audio-progress,
+  .gallery-inline-video-progress,
+  .gallery-inline-audio-volume,
+  .gallery-inline-video-volume {
+    accent-color: var(--accent-color);
+    width: 100%;
+    cursor: pointer;
+    background: transparent;
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .gallery-inline-audio-progress {
+    min-height: 22px;
+    padding-block: 7px;
+    box-sizing: border-box;
+    touch-action: pan-y;
+  }
+
+  .gallery-inline-audio-progress::-webkit-slider-runnable-track,
+  .gallery-inline-video-progress::-webkit-slider-runnable-track,
+  .gallery-inline-audio-volume::-webkit-slider-runnable-track,
+  .gallery-inline-video-volume::-webkit-slider-runnable-track {
+    background: color-mix(in srgb, var(--bg-primary) 35%, transparent);
+    border: 1px solid var(--gallery-media-slider-track-border);
+    border-radius: var(--radius-full, 999px);
+    height: 8px;
+    box-shadow:
+      0 2px 6px rgba(0, 0, 0, 0.15),
+      inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px) saturate(1.1);
+    -webkit-backdrop-filter: blur(10px) saturate(1.1);
+  }
+
+  /* Keep vertical volume in-place, but force the same visible thickness as seek. */
+  .gallery-inline-audio-volume::-webkit-slider-runnable-track {
+    width: 8px;
+  }
+
+  .gallery-inline-video-volume::-webkit-slider-runnable-track {
+    width: 8px;
+  }
+
+  .gallery-inline-audio-progress::-webkit-slider-thumb,
+  .gallery-inline-video-progress::-webkit-slider-thumb,
+  .gallery-inline-audio-volume::-webkit-slider-thumb,
+  .gallery-inline-video-volume::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: var(--radius-full, 999px);
+    border: 2px solid var(--gallery-media-slider-thumb-border);
+    background: var(--gallery-media-slider-thumb-fill);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+  }
+
+  .gallery-inline-audio-progress::-webkit-slider-thumb,
+  .gallery-inline-video-progress::-webkit-slider-thumb {
+    margin-top: -4px;
+  }
+
+  .gallery-inline-audio-volume::-webkit-slider-thumb {
+    margin-top: 0;
+    margin-left: -4px;
+  }
+
+  .gallery-inline-video-volume::-webkit-slider-thumb {
+    margin-top: 0;
+    margin-left: -4px;
+  }
+
+  .gallery-inline-audio-progress::-moz-range-track,
+  .gallery-inline-video-progress::-moz-range-track,
+  .gallery-inline-audio-volume::-moz-range-track,
+  .gallery-inline-video-volume::-moz-range-track {
+    background: color-mix(in srgb, var(--bg-primary) 35%, transparent);
+    border: 1px solid var(--gallery-media-slider-track-border);
+    border-radius: var(--radius-full, 999px);
+    height: 8px;
+    box-shadow:
+      0 2px 6px rgba(0, 0, 0, 0.15),
+      inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+
+  .gallery-inline-audio-volume::-moz-range-track {
+    width: 8px;
+  }
+
+  .gallery-inline-video-volume::-moz-range-track {
+    width: 8px;
+  }
+
+  .gallery-inline-audio-progress::-moz-range-thumb,
+  .gallery-inline-video-progress::-moz-range-thumb,
+  .gallery-inline-audio-volume::-moz-range-thumb,
+  .gallery-inline-video-volume::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: var(--radius-full, 999px);
+    border: 2px solid var(--gallery-media-slider-thumb-border);
+    background: var(--gallery-media-slider-thumb-fill);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+  }
+
+  .gallery-inline-audio-volume::-moz-range-thumb {
+    transform: translateX(-2px);
+  }
+
+  .gallery-inline-video-volume::-moz-range-thumb {
+    transform: translateX(-2px);
+  }
+
+  .gallery-inline-audio-progress,
+  .gallery-inline-video-progress {
+    width: var(--media-seek-width);
+    justify-self: center;
+  }
+
+  .gallery-inline-audio-progress {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition-speed) ease;
+  }
+
+  .gallery-inline-audio-volume,
+  .gallery-inline-video-volume {
+    width: 100%;
+    pointer-events: auto;
+  }
+
+  .gallery-inline-audio-volume,
+  .gallery-inline-video-volume {
+    position: static;
+    left: auto;
+    top: auto;
+    transform: none;
+    width: var(--audio-vol-width);
+    height: var(--audio-vol-height);
+    writing-mode: vertical-lr;
+    direction: rtl;
+    overflow: visible;
+    pointer-events: auto;
+    opacity: 1;
+  }
+
+  .gallery-inline-audio-volume-icon,
+  .gallery-inline-video-mute-icon {
+    position: static;
+    transform: none;
+    color: color-mix(in srgb, var(--text-primary) 88%, var(--accent-color) 12%);
+    font-size: 0.82em;
+    opacity: 1;
+    pointer-events: auto;
+    cursor: pointer;
+    pointer-events: auto;
+    text-align: center;
+    border: 0;
+    /* PARKED (not fixed): .gallery-inline-video-mute-icon is a real <button> (imageGallery.js:1580)
+     that never resets margin, so buttons.css's global `button { margin: 5px; }` (same footgun
+     fixed on .settings-tab, .browser-bookmark-star, .browser-find-btn, and
+     .browser-tab-group-chip-main) leaks through here too. Deliberately NOT fixed in this pass: two
+     rounds of live verification each produced a different, ultimately wrong "zero visual change"
+     claim (first using invented --audio-vol-width/--audio-vol-height values, then using the real
+     clamp()-derived values but the CSS fallback default of 300px rather than an actually-reachable
+     gallery width) — a css-pm audit measuring the real Font Awesome-rendered button height against
+     the real reachable widths (160/240/320/480px via #image-width-select) found a genuine 5-6.5px
+     shift in the volume slider's position in every case. Fixing this for real needs a disclosed
+     value decision (css-pm V-checks), not a zero-change claim — left for a future slice rather than
+     risk a third wrong verification. */
+    padding: 0;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.52);
+  }
+
+  .image-frame.media-playing .gallery-inline-audio-viz {
+    opacity: 1;
+  }
+
+  .image-frame.media-playing .gallery-inline-audio-idle-glyph,
+  .image-frame.media-playing .gallery-inline-video-idle-glyph {
+    opacity: 0;
+  }
+
+  .image-frame.media-playing:hover .gallery-inline-audio-idle-glyph,
+  .image-frame.media-playing:hover .gallery-inline-video-idle-glyph {
+    opacity: 0.82;
+    pointer-events: auto;
+  }
+
+  .gallery-inline-video-progress {
+    position: relative;
+    z-index: 15;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity var(--transition-speed) ease;
+  }
+
+  .image-frame.media-playing:hover .gallery-inline-audio-controls,
+  .image-frame.media-playing:hover .gallery-inline-audio-progress,
+  .image-frame.media-playing:hover .gallery-inline-audio-volume-cluster,
+  .image-frame.media-playing:hover .gallery-inline-video-volume-cluster {
+    opacity: 0.95;
+    visibility: visible;
+    pointer-events: none;
+  }
+
+  .image-frame.media-playing:hover .gallery-inline-audio-controls,
+  .image-frame.media-playing:hover .gallery-inline-audio-controls *,
+  .image-frame.media-playing:hover .gallery-inline-audio-volume-cluster,
+  .image-frame.media-playing:hover .gallery-inline-audio-volume-cluster *,
+  .image-frame.media-playing:hover .gallery-inline-video-volume-cluster,
+  .image-frame.media-playing:hover .gallery-inline-video-volume-cluster * {
+    pointer-events: auto;
+  }
+
+  .image-item.image-stack:hover .image-frame.media-playing .gallery-inline-audio-controls,
+  .image-item.image-stack .image-frame.media-playing:has(.stack-navigation:hover) .gallery-inline-audio-controls,
+  .image-item.image-stack .image-frame.media-playing:has(.stack-navigation.visible) .gallery-inline-audio-controls {
+    transform: translateY(-30px);
+  }
+
+  /* The four :has() selectors below CANNOT be collapsed into their `:hover` twins, unlike the rest of
+     the R9g cleanup. The twins are re-declared `pointer-events: auto` by the later block in this file,
+     so a twin alone resolves to `auto`. That later block carries :has() counterparts for
+     :has(.gallery-inline-video-controls:hover) but NOT for the volume-cluster / top-controls probes —
+     so these rules are the only thing keeping the bottom bar hit-transparent while the volume slider
+     or the top buttons are hovered. Dropping them lets the bar swallow clicks aimed at the lower part
+     of the volume slider, which overlaps it at gallery widths ≤320px for 16:9 slots (41px of overlap
+     at 320; wider for wider aspect ratios — only ~480px 16:9 clears the bar). (The audio side IS safe to
+     collapse: its auto-block does carry the volume-cluster counterparts.) */
+  .image-frame.media-playing:hover .gallery-inline-video-controls,
+  .image-frame.media-playing:hover .gallery-inline-video-progress,
+  .image-frame.media-playing:hover .gallery-inline-video-volume-cluster,
+  .image-frame.media-playing:hover .gallery-inline-video-top-controls,
+  .image-frame.media-playing:has(.gallery-inline-video-volume-cluster:hover) .gallery-inline-video-controls,
+  .image-frame.media-playing:has(.gallery-inline-video-volume-cluster:hover) .gallery-inline-video-progress,
+  .image-frame.media-playing:has(.gallery-inline-video-top-controls:hover) .gallery-inline-video-controls,
+  .image-frame.media-playing:has(.gallery-inline-video-top-controls:hover) .gallery-inline-video-progress {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: none;
+  }
+
+  .image-frame.media-playing:hover .gallery-inline-video-controls,
+  .image-frame.media-playing:hover .gallery-inline-video-controls *,
+  .image-frame.media-playing:hover .gallery-inline-video-top-controls,
+  .image-frame.media-playing:hover .gallery-inline-video-top-controls *,
+  .image-frame.media-playing:hover .gallery-inline-video-volume-cluster,
+  .image-frame.media-playing:hover .gallery-inline-video-volume-cluster *,
+  .image-frame.media-playing:has(.gallery-inline-video-top-controls:hover) .gallery-inline-video-controls-row {
+    pointer-events: auto;
+  }
+
+  .image-frame.media-playing:hover .gallery-inline-video-top-controls {
+    transform: translateX(-50%);
+  }
+
+  .image-item.image-stack:hover .image-frame.media-playing .gallery-inline-video-top-controls,
+  .image-item.image-stack .image-frame.media-playing:has(.stack-navigation:hover) .gallery-inline-video-top-controls,
+  .image-item.image-stack .image-frame.media-playing:has(.stack-navigation.visible) .gallery-inline-video-top-controls {
+    transform: translateX(-50%);
+  }
+
+  .gallery-inline-audio-overlay-play {
+    display: inline-flex;
+  }
+
+  .image-frame .gallery-inline-link-card {
+    min-height: 180px;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px;
+    text-align: center;
+    cursor: pointer;
+    color: var(--text-primary);
+    font-size: 1rem;
+    line-height: 1.35;
+    box-sizing: border-box;
+  }
+
+  /* The link card fills the frame edge-to-edge in EVERY state — without the absolute fill
+   it keeps .gallery-inline-media-card-shell's fixed --image-gallery-width square, which
+   leaves a visible margin inside any frame that isn't exactly that size (USER RULE:
+   unity — no inset URL cards). Deliberately NOT qualified by data-link-state: async
+   handlers can momentarily strip the state from a visible card, and a stateless card
+   must never regress to the inset square. */
+  .image-frame .gallery-inline-link-card {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    padding: 0;
+    gap: 0;
+    align-items: stretch;
+    justify-content: stretch;
+    background: transparent;
+    border-color: transparent !important;
+    border-radius: inherit;
+    box-shadow: none !important;
+    overflow: hidden;
+    clip-path: inset(0 round 8px);
+  }
+
+  .image-frame .gallery-inline-link-card[data-link-state="rich"],
+  .image-frame .gallery-inline-link-card[data-link-state="rich"][data-has-image="1"] {
+    contain: paint;
+  }
+
+  @keyframes link-loader-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .gallery-inline-link-provider {
+    color: var(--accent-color);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+
+  .gallery-inline-link-host {
+    color: var(--text-secondary);
+    font-size: 0.9em;
+    word-break: break-word;
+  }
+
+  .gallery-inline-link-card[data-link-state="idle"] .gallery-inline-link-provider,
+  .gallery-inline-link-card[data-link-state="idle"] .gallery-inline-link-host,
+  .gallery-inline-link-card[data-link-state="failed"] .gallery-inline-link-provider,
+  .gallery-inline-link-card[data-link-state="failed"] .gallery-inline-link-host,
+  .gallery-inline-link-card[data-link-state="loading"] .gallery-inline-link-provider,
+  .gallery-inline-link-card[data-link-state="loading"] .gallery-inline-link-host {
+    display: none;
+  }
+
+  .gallery-inline-link-card[data-link-state="rich"] > .gallery-inline-link-provider,
+  .gallery-inline-link-card[data-link-state="rich"] > .gallery-inline-link-host {
+    display: none !important;
+  }
+
+  /* ── Masonry View (vertical layout) ─────────────────────────────────────────────────────
+     Masonry View packs cards into the shortest column, left-to-right in slot order, using the card's
+     real rendered height. The rail (.add-image-position) and the image frame are measured by the
+     packing module and exposed as --masonry-card-width so each CSS Grid track matches the full
+     card width exactly. row-unit MUST match ROW_UNIT_PX in src/js/masonryPacking.js. ───────────── */
+  .image-gallery.vertical-layout.masonry-layout {
+    display: grid;
+    grid-template-columns: repeat(var(--masonry-column-count, 1), minmax(0, var(--masonry-card-width, var(--image-gallery-width, 300px))));
+    grid-auto-rows: 5px; /* MUST match ROW_UNIT_PX in src/js/masonryPacking.js */
+    column-gap: 5px; /* matches .image-gallery.vertical-layout `gap: 5px` */
+    row-gap: 0;
+    justify-content: start;
+    align-items: start;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0 0 20px 0; /* inherited from .image-gallery.vertical-layout */
+    overflow-x: visible;
+    white-space: normal;
+  }
+
+  .image-gallery.vertical-layout.masonry-layout .enum-image-unit {
+    width: auto;
+    min-width: 0;
+    max-width: 100%;
+    margin-left: 5px;
+    margin-top: 5px;
+    align-self: start;
+    box-sizing: border-box;
+    content-visibility: visible;
+  }
+
+  .image-gallery.vertical-layout.masonry-layout .image-item {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    flex: 1 1 auto !important;
+    min-height: 0;
+    height: auto;
+    box-sizing: border-box;
+  }
+
+  .image-gallery.vertical-layout.masonry-layout .enum-image-unit .image-title {
+    width: var(--image-gallery-width, 320px) !important;
+    max-width: var(--image-gallery-width, 320px) !important;
+    box-sizing: border-box !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .image-gallery.vertical-layout.masonry-layout .image-frame {
+    aspect-ratio: auto;
+    min-height: 0;
+    height: auto;
+  }
+
+  .image-gallery.vertical-layout.masonry-layout .add-image-slot {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Masonry is a pure visual browse mode — hide the control rail.
+     The controls remain accessible via the slot context menu and other surfaces. */
+  .image-gallery.vertical-layout.masonry-layout .enum-image-unit .add-image-position {
+    display: none !important;
+  }
+}

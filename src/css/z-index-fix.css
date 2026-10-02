@@ -1,0 +1,162 @@
+@layer app {
+/*
+ * Z-Index Fix - AGGRESSIVE z-index to force everything above gallery
+ *
+ * High-tier z-index VALUES are defined once in src/css/z-index-tokens.css and
+ * referenced here as var(--flowjoe-z-*). Do not hardcode modal/overlay/tooltip
+ * z-index numbers in this file — add or adjust them in the tokens file instead.
+ */
+
+/* Base elements */
+.select-options.show {
+  z-index: 1;
+}
+
+/* Fixed position elements */
+.topbar {
+  z-index: var(--flowjoe-z-topbar) !important; /* Above content; below settings panel */
+}
+
+body.browser-view-active .topbar {
+  z-index: var(--flowjoe-z-browser-toolbar) !important; /* Browser tooltips stay above browser tabs. */
+  pointer-events: none;
+}
+
+body.browser-view-active .topbar > *,
+body.browser-view-active .browser-controls,
+body.browser-view-active .browser-controls * {
+  pointer-events: auto;
+}
+
+.topbar .browser-address-wrap .browser-tab-count-pill[data-tooltip] {
+  position: absolute !important;
+  right: 33px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+}
+
+.topbar .browser-address-wrap .browser-bookmark-star[data-tooltip] {
+  position: absolute !important;
+  right: 6px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+}
+
+/* Dropdowns and menus */
+#ai-settings-panel {
+  z-index: 45;
+}
+
+/* Resizer grip elements - above adjacent panels and the link drawer, below modals */
+.resizer {
+  z-index: 1002 !important;
+}
+
+.resizer::before {
+  z-index: 1003 !important;
+}
+
+.resizer::after {
+  z-index: 1004 !important;
+}
+
+body.browser-full-height-hide-tree-grippy .resizer {
+  z-index: 60 !important;
+}
+
+body.browser-full-height-hide-tree-grippy .resizer::before,
+body.browser-full-height-hide-tree-grippy .resizer::after {
+  z-index: 61 !important;
+}
+
+.notification-container {
+  z-index: 75;
+}
+
+/* Modals - High priority above everything */
+.modal-overlay,
+#modal,
+#wireframe-modal,
+#ai-chat-modal {
+  z-index: var(--flowjoe-z-app-modal) !important;
+}
+
+#image-modal {
+  z-index: var(--flowjoe-z-image-modal) !important;
+}
+
+#stack-preview-modal {
+  z-index: var(--flowjoe-z-app-modal) !important; /* Above image modal for thumbnail/stack previews launched from preview */
+}
+
+/* Settings panel and overlay */
+.settings-panel {
+  z-index: var(--flowjoe-z-settings-panel) !important;
+}
+
+.settings-overlay {
+  z-index: var(--flowjoe-z-topbar) !important; /* For proper dimming */
+}
+
+/* Body-level visual-effect canvases belong above app chrome but below modals by default. */
+body > canvas[style*="position: fixed"],
+body > .flowjoe-body-effect-layer {
+  z-index: var(--flowjoe-z-body-effect) !important;
+  pointer-events: none;
+}
+
+/* Settings effect previews must be visible over the settings panel while choosing them. */
+body.settings-panel-open > .flowjoe-body-effect-layer {
+  z-index: var(--flowjoe-z-settings-controls) !important;
+}
+
+.tree-resize-toggle {
+  z-index: 100;
+}
+
+/* Tree section - below the resizer so the grippy can overlap the panel edge */
+.tree-section {
+  overflow: visible !important;
+  z-index: 70 !important;
+}
+
+/* Content section - above resizer but below tree for tooltips */
+.content-section {
+  z-index: 65 !important;
+}
+
+.tree-section [data-tooltip],
+.tree-section .tooltip-wrapper {
+  overflow: visible !important;
+  z-index: var(--flowjoe-z-tooltip) !important; /* Maximum safe integer z-index */
+}
+
+/* Browser layer ordering. Pseudo-element tooltip z-index values only work
+   inside their parent stacking context, so the topbar itself must sit above
+   the browser tab shell while browser chrome is active. */
+body.browser-view-active .browser-tab-shell,
+body.browser-view-active .browser-tab-group-rail,
+body.browser-view-active .browser-link-gallery {
+  z-index: var(--flowjoe-z-browser-chrome) !important;
+}
+
+body.browser-view-active .topbar,
+body.browser-view-active .browser-controls {
+  z-index: var(--flowjoe-z-browser-toolbar) !important;
+}
+
+.settings-panel {
+  z-index: var(--flowjoe-z-settings-panel) !important;
+}
+
+.settings-panel .settings-header,
+.settings-panel .settings-tabs {
+  z-index: var(--flowjoe-z-settings-panel) !important;
+}
+
+.settings-panel .settings-header-actions,
+.settings-panel #close-settings {
+  position: relative;
+  z-index: var(--flowjoe-z-settings-controls) !important;
+}
+}

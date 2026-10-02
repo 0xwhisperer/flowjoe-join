@@ -1,0 +1,50 @@
+@layer app {
+/* ── §2.1c — user-provided file tray (chips above the chat input) + drop cue ─────────────────────── */
+.ai-chat-file-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 4px 2px 6px;
+}
+.ai-chat-file-chips[hidden] {
+  display: none;
+}
+.ai-chat-file-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 260px;
+  padding: 2px 6px 2px 8px;
+  border: 1px solid var(--border-color, #555);
+  border-radius: var(--radius-xl, 10px);
+  background: var(--bg-secondary, #2a2a2a);
+  font-size: var(--font-meta);
+  line-height: 1.4;
+  color: var(--text-secondary, #9aa0a6);
+}
+.ai-chat-file-chip-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ai-chat-file-chip-remove {
+  flex: 0 0 auto;
+  border: none;
+  background: none;
+  padding: 0 2px;
+  font-size: 13px;
+  line-height: 1;
+  color: inherit;
+  cursor: pointer;
+  opacity: 0.7;
+}
+.ai-chat-file-chip-remove:hover {
+  opacity: 1;
+}
+/* Whole-chat-panel drop cue while a file drag hovers it (files only — internal drags never trigger it). */
+#chat-panel.ai-chat-file-drop-active {
+  outline: 2px dashed var(--accent-color, #ff9500);
+  outline-offset: -4px;
+  border-radius: var(--radius-lg, 8px);
+}
+}

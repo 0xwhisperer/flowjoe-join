@@ -1,0 +1,280 @@
+@layer app {
+
+body.glass-effects-disabled {
+  --modal-glass-surface-mix: 100%;
+  --settings-glass-surface-mix: 100%;
+  --modal-glass-panel-mix: var(--modal-glass-surface-mix);
+  --modal-glass-preview-panel-mix: var(--modal-glass-surface-mix);
+  --modal-glass-preview-overlay: 0.8;
+  --modal-glass-titlebar-primary-mix: 100%;
+  --modal-glass-titlebar-secondary-mix: 100%;
+  --modal-glass-content-mix: 100%;
+  --modal-glass-body-mix: var(--modal-glass-content-mix);
+  --modal-glass-summary-panel-mix: var(--modal-glass-surface-mix);
+  --modal-glass-preview-title-focus-mix: 100%;
+  --modal-glass-preview-field-mix: 100%;
+  --modal-glass-ai-panel-mix: var(--modal-glass-surface-mix);
+  --modal-glass-ai-field-primary-mix: 100%;
+  --modal-glass-ai-chat-messages-mix: var(--modal-glass-content-mix);
+  --modal-glass-ai-field-secondary-mix: 100%;
+  --modal-glass-ai-container-secondary-mix: 100%;
+  --modal-glass-ai-container-primary-mix: 100%;
+  --modal-glass-ai-card-mix: 100%;
+  --modal-glass-ai-select-mix: 100%;
+  --modal-glass-ai-image-frame-mix: 100%;
+  --modal-glass-ai-overlay-mix: 100%;
+  --modal-glass-blur: 0px;
+  --modal-glass-saturate: 1;
+  --modal-glass-strong-blur: 0px;
+  --modal-glass-strong-saturate: 1;
+  --modal-glass-floating-surface-mix: 100%;
+}
+
+/* Keep fixed glass surfaces in their own paint layer so active gallery content
+   cannot flash through during compositor repaints. */
+:is(
+  .settings-panel,
+  #modal > div,
+  #image-modal-content,
+  #stack-preview-content,
+  .stack-preview-content,
+  #nsm-content,
+  #nsm-panel,
+  .nsm-panel,
+  .node-summary-modal-content,
+  #ai-spell-check-panel,
+  .header-audio-playlist-popover,
+  .image-context-menu,
+  .gallery-panel-context-menu,
+  .node-context-menu,
+  .tree-panel-context-menu,
+  .header-context-menu,
+  .header-audio-playlist-context-menu,
+  #stack-preview-thumbnail-context-menu
+) {
+  isolation: isolate;
+  background-clip: padding-box;
+  backface-visibility: hidden;
+}
+
+:is(
+  #modal > div,
+  #image-modal-content,
+  #stack-preview-content,
+  #nsm-content,
+  #nsm-panel,
+  .nsm-panel,
+  .node-summary-modal-content,
+  #ai-spell-check-panel
+) {
+  contain: paint;
+}
+
+.settings-panel:not(.edge-pulse-opening) {
+  contain: paint;
+}
+
+body {
+  background-color: var(--bg-tertiary);
+  /* background-color: red; */
+  color: var(--text-primary);
+  font-family: var(--app-font-family);
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  overflow: hidden;
+  overscroll-behavior: none;
+  font-size: calc(14px * var(--font-scale));
+  /*
+   * Deny text selection by default across the entire app chrome. This stops the classic
+   * "drag on a button → button label gets highlighted" problem without per-element rules.
+   * Genuine content surfaces opt back in with `user-select: text` (chat messages, notes,
+   * prompt history, memories, etc.). Form fields and contenteditable opt in below.
+   * Electron browser WebContentsViews are separate documents — this rule cannot reach them.
+   */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+html {
+  height: 100%;
+  overscroll-behavior: none;
+  overflow: hidden;
+}
+
+/*
+ * Form fields and contenteditable always remain selectable so users can edit/copy input text.
+ * These are direct declarations on the elements, winning over the inherited `none` from body.
+ */
+input,
+textarea,
+select,
+[contenteditable] {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+/*
+ * Content opt-in contract: read-only text surfaces where users should be able to drag-select
+ * and copy text. Each entry here overrides the inherited `none` from body for a specific
+ * content surface. Chrome elements (buttons, tabs, toolbars, tree nodes with drag-and-drop,
+ * terminal with its own xterm selection, etc.) intentionally stay non-selectable.
+ *
+ * NOTE: AI chat messages, prompt history, and memories are opted in within their own CSS files
+ * (AIAssistModal.css, AIAssistModalGeneratePromptHistory.css, AIAssistModalMemories.css) —
+ * those opt-ins are kept there because they coexist with re-suppression rules on action buttons
+ * and token chips inside the chat region.
+ */
+.flow-audit-row-summary,
+.flow-audit-row-meta,
+.flow-audit-row-verbs,
+.ai-json-preview-body,
+#modal-message,
+.gallery-inline-link-title,
+.gallery-inline-link-description,
+.gallery-inline-link-url,
+.setting-description {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+
+.virtual-origin-link-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.edit-tags-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  min-width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md, 6px);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: border-color var(--transition-speed) ease, background var(--transition-speed) ease, transform var(--transition-speed) ease;
+}
+
+.edit-tags-btn:hover,
+.edit-tags-btn:focus-visible {
+  border-color: var(--accent-color);
+  background: var(--hover-bg);
+}
+
+.edit-tags-btn i {
+  font-size: var(--icon-glyph-sm);
+}
+
+.tag-editor-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tag-editor-context {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.tag-editor-context strong {
+  color: var(--text-primary);
+  font-size: 13px;
+}
+
+.tag-editor-create-label {
+  font-size: var(--font-control);
+  color: var(--text-secondary);
+}
+
+.tag-editor-create-input {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: var(--text-input-height); /* app-wide input height — was a 38px one-off */
+  padding: 0 10px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg, 8px);
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  font: inherit;
+}
+
+.tag-editor-create-input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: var(--focus-ring);
+}
+
+.tag-editor-helper,
+.tag-editor-empty {
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.tag-editor-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-height: min(42vh, 320px);
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.tag-editor-option {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: var(--tag-chip-height);
+  padding: 0 var(--tag-chip-pad-x);
+  border: 1px solid var(--border-color);
+  border-radius: var(--tag-chip-radius);
+  background: var(--bg-tertiary);
+  cursor: pointer;
+  user-select: none;
+  box-sizing: border-box;
+}
+
+.tag-editor-option:hover {
+  background-color: var(--hover-bg);
+  color: var(--accent-color);
+  border-color: var(--accent-color);
+}
+
+.tag-editor-option:has(input:checked) {
+  border-color: var(--accent-color);
+  background: var(--hover-bg);
+}
+
+.tag-editor-option input {
+  margin: 0;
+}
+
+.tag-editor-option-chip {
+  color: var(--text-primary);
+  font-size: var(--font-control);
+  line-height: 1;
+}
+
+.tag-editor-option-count {
+  min-width: 20px;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm, 4px);
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  font-size: var(--font-meta);
+  text-align: center;
+}
+
+}

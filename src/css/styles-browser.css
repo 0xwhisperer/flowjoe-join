@@ -1,0 +1,3498 @@
+@layer app {
+/* .canvas-image-number: a canvas-view-only duplicate of the same slot number
+   .image-number already renders inside .add-image-position (imageGallery.js).
+   Canvas view needs its own independently-positioned copy because
+   .add-image-position is overflow:hidden there (height-capped for the
+   button rail overlay) and clips anything positioned outside its own box —
+   the original .image-number can't escape that clip via CSS alone once it
+   needs to sit at the card's actual top-left corner while the rail box sits
+   elsewhere. Hidden by default here so horizontal/vertical view (which
+   never reference this class) render it as dead, invisible markup; canvas
+   view's own scoped <style> (canvasGalleryView.js) un-hides and positions
+   it. */
+.canvas-image-number {
+  display: none;
+}
+/* .canvas-rail-attached: a canvas-view-only duplicate of the same rail
+   buttons (add/copy/stack/delete/AI/wireframe) already rendered inside
+   .add-image-position (imageGallery.js), this time as REAL children of
+   .image-frame instead of a separately-positioned sibling box. Earlier
+   canvas-only attempts kept the rail as a sibling and used CSS transforms /
+   :has() rules to keep it visually synced with the media's own hover-lift —
+   proven fragile across several rounds (offsets drifting, sizes reverting to
+   the shared --icon-btn-size-sm token instead of canvas's own size, clipping
+   on cards where the sync math didn't quite match). Being a REAL child of
+   .image-frame means it lifts/moves with the media automatically, the exact
+   same way the stack badge, crop badge, and collapse/expand toggle already
+   do — no synchronization code needed at all.
+   Buttons here use DIFFERENT class names (canvas-rail-add-btn, etc., not
+   add-image-btn etc.) deliberately: reusing the original names would have
+   made every delegated click handler, clone-and-replace listener rebinder,
+   and singular querySelector() lookup elsewhere in the codebase see TWO
+   matching elements per slot, corrupting stale-data lookups and double-
+   binding listeners. These buttons instead forward their click to the
+   original hidden button in the same slot (see ensureCanvasRailAttachedWiring
+   in canvasGalleryView.js) — the original still does all the real work,
+   unchanged; this is only ever a second entry point to the same action.
+   Hidden by default here so horizontal/vertical view (which never reference
+   these classes) render this whole block as dead, invisible markup —
+   canvas's own scoped <style> un-hides and positions it. */
+.canvas-rail-attached {
+  display: none;
+}
+/* ── Image collapse ─────────────────────────────────────────────────────── */
+
+/* How much of the media a rolled-up slot still shows. Declared here rather than in
+   styles-variables.css to keep this prototype self-contained; promote it if kept. */
+:root {
+  --collapsed-media-sliver-height: 28px; /* matches --gallery-section-header-height's
+    26 -> 28px trial bump (styles-variables.css) so a rolled-up media sliver still reads
+    as one continuous stack with the taller Tag Bin/Slot Notes bars below it, instead of
+    stepping down a size right above them. */
+  /* Separate, SMALLER floor for the smallest resized-down slots (0.72x scale, e.g. the
+     160px minimum). Owner call: 28px felt too tall specifically at the shrink extreme
+     (visibly bigger than everything else that DID shrink around it), so the floor stays
+     at the pre-bump 26px while the base height above still uses 28 for its "at rest /
+     grown" multiplier and for the header-bar-rhythm story. */
+  --collapsed-media-sliver-min-height: 26px;
+}
+
+/* Per-unit collapsed: hide the action rail; keep the enumerator/action rail available. */
+.enum-image-unit.image-item-collapsed .image-controls {
+  display: none !important;
+}
+
+/* Media when collapsed.
+   Vertical-notes keeps the original behavior (a side strip replaces the media entirely).
+   Every other layout CLIPS the media to a thin sliver instead of hiding it, so a collapsed
+   slot still reads as "there is media here" rather than showing a bare chevron. */
+.image-gallery.vertical-notes-layout .enum-image-unit.image-item-collapsed .image-stack-container {
+  display: none !important;
+}
+
+.image-gallery:not(.vertical-notes-layout) .enum-image-unit.image-item-collapsed .image-stack-container {
+  /* Multiply by the slot scale, same as the Tag Bin / Notes header bars (tags.css
+     .gallery-tags-titlebar, styles-gallery-vertical.css .gallery-notes-titlebar) —
+     the "one uniform 26px stack" story only holds if all three bands scale together.
+     A frozen 26px sliver on a resized-up slot (a) falls visibly out of rhythm with
+     the grown header bars and (b) gets overflowed by its own chrome: the collapse
+     toggle is 5px top inset + 16px*scale tall = 27.4px at max scale, so the chevron's
+     bottom was clipped off by this box's overflow:hidden and the toggle read as a
+     broken half-square next to the LED. The multiplier composes at use site from
+     var(--gallery-slot-scale) directly (the :root token itself stays a plain 26px),
+     so canvas's per-unit inline scale re-resolves it per card. */
+  /* --gallery-slot-scale is clamped to a 0.72 floor (styles-variables.css), which would
+     otherwise shrink this sliver too far for the toggle+LED cluster inset 5px from the
+     top, and for .add-image-position's insert button, which vertically aligns to this
+     same collapsed frame height. max() picks whichever is larger: the scaled height, or
+     the DEDICATED (smaller) floor token — so a small slot never goes below that floor,
+     only ever grows past the base height on a resized-up slot. Floor is intentionally
+     NOT the same token as the base height above it (see --collapsed-media-sliver-min-height's
+     own comment for why). min-height/max-height must match height exactly (not left as
+     the plain scaled calc()) or the box could still shrink/grow past this same floor via
+     those two. */
+  height: max(calc(var(--collapsed-media-sliver-height, 26px) * var(--gallery-slot-scale, 1)), var(--collapsed-media-sliver-min-height, 26px));
+  min-height: var(--collapsed-media-sliver-min-height, 26px);
+  max-height: max(calc(var(--collapsed-media-sliver-height, 26px) * var(--gallery-slot-scale, 1)), var(--collapsed-media-sliver-min-height, 26px));
+  overflow: hidden;
+  /* Round the top to match the media's own corner radius; the cut edge stays square. */
+  border-radius: var(--radius-lg, 8px) var(--radius-lg, 8px) 0 0;
+  pointer-events: none;
+}
+
+/* Match the media's corners to the sliver: rounded top (same --radius-lg the media
+   already uses), square cut edge at the bottom. */
+.image-gallery:not(.vertical-notes-layout) .enum-image-unit.image-item-collapsed .image-stack-container img,
+.image-gallery:not(.vertical-notes-layout) .enum-image-unit.image-item-collapsed .image-stack-container video,
+.image-gallery:not(.vertical-notes-layout) .enum-image-unit.image-item-collapsed .image-stack-container .image-frame {
+  border-radius: var(--radius-lg, 8px) var(--radius-lg, 8px) 0 0 !important;
+}
+
+/* The sliver is a peek, not a working media surface — mute the interactive playback
+   and drag overlays. The IDENTIFYING chrome deliberately STAYS visible, because that
+   is the whole point of a rolled-up slot: the media badge (.cropped-image-badge), the
+   LED (.compression-status, inside .image-info-icon-wrapper), and the stack count
+   (.image-stack-indicator-wrapper) all sit within the sliver's top strip and tell you
+   what is hiding under there. The per-slot collapse toggle lives in that same cluster. */
+.image-gallery:not(.vertical-notes-layout) .enum-image-unit.image-item-collapsed .image-stack-container .image-move-indicator,
+.image-gallery:not(.vertical-notes-layout) .enum-image-unit.image-item-collapsed .image-stack-container .stack-navigation,
+.image-gallery:not(.vertical-notes-layout) .enum-image-unit.image-item-collapsed .image-stack-container .stack-scrub-control,
+.image-gallery:not(.vertical-notes-layout) .enum-image-unit.image-item-collapsed .image-stack-container .stack-audio-playback-controls,
+.image-gallery:not(.vertical-notes-layout) .enum-image-unit.image-item-collapsed .image-stack-container .image-selection-checkbox,
+.image-gallery:not(.vertical-notes-layout) .enum-image-unit.image-item-collapsed .image-stack-container .gallery-inline-audio-controls,
+.image-gallery:not(.vertical-notes-layout) .enum-image-unit.image-item-collapsed .image-stack-container .gallery-inline-video-controls {
+  display: none !important;
+}
+
+/* Show title when collapsed */
+.enum-image-unit.image-item-collapsed .image-title {
+  display: block !important;
+}
+
+/* ── Horizontal expand bar — thin horizontal strip below the enumerator ── */
+
+/* Default hidden */
+.image-expand-bar {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--image-gallery-width, 320px);
+  height: 10px;
+  background: var(--bg-tertiary, #333);
+  border-radius: var(--radius-sm, 4px);
+  cursor: pointer;
+  margin-bottom: 4px;
+  opacity: 0.5;
+  transition: opacity var(--transition-speed), height var(--transition-speed);
+  flex-shrink: 0;
+}
+
+.image-expand-bar:hover {
+  opacity: 1;
+  height: 14px;
+}
+
+.image-expand-bar i {
+  font-size: 9px;
+  color: var(--text-secondary);
+  pointer-events: none;
+}
+
+/* Show expand bar when per-unit collapsed */
+.enum-image-unit.image-item-collapsed .image-expand-bar {
+  display: flex !important;
+}
+
+/* The old full-width expand bar is retired in horizontal layouts — the per-slot
+   collapse toggle beside the LED does this job now, at zero vertical cost.
+   Vertical-notes keeps its side strip (rule further down still applies there). */
+.image-gallery:not(.vertical-notes-layout) .enum-image-unit.image-item-collapsed .image-expand-bar {
+  display: none !important;
+}
+
+/* ── Per-slot collapse toggle (lives beside the media LED) ─────────────────── */
+
+/* The LED cluster sits over the clipped sliver and must stay clickable even though
+   the sliver itself is pointer-events:none. */
+.image-gallery:not(.vertical-notes-layout) .enum-image-unit.image-item-collapsed .image-stack-container .image-info-icon-wrapper {
+  pointer-events: auto;
+  z-index: 3;
+}
+
+/* Corner order, right to left: [toggle] [LED] … [stack count on the far left].
+   The toggle owns the corner at the same 5px inset .image-info-icon-wrapper uses, and
+   the LED cluster is pushed left by the toggle's width plus the gap so the two never
+   overlap. Both are anchored to the media frame, so this holds at any slot size. */
+.slot-media-collapse-toggle {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  z-index: 71; /* just above .image-info-icon-wrapper's 70 */
+  /* The collapsed sliver sets pointer-events:none on the stack container, which the
+     toggle would otherwise inherit — making the one control you need on a rolled-up
+     slot unclickable. Re-enable it explicitly. */
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  /* A generic gallery button rule contributes margin-top:5px, which STACKS on top:5px
+     and drops the toggle 5px below the count badge and media tag. Zero it so all three
+     share the same 5px inset. */
+  margin: 0;
+  border: none;
+  border-radius: var(--radius-sm, 4px);
+  background: rgba(0, 0, 0, 0.45);
+  /* Not var(--text-secondary): that token is a theme-relative mid-gray meant for
+     text on the app's own chrome background, not for an icon on a fixed
+     semi-opaque black chip floating over arbitrary media. Several themes'
+     --text-secondary is dark/mid-tone enough to nearly vanish against the chip
+     at rest. A fixed near-white guarantees the chevron reads regardless of
+     theme or the media underneath. */
+  color: rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+  opacity: 0.75;
+  transition: opacity var(--transition-speed), background var(--transition-speed);
+}
+
+/* Sit the LED cluster immediately left of the toggle and centre it on the toggle's
+   row. Without the height+centring the LED is a 6px dot hanging off the wrapper's top
+   edge, which reads as floating above the toggle rather than paired with it. */
+.image-frame:has(> .slot-media-collapse-toggle) .image-info-icon-wrapper {
+  /* 5px inset + toggle width + 4px gap. The toggle's width scales with the slot
+     (calc(16px * --gallery-slot-scale) below), so the reserved space must use the SAME
+     scaled term — a fixed 25px put the LED on top of the grown toggle the moment the
+     slot was resized up. At scale 1 this is exactly the original 25px. */
+  right: calc(5px + (16px * var(--gallery-slot-scale, 1)) + 4px);
+  top: 5px;
+  /* match the toggle's SCALED height so centring lines the dot up with it */
+  height: calc(16px * var(--gallery-slot-scale, 1));
+  justify-content: center;
+}
+
+/* Masonry ("vertical") does not support collapse — the global collapse button is
+   disabled there and the layout force-expands. The template renders the toggle
+   unconditionally, so hide it here and give the LED its corner back, rather than
+   showing a control that does nothing. */
+.image-gallery.vertical-layout .slot-media-collapse-toggle {
+  display: none !important;
+}
+
+.image-gallery.vertical-layout .image-frame:has(> .slot-media-collapse-toggle) .image-info-icon-wrapper {
+  right: 5px;
+}
+
+/* Collapsing is a gallery-slot action with no meaning in the preview modal. The modal
+   DEEP-CLONES the live gallery .image-frame (joeImageModalLifecycle.js) and scrubs the
+   toggle from the clone; this is the second line of defence if that scrub ever changes.
+   (No companion LED-offset rule is needed: the same scrub removes .image-info-icon-wrapper,
+   so there is no modal LED left to re-align.) */
+.image-item-preview-modal-media .slot-media-collapse-toggle {
+  display: none !important;
+}
+
+.slot-media-collapse-toggle:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.7);
+  /* Not var(--text-primary) — same fixed-chip-background reasoning as the resting
+     color above; a darker theme's --text-primary can still read poorly here. */
+  color: #fff;
+}
+
+.slot-media-collapse-toggle i {
+  font-size: 9px;
+  pointer-events: none;
+}
+
+/* Scale the toggle with the slot on resize. Revert: delete this rule. */
+.image-gallery .enum-image-unit .slot-media-collapse-toggle {
+  width: calc(16px * var(--gallery-slot-scale, 1));
+  height: calc(16px * var(--gallery-slot-scale, 1));
+}
+
+.image-gallery .enum-image-unit .slot-media-collapse-toggle i {
+  font-size: calc(9px * var(--font-scale, 1) * var(--gallery-slot-scale, 1));
+}
+
+/* Horizontal: fixed width so item doesn't collapse to zero without the image */
+.image-gallery:not(.vertical-notes-layout) .enum-image-unit.image-item-collapsed .image-item {
+  width: var(--collapsed-item-width, 320px);
+}
+
+/* ── Vertical-notes expand bar — tall narrow vertical strip replacing the image ── */
+
+/* The bar in vertical-notes is a vertical strip: narrow width, full height of image slot */
+.image-gallery.vertical-notes-layout .image-expand-bar {
+  width: 14px;
+  height: var(--image-gallery-width, 320px);
+  min-height: 60px;
+  margin-bottom: 0;
+  margin-right: 8px;
+  border-radius: var(--radius-sm, 4px);
+  flex-direction: column;
+  flex-shrink: 0;
+  transition: opacity var(--transition-speed), width var(--transition-speed);
+}
+
+.image-gallery.vertical-notes-layout .image-expand-bar:hover {
+  width: 18px;
+  height: var(--image-gallery-width, 320px);
+}
+
+/* Vertical-notes collapsed: unit keeps notes column, image replaced by vertical bar */
+.image-gallery.vertical-notes-layout .enum-image-unit.image-item-collapsed .image-item {
+  width: auto;
+  min-height: var(--collapsed-media-height, var(--image-gallery-width, 320px));
+  grid-template-columns: 24px minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-areas:
+    "img title"
+    "img notes"
+    "img tags";
+  align-items: stretch;
+  column-gap: 10px;
+}
+
+.image-gallery.vertical-notes-layout .enum-image-unit.image-item-collapsed .image-expand-bar {
+  grid-area: img;
+  align-self: stretch;
+  justify-self: center;
+  width: 14px;
+  height: auto;
+  min-height: 100%;
+  max-height: none;
+  margin: 4px 0 0 0;
+}
+
+.image-gallery.vertical-notes-layout .enum-image-unit.image-item-collapsed .image-expand-bar:hover {
+  width: 18px;
+  height: auto;
+  min-height: 100%;
+  max-height: none;
+}
+
+.image-gallery.vertical-notes-layout .enum-image-unit.image-item-collapsed .image-title {
+  align-self: start;
+}
+
+.image-gallery.vertical-notes-layout .enum-image-unit.image-item-collapsed .image-notes-column {
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: var(--collapsed-media-height, var(--image-gallery-width, 320px)) !important;
+  align-self: stretch;
+  overflow: hidden;
+}
+
+.image-gallery.vertical-notes-layout .enum-image-unit.image-item-collapsed .image-notes:not(.modal-notes) {
+  height: 100% !important;
+  min-height: 0 !important;
+  max-height: 100% !important;
+  overflow-y: auto !important;
+}
+
+/* Additional safety rules for vertical layout to prevent overlap */
+.image-gallery.vertical-layout>* {
+  overflow: visible;
+  /* Ensure content doesn't get clipped */
+  position: relative;
+  /* Establish stacking context */
+}
+
+.image-gallery.vertical-layout .image-item {
+  width: fit-content;
+  overflow: visible;
+}
+
+/* Emoji picker panel scrollbar */
+#emoji-picker-panel::-webkit-scrollbar {
+  width: 6px;
+}
+
+#emoji-picker-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#emoji-picker-panel::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: var(--icon-btn-radius, 4px);
+}
+
+#emoji-picker-panel::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+/* Emoji picker grid items */
+.epick {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm, 4px);
+  cursor: pointer;
+  transition: background var(--transition-speed);
+}
+
+.epick:hover {
+  background: var(--bg-tertiary, #333);
+}
+
+/* Utility class used across gallery controls and badges */
+.hidden {
+  display: none !important;
+}
+
+/* ── Gallery: Title at Top (horizontal layout only) ────────────────────────
+   When enabled (default), the image title input is displayed at the top of
+   the enumerator column, adjacent to the image number, instead of sitting
+   inside the notes column below the image.
+   Only applies to horizontal layout (not vertical or vertical-notes).
+   Body class "gallery-title-at-bottom" reverts to the classic bottom position.
+────────────────────────────────────────────────────────────────────────── */
+
+/* Title-at-top: .image-item is the positioning anchor.
+   Reserve room for the full title field (tokenized --text-input-height) plus
+   a small gap under it — a stale font*1.3+18px floor was too short after
+   title pad tokens grew, so the absolute title rode outside the slot top. */
+body:not(.gallery-title-at-bottom) .image-gallery:not(.vertical-layout):not(.vertical-notes-layout) .image-item {
+  position: relative;
+  /* Not var(--text-input-height) — see the .image-title rule below for why: must track the
+     title band's own scaled height, not the frozen app-wide input height. */
+  margin-top: calc(
+    calc(14px * var(--font-scale, 1) * var(--gallery-slot-scale, 1)) * 1.3
+    + var(--gallery-slot-title-pad-top, 8px)
+    + var(--gallery-slot-title-pad-bottom, 8px)
+    + var(--gallery-title-media-gap, 3px)
+  );
+}
+
+/* Notes column stays relative so ::before sweep can anchor to it */
+body:not(.gallery-title-at-bottom) .image-gallery:not(.vertical-layout):not(.vertical-notes-layout) .image-notes-column {
+  position: relative !important;
+}
+
+/* Absolutely position title to top of .image-item.
+   (Title-at-top: vertical tile layout always ignores the title-location preference,
+   so .vertical-layout shares this body.) */
+body:not(.gallery-title-at-bottom) .image-gallery:not(.vertical-layout):not(.vertical-notes-layout) .image-title,
+.image-gallery.vertical-layout .image-title {
+  display: block !important;
+  position: absolute !important;
+  /* Sit in the reserved margin-top band, flush to the top of that band */
+  bottom: calc(100% + var(--gallery-title-media-gap, 3px));
+  margin: 0;
+  left: 0;
+  width: 100%;
+  /* Not var(--text-input-height) — that token is shared app-wide (settings inputs, modal
+     fields, buttons) and must not shrink/grow because one gallery slot was resized. Same
+     formula, built from the per-element font-size so this band tracks the title text. */
+  height: calc(
+    calc(14px * var(--font-scale, 1) * var(--gallery-slot-scale, 1)) * 1.3
+    + var(--gallery-slot-title-pad-top, 8px)
+    + var(--gallery-slot-title-pad-bottom, 8px)
+  );
+  min-height: calc(
+    calc(14px * var(--font-scale, 1) * var(--gallery-slot-scale, 1)) * 1.3
+    + var(--gallery-slot-title-pad-top, 8px)
+    + var(--gallery-slot-title-pad-bottom, 8px)
+  );
+  max-height: calc(
+    calc(14px * var(--font-scale, 1) * var(--gallery-slot-scale, 1)) * 1.3
+    + var(--gallery-slot-title-pad-top, 8px)
+    + var(--gallery-slot-title-pad-bottom, 8px)
+  );
+  z-index: 2;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border-light);
+  color: var(--accent-color);
+  font-weight: bold;
+  /* Not var(--gallery-slot-text-font-size) — see styles-gallery-vertical.css's .image-title
+     rule for why: that variable is frozen at :root and can't respond to a per-slot
+     --gallery-slot-scale override (e.g. canvas drag-resize). */
+  font-size: calc(14px * var(--font-scale, 1) * var(--gallery-slot-scale, 1));
+  font-family: inherit;
+  line-height: 1.3;
+  padding: var(--gallery-slot-title-padding);
+  /* Not the bare --radius-lg token — that's shared app-wide; scale it with the slot here
+     instead, same as the media corner-radius (stack-styles.css). */
+  border-radius: calc(var(--radius-lg, 8px) * var(--gallery-slot-scale, 1));
+  outline: none;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Title-at-top: vertical tile layout always ignores the title-location preference. */
+.image-gallery.vertical-layout .image-item {
+  position: relative;
+  /* Not var(--text-input-height) — see the .image-title rule above for why. */
+  margin-top: calc(
+    calc(14px * var(--font-scale, 1) * var(--gallery-slot-scale, 1)) * 1.3
+    + var(--gallery-slot-title-pad-top, 8px)
+    + var(--gallery-slot-title-pad-bottom, 8px)
+    + var(--gallery-title-media-gap, 3px)
+  );
+}
+
+.image-gallery.vertical-layout .image-title:focus {
+  border-bottom-color: var(--accent-color);
+  background-color: var(--bg-secondary);
+}
+
+.image-gallery.vertical-layout .image-title::placeholder {
+  color: var(--text-secondary);
+  font-weight: normal;
+  opacity: 0.5;
+}
+
+/* Not var(--text-input-height) below — see the .image-title rule above for why. */
+.image-gallery.vertical-layout .add-image-position {
+  padding-top: calc(
+    calc(
+      calc(14px * var(--font-scale, 1) * var(--gallery-slot-scale, 1)) * 1.3
+      + var(--gallery-slot-title-pad-top, 8px)
+      + var(--gallery-slot-title-pad-bottom, 8px)
+    ) + var(--slot-under-stack-gap, 8px) + 10px
+  );
+}
+
+.image-gallery.vertical-layout .add-image-position .image-number {
+  position: absolute;
+  top: calc(
+    calc(
+      calc(14px * var(--font-scale, 1) * var(--gallery-slot-scale, 1)) * 1.3
+      + var(--gallery-slot-title-pad-top, 8px)
+      + var(--gallery-slot-title-pad-bottom, 8px)
+    ) - 4px
+  );
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+}
+
+/* Sweep animation when notes are focused - title at top mode */
+body:not(.gallery-title-at-bottom) .image-gallery:not(.vertical-layout):not(.vertical-notes-layout) .image-notes-column:has(.image-notes:focus)::before {
+  content: none;
+  display: none;
+}
+
+/* Focus state for the repositioned title */
+body:not(.gallery-title-at-bottom) .image-gallery:not(.vertical-layout):not(.vertical-notes-layout) .image-title:focus {
+  border-bottom-color: var(--accent-color);
+  background-color: var(--bg-secondary);
+}
+
+/* Placeholder style for repositioned title */
+body:not(.gallery-title-at-bottom) .image-gallery:not(.vertical-layout):not(.vertical-notes-layout) .image-title::placeholder {
+  color: var(--text-secondary);
+  font-weight: normal;
+  opacity: 0.5;
+}
+
+body:not(.gallery-title-at-bottom) .image-gallery:not(.vertical-layout):not(.vertical-notes-layout) .image-stack-container {
+  margin-top: 0;
+}
+
+/* The add-image-position column: align the first insert button with the media frame below the title row.
+   Not var(--gallery-slot-text-font-size) — same reason as the .image-title rule above: this must
+   track the title's ACTUAL rendered size, including a per-slot --gallery-slot-scale override, or
+   this column drifts out of alignment with a title that scaled but these calcs didn't. */
+body:not(.gallery-title-at-bottom) .image-gallery:not(.vertical-layout):not(.vertical-notes-layout) .add-image-position {
+  padding-top: calc((calc(14px * var(--font-scale, 1) * var(--gallery-slot-scale, 1)) * 1.3) + 28px);
+}
+
+/* No title-row margin on .final-enum-unit .add-image-slot here (or in the vertical-layout
+   block above). The trailing add-slot card is built from the same card shell as a real slot
+   (imageGallery.js, .final-enum-unit), so its .image-item already reserves the title band via
+   the rules above. The compensating margin-top rules that used to live here dated from when
+   the add tile hung bare off the unit with no shell; kept after 2a13a6b9, they pushed the tile
+   down a second title-row (36px horizontal, 45px vertical) below its own frame. */
+
+/* Enumerator number sits at the very top of its column, above the buttons */
+body:not(.gallery-title-at-bottom) .image-gallery:not(.vertical-layout):not(.vertical-notes-layout) .add-image-position .image-number {
+  position: absolute;
+  top: calc((calc(14px * var(--font-scale, 1) * var(--gallery-slot-scale, 1)) * 1.3) - 2px);
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+}
+
+body:not(.gallery-title-at-bottom) .image-gallery:not(.vertical-layout):not(.vertical-notes-layout) .add-image-position.filtered-enumerator-only {
+  min-height: calc((calc(14px * var(--font-scale, 1) * var(--gallery-slot-scale, 1)) * 1.3) + 18px);
+  height: auto;
+}
+
+
+/* ========================================
+   IMAGE MULTI-SELECT STYLES
+   ======================================== */
+
+/* Checkbox container - hidden by default, positioned in top-right corner of image-stack-container */
+.image-selection-checkbox {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-speed) ease;
+}
+
+/* Ensure image-stack-container is positioned context for checkbox */
+.image-stack-container {
+  position: relative;
+}
+
+/* Keep checkbox UI hidden in selection mode; selection is click-anywhere on image */
+body.image-selection-mode .image-selection-checkbox {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Hide LED indicators in selection mode */
+body.image-selection-mode .compression-status,
+body.image-selection-mode .image-info-icon {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Disable LED hover tooltips while multi-select is active */
+body.image-selection-mode .image-info-icon-wrapper,
+body.image-selection-mode .image-info-icon-wrapper .image-info-card {
+  pointer-events: none !important;
+}
+
+body.image-selection-mode .image-info-icon-wrapper .image-info-card {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transform: translateY(-10px) !important;
+}
+
+/* Hide checkbox from drag preview ghost image */
+.image-item.dragging .image-selection-checkbox,
+.image-item.batch-drag-member .image-selection-checkbox {
+  display: none !important;
+}
+
+/* The bulk-remove checkbox now wears the app-wide input[type="checkbox"] look
+   (styles-gallery-notes.css) — its former bespoke 20px box, hover scale, and ✓-glyph checkmark
+   were a fifth divergent checkbox styling, consolidated per the one-checkbox-app-wide decision. */
+
+/* Highlight selected images */
+body.image-selection-mode .image-item.multi-selected {
+  border-radius: var(--radius-lg, 8px);
+  position: relative;
+  z-index: 4;
+  box-shadow: none;
+}
+
+body.image-selection-mode .image-item.multi-selected::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: var(--radius-xl, 10px);
+  pointer-events: none;
+  z-index: 20;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--accent-color) 68%, var(--border-color)),
+    0 0 14px color-mix(in srgb, var(--accent-color) 30%, transparent),
+    0 0 24px color-mix(in srgb, var(--accent-color) 18%, transparent);
+  transition:
+    box-shadow var(--transition-speed) ease,
+    opacity var(--transition-speed) ease;
+}
+
+body.image-selection-mode .image-item.multi-selected.drop-glow-active::after,
+/* While a selected card is actively being dragged (canvas/free-form's own .dragging, or
+   grid mode's native-DnD .batch-drag-member for every OTHER selected card), its dashed
+   drag outline (styles-themes.css) already IS the drag-state visual — the static "you
+   have this selected" solid glow ring from the rule above is redundant on top of it and
+   reads as two different outlines stacked on the same card. Suppress the glow for the
+   duration of the drag; it comes right back the instant the drag class is removed. */
+body.image-selection-mode .image-item.multi-selected.dragging::after,
+body.image-selection-mode .image-item.multi-selected.batch-drag-member::after {
+  box-shadow: none;
+  opacity: 0;
+}
+
+/* Title-at-top mode: extend selected outline to include the title field row. */
+body.image-selection-mode:not(.gallery-title-at-bottom) .image-gallery:not(.vertical-layout):not(.vertical-notes-layout) .image-item.multi-selected::after {
+  top: calc(-1 * ((14px * var(--font-scale, 1) * 1.3) + 20px));
+  bottom: 0;
+}
+
+/* Active state for select button.
+   Glyph color is --text-on-accent, the WCAG-picked per-theme token for content drawn
+   on an --accent-color fill (themes.css defines it for every theme). This was
+   --bg-primary, which is NOT a global token — it is only defined inside
+   node-themes.css, scoped to node themes, so on the gallery toolbar it frequently
+   resolved to nothing and the ✕ inherited a near-accent color, reading as the icon
+   disappearing when multi-select was switched on. */
+#select-images-btn.active {
+  background: var(--accent-color);
+  color: var(--text-on-accent);
+}
+
+#select-images-btn.active:hover {
+  background: var(--accent-color);
+  opacity: 0.9;
+}
+
+/* Trash button with selection - only style the icon */
+#delete-all-images.has-selection i {
+  color: var(--danger-color);
+  filter: drop-shadow(0 0 2px var(--danger-color));
+}
+
+#delete-all-images.drop-delete-target {
+  background: color-mix(in srgb, var(--danger-color) 22%, var(--bg-secondary));
+  border-color: color-mix(in srgb, var(--danger-color) 72%, var(--border-color));
+}
+
+#delete-all-images.drop-delete-target i {
+  color: var(--danger-color);
+  filter: drop-shadow(0 0 3px var(--danger-color));
+}
+
+/* Selection mode cursor */
+body.image-selection-mode .image-item {
+  transition:
+    opacity 0.15s ease,
+    filter 0.15s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.gallery-lasso-rect {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  border: var(--lasso-border);
+  background: var(--lasso-fill);
+  box-shadow: var(--lasso-glow);
+  pointer-events: none;
+  z-index: 9999;
+}
+
+.tree-lasso-rect {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  border: var(--lasso-border);
+  background: var(--lasso-fill);
+  box-shadow: var(--lasso-glow);
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Strong visual "selection mode active" treatment for non-selected cards */
+body.image-selection-mode .image-item:not(.multi-selected) {
+  opacity: 0.72 !important;
+  filter: saturate(0.88);
+}
+
+body.image-selection-mode .image-item:not(.multi-selected)::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-lg, 8px);
+  background: color-mix(in srgb, var(--bg-tertiary) 38%, transparent);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* In multi-select, card controls and editable fields are inert and visually disabled. */
+body.image-selection-mode .image-controls,
+body.image-selection-mode .image-title,
+body.image-selection-mode .image-notes,
+body.image-selection-mode .gallery-notes-tiptap-display,
+body.image-selection-mode .gallery-notes-tiptap-editor,
+body.image-selection-mode .image-expand-bar {
+  pointer-events: none !important;
+}
+
+body.image-selection-mode .image-controls button,
+body.image-selection-mode .image-expand-bar {
+  opacity: 0.45 !important;
+  filter: saturate(0.55);
+  cursor: not-allowed !important;
+}
+
+/* Keep slot/insert controls visually muted to the same level in multi-select mode. */
+body.image-selection-mode .add-image-position button,
+body.image-selection-mode .add-image-slot,
+body.image-selection-mode .add-image-slot-icon {
+  opacity: 0.45 !important;
+  filter: saturate(0.55);
+  cursor: not-allowed !important;
+}
+
+/* Force AI button to use the same mute level as other image controls. */
+body.image-selection-mode .image-controls .ai-query-btn {
+  opacity: 0.45 !important;
+  filter: saturate(0.55) !important;
+  cursor: not-allowed !important;
+}
+
+body.image-selection-mode .image-title,
+body.image-selection-mode .image-notes,
+body.image-selection-mode .gallery-notes-tiptap-display,
+body.image-selection-mode .gallery-notes-tiptap-editor {
+  opacity: 0.62 !important;
+  background-color: color-mix(in srgb, var(--bg-secondary) 55%, transparent) !important;
+  border-color: color-mix(in srgb, var(--border-color) 70%, transparent) !important;
+  cursor: default !important;
+}
+
+/* Selected cards should pop in multi-select mode */
+body.image-selection-mode .image-item.multi-selected {
+  opacity: 1 !important;
+  filter: none;
+}
+
+/* Batch-drag dimming for the OTHER selected cards (not the one under the native drag gesture)
+   is now owned by .image-item.batch-drag-member in styles-themes.css, matching the exact same
+   opacity/outline treatment canvas/free-form mode's .dragging class uses — this rule used to
+   apply its OWN, different dim effect (0.46 opacity + saturate filter, no dashed outline) to
+   every .multi-selected card during a batch drag, which visibly conflicted with (and, via
+   !important, usually won over) the new shared treatment, producing a different-looking ghost
+   in grid mode than free-form mode for the exact same gesture. Retired in favor of one shared
+   look. */
+
+/* Keep cards stationary while selecting multiple images */
+body.image-selection-mode .image-frame:hover,
+body.image-selection-mode .image-frame:has(.stack-navigation:hover),
+body.image-selection-mode .image-frame.no-hover-transform:hover,
+body.image-selection-mode .image-frame.no-hover-transform:has(.stack-navigation:hover) {
+  transform: none !important;
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+  -moz-box-shadow: none !important;
+}
+
+body.image-selection-mode .image-frame:hover,
+body.image-selection-mode .image-frame:has(.stack-navigation:hover) {
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+  -moz-box-shadow: none !important;
+  cursor: pointer;
+}
+
+/* ── Node Summary Preview Modal ── */
+
+#nsm-textarea:focus {
+  border-color: var(--accent-color);
+}
+
+.nsm-breadcrumb {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 2px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  min-height: 20px;
+}
+
+.nsm-breadcrumb-segment {
+  background: none;
+  border: none;
+  padding: 2px 6px;
+  margin: 0;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  cursor: pointer;
+  border-radius: var(--radius-sm, 4px);
+  transition: background-color var(--transition-speed) ease;
+}
+
+.nsm-breadcrumb-segment:hover {
+  background-color: var(--bg-secondary);
+}
+
+.nsm-breadcrumb-active {
+  color: var(--accent-color);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+  cursor: default;
+}
+
+.nsm-breadcrumb-chevron {
+  color: var(--text-secondary);
+  font-size: var(--icon-glyph-sm);
+  padding: 0 2px;
+}
+
+/* Node summary textarea focus: identical to gallery notes focus. */
+#nsm-notes-wrapper:has(#nsm-notes:focus)::before {
+  content: none;
+  display: none;
+}
+
+#nsm-notes {
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  border-top: none;
+  border-bottom: 1px solid transparent;
+  border-radius: var(--radius-md, 6px);
+  box-shadow: none;
+  outline: none;
+}
+
+#nsm-notes:focus {
+  outline: none;
+  box-shadow: none;
+  background-color: var(--bg-secondary);
+  background-image: linear-gradient(to bottom,
+      transparent 0%,
+      transparent 20%,
+      var(--accent-color) 50%,
+      transparent 80%,
+      transparent 100%);
+  background-repeat: no-repeat;
+  background-size: 1px 300%;
+  background-position: left 0%;
+  animation: notes-border-sweep 4s ease-in-out infinite;
+  border: none;
+  border-top: 1px solid var(--border-light);
+  border-radius: var(--radius-md, 6px);
+  border-bottom: 1px solid var(--accent-color);
+}
+
+
+/* Hide gallery content only once the browser surface has fully covered it. */
+body.browser-view-active.browser-view-gallery-hidden .content-section {
+  visibility: hidden;
+}
+
+body.browser-view-active.browser-view-gallery-hidden .content-section * {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+body.browser-view-active.browser-view-gallery-hidden .image-controls {
+  visibility: hidden !important;
+}
+
+/* visibility:hidden does NOT stop CSS animations — without this, the covered
+   content's infinite loops (spinners, pulses, shimmers) keep compositing every
+   frame underneath the browser surface. Pause them while covered; everything
+   resumes intact when the cover lifts. Same idiom as body.fj-bg-idle in
+   styles-gallery-horizontal.css. Safe for animationend waiters: both listeners
+   inside the content section carry setTimeout fallback caps. */
+body.browser-view-active.browser-view-gallery-hidden .content-section *,
+body.browser-view-active.browser-view-gallery-hidden .content-section *::before,
+body.browser-view-active.browser-view-gallery-hidden .content-section *::after {
+  animation-play-state: paused !important;
+}
+
+body.browser-view-active .header-bg-left,
+body.browser-view-active .header-bg-right {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Browser controls in header - positioned above gallery */
+.browser-controls {
+  display: none;
+  position: absolute;
+  gap: var(--header-gap);
+  align-items: center;
+  left: calc(280px + 12px); /* Default tree width + resizer, will be updated via JS */
+  top: 0;
+  bottom: 0;
+  z-index: 5;
+  transition: none;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* Universal margin reset for all browser-controls elements - only horizontal margins */
+.browser-controls * {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+/* Universal margin reset for all topbar right-side elements - only horizontal margins */
+.topbar > div[style*="margin-left: auto"] * {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+body.browser-view-active .browser-controls {
+  display: flex;
+  overflow: visible;
+  z-index: var(--flowjoe-z-browser-controls-active);
+}
+
+body.browser-view-active .topbar {
+  /* Same token as z-index-fix.css's identical selector — the two rules previously disagreed
+     (100040 here vs the token's 100060 there) and only load order picked the winner. */
+  z-index: var(--flowjoe-z-browser-toolbar) !important;
+  pointer-events: none;
+}
+
+body.browser-view-active .browser-tab-shell,
+body.browser-view-active .browser-tab-group-rail,
+body.browser-view-active .browser-link-gallery {
+  z-index: var(--flowjoe-z-browser-controls-active);
+}
+
+body.browser-view-active .topbar > *,
+body.browser-view-active .browser-controls,
+body.browser-view-active .browser-controls * {
+  pointer-events: auto;
+}
+
+body.save-reminder-modal-active #modal,
+body.prompt-modal-active #modal {
+  z-index: var(--flowjoe-z-modal-force-top) !important;
+}
+
+body.save-reminder-modal-active #browser-btn,
+body.prompt-modal-active #browser-btn,
+body.save-reminder-modal-active .browser-controls,
+body.prompt-modal-active .browser-controls,
+body.save-reminder-modal-active .browser-controls *,
+body.prompt-modal-active .browser-controls *,
+body.save-reminder-modal-active .browser-tab-shell,
+body.prompt-modal-active .browser-tab-shell,
+body.save-reminder-modal-active .browser-tab-shell *,
+body.prompt-modal-active .browser-tab-shell *,
+body.save-reminder-modal-active .browser-tab-group-rail,
+body.prompt-modal-active .browser-tab-group-rail,
+body.save-reminder-modal-active .browser-tab-group-rail *,
+body.prompt-modal-active .browser-tab-group-rail *,
+body.save-reminder-modal-active .browser-link-gallery,
+body.prompt-modal-active .browser-link-gallery,
+body.save-reminder-modal-active .browser-link-gallery *,
+body.prompt-modal-active .browser-link-gallery * {
+  pointer-events: none !important;
+}
+
+body.save-reminder-modal-active .browser-duck-resize,
+body.prompt-modal-active .browser-duck-resize {
+  display: none !important;
+  pointer-events: none !important;
+}
+
+.topbar,
+.topbar *,
+.browser-tab-shell,
+.browser-tab-shell *,
+.browser-tab-group-rail,
+.browser-tab-group-rail * {
+  user-select: none !important;
+  -webkit-user-select: none !important;
+}
+
+.browser-controls > .icon-btn {
+  flex: 0 0 auto;
+}
+
+/* Chrome-style in-page find bar. Drops down just under the address bar; its top
+   and right are set in JS so the close (X) lines up with the bookmark star.
+   Sits above the tab strip/rail (z 100030); the native browser view is lower. */
+.browser-find-bar {
+  position: fixed;
+  z-index: var(--flowjoe-z-browser-find-bar);
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  width: 360px;
+  max-width: 90vw;
+  height: 40px;
+  padding: 0 6px 0 12px;
+  border: 1px solid color-mix(in srgb, var(--border-color) 82%, transparent);
+  border-top: 0;
+  border-radius: 0 0 10px 10px;
+  background: color-mix(in srgb, var(--bg-secondary) 96%, transparent);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.38);
+  box-sizing: border-box;
+  font-family: var(--app-font-family);
+  backdrop-filter: blur(var(--modal-glass-blur, 10px)) saturate(var(--modal-glass-saturate, 1.08));
+}
+.browser-find-bar[hidden] {
+  display: none;
+}
+/* The finder field itself (not the card) is the search input, styled and
+   highlighted like the app's other search fields (.tree-search-bar). Descendant
+   selector + width reset beat the global input[type="text"] box that was blowing
+   the card out. */
+.browser-find-bar .browser-find-input {
+  flex: 1 1 auto;
+  min-width: 100px;
+  width: auto;
+  height: var(--text-input-height); /* text INPUTS ride the input token (slot-title anchor) — rendered identical */
+  margin: 0;
+  padding: 0 8px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm, 4px);
+  background: var(--bg-tertiary);
+  box-shadow: none;
+  outline: none;
+  color: var(--text-primary);
+  font-family: var(--app-font-family);
+  font-size: 13px;
+}
+.browser-find-bar .browser-find-input:hover {
+  border-color: var(--accent-color);
+}
+.browser-find-bar .browser-find-input:focus {
+  border-color: var(--accent-color);
+  background: var(--hover-bg);
+  box-shadow: var(--focus-ring);
+}
+.browser-find-bar .browser-find-input::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.6;
+}
+.browser-find-count {
+  flex: 0 0 auto;
+  padding: 0 6px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.browser-find-bar.is-no-match .browser-find-count {
+  color: var(--danger-color, #dc3545);
+}
+.browser-find-divider {
+  flex: 0 0 auto;
+  width: 1px;
+  height: 20px;
+  background: color-mix(in srgb, var(--border-color) 70%, transparent);
+}
+.browser-find-btn {
+  flex: 0 0 auto;
+  width: var(--icon-btn-size-sm); /* was a one-off 28px; joins the small class */
+  height: var(--icon-btn-size-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  /* margin: 0 — resets buttons.css's global `button { margin: 5px; }` base rule (same footgun
+     fixed on .browser-bookmark-star, styles-browser.css:3076, and .settings-tab,
+     styles-settings.css:33). Unlike .browser-bookmark-star (independently centered inside its own
+     wrapper, margin was absorbed harmlessly), this button sits in #browser-find-bar's horizontal
+     flex ROW alongside .browser-find-count/-divider/other .browser-find-btn siblings — DISCLOSED
+     visual change: live-measured getBoundingClientRect() before/after shows a real 5px leftward
+     shift and the visible gap between buttons tightens from the accidental 5px+5px+2px(gap)=12px
+     down to the intended 2px `gap` alone. A minor, deliberate correction to the actual designed
+     spacing, not a zero-change rename. */
+  margin: 0;
+  border-radius: var(--icon-btn-radius, 4px); /* unified square-button radius (was a one-off 5px) */
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+}
+.browser-find-btn:hover,
+.browser-find-btn:focus-visible {
+  background: var(--hover-bg);
+  color: var(--text-primary);
+  outline: none;
+}
+.browser-find-btn:disabled {
+  opacity: var(--disabled-opacity-control);
+  cursor: default;
+}
+
+.topbar-brand-stack.browser-brand-collapsed {
+  flex: 0 0 0;
+  width: 0;
+  min-width: 0;
+  max-width: 0;
+  margin-right: 0;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.browser-tab-shell {
+  --browser-tab-font-size: calc(1em * var(--flowjoe-surface-font-scale, 1));
+  --browser-tab-line-height: var(--notes-line-height, 1.35);
+  --browser-tab-width: 224px;
+  --browser-tab-min-width: 74px;
+  --browser-tab-max-width: 280px;
+  --browser-tab-new-width: 40px;
+  --browser-tab-edge-control-width: 40px;
+  /* --browser-tab-height (46px comfy) is a SHARED token declared in styles-variables.css and
+     retuned per tier in dropin/01-density-compact.css — read directly here via calc() below, not
+     redeclared locally: a custom property that references its own name in its own declaration is
+     an invalid CSS cycle (collapses to the guaranteed-invalid value, not the inherited value —
+     this broke the whole tab strip to 0px height once, do not reintroduce it). 46 (was 44): tabs
+     are flex-end in the +2 taller shell, so the bottom drops 2px to meet the tree-nav separator
+     while the tab top stays put. */
+  display: none;
+  position: fixed;
+  left: calc(280px + 12px);
+  top: 58px;
+  height: calc(var(--browser-tab-height) + 8px);
+  width: 320px;
+  z-index: var(--flowjoe-z-browser-tab-rail);
+  align-items: flex-end;
+  justify-content: flex-start;
+  gap: 0;
+  padding: 0;
+  pointer-events: auto;
+  box-sizing: border-box;
+  border-bottom: 1px solid color-mix(in srgb, var(--border-color) 76%, transparent);
+  transform: translate3d(0, 0, 0);
+  transition: none !important;
+}
+
+.browser-tab-strip {
+  height: calc(var(--browser-tab-height) + 6px);
+  min-width: 0;
+  flex: 1 1 auto;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  gap: 0;
+  padding: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scroll-behavior: auto;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--accent-color) 46%, transparent) transparent;
+  box-sizing: border-box;
+}
+
+.browser-tab-strip::-webkit-scrollbar {
+  height: 7px;
+}
+
+.browser-tab-strip::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.browser-tab-strip::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--accent-color) 42%, transparent);
+  border-radius: var(--radius-full, 999px);
+}
+
+.browser-tab.pinned {
+  flex: 0 0 44px;
+  width: 44px;
+  min-width: 44px;
+  max-width: 44px;
+  grid-template-columns: 16px;
+  justify-content: center;
+  justify-items: center;
+  gap: 0;
+  padding: 0;
+}
+
+.browser-tab.pinned .browser-tab-title,
+.browser-tab.pinned .browser-tab-close {
+  display: none !important;
+}
+
+.browser-tab-group-label {
+  --browser-tab-group-color: var(--accent-color);
+  height: var(--browser-tab-height);
+  flex: 0 0 auto;
+  max-width: 170px;
+  align-self: flex-end;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 0 10px 0 12px;
+  border: 1px solid color-mix(in srgb, var(--browser-tab-group-color) 68%, var(--border-color));
+  border-bottom-color: color-mix(in srgb, var(--bg-secondary) 82%, transparent);
+  border-radius: var(--radius-md, 6px) var(--radius-md, 6px) 0 0;
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--browser-tab-group-color) 24%, var(--bg-secondary)),
+      color-mix(in srgb, var(--browser-tab-group-color) 14%, var(--bg-secondary))
+    );
+  color: var(--text-primary);
+  cursor: pointer;
+  font-family: var(--app-font-family);
+  font-size: var(--browser-tab-font-size);
+  font-weight: 800;
+  line-height: 1;
+  box-sizing: border-box;
+  box-shadow:
+    inset 0 1.5px 0 color-mix(in srgb, var(--browser-tab-group-color) 82%, transparent),
+    var(--browser-tab-shadow);
+  backdrop-filter: blur(var(--modal-glass-blur, 10px)) saturate(var(--modal-glass-saturate, 1.1));
+  -webkit-backdrop-filter: blur(var(--modal-glass-blur, 10px)) saturate(var(--modal-glass-saturate, 1.1));
+}
+
+.browser-tab-group-label-count {
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: var(--radius-full, 999px);
+  background: color-mix(in srgb, var(--browser-tab-group-color) 26%, var(--bg-primary));
+  color: var(--text-secondary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72em;
+  line-height: 1;
+  box-sizing: border-box;
+}
+
+.browser-tab-group-label[data-group-color="orange"] { --browser-tab-group-color: #ff9800; }
+.browser-tab-group-label[data-group-color="blue"] { --browser-tab-group-color: #3b82f6; }
+.browser-tab-group-label[data-group-color="green"] { --browser-tab-group-color: #22c55e; }
+.browser-tab-group-label[data-group-color="purple"] { --browser-tab-group-color: #a855f7; }
+.browser-tab-group-label[data-group-color="red"] { --browser-tab-group-color: #ef4444; }
+.browser-tab-group-label[data-group-color="gray"] { --browser-tab-group-color: #9ca3af; }
+
+.browser-tab-group-label:hover,
+.browser-tab-group-label:focus-visible,
+.browser-tab-group-label.active,
+.browser-tab-group-label.drag-over {
+  border-color: var(--browser-tab-group-color);
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--browser-tab-group-color) 32%, var(--bg-secondary)),
+      color-mix(in srgb, var(--browser-tab-group-color) 18%, var(--bg-secondary))
+    );
+  outline: none;
+  box-shadow:
+    inset 0 1.5px 0 color-mix(in srgb, var(--browser-tab-group-color) 90%, transparent),
+    var(--browser-tab-shadow),
+    inset 0 0 0 1px color-mix(in srgb, var(--browser-tab-group-color) 36%, transparent);
+}
+
+.browser-tab-group-label-text {
+  min-width: 0;
+  max-width: 110px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.browser-tab.browser-tab-group-hidden {
+  display: none !important;
+}
+
+.browser-tab.browser-tab-grouped {
+  --browser-tab-group-color: var(--accent-color);
+  position: relative;
+  box-shadow: var(--browser-tab-shadow);
+}
+
+.browser-tab.browser-tab-grouped::after {
+  content: "";
+  position: absolute;
+  left: -1px;
+  right: -1px;
+  bottom: 0;
+  height: 2px;
+  background: color-mix(in srgb, var(--browser-tab-group-color) 82%, transparent);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.browser-tab.browser-tab-grouped[data-group-color="orange"] { --browser-tab-group-color: #ff9800; }
+.browser-tab.browser-tab-grouped[data-group-color="blue"] { --browser-tab-group-color: #3b82f6; }
+.browser-tab.browser-tab-grouped[data-group-color="green"] { --browser-tab-group-color: #22c55e; }
+.browser-tab.browser-tab-grouped[data-group-color="purple"] { --browser-tab-group-color: #a855f7; }
+.browser-tab.browser-tab-grouped[data-group-color="red"] { --browser-tab-group-color: #ef4444; }
+.browser-tab.browser-tab-grouped[data-group-color="gray"] { --browser-tab-group-color: #9ca3af; }
+
+.browser-tab.browser-tab-group-first {
+  border-left-color: color-mix(in srgb, var(--browser-tab-group-color) 76%, var(--border-color));
+}
+
+.browser-tab.browser-tab-group-last {
+  border-right-color: color-mix(in srgb, var(--browser-tab-group-color) 76%, var(--border-color));
+}
+
+body.browser-view-active .browser-tab-shell {
+  display: flex;
+}
+
+.browser-tab-group-rail {
+  /* 45 (was 48): shrunk so the rail bottom aligns with the flow-title bottom even
+     though its top moved down 2px (to follow the taller tab shell). */
+  --browser-tab-group-rail-height: 45px;
+  --browser-content-rail-gap: 4px;
+  --browser-content-rail-font-size: calc(12px * var(--font-scale, 1) * var(--flowjoe-surface-font-scale, 1));
+  position: fixed;
+  left: calc(280px + 12px);
+  /* Flush under the +2 taller tab shell: 58 + 54 = 112. */
+  top: 112px;
+  width: 320px;
+  height: var(--browser-tab-group-rail-height);
+  z-index: var(--flowjoe-z-browser-tab-rail);
+  display: none;
+  align-items: center;
+  gap: var(--browser-content-rail-gap);
+  padding: 6px 8px;
+  border-top: 1px solid color-mix(in srgb, var(--border-color) 70%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--border-color) 76%, transparent);
+  background: color-mix(in srgb, var(--bg-secondary) 94%, transparent);
+  box-sizing: border-box;
+  overflow: hidden;
+  font-family: var(--app-font-family);
+  font-size: calc(1em * var(--flowjoe-surface-font-scale, 1));
+  transition: none !important;
+  backdrop-filter: blur(var(--modal-glass-blur, 10px)) saturate(var(--modal-glass-saturate, 1.08));
+  -webkit-backdrop-filter: blur(var(--modal-glass-blur, 10px)) saturate(var(--modal-glass-saturate, 1.08));
+}
+
+body.browser-view-sliding .browser-tab-shell,
+body.browser-duck-resizing .browser-tab-shell,
+body.browser-view-sliding .browser-tab-group-rail,
+body.browser-duck-resizing .browser-tab-group-rail {
+  transition: none !important;
+  animation: none !important;
+  will-change: top;
+}
+
+body.browser-duck-resizing .browser-link-gallery,
+body.browser-duck-resizing .browser-duck-resize {
+  transition: none !important;
+  animation: none !important;
+  will-change: top, height;
+}
+
+body.browser-duck-resizing .browser-link-gallery {
+  transform: none !important;
+  opacity: 1 !important;
+}
+
+.browser-chrome-drag-lock {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: var(--flowjoe-z-browser-drag-lock);
+  display: none;
+  width: 100%;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: color-mix(in srgb, var(--bg-secondary) 96%, transparent);
+  pointer-events: none;
+  cursor: row-resize;
+  touch-action: none;
+}
+
+.browser-chrome-drag-lock.is-visible {
+  display: block;
+  pointer-events: auto;
+}
+
+body.browser-view-active .browser-tab-group-rail.is-visible {
+  display: flex;
+}
+
+body.browser-view-active .browser-tab-group-rail.is-visible.is-opening {
+  animation: none;
+}
+
+body.browser-view-active .browser-tab-group-rail.is-visible.drag-over {
+  border-color: color-mix(in srgb, var(--accent-color) 78%, var(--border-color));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent-color) 44%, transparent);
+}
+
+body.browser-view-active .browser-tab-group-rail.is-closing {
+  display: none;
+  animation: none;
+}
+
+body.browser-view-active .browser-tab-group-rail.is-visible.is-animating-items .browser-tab-group-list {
+  animation: browserContentRailItemsSlideFromRight 160ms cubic-bezier(0.2, 0.78, 0.24, 1) both;
+}
+
+@keyframes browserContentRailItemsSlideFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.browser-tab-group-rail-label {
+  flex: 0 0 var(--icon-btn-size-sm);
+  width: var(--icon-btn-size-sm);
+  height: var(--icon-btn-size-sm);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  font-size: 1em;
+  line-height: 1;
+}
+
+.browser-content-rail-title {
+  flex: 0 0 auto;
+  min-width: 0;
+  max-width: 10ch;
+  /* Match the rail chips' 24px box so the label sits on the same line as the
+     chips/controls (both align-items:center inside the rail). */
+  height: 24px;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-secondary);
+  font: inherit;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+
+.browser-tab-group-rail-close,
+.browser-content-rail-scroll-btn,
+.browser-content-rail-links-btn {
+  flex: 0 0 var(--icon-btn-size-sm);
+  width: var(--icon-btn-size-sm);
+  height: var(--icon-btn-size-sm);
+  margin: 0;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--border-color) 72%, transparent);
+  border-radius: var(--icon-btn-radius, 4px); /* unified square-button radius (was radius-sm) */
+  background: color-mix(in srgb, var(--bg-tertiary) 86%, transparent);
+  color: var(--text-secondary);
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.9em;
+  line-height: 1;
+}
+
+.browser-tab-group-rail-close:hover,
+.browser-tab-group-rail-close:focus-visible,
+.browser-content-rail-scroll-btn:hover,
+.browser-content-rail-scroll-btn:focus-visible,
+.browser-content-rail-links-btn:hover,
+.browser-content-rail-links-btn:focus-visible {
+  color: var(--accent-color);
+  border-color: color-mix(in srgb, var(--accent-color) 72%, var(--border-color));
+  outline: none;
+}
+
+.browser-content-rail-links-btn.is-active {
+  color: var(--accent-color);
+  border-color: color-mix(in srgb, var(--accent-color) 72%, var(--border-color));
+}
+
+.browser-content-rail-scroll-btn[hidden] {
+  display: none;
+}
+
+.browser-content-rail-scroll-btn:disabled {
+  opacity: var(--disabled-opacity-control);
+  cursor: default;
+  color: var(--text-secondary);
+  border-color: color-mix(in srgb, var(--border-color) 72%, transparent);
+}
+
+.browser-tab-group-create-form {
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 0;
+  display: none;
+  align-items: center;
+  gap: var(--browser-content-rail-gap);
+  margin: 0;
+  padding: 0;
+}
+
+.browser-tab-group-create-form.is-visible {
+  display: flex;
+}
+
+.browser-tab-group-name-input {
+  flex: 0 0 260px;
+  width: 260px;
+  min-width: 0;
+  margin: 0;
+  height: var(--text-input-height); /* input token, see find-input note */
+  padding: 0 9px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm, 4px);
+  background: var(--bg-input);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 1em;
+  line-height: 1;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.browser-tab-group-name-input:focus {
+  border-color: var(--accent-color);
+  box-shadow: var(--focus-ring);
+}
+
+.browser-tab-group-action-btn {
+  flex: 0 0 auto;
+  margin: 0;
+  height: var(--control-height-sm);
+  padding: 0 10px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm, 4px);
+  background: color-mix(in srgb, var(--bg-tertiary) 92%, transparent);
+  color: var(--text-primary);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.92em;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.browser-tab-group-primary-btn {
+  border-color: color-mix(in srgb, var(--accent-color) 76%, var(--border-color));
+  color: var(--accent-color);
+}
+
+.browser-tab-group-create-form[data-composer-mode="bookmark-all"] .browser-tab-group-name-input {
+  flex-basis: 300px;
+  width: 300px;
+}
+
+.browser-tab-group-action-btn:hover,
+.browser-tab-group-action-btn:focus-visible {
+  border-color: var(--accent-color);
+  outline: none;
+}
+
+.browser-tab-group-list {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: var(--browser-content-rail-gap);
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.browser-tab-group-list::-webkit-scrollbar {
+  display: none;
+}
+
+.browser-content-rail-end-spacer {
+  flex: 0 0 calc((24px * 3) - var(--browser-content-rail-gap));
+  width: calc((24px * 3) - var(--browser-content-rail-gap));
+  height: var(--hairline);
+  pointer-events: none;
+}
+
+.browser-tab-group-rail > *,
+.browser-tab-group-list > *,
+.browser-tab-group-create-form > * {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+@media (max-width: 720px) {
+  .browser-content-rail-title {
+    display: none;
+  }
+}
+
+.browser-tab-group-rail:not(.has-overflow) .browser-content-rail-scroll-btn {
+  display: none;
+}
+
+.browser-tab-group-chip {
+  --browser-tab-group-color: var(--accent-color);
+  flex: 0 0 auto;
+  margin: 0;
+  height: 24px;
+  min-height: 24px;
+  max-width: 240px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--browser-content-rail-gap);
+  padding: 0 10px;
+  border: 1px solid color-mix(in srgb, var(--browser-tab-group-color) 70%, var(--border-color));
+  border-radius: var(--radius-sm, 4px);
+  background: color-mix(in srgb, var(--browser-tab-group-color) 22%, var(--bg-tertiary));
+  color: var(--text-primary);
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+.browser-tab-group-rail.rail-density-compact .browser-tab-group-chip {
+  max-width: 180px;
+}
+
+.browser-tab-group-rail.rail-density-dense .browser-tab-group-chip {
+  max-width: 140px;
+}
+
+.browser-tab-group-chip[data-group-color="orange"] { --browser-tab-group-color: #ff9800; }
+.browser-tab-group-chip[data-group-color="blue"] { --browser-tab-group-color: #3b82f6; }
+.browser-tab-group-chip[data-group-color="green"] { --browser-tab-group-color: #22c55e; }
+.browser-tab-group-chip[data-group-color="purple"] { --browser-tab-group-color: #a855f7; }
+.browser-tab-group-chip[data-group-color="red"] { --browser-tab-group-color: #ef4444; }
+.browser-tab-group-chip[data-group-color="gray"] { --browser-tab-group-color: #9ca3af; }
+
+.browser-tab-group-chip.active {
+  border-color: var(--browser-tab-group-color);
+}
+
+.browser-tab-group-chip.hidden-in-tab-strip {
+  border-style: dashed;
+  background: color-mix(in srgb, var(--browser-tab-group-color) 12%, var(--bg-tertiary));
+}
+
+.browser-tab-group-chip-main {
+  min-width: 0;
+  max-width: 160px;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--browser-content-rail-gap);
+  padding: 0;
+  border: 0;
+  /* margin: 0 — resets buttons.css's global `button { margin: 5px; }` base rule (same footgun
+     fixed on .browser-find-btn, styles-browser.css:858, .browser-bookmark-star, :3076, and
+     .settings-tab, styles-settings.css:33). The sibling wrapper .browser-tab-group-chip already
+     explicitly zeroes its own margin (:1423) — this inner button, its sole child, was missed.
+     DISCLOSED visual change, verified via a faithful synthetic reconstruction of the real chip
+     markup (browserShellController.js:3085-3089) toggling this margin live: the phantom 5px
+     margin box was inflating the OUTER chip's own rendered width by ~10px (justify-content:center
+     centers the button, but the chip's width still accounts for its full margin box) — removing it
+     lets the pill-shaped chip hug its actual content width as intended, not a new spacing decision. */
+  margin: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  font-size: 1em;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.browser-tab-group-rail.rail-density-compact .browser-tab-group-chip-main {
+  max-width: 120px;
+}
+
+.browser-tab-group-rail.rail-density-dense .browser-tab-group-chip-main {
+  max-width: 88px;
+}
+
+.browser-tab-group-chip-main:hover,
+.browser-tab-group-chip-main:focus,
+.browser-tab-group-chip-main:focus-visible,
+.browser-tab-group-chip-main:active {
+  background: transparent !important;
+  color: inherit !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.browser-tab-group-chip:hover .browser-tab-group-chip-main,
+.browser-tab-group-chip:focus-within .browser-tab-group-chip-main,
+.browser-tab-group-chip:hover .browser-tab-group-chip-name,
+.browser-tab-group-chip:focus-within .browser-tab-group-chip-name,
+.browser-tab-group-chip:hover .browser-tab-group-chip-count,
+.browser-tab-group-chip:focus-within .browser-tab-group-chip-count {
+  background: transparent !important;
+  color: inherit !important;
+}
+
+.browser-tab-group-chip-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.browser-tab-group-chip-count {
+  color: var(--text-secondary);
+  font-size: 0.84em;
+  line-height: 1;
+}
+
+.browser-tab-group-chip-icon-btn {
+  width: 14px;
+  height: 14px;
+  min-width: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--radius-full, 999px);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 10px;
+  line-height: 1;
+}
+
+.browser-tab-group-chip-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  line-height: 1;
+  opacity: 1;
+  flex: 0 0 auto;
+  margin-top: 2px;
+}
+
+.browser-tab-group-chip:hover,
+.browser-tab-group-chip:focus-within,
+.browser-tab-group-chip.drag-over {
+  border-color: var(--browser-tab-group-color);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--browser-tab-group-color) 45%, transparent);
+}
+
+.browser-tab-group-chip.is-rail-dragging,
+.browser-content-rail-chip.is-rail-dragging {
+  opacity: 0.62;
+}
+
+.browser-tab-group-chip.rail-drop-before,
+.browser-tab-group-chip.rail-drop-after,
+.browser-content-rail-chip.rail-drop-before,
+.browser-content-rail-chip.rail-drop-after {
+  position: relative;
+}
+
+.browser-tab-group-chip.rail-drop-before::before,
+.browser-tab-group-chip.rail-drop-after::after,
+.browser-content-rail-chip.rail-drop-before::before,
+.browser-content-rail-chip.rail-drop-after::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  width: 2px;
+  border-radius: var(--radius-full, 999px);
+  background: var(--accent-color);
+  pointer-events: none;
+}
+
+.browser-tab-group-chip.rail-drop-before::before,
+.browser-content-rail-chip.rail-drop-before::before {
+  left: -5px;
+}
+
+.browser-tab-group-chip.rail-drop-after::after,
+.browser-content-rail-chip.rail-drop-after::after {
+  right: -5px;
+}
+
+.browser-content-rail-chip,
+.browser-content-rail-empty {
+  height: 24px;
+  min-height: 24px;
+  max-width: 220px;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--browser-content-rail-gap);
+  padding: 0 10px;
+  border: 1px solid color-mix(in srgb, var(--border-color) 80%, transparent);
+  border-radius: var(--radius-sm, 4px);
+  background: color-mix(in srgb, var(--bg-tertiary) 92%, transparent);
+  color: var(--text-primary);
+  box-sizing: border-box;
+  font: inherit;
+  font-size: 1em;
+  font-weight: 400;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.browser-tab-group-rail.rail-density-compact .browser-content-rail-chip,
+.browser-tab-group-rail.rail-density-compact .browser-content-rail-empty {
+  max-width: 160px;
+}
+
+.browser-tab-group-rail.rail-density-dense .browser-content-rail-chip,
+.browser-tab-group-rail.rail-density-dense .browser-content-rail-empty {
+  max-width: 120px;
+}
+
+.browser-content-rail-chip {
+  cursor: pointer;
+}
+
+.browser-content-rail-chip:hover,
+.browser-content-rail-chip:focus-visible {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+  outline: none;
+}
+
+.browser-content-rail-history:focus,
+.browser-content-rail-history:focus-visible,
+.browser-content-rail-history:active {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.browser-content-rail-history.rail-drop-before::before,
+.browser-content-rail-history.rail-drop-after::after {
+  content: none !important;
+  display: none !important;
+}
+
+.browser-content-rail-chip-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.browser-content-rail-chip-icon {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  border-radius: var(--icon-btn-radius, 4px);
+  object-fit: contain;
+}
+
+.browser-content-rail-empty {
+  color: var(--text-secondary);
+  border-style: dashed;
+}
+
+.browser-content-rail-confirmation {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: var(--control-height-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--browser-content-rail-gap);
+  padding: 0 8px;
+  border: 1px solid color-mix(in srgb, var(--danger-color, #dc3545) 72%, var(--border-color));
+  border-radius: var(--radius-sm, 4px);
+  background: color-mix(in srgb, var(--danger-color, #dc3545) 12%, var(--bg-tertiary));
+  color: var(--text-primary);
+  box-sizing: border-box;
+  font: inherit;
+  font-size: 1em;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.browser-content-rail-confirmation-message {
+  min-width: min(14ch, 42vw);
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.browser-content-rail-confirmation .browser-content-rail-confirm-actions {
+  flex: 0 0 auto;
+}
+
+.browser-content-rail-chip.is-confirming-delete,
+.browser-tab-group-chip.is-confirming-delete {
+  border-color: color-mix(in srgb, var(--danger-color, #dc3545) 72%, var(--border-color));
+}
+
+.browser-content-rail-chip.is-editing-link {
+  flex: 0 1 min(520px, 58vw);
+  width: auto;
+  min-width: min(360px, 58vw);
+  max-width: min(520px, 58vw);
+  gap: var(--browser-content-rail-gap);
+  padding: 0 8px;
+  justify-content: flex-start;
+  border-color: var(--accent-color);
+}
+
+.browser-tab-group-rail.rail-density-compact .browser-content-rail-chip.is-editing-link,
+.browser-tab-group-rail.rail-density-dense .browser-content-rail-chip.is-editing-link {
+  max-width: min(520px, 58vw);
+}
+
+.browser-content-rail-inline-input {
+  min-width: 0;
+  flex: 1 1 auto;
+  height: 18px;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 0.95em;
+  font-weight: 800;
+}
+
+.browser-content-rail-confirm-actions {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--browser-content-rail-gap);
+  color: var(--text-secondary);
+}
+
+.browser-content-rail-confirm-action {
+  flex: 0 0 auto;
+  height: 24px;
+  margin: 0;
+  padding: 0 10px;
+  border: 1px solid color-mix(in srgb, var(--border-color) 72%, transparent);
+  border-radius: var(--radius-sm, 4px);
+  background: color-mix(in srgb, var(--bg-tertiary) 92%, transparent);
+  color: var(--text-secondary);
+  box-sizing: border-box;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.browser-content-rail-confirm-action[data-rename-link="save"],
+.browser-content-rail-confirm-action[data-rename-group-link="save"] {
+  border-color: color-mix(in srgb, var(--accent-color) 72%, var(--border-color));
+  color: var(--accent-color);
+}
+
+.browser-content-rail-confirm-action[data-confirm-delete="yes"],
+.browser-content-rail-confirm-action[data-confirm-action="confirm"],
+.browser-content-rail-confirm-action[data-confirm-action="continue"],
+.browser-content-rail-confirm-action[data-confirm-action="group"],
+.browser-content-rail-confirm-action[data-confirm-action="tabs"] {
+  border-color: color-mix(in srgb, var(--danger-color, #dc3545) 66%, var(--border-color));
+  color: var(--danger-color, #dc3545);
+}
+
+.browser-content-rail-confirm-action[data-confirm-delete="yes"]:hover,
+.browser-content-rail-confirm-action[data-confirm-delete="yes"]:focus-visible,
+.browser-content-rail-confirm-action[data-confirm-action="confirm"]:hover,
+.browser-content-rail-confirm-action[data-confirm-action="confirm"]:focus-visible,
+.browser-content-rail-confirm-action[data-confirm-action="continue"]:hover,
+.browser-content-rail-confirm-action[data-confirm-action="continue"]:focus-visible,
+.browser-content-rail-confirm-action[data-confirm-action="group"]:hover,
+.browser-content-rail-confirm-action[data-confirm-action="group"]:focus-visible,
+.browser-content-rail-confirm-action[data-confirm-action="tabs"]:hover,
+.browser-content-rail-confirm-action[data-confirm-action="tabs"]:focus-visible {
+  border-color: color-mix(in srgb, var(--danger-color, #dc3545) 86%, var(--border-color));
+  background: color-mix(in srgb, var(--danger-color, #dc3545) 10%, var(--bg-tertiary));
+  color: var(--danger-color, #dc3545);
+}
+
+.browser-link-gallery {
+  --browser-content-rail-gap: 6px;
+  --playlist-content-inset: 13px;
+  --playlist-toolbar-control-size: 32px;
+  --playlist-font-scale: calc(var(--font-scale, 1) * var(--flowjoe-surface-font-scale, 1));
+  --browser-link-gallery-art-size: calc(56px * var(--playlist-font-scale, 1));
+  position: fixed;
+  z-index: var(--flowjoe-z-browser-tab-rail);
+  display: none;
+  flex-direction: column;
+  min-width: 0;
+  border-top: 0;
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--bg-secondary);
+  background:
+    radial-gradient(
+      ellipse at 14% 0%,
+      color-mix(in srgb, var(--accent-color) 6%, transparent) 0%,
+      transparent 36%
+    ),
+    radial-gradient(
+      ellipse at 92% 92%,
+      color-mix(in srgb, var(--text-primary) 4%, transparent) 0%,
+      transparent 40%
+    ),
+    color-mix(
+      in srgb,
+      var(--bg-secondary) var(--modal-glass-ai-panel-mix, 90%),
+      transparent
+    );
+  color: var(--text-primary);
+  box-sizing: border-box;
+  overflow: hidden;
+  font: inherit;
+  opacity: var(--browser-link-gallery-motion-opacity, 1);
+  transform: translate3d(0, var(--browser-link-gallery-motion-y, 0px), 0) scaleY(var(--browser-link-gallery-motion-scale, 1));
+  transform-origin: top center;
+  will-change: transform, opacity, height;
+  backdrop-filter: blur(var(--modal-glass-blur, 10px)) saturate(var(--modal-glass-saturate, 1.08));
+  -webkit-backdrop-filter: blur(var(--modal-glass-blur, 10px)) saturate(var(--modal-glass-saturate, 1.08));
+  box-shadow: none;
+}
+
+.browser-link-gallery.is-visible,
+.browser-link-gallery.is-closing {
+  display: flex;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .browser-link-gallery {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.browser-link-gallery-header {
+  flex: 0 0 auto;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-bottom: 0;
+  box-sizing: border-box;
+}
+
+.browser-link-gallery-title-wrap {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.browser-link-gallery-search-wrap.gallery-search-wrap {
+  flex: 0 1 min(720px, 54vw);
+  width: min(720px, 54vw);
+  min-width: 260px;
+  margin-left: auto;
+  gap: var(--search-toolbar-gap);
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.browser-link-gallery-search-wrap .browser-link-gallery-font-btn,
+.browser-link-gallery-search-wrap .browser-link-gallery-time-btn,
+.browser-link-gallery-search-wrap .browser-link-gallery-sort-btn,
+.browser-link-gallery-search-wrap .browser-link-gallery-search-icon {
+  flex: 0 0 var(--playlist-toolbar-control-size);
+  width: var(--playlist-toolbar-control-size);
+  min-width: var(--playlist-toolbar-control-size);
+  height: var(--playlist-toolbar-control-size);
+  min-height: var(--playlist-toolbar-control-size);
+  margin: 0;
+  padding: 0;
+  border-radius: var(--icon-btn-radius, 4px);
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.browser-link-gallery-search-wrap .browser-link-gallery-search-icon {
+  pointer-events: auto;
+}
+
+.browser-link-gallery-search-wrap .browser-link-gallery-search-icon:hover,
+.browser-link-gallery-search-wrap .browser-link-gallery-search-icon:focus-visible {
+  background-color: var(--search-control-hover-bg);
+  border-color: var(--search-icon-active-color);
+  color: var(--search-icon-active-color);
+  outline: none;
+}
+
+.browser-link-gallery-search-wrap .browser-link-gallery-search-icon.active {
+  color: var(--search-icon-active-color);
+}
+
+.browser-link-gallery-search-wrap .browser-link-gallery-time-btn,
+.browser-link-gallery-search-wrap .browser-link-gallery-sort-btn {
+  font-size: var(--font-control);
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.browser-link-gallery-search-wrap .browser-link-gallery-font-btn i,
+.browser-link-gallery-search-wrap .browser-link-gallery-time-btn i,
+.browser-link-gallery-search-wrap .browser-link-gallery-search-icon i {
+  font-size: var(--icon-glyph);
+  line-height: 1;
+}
+
+.browser-link-gallery-search-wrap .browser-link-gallery-search-bar {
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
+  max-width: none;
+  height: var(--search-bar-height);
+  min-height: var(--search-bar-height);
+  margin-left: 0;
+  gap: var(--search-bar-gap);
+  padding: var(--search-bar-padding);
+  background: var(--search-bar-bg);
+  border: var(--search-bar-border);
+  border-radius: var(--search-bar-radius);
+}
+
+.browser-link-gallery-search-input {
+  align-self: stretch;
+  appearance: none;
+  -webkit-appearance: none;
+  padding: var(--search-input-padding);
+  border: var(--search-input-border);
+  border-radius: var(--search-input-radius);
+  background: var(--search-input-bg);
+  box-sizing: border-box;
+  font-size: var(--search-input-font-size);
+}
+
+.browser-link-gallery-search-wrap .browser-link-gallery-search-clear {
+  width: var(--search-clear-size);
+  min-width: var(--search-clear-size);
+  padding: 0;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.browser-link-gallery:is(.flowjoe-font-scale-large, .flowjoe-font-scale-larger, .flowjoe-font-scale-largest) .browser-link-gallery-search-input {
+  font-size: var(--search-input-font-size);
+}
+
+.browser-link-gallery-title,
+.browser-link-gallery-subtitle,
+.browser-link-gallery-link-title,
+.browser-link-gallery-link-url {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.browser-link-gallery-title {
+  font-size: calc(14px * var(--flowjoe-surface-font-scale, 1));
+  font-weight: 900;
+  color: var(--text-primary);
+}
+
+.browser-link-gallery-subtitle,
+.browser-link-gallery-link-url {
+  font-size: calc(14px * var(--flowjoe-surface-font-scale, 1));
+  color: var(--text-secondary);
+}
+
+.browser-link-gallery-close {
+  flex: 0 0 auto;
+  width: var(--playlist-toolbar-control-size);
+  min-width: var(--playlist-toolbar-control-size);
+  height: var(--playlist-toolbar-control-size);
+  min-height: var(--playlist-toolbar-control-size);
+  margin: 0;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--border-color) 72%, transparent);
+  border-radius: var(--icon-btn-radius, 4px);
+  background: color-mix(in srgb, var(--bg-tertiary) 86%, transparent);
+  color: var(--text-secondary);
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font: inherit;
+  line-height: 1;
+}
+
+.browser-link-gallery-close:hover,
+.browser-link-gallery-close:focus-visible {
+  color: var(--accent-color);
+  border-color: color-mix(in srgb, var(--accent-color) 72%, var(--border-color));
+  outline: none;
+}
+
+.browser-link-gallery-action {
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  margin: 0;
+  padding: 0;
+  border-radius: var(--radius-sm, 4px);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-secondary);
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font: inherit;
+  line-height: 1;
+}
+
+.browser-link-gallery-action:focus-visible {
+  outline: none;
+}
+
+.browser-link-gallery-list {
+  position: relative;
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  gap: var(--list-row-gap);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  overflow-anchor: none;
+  overflow-x: hidden;
+  padding: var(--playlist-content-inset);
+  /* Symmetric with the top inset. The previous (inset + 4px) left an extra
+     ~4px empty strip below the last row that the duck matched, reading as
+     overshoot. The fit calc reads this computed value, so tightening here
+     tightens the duck too (overflow-y:auto means no row clipping). */
+  padding-bottom: var(--playlist-content-inset);
+  background-color: var(--bg-primary);
+  background: color-mix(in srgb, var(--bg-primary) var(--modal-glass-ai-chat-messages-mix), transparent);
+  border: 1px solid color-mix(in srgb, var(--border-color) 82%, transparent);
+  border-top: 0;
+  border-radius: var(--radius-sm, 4px);
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  box-sizing: border-box;
+}
+
+.browser-link-gallery-row {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  display: grid;
+  grid-template-columns:
+    var(--browser-link-gallery-art-size)
+    minmax(0, 1fr)
+    max-content;
+  align-items: start;
+  gap: 8px;
+  min-height: calc(74px * var(--playlist-font-scale, 1));
+  padding: calc(8px * var(--playlist-font-scale, 1)) 8px;
+  border: 1px solid color-mix(in srgb, var(--border-color) 82%, transparent);
+  border-radius: var(--radius-sm, 4px);
+  color: var(--text-primary);
+  background-color: var(--bg-secondary);
+  background: color-mix(in srgb, var(--bg-secondary) var(--modal-glass-ai-card-mix), transparent);
+  cursor: pointer;
+  box-sizing: border-box;
+  overflow: visible;
+}
+
+.browser-link-gallery-section-row {
+  width: 100%;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr) max-content;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 4px 0;
+  color: var(--accent-color);
+  font-size: calc(12px * var(--playlist-font-scale, 1));
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  box-sizing: border-box;
+}
+
+.browser-link-gallery-section-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-color);
+  line-height: 1;
+}
+
+.browser-link-gallery-section-title {
+  color: var(--accent-color);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.browser-link-gallery-section-count {
+  color: color-mix(in srgb, var(--accent-color) 72%, var(--text-secondary));
+  font-size: 0.92em;
+  text-transform: none;
+  white-space: nowrap;
+}
+
+.browser-link-gallery-row:hover,
+.browser-link-gallery-row:focus-within {
+  background-color: var(--bg-tertiary);
+  background: color-mix(in srgb, var(--bg-secondary) var(--modal-glass-ai-field-secondary-mix, 54%), transparent);
+}
+
+.browser-link-gallery-row:focus-visible {
+  outline: none;
+}
+
+.browser-link-gallery-icon {
+  grid-column: 1;
+  justify-self: start;
+  position: relative;
+  inline-size: var(--browser-link-gallery-art-size) !important;
+  min-inline-size: var(--browser-link-gallery-art-size) !important;
+  max-inline-size: var(--browser-link-gallery-art-size) !important;
+  block-size: var(--browser-link-gallery-art-size) !important;
+  min-block-size: var(--browser-link-gallery-art-size) !important;
+  max-block-size: var(--browser-link-gallery-art-size) !important;
+  align-self: start;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md, 6px);
+  border: 1px solid color-mix(in srgb, var(--border-color) 82%, transparent);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--accent-color) 16%, var(--bg-tertiary)), var(--bg-primary));
+  color: var(--text-secondary);
+  font-size: calc(16px * var(--playlist-font-scale, 1));
+  line-height: 1;
+  box-sizing: border-box;
+  isolation: isolate;
+}
+
+.browser-link-gallery .browser-link-gallery-icon > img,
+.browser-link-gallery .browser-link-gallery-icon > .browser-link-gallery-favicon,
+.browser-link-gallery .browser-link-gallery-icon > svg,
+.browser-link-gallery .browser-link-gallery-icon > i {
+  inline-size: 100% !important;
+  min-inline-size: 100% !important;
+  max-inline-size: 100% !important;
+  block-size: 100% !important;
+  min-block-size: 100% !important;
+  max-block-size: 100% !important;
+  display: block !important;
+  border-radius: 0;
+  object-fit: contain;
+  box-shadow: none !important;
+  cursor: inherit !important;
+  box-sizing: border-box;
+}
+
+.browser-link-gallery-icon.is-placeholder {
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--accent-color) 16%, var(--bg-tertiary)), var(--bg-primary));
+}
+
+.browser-link-gallery-icon.is-open-in-browser::after {
+  content: "";
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+  width: 9px;
+  height: 9px;
+  border-radius: var(--radius-full, 999px);
+  background: var(--accent-color);
+  border: 2px solid color-mix(in srgb, var(--bg-secondary) 88%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--accent-color) 58%, transparent),
+    0 0 8px color-mix(in srgb, var(--accent-color) 48%, transparent);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.browser-link-gallery-favicon-placeholder {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  inline-size: 100% !important;
+  block-size: 100% !important;
+  color: color-mix(in srgb, var(--text-secondary) 72%, transparent);
+  line-height: 1;
+}
+
+.browser-link-gallery-favicon-placeholder i {
+  inline-size: auto !important;
+  min-inline-size: 0 !important;
+  max-inline-size: none !important;
+  block-size: auto !important;
+  min-block-size: 0 !important;
+  max-block-size: none !important;
+  font-size: calc(16px * var(--playlist-font-scale, 1));
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+.browser-link-gallery-text {
+  grid-column: 2;
+  min-width: 0;
+  display: grid;
+  grid-template-rows: auto auto auto;
+  gap: calc(var(--text-stack-gap) * var(--playlist-font-scale, 1));
+  align-self: start;
+  overflow: visible;
+}
+
+.browser-link-gallery-link {
+  display: inline-block;
+  max-width: 100%;
+  color: var(--text-secondary);
+  text-decoration: none;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.browser-link-gallery-link:hover,
+.browser-link-gallery-link:focus-visible {
+  color: var(--accent-color);
+}
+
+.browser-link-gallery-link:focus-visible {
+  outline: 1px solid color-mix(in srgb, var(--accent-color) 72%, transparent);
+  outline-offset: 2px;
+  border-radius: var(--icon-btn-radius, 4px);
+}
+
+.browser-link-gallery-link-title {
+  color: var(--text-primary);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.browser-link-gallery-link-time {
+  color: color-mix(in srgb, var(--text-secondary) 82%, var(--accent-color));
+  font-size: calc(11px * var(--playlist-font-scale, 1));
+  line-height: 1.1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.browser-link-gallery-empty.header-audio-playlist-empty {
+  width: 100%;
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.browser-link-gallery-actions {
+  grid-column: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--icon-row-gap-dense);
+  align-self: center;
+  justify-content: flex-end;
+  min-height: 0;
+  height: auto;
+}
+
+.browser-link-gallery-actions button {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  border-radius: var(--radius-sm, 4px);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-secondary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.browser-link-gallery-actions button:hover:not(:disabled) {
+  border-color: transparent;
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.browser-link-gallery-actions button:hover:not(:disabled) i {
+  color: var(--accent-color);
+}
+
+.browser-duck-resize {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: var(--flowjoe-z-tooltip);
+  display: none;
+  height: 12px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  cursor: row-resize;
+  border: 0;
+  background: transparent;
+  pointer-events: auto;
+  touch-action: none;
+  overflow: visible;
+}
+
+.browser-duck-resize.is-visible {
+  display: block;
+}
+
+.browser-duck-resize::before {
+  content: "";
+  position: absolute;
+  left: 0;
+		  right: 0;
+		  bottom: 0;
+		  height: 3px;
+  transform: none;
+  background: color-mix(in srgb, var(--border-color) 88%, transparent);
+  box-shadow: none;
+  transition:
+    background-color 120ms ease,
+    box-shadow 120ms ease,
+    opacity 120ms ease;
+}
+
+.browser-duck-resize:hover::before,
+.browser-duck-resize.is-hovered::before,
+.browser-duck-resize:focus-visible::before,
+body.browser-duck-resizing .browser-duck-resize::before {
+  background: var(--accent-color);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--accent-color) 42%, transparent);
+}
+
+body.browser-duck-resizing {
+  cursor: row-resize;
+}
+
+.browser-tab {
+  height: var(--browser-tab-height);
+  flex: 1 1 clamp(var(--browser-tab-min-width), 22vw, var(--browser-tab-width));
+  width: clamp(var(--browser-tab-min-width), 22vw, var(--browser-tab-width));
+  min-width: var(--browser-tab-min-width);
+  max-width: var(--browser-tab-max-width);
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr) 22px;
+  align-items: center;
+  gap: clamp(3px, 1vw, 8px);
+  padding: 0 8px 0 clamp(7px, 1vw, 12px);
+  border: 1px solid color-mix(in srgb, var(--border-color) 82%, transparent);
+  border-bottom-color: color-mix(in srgb, var(--bg-secondary) 82%, transparent);
+  border-radius: var(--radius-md, 6px) var(--radius-md, 6px) 0 0;
+  background: color-mix(in srgb, var(--bg-secondary) 88%, transparent);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-family: var(--app-font-family);
+  font-size: var(--browser-tab-font-size);
+  font-weight: 400;
+  line-height: var(--browser-tab-line-height);
+  box-shadow: var(--browser-tab-shadow);
+  backdrop-filter: blur(var(--modal-glass-blur, 10px)) saturate(var(--modal-glass-saturate, 1.1));
+  -webkit-backdrop-filter: blur(var(--modal-glass-blur, 10px)) saturate(var(--modal-glass-saturate, 1.1));
+  box-sizing: border-box;
+  position: relative;
+}
+
+.browser-tab.is-dragging {
+  opacity: 0.56;
+}
+
+.browser-tab.drag-insert-before,
+.browser-tab.drag-insert-after,
+.browser-tab-group-label.drag-insert-before,
+.browser-tab-group-label.drag-insert-after {
+  position: relative;
+}
+
+.browser-tab.drag-insert-before::before,
+.browser-tab.drag-insert-after::after,
+.browser-tab-group-label.drag-insert-before::before,
+.browser-tab-group-label.drag-insert-after::after {
+  content: "";
+  position: absolute;
+  top: 7px;
+  bottom: 6px;
+  width: 2px;
+  border-radius: var(--radius-full, 999px);
+  background: var(--accent-color);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--accent-color) 55%, transparent);
+  pointer-events: none;
+}
+
+.browser-tab.drag-insert-before::before,
+.browser-tab-group-label.drag-insert-before::before {
+  left: -1px;
+}
+
+.browser-tab.drag-insert-after::after,
+.browser-tab-group-label.drag-insert-after::after {
+  right: -1px;
+}
+
+.browser-tab.active {
+  color: var(--accent-color);
+  border-top-color: var(--accent-color);
+  background: color-mix(in srgb, var(--bg-secondary) 94%, transparent);
+  position: relative;
+  z-index: 1;
+}
+
+.browser-tab.selected {
+  color: var(--text-primary);
+  border-top-color: color-mix(in srgb, var(--accent-color) 60%, var(--border-color));
+  background: color-mix(in srgb, var(--accent-color) 14%, var(--bg-secondary));
+}
+
+.browser-tab.memory-freed:not(.active) {
+  opacity: 0.68;
+}
+
+.browser-tab.is-audible {
+  border-top-color: var(--browser-audio-badge-border-chrome);
+  box-shadow:
+    var(--browser-tab-shadow),
+    inset 0 1px 0 color-mix(in srgb, var(--accent-color) 54%, transparent);
+}
+
+.browser-tab.active.selected {
+  color: var(--text-primary);
+  border-top-color: var(--accent-color);
+  background: color-mix(in srgb, var(--accent-color) 18%, var(--bg-secondary));
+}
+
+.browser-tab.browser-tab-grouped.active {
+  border-top-color: var(--accent-color);
+  background: color-mix(in srgb, var(--bg-secondary) 94%, transparent);
+  box-shadow: var(--browser-tab-shadow);
+}
+
+.browser-tab.browser-tab-grouped.selected {
+  border-top-color: color-mix(in srgb, var(--accent-color) 60%, var(--border-color));
+  background: color-mix(in srgb, var(--accent-color) 14%, var(--bg-secondary));
+  box-shadow: var(--browser-tab-shadow);
+}
+
+.browser-tab.browser-tab-grouped.active.selected {
+  border-top-color: var(--accent-color);
+  background: color-mix(in srgb, var(--accent-color) 18%, var(--bg-secondary));
+  box-shadow: var(--browser-tab-shadow);
+}
+
+.browser-tab-drag-ghost {
+  position: relative;
+  width: 190px;
+  height: 46px;
+  box-shadow: var(--elev-floating);
+  pointer-events: none;
+  box-sizing: border-box;
+}
+
+.browser-tab-drag-ghost-stack,
+.browser-tab-drag-ghost-tab {
+  position: absolute;
+  inset: 0;
+  border: 1px solid color-mix(in srgb, var(--accent-color) 62%, var(--border-color));
+  border-radius: var(--radius-md, 6px) var(--radius-md, 6px) 0 0;
+  background: color-mix(in srgb, var(--bg-tertiary) 92%, transparent);
+  box-sizing: border-box;
+}
+
+.browser-tab-drag-ghost-stack {
+  inset: 7px 8px -5px -8px;
+  opacity: 0.72;
+}
+
+.browser-tab-drag-ghost-tab {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr) 22px;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  color: var(--text-primary);
+  font-family: var(--app-font-family);
+  font-size: var(--font-control);
+  font-weight: 800;
+  line-height: 1;
+}
+
+.browser-tab-drag-ghost-icon {
+  color: var(--accent-color);
+  font-size: var(--icon-glyph-sm);
+}
+
+.browser-tab-drag-ghost-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.browser-tab-drag-ghost-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-full, 999px);
+  background: var(--accent-color);
+  /* See the --text-on-accent note on #select-images-btn.active: --bg-primary is
+     node-theme scoped, so it resolves to nothing outside a themed node. */
+  color: var(--text-on-accent);
+  font-size: var(--font-control);
+}
+
+.browser-tab-icon {
+  align-self: center;
+  color: var(--accent-color);
+  width: 14px;
+  height: 14px;
+  min-width: 14px;
+  object-fit: contain;
+  font-size: var(--icon-glyph-sm);
+  line-height: 1;
+}
+
+.browser-tab-spinner {
+  display: inline-block;
+  border: 2px solid color-mix(in srgb, var(--text-secondary) 28%, transparent);
+  border-top-color: var(--accent-color);
+  border-radius: var(--radius-full, 999px);
+  animation: browser-tab-spinner-spin 0.8s linear infinite;
+  box-sizing: border-box;
+}
+
+@keyframes browser-tab-spinner-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.browser-tab-title {
+  align-self: center;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.1;
+  transform: translateY(1px);
+}
+
+.browser-tab.is-audible .browser-tab-title {
+  padding-right: 18px;
+}
+
+.browser-tab-audio-indicator {
+  position: absolute;
+  right: 34px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  min-height: 16px;
+  border-radius: var(--radius-full, 999px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--browser-audio-badge-border-tab);
+  background: color-mix(in srgb, var(--bg-primary) 68%, var(--accent-color) 32%);
+  color: var(--browser-audio-badge-glyph-tab);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--bg-secondary) 82%, transparent);
+  font-size: 8px;
+  line-height: 1;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.browser-tab-audio-indicator[hidden] {
+  display: none !important;
+}
+
+.browser-tab-audio-indicator i {
+  font-size: 8px;
+  line-height: 1;
+}
+
+.browser-tab.pinned .browser-tab-audio-indicator {
+  top: auto;
+  right: 3px;
+  bottom: 4px;
+  transform: none;
+  width: 14px;
+  height: 14px;
+  min-width: 14px;
+  min-height: 14px;
+}
+
+.browser-tab-close {
+  width: var(--icon-btn-size-sm); /* was a one-off 22px; joins the small class */
+  height: var(--icon-btn-size-sm);
+  min-width: var(--icon-btn-size-sm);
+  min-height: var(--icon-btn-size-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--icon-btn-radius, 4px); /* unified square-button radius */
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 11px;
+  line-height: 1;
+}
+
+.browser-tab-close:hover,
+.browser-tab-close:focus-visible {
+  color: var(--text-primary);
+  background: var(--hover-bg);
+  border-color: var(--border-color);
+  outline: none;
+}
+
+.browser-tab-new {
+  width: var(--browser-tab-new-width);
+  height: var(--browser-tab-height);
+  flex: 0 0 var(--browser-tab-new-width);
+  min-width: var(--browser-tab-new-width);
+  min-height: var(--browser-tab-height);
+  align-self: flex-end;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0 !important;
+  border: 1px solid color-mix(in srgb, var(--border-color) 82%, transparent);
+  border-bottom-color: color-mix(in srgb, var(--bg-secondary) 82%, transparent);
+  border-radius: var(--radius-md, 6px) var(--radius-md, 6px) 0 0;
+  background: color-mix(in srgb, var(--bg-secondary) 92%, transparent);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  box-sizing: border-box;
+  position: sticky;
+  right: 0;
+  z-index: 8;
+  box-shadow: none;
+  outline: none !important;
+  -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.browser-tab-new i {
+  transform: none;
+}
+
+.browser-tab-new:hover,
+.browser-tab-new:focus,
+.browser-tab-new:focus-visible,
+.browser-tab-new:active {
+  color: var(--accent-color);
+  background: color-mix(in srgb, var(--bg-secondary) 96%, transparent);
+  border-color: color-mix(in srgb, var(--border-color) 82%, transparent);
+  border-bottom-color: color-mix(in srgb, var(--bg-secondary) 82%, transparent);
+  outline: none !important;
+  outline-offset: 0 !important;
+  box-shadow: none !important;
+}
+
+.browser-tab-new::-moz-focus-inner {
+  border: 0;
+}
+
+.browser-tab-strip-end-spacer {
+  flex: 0 0 0;
+  width: 0;
+  min-width: 0;
+  height: var(--browser-tab-height);
+  pointer-events: none;
+}
+
+.browser-tab-strip.has-overflow .browser-tab-strip-end-spacer {
+  flex-basis: calc(var(--browser-tab-new-width) + 4px);
+  width: calc(var(--browser-tab-new-width) + 4px);
+  min-width: calc(var(--browser-tab-new-width) + 4px);
+}
+
+.browser-tab-overflow-btn {
+  width: 30px;
+  height: var(--browser-tab-height);
+  flex: 0 0 30px;
+  min-width: 30px;
+  align-self: flex-end;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0 !important;
+  border: 1px solid color-mix(in srgb, var(--border-color) 82%, transparent);
+  border-radius: var(--radius-md, 6px) var(--radius-md, 6px) 0 0;
+  background: color-mix(in srgb, var(--bg-tertiary) 94%, transparent);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: var(--icon-glyph);
+  line-height: 1;
+  box-sizing: border-box;
+  z-index: 7;
+}
+
+.browser-tab-overflow-btn[hidden] {
+  display: none !important;
+}
+
+.browser-tab-overflow-btn:hover,
+.browser-tab-overflow-btn:focus-visible,
+.browser-tab-overflow-btn.is-active {
+  color: var(--accent-color);
+  border-color: color-mix(in srgb, var(--accent-color) 72%, var(--border-color));
+  background: color-mix(in srgb, var(--bg-secondary) 96%, transparent);
+  outline: none;
+}
+
+.browser-tab-overflow-btn:disabled {
+  opacity: var(--disabled-opacity-control);
+  cursor: default;
+}
+
+.browser-tab-overflow-controls {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: flex-end;
+  justify-content: flex-end;
+  height: 52px;
+  gap: 0;
+  margin-left: 0;
+  box-sizing: border-box;
+}
+
+.browser-tab-row-control {
+  width: var(--browser-tab-edge-control-width);
+  height: var(--browser-tab-height);
+  flex: 0 0 var(--browser-tab-edge-control-width);
+  min-width: var(--browser-tab-edge-control-width);
+  min-height: var(--browser-tab-height);
+  align-self: flex-end;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0 0 0 4px !important;
+  border: 1px solid color-mix(in srgb, var(--border-color) 82%, transparent);
+  border-radius: var(--radius-md, 6px) var(--radius-md, 6px) 0 0;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 8;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.browser-tab-duck-btn {
+  margin: 0 4px 0 0 !important;
+}
+
+.browser-tab-exit-btn {
+  /* Joined flush to the bookmark (like adjacent tabs) so bookmark + close read
+     as one right-side group; the bookmark keeps its 4px left margin as the gap
+     separating that group from the +new-tab button. */
+  margin: 0 !important;
+}
+
+.browser-tab-row-control:hover,
+.browser-tab-row-control:focus-visible {
+  color: var(--accent-color);
+  background: var(--hover-bg);
+  border-color: var(--accent-color);
+  outline: none;
+}
+
+.browser-tab-row-control:disabled {
+  opacity: var(--disabled-opacity-control);
+  cursor: default;
+}
+
+.browser-tab-shell:not(.has-overflow) .browser-tab-overflow-btn {
+  display: none;
+}
+
+#browser-btn {
+  position: relative;
+}
+
+.browser-btn-audio-indicator {
+  position: absolute;
+  /* Corner badge — must stay clear of the button's own click target. At 16px on a 26px
+     button, a -4px/-4px offset made the badge's hit box reach past the button's geometric
+     center (badge box ~x:[13,31] vs. button center at 13 in local coords once its 1px
+     border is included), so a real mouse click aimed at the toolbar icon silently landed
+     nearer the badge's corner of the button than its own center — reproduced live via
+     Playwright's coordinate-based .click(), not just a synthetic dispatch (the badge itself
+     is pointer-events:none, so this was purely a target-geometry miss, not an event capture).
+     Pushing the badge further outside the button (-7px) keeps it visually anchored
+     to the corner while clearing the center by a safe margin. */
+  right: -7px;
+  bottom: -7px;
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  min-height: 16px;
+  border-radius: var(--radius-full, 999px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--browser-audio-badge-border-tab);
+  background: color-mix(in srgb, var(--bg-primary) 62%, var(--accent-color) 38%);
+  color: var(--browser-audio-badge-glyph-chrome);
+  box-shadow:
+    0 0 0 2px var(--bg-primary),
+    0 0 10px color-mix(in srgb, var(--accent-color) 36%, transparent);
+  font-size: 8px;
+  line-height: 1;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.browser-btn-audio-indicator[hidden] {
+  display: none !important;
+}
+
+.browser-btn-audio-indicator i {
+  font-size: 8px;
+  line-height: 1;
+}
+
+#browser-btn.is-active,
+#browser-bookmarks-btn.is-active,
+#browser-content-rail-mode-btn.is-active {
+  background-color: var(--hover-bg);
+  color: var(--accent-color);
+  border-color: var(--accent-color);
+}
+
+#browser-btn.is-browser-audible {
+  color: var(--accent-color);
+  border-color: var(--browser-audio-badge-border-chrome);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent-color) 42%, transparent);
+}
+
+#browser-back-btn:disabled,
+#browser-forward-btn:disabled,
+#browser-home-btn:disabled,
+#browser-refresh-btn:disabled,
+#browser-sleep-inactive-btn:disabled {
+  opacity: var(--disabled-opacity-control);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.browser-address-wrap {
+  --browser-address-action-reserve: 102px;
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 220px;
+  display: flex;
+  align-items: center;
+}
+
+.browser-controls.is-compact #browser-go-btn {
+  display: none;
+}
+
+.browser-controls.is-compact .browser-address-wrap {
+  min-width: 180px;
+}
+
+.browser-controls.is-tight #browser-bookmarks-btn,
+.browser-controls.is-tight #browser-send-to-slot-btn {
+  display: none;
+}
+
+.browser-controls.is-tight .browser-address-wrap {
+  min-width: 150px;
+}
+
+.browser-address-wrap .browser-address-bar {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 150px;
+  /* Same height as the header nav buttons (.icon-btn = 32px). Without this the
+     input is only ~30px (font + padding) and sits ~2px shorter than the buttons. */
+  height: 32px;
+  padding: 0 10px;
+  padding-right: var(--browser-address-action-reserve);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md, 6px);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 13px;
+  outline: none;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.browser-address-wrap .browser-address-bar:focus {
+  border-color: var(--accent-color);
+  box-shadow: var(--focus-ring);
+}
+
+.browser-address-loading-indicator {
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  bottom: 2px;
+  height: 2px;
+  border-radius: var(--radius-full, 999px);
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-speed) ease;
+}
+
+.browser-address-loading-indicator::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -40%;
+  width: 42%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+  animation: browserAddressLoadingSweep 1.05s ease-in-out infinite;
+}
+
+.browser-address-wrap.is-loading .browser-address-loading-indicator {
+  opacity: 1;
+}
+
+@keyframes browserAddressLoadingSweep {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(330%);
+  }
+}
+
+.browser-tab-count-pill {
+  position: static;
+  min-width: 34px;
+  max-width: 58px;
+  height: 18px;
+  padding: 0 7px;
+  border: 1px solid color-mix(in srgb, var(--border-color) 88%, var(--bg-primary));
+  border-radius: var(--radius-full, 999px);
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  box-shadow: 0 0 0 1px var(--bg-secondary), var(--elev-floating);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-micro);
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: default;
+  box-sizing: border-box;
+  z-index: 2;
+}
+
+.browser-address-wrap > .tooltip-wrapper:has(#browser-tab-count-pill) {
+  position: absolute !important;
+  right: 33px;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: auto;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+}
+
+.browser-address-wrap .tooltip-wrapper #browser-tab-count-pill {
+  position: static !important;
+  transform: none !important;
+}
+
+.url-import-progress-chip {
+  min-width: 0;
+  max-width: 220px;
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid color-mix(in srgb, var(--accent-color) 54%, var(--border-color));
+  border-radius: var(--radius-md, 6px);
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  display: none;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--font-meta);
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  box-shadow: var(--elev-floating);
+  box-sizing: border-box;
+}
+
+.url-import-progress-chip.active {
+  display: inline-flex;
+}
+
+.url-import-progress-spinner {
+  width: 12px;
+  height: 12px;
+  min-width: 12px;
+  border: 2px solid color-mix(in srgb, var(--text-secondary) 34%, transparent);
+  border-top-color: var(--accent-color);
+  border-radius: var(--radius-full, 999px);
+  animation: browser-tab-spinner-spin 0.8s linear infinite;
+  box-sizing: border-box;
+}
+
+.url-import-progress-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.browser-bookmark-star {
+  position: static;
+  width: 22px;
+  height: 18px;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  /* margin: 0 — resets buttons.css's global `button { margin: 5px; }` base rule (same footgun
+     documented at styles-settings.css:44-53, statusFooter.css:367, styles-themes.css:1235,
+     styles-gallery-notes.css:824-825). Confirmed zero visual change here: the parent
+     .tooltip-wrapper is display:flex + align-items/justify-content:center, so a symmetric 5px
+     margin box was already being centered correctly (getBoundingClientRect() identical
+     before/after) — this is a dead-weight cleanup, not a layout fix, unlike the styles-settings.css
+     case where the same footgun caused a real, disclosed spacing change. */
+  margin: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  line-height: 1;
+  z-index: 1;
+}
+
+.browser-address-wrap > .tooltip-wrapper:has(#browser-bookmark-star-btn) {
+  position: absolute !important;
+  right: 6px;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 22px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 4;
+}
+
+.browser-address-wrap .tooltip-wrapper #browser-bookmark-star-btn {
+  position: static !important;
+  transform: none !important;
+}
+
+.browser-bookmark-star i {
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 18px;
+  transform: translateY(-1px);
+}
+
+.browser-bookmark-star:hover,
+.browser-bookmark-star.is-saved {
+  color: var(--accent-color);
+  background: transparent;
+}
+
+.browser-bookmark-star:focus-visible {
+  outline: 1px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+/* targeted fix for a global "off" switch for glass effects;
+there is another way to accomplish this by using a VAR placeholder 
+within the backdrop-filter selector that resolves to "none" when off,
+but that requires changing every occurance and future-proofing it */
+body.glass-effects-disabled,
+body.glass-effects-disabled *,
+body.glass-effects-disabled *::before,
+body.glass-effects-disabled *::after {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+body.glass-effects-disabled #image-display .gallery-inline-empty-disc,
+body.glass-effects-disabled #image-display .gallery-inline-blank-loader-ring {
+  background: var(--modal-glass-floating-surface-background);
+}
+
+/* Storage-pressure danger-zone banner (Tree Persistence Split — Slice 0). A sticky top notice shown
+   ONLY when localStorage is near its hard ~5MB ceiling; stays until usage drops or the user dismisses
+   it. Fixed to the very top so it can't be missed; the WARN-band (~80%) notice uses a normal toast. */
+.storage-pressure-banner {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  box-sizing: border-box;
+  padding: 8px 16px;
+  background: var(--danger-color, #dc3545);
+  color: var(--text-on-danger);
+  border-bottom: var(--storage-pressure-banner-border);
+  font-size: 13px;
+  line-height: 1.4;
+  box-shadow: var(--elev-floating);
+  z-index: var(--flowjoe-z-storage-pressure, 200090);
+}
+.storage-pressure-banner.is-visible {
+  display: flex;
+}
+.storage-pressure-banner-text {
+  flex: 1 1 auto;
+}
+.storage-pressure-banner-actions {
+  flex: 0 0 auto;
+}
+.storage-pressure-banner-dismiss {
+  background: transparent;
+  color: inherit;
+  border: 1px solid currentColor;
+  border-radius: var(--radius-sm, 4px);
+  padding: 4px 10px;
+  cursor: pointer;
+  font-size: var(--font-control);
+}
+.storage-pressure-banner-dismiss:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+/* Interface Sounds settings card (Audio tab) — themed slider + right-sized preview button. */
+#ui-sounds-setting-card .ui-sounds-volume-range {
+  flex: 0 0 160px;
+  width: 160px;
+  max-width: 60%;
+  accent-color: var(--accent-color);
+  cursor: pointer;
+}
+#ui-sounds-setting-card .ui-sounds-test-btn {
+  width: auto;
+  flex: 0 0 auto;
+  padding: 6px 14px;
+}
+}

@@ -1,0 +1,2037 @@
+@layer app {
+  /* ── Docked Joe column — Step 2 layout (JOE_DOCKED_PANEL_PLAN.md §Step 2) ─────────────────────
+     Visual target: docs/IMPLEMENTATION/mockups/joe-docked-panel.html (approved, D7), expressed in the
+     app's own theme tokens so it holds in every theme/profile. Everything here is scoped under
+     #ai-spell-check-modal.joe-docked (the floating window is untouched) and responds to the column's
+     width through container queries, never the viewport.
+
+     Containers sit on the tab strip and the target row only, not on the panel: the panel hosts
+     viewport-positioned (position:fixed) popovers such as the multi-attach picker, and nothing on it
+     may become their containing block (a transform/filter/contain:layout there would pin them to
+     the column and let its overflow clip them — joe-docked-chat-layout.spec.js guards this). Measured
+     in the shipped Chromium, container-type alone does not do that; keeping containment off the
+     panel means a future containment/spec change cannot either.
+
+     The DOM re-homing (header menu, thread bar, chip row, context tray, composer box) is done by
+     joeDockChatLayout.js; this file only styles the result. Selectors carry the panel id + the
+     .joe-docked class so they outrank the floating rules (incl. the JS-injected
+     <style id="joe-ai-modal-styles">, which sits later in the same @layer) without !important. */
+
+  #ai-spell-check-modal.joe-docked > #ai-spell-check-panel {
+    /* Surface ladder, mapped from the mockup's bg-0..bg-4 onto the theme's own tokens: the page is
+       --bg-primary, the column sits one half-step up, raised surfaces (composer, target chip, cards,
+       popovers) use --bg-secondary, wells (tab track, the user's bubbles) use --bg-tertiary. */
+    --jd-bg: color-mix(in srgb, var(--bg-primary) 55%, var(--bg-secondary));
+    --jd-surface: var(--bg-secondary);
+    --jd-well: var(--bg-tertiary);
+    --jd-hover: var(--hover-bg);
+    --jd-line: color-mix(in srgb, var(--border-color) 80%, transparent);
+    --jd-line-soft: color-mix(in srgb, var(--border-color) 55%, transparent);
+    --jd-text-1: var(--text-primary);
+    --jd-text-2: var(--text-secondary);
+    --jd-text-3: color-mix(in srgb, var(--text-secondary) 70%, var(--bg-primary));
+    --jd-accent: var(--accent-color);
+    --jd-on-accent: var(--text-on-accent);
+    --jd-accent-soft: color-mix(in srgb, var(--accent-color) 14%, transparent);
+    --jd-accent-line: color-mix(in srgb, var(--accent-color) 45%, transparent);
+    --jd-radius: var(--radius-xl, 10px);
+    --jd-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --jd-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, monospace;
+    /* The conversation reads at the panel's base size (a step under the floating window's chat text,
+       toward the mockup's scale); the app font scale and A+ still scale it. */
+    --ai-chat-text-size: var(--ai-panel-text-size);
+    padding: 0;
+    gap: 0;
+    background: var(--jd-bg);
+    color: var(--jd-text-1);
+  }
+
+  /* Chat keeps its scrolling inside the conversation (the other tabs do the same: joeDockTabs.css). */
+  #ai-spell-check-modal.joe-docked > #ai-spell-check-panel:is([data-mode="chat"], [data-mode="memories"]) {
+    overflow: hidden;
+  }
+
+  /* ── Shared icon button (28px, quiet until hovered) ── */
+  #ai-spell-check-modal.joe-docked .joe-dock-icon-btn,
+  #ai-spell-check-modal.joe-docked #ai-spell-check-header .ai-spell-check-header-actions > .close-btn,
+  #ai-spell-check-modal.joe-docked #ai-assist-target-lock {
+    display: inline-grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 28px;
+    min-width: 28px;
+    height: 28px;
+    min-height: 28px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    color: var(--jd-text-2);
+    font-size: 13px;
+    line-height: 1;
+    box-shadow: none;
+    cursor: pointer;
+    position: relative;
+    transition:
+      background-color var(--transition-speed) ease,
+      color var(--transition-speed) ease;
+  }
+
+  #ai-spell-check-modal.joe-docked .joe-dock-icon-btn:hover,
+  #ai-spell-check-modal.joe-docked .joe-dock-icon-btn:focus-visible,
+  #ai-spell-check-modal.joe-docked .joe-dock-icon-btn.is-open,
+  #ai-spell-check-modal.joe-docked #ai-spell-check-header .ai-spell-check-header-actions > .close-btn:hover,
+  #ai-spell-check-modal.joe-docked #ai-spell-check-header .ai-spell-check-header-actions > .close-btn:focus-visible,
+  #ai-spell-check-modal.joe-docked #ai-assist-target-lock:hover,
+  #ai-spell-check-modal.joe-docked #ai-assist-target-lock:focus-visible {
+    background: var(--jd-hover);
+    color: var(--jd-text-1);
+    outline: none;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-spell-check-header .ai-spell-check-header-actions > #ai-spell-check-widen[aria-pressed="true"] {
+    background: color-mix(in srgb, var(--accent-color) 16%, var(--jd-bg));
+    color: var(--accent-color);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent-color) 62%, transparent);
+  }
+
+  /* ── Header: mark · Joe / live state · ⋯ · pop out · close ── */
+  /* --jd-header-pad / --jd-header-gap's per-tier docked values live in
+     dropin/06-joe-dock-density.css (Step 4a). */
+  #ai-spell-check-modal.joe-docked #ai-spell-check-header {
+    display: flex;
+    align-items: center;
+    gap: var(--jd-header-gap);
+    min-height: 0;
+    margin: 0;
+    padding: var(--jd-header-pad);
+    border-bottom: 1px solid var(--jd-line-soft);
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    position: relative;
+    flex: 0 0 auto;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-spell-check-header > .ai-spell-check-header-actions {
+    gap: 2px;
+    flex: 0 0 auto;
+    margin-left: auto;
+  }
+
+  .joe-dock-brand {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .joe-dock-mark {
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border-radius: var(--radius-md, 6px);
+    background: linear-gradient(145deg, var(--accent-color), color-mix(in srgb, var(--accent-color) 70%, var(--danger-color)));
+    color: var(--text-on-accent);
+    font-size: 13px;
+    box-shadow: 0 2px 10px color-mix(in srgb, var(--accent-color) 35%, transparent);
+  }
+
+  /* Title (+ the node's Locked / Hidden-from-Joe pills, which sit right after it) on the first line,
+     the live state on its own line beneath. */
+  .joe-dock-brand-text {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: 6px;
+    min-width: 0;
+    line-height: 1.25;
+  }
+
+  .joe-dock-brand-text > .joe-dock-live-state {
+    flex: 1 0 100%;
+  }
+
+  .joe-dock-brand-text > :is(.modal-locked-pill, .modal-hidden-from-joe-pill) {
+    font-size: 10px;
+  }
+
+  /* The panel's own (translated) title, at the column's name size; it still follows the app's font
+     family and scale and Joe's A+ step. */
+  #ai-spell-check-modal.joe-docked .joe-dock-brand-text > h3 {
+    min-width: 0;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--jd-text-1);
+    font-size: calc(var(--ai-title-text-size) * 0.8);
+    font-weight: 650;
+    letter-spacing: 0.2px;
+    line-height: 1.2;
+  }
+
+  .joe-dock-live-state {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    line-height: 1.2;
+    color: var(--jd-text-3);
+    white-space: nowrap;
+  }
+
+  .joe-dock-live-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--success-color);
+    flex: 0 0 auto;
+  }
+
+  .joe-dock-live-state[data-state="working"] {
+    color: var(--jd-text-2);
+  }
+
+  .joe-dock-live-state[data-state="working"] .joe-dock-live-dot {
+    background: var(--accent-color);
+    animation: joe-dock-pulse 1.4s ease-in-out infinite;
+  }
+
+  @keyframes joe-dock-pulse {
+    50% {
+      transform: scale(1.45);
+      opacity: 0.55;
+    }
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-assist-focus-mode-chip {
+    font-size: 10.5px;
+    margin-right: 6px;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-assist-focus-mode-chip.is-space-suppressed {
+    display: none;
+  }
+
+  /* ── Popover menus (header ⋯, thread ⋯) — the moved buttons become labelled rows ── */
+  /* --jd-menu-pad's per-tier docked values live in dropin/06-joe-dock-density.css (Step 4a) — the
+     1px gap between menu rows stays fixed chrome (too fine to read as density). */
+  .joe-dock-menu {
+    position: absolute;
+    top: calc(100% - 4px);
+    right: 10px;
+    z-index: 30;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 220px;
+    max-width: calc(100% - 20px);
+    padding: var(--jd-menu-pad);
+    border: 1px solid var(--jd-line);
+    border-radius: var(--jd-radius);
+    background: var(--jd-surface);
+    box-shadow: var(--elev-floating);
+    animation: joe-dock-rise 0.2s var(--jd-ease);
+  }
+
+  .joe-dock-menu[hidden] {
+    display: none;
+  }
+
+  #ai-spell-check-modal.joe-docked .joe-dock-menu :is(button, .tooltip-wrapper, .ai-chat-conversation-actions) {
+    width: 100%;
+  }
+
+  #ai-spell-check-modal.joe-docked .joe-dock-menu .ai-chat-conversation-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    margin: 0;
+  }
+
+  #ai-spell-check-modal.joe-docked .joe-dock-menu .tooltip-wrapper {
+    display: flex;
+  }
+
+  #ai-spell-check-modal.joe-docked .joe-dock-menu button {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    width: 100%;
+    min-width: 0;
+    height: 32px;
+    min-height: 32px;
+    max-height: none;
+    margin: 0;
+    padding: 0 10px;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    box-shadow: none;
+    color: var(--jd-text-1);
+    font-size: 12.5px;
+    font-weight: 450;
+    line-height: 1;
+    text-align: left;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  #ai-spell-check-modal.joe-docked .joe-dock-menu button > i {
+    width: 16px;
+    flex: 0 0 16px;
+    text-align: center;
+    color: var(--jd-text-2);
+    font-size: 12px;
+  }
+
+  /* Icon-only buttons read their own (translated) aria-label as the row label. */
+  #ai-spell-check-modal.joe-docked .joe-dock-menu :is(#ai-assist-top-rows-collapse-toggle, #ai-font-size-increase, .ai-chat-conversation-action-btn)::after {
+    content: attr(aria-label) / "";
+    font-size: 12.5px;
+    font-weight: 450;
+    color: var(--jd-text-1);
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  #ai-spell-check-modal.joe-docked .joe-dock-menu #ai-font-size-increase > i + i {
+    width: auto;
+    flex: 0 0 auto;
+    margin-left: -12px;
+    font-size: 7px;
+  }
+
+  #ai-spell-check-modal.joe-docked .joe-dock-menu #ai-assist-top-rows-collapse-toggle > i {
+    transform: translateX(-4px);
+  }
+
+  #ai-spell-check-modal.joe-docked .joe-dock-menu button:hover,
+  #ai-spell-check-modal.joe-docked .joe-dock-menu button:focus-visible {
+    background: var(--jd-hover);
+    outline: none;
+  }
+
+  #ai-spell-check-modal.joe-docked .joe-dock-menu #ai-font-size-increase.is-active {
+    box-shadow: none;
+    border: 0;
+  }
+
+  #ai-spell-check-modal.joe-docked .joe-dock-menu #ai-font-size-increase.is-active > i {
+    color: var(--accent-color);
+  }
+
+  #ai-spell-check-modal.joe-docked .joe-dock-menu #ai-chat-clear-all {
+    color: var(--danger-color);
+    padding-left: 36px;
+    position: relative;
+  }
+
+  #ai-spell-check-modal.joe-docked .joe-dock-menu #ai-chat-clear-all::before {
+    content: "\f2ed" / "";
+    font: var(--fa-font-regular);
+    font-size: 12px;
+    position: absolute;
+    left: 10px;
+    width: 16px;
+    text-align: center;
+  }
+
+  /* ── Tab switcher: segmented control, icon + short label, icons only in a narrow column ── */
+  /* --jd-row-margin-top / --jd-tabstrip-pad's per-tier docked values live in
+     dropin/06-joe-dock-density.css (Step 4a) — --jd-row-margin-top is shared with the target row
+     below (both were the identical `10px 12px 0`). The 2px gap between the 4 tab buttons stays
+     fixed chrome (a between-segment gap this small doesn't read as density). */
+  #ai-spell-check-modal.joe-docked #ai-assist-mode-tabs {
+    display: flex;
+    gap: 2px;
+    flex: 0 0 auto;
+    margin: var(--jd-row-margin-top);
+    padding: var(--jd-tabstrip-pad);
+    border: 1px solid var(--jd-line-soft);
+    border-radius: 9px;
+    background: var(--jd-well);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    overflow: hidden;
+    container: joe-dock-tabs / inline-size;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-assist-mode-tabs[hidden] {
+    display: none;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-assist-mode-tabs > .ai-mode-tab {
+    /* --ai-mode-tab-pad's per-tier docked values live in dropin/06-joe-dock-density.css (Step 4) —
+       this rule only consumes the cascaded value, it does not set it. */
+    flex: 1 1 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-width: 0;
+    margin: 0;
+    padding: var(--ai-mode-tab-pad);
+    border: 0;
+    border-radius: 7px;
+    bottom: 0;
+    background: transparent;
+    color: var(--jd-text-2);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0;
+    line-height: 1.2;
+    box-shadow: none;
+    transition:
+      background-color var(--transition-speed) ease,
+      color var(--transition-speed) ease;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-assist-mode-tabs > .ai-mode-tab::before {
+    font: var(--fa-font-solid);
+    font-size: 11px;
+    flex: 0 0 auto;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-assist-mode-tabs > .ai-mode-tab[data-mode="chat"]::before {
+    content: "\f086" / "";
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-assist-mode-tabs > .ai-mode-tab[data-mode="spell-check"]::before {
+    content: "\f891" / "";
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-assist-mode-tabs > .ai-mode-tab[data-mode="transcribe-audio"]::before {
+    content: "\f83e" / "";
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-assist-mode-tabs > .ai-mode-tab[data-mode="generate-images"]::before {
+    content: "\e2ca" / "";
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-assist-mode-tabs > .ai-mode-tab:hover {
+    color: var(--jd-text-1);
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-assist-mode-tabs > .ai-mode-tab.active {
+    background: var(--jd-bg);
+    color: var(--jd-text-1);
+    font-weight: 600;
+    box-shadow: 0 1px 2px var(--shadow-medium);
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-assist-mode-tabs > .ai-mode-tab.active::before {
+    color: var(--accent-color);
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-assist-mode-tabs > .ai-mode-tab:focus-visible {
+    box-shadow: 0 0 0 2px var(--jd-accent-line);
+  }
+
+  /* Short labels (the long label stays the tab's text + accessible name). Docked Joe always shows
+     all four tabs (plan D8). */
+  #ai-spell-check-modal.joe-docked #ai-assist-mode-tabs > .ai-mode-tab[data-dock-label] {
+    font-size: 0;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-assist-mode-tabs > .ai-mode-tab[data-dock-label]::after {
+    content: attr(data-dock-label) / "";
+    font-size: 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* A column narrower than ~400px: icons only. The tab strip's content box is the column minus its
+     12px side margins, 1px border and 3px padding (400 - 24 - 2 - 6 = 368). */
+  @container joe-dock-tabs (max-width: 368px) {
+    #ai-spell-check-modal.joe-docked #ai-assist-mode-tabs > .ai-mode-tab[data-dock-label]::after {
+      content: none;
+    }
+
+    #ai-spell-check-modal.joe-docked #ai-assist-mode-tabs > .ai-mode-tab::before {
+      font-size: 12px;
+    }
+  }
+
+  /* ── Target chip: ⌖ node › slot · follow status · lock ── */
+  /* --jd-row-margin-top (shared with the tab strip above) / --jd-target-pad / --jd-target-gap's
+     per-tier docked values live in dropin/06-joe-dock-density.css (Step 4a). */
+  #ai-spell-check-modal.joe-docked #ai-spell-check-target {
+    /* Named so the docked follow-pill query below targets this row (it already was an unnamed
+       inline-size container for the floating picker layout). */
+    container: joe-dock-target / inline-size;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: var(--jd-target-gap);
+    flex: 0 0 auto;
+    min-height: 0;
+    margin: var(--jd-row-margin-top);
+    padding: var(--jd-target-pad);
+    border: 1px solid var(--jd-line);
+    border-radius: 9px;
+    background: var(--jd-surface);
+    color: var(--jd-text-1);
+    font-size: 12.5px;
+    font-weight: 400;
+    transition:
+      border-color 0.2s ease,
+      background-color 0.3s ease;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-spell-check-target[hidden] {
+    display: none;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-spell-check-target.is-flash {
+    border-color: var(--jd-accent-line);
+    background: color-mix(in srgb, var(--accent-color) 10%, var(--jd-surface));
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-spell-check-target::before {
+    content: "\f05b" / "";
+    font: var(--fa-font-solid);
+    font-size: 11px;
+    color: var(--jd-text-3);
+    flex: 0 0 auto;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-assist-target-static {
+    flex: 0 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--jd-text-3);
+    font-size: 11px;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-assist-target-static:empty {
+    display: none;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-assist-target-controls {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: none;
+    font-size: inherit;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-assist-target-controls[hidden] {
+    display: none;
+  }
+
+  /* The parent path ahead of the current node/slot, e.g. "FlowJoe Devs ›". Full-brightness bold
+     text, matching the current target's own weight -- only the separator itself is muted. Hidden
+     (via [hidden], set in JS) for a root node, which has no parent segment to show. */
+  #ai-spell-check-modal.joe-docked #ai-assist-target-breadcrumb {
+    flex: 0 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 600;
+    color: var(--jd-text-1);
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-assist-target-breadcrumb[hidden] {
+    display: none;
+  }
+
+  #ai-spell-check-modal.joe-docked .ai-assist-target-breadcrumb-sep {
+    color: var(--jd-text-3);
+    font-weight: 400;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-assist-target-controls > :is(.ai-assist-target-node-picker, .ai-assist-target-slot-picker) {
+    flex: 0 1 auto;
+    width: auto;
+    min-width: 0;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-assist-target-controls > .ai-assist-target-slot-picker {
+    flex-shrink: 2;
+  }
+
+  /* The pickers read as a path, not as two dropdowns: click opens today's node/slot pickers. */
+  #ai-spell-check-modal.joe-docked #ai-assist-target-controls .ai-assist-target-select {
+    width: auto;
+    max-width: 100%;
+    height: 24px;
+    padding: 2px 6px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    background-image: none;
+    box-shadow: none;
+    color: var(--jd-text-1);
+    font-size: 12.5px;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-assist-target-controls #ai-assist-target-slot-button {
+    color: var(--accent-color);
+    font-weight: 500;
+  }
+
+  /* When the slot picker is hidden (node-summary / node-chat scope), the node button IS the
+     current/terminal segment of the target path -- accent it the same way the slot button is
+     accented when a slot is present, so "what Joe is currently scoped to" is always the orange
+     segment, matching the mockup's targetText() (only the last path segment is accented). */
+  #ai-spell-check-modal.joe-docked #ai-assist-target-controls[data-target-scope="node-summary"] #ai-assist-target-node-button,
+  #ai-spell-check-modal.joe-docked #ai-assist-target-controls[data-target-scope="node-chat"] #ai-assist-target-node-button {
+    color: var(--accent-color);
+    font-weight: 500;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-assist-target-controls .ai-assist-target-select:hover:not(:disabled),
+  #ai-spell-check-modal.joe-docked #ai-assist-target-controls .ai-assist-target-select:focus-visible,
+  #ai-spell-check-modal.joe-docked #ai-assist-target-controls .ai-assist-target-select[aria-expanded="true"] {
+    background: var(--jd-hover);
+    box-shadow: none;
+    outline: none;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-assist-target-controls .ai-assist-target-select:disabled {
+    background: transparent;
+    color: var(--jd-text-1);
+    cursor: default;
+  }
+
+  /* Font Awesome's own (unlayered) sheet sets .fas display through --fa-display. */
+  #ai-spell-check-modal.joe-docked #ai-assist-target-controls .ai-assist-target-select-chevron {
+    --fa-display: none;
+    display: none;
+  }
+
+  /* With the pickers showing, the scope caption ("Target Node & Slot:") is the crosshair's job. */
+  #ai-spell-check-modal.joe-docked #ai-assist-target-static:has(+ #ai-assist-target-controls:not([hidden])) {
+    display: none;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-assist-target-controls .ai-assist-target-separator {
+    display: inline;
+    flex: 0 0 auto;
+    font-size: 0;
+    color: var(--jd-text-3);
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-assist-target-controls .ai-assist-target-separator::before {
+    content: "›";
+    font-size: 14px;
+    font-weight: 400;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-assist-target-controls .ai-assist-target-slot-label {
+    display: none;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-assist-target-controls :is(.ai-assist-target-node-menu, .ai-assist-target-slot-menu) {
+    top: calc(100% + 6px);
+    background: var(--jd-surface);
+    border-color: var(--jd-line);
+    border-radius: var(--jd-radius);
+  }
+
+  .ai-assist-follow-state[hidden],
+  .ai-assist-follow-switch[hidden] {
+    display: none;
+  }
+
+  #ai-spell-check-modal.joe-docked .ai-assist-follow-state,
+  #ai-spell-check-modal.joe-docked #ai-assist-follow-pending {
+    flex: 0 1 auto;
+    min-width: 0;
+    margin: 0;
+    padding: 3px 10px;
+    border: 1px solid var(--jd-line);
+    border-radius: var(--radius-full, 999px);
+    color: var(--jd-text-3);
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-spell-check-panel[data-mode="memories"] .ai-memory-chip {
+    display: inline-flex;
+    align-items: center;
+    min-height: 0;
+    padding: 3px 10px;
+    border-radius: var(--radius-full, 999px);
+    font-size: 10px;
+    line-height: 1;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-spell-check-panel[data-mode="memories"] .ai-memories-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 0;
+    padding: 3px 8px;
+    border-radius: var(--radius-full, 999px);
+    font-size: 10px;
+    line-height: 1;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-spell-check-panel[data-mode="memories"] .ai-memories-section-toggle {
+    box-sizing: border-box;
+    height: var(--dropdown-height);
+    min-height: var(--dropdown-height);
+    max-height: var(--dropdown-height);
+    padding: 0 12px;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-spell-check-panel[data-mode="memories"] .ai-memories-section-title-text,
+  #ai-spell-check-modal.joe-docked #ai-spell-check-panel[data-mode="memories"] .ai-memories-section-target {
+    font-size: 12.5px;
+    line-height: 1;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-spell-check-panel[data-mode="memories"] #ai-memories-add.ai-memories-add-btn {
+    min-height: 30px;
+    height: 30px;
+    padding: 0 14px;
+    border-radius: 9px;
+    font-size: 12.5px;
+    line-height: 1;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-spell-check-panel[data-mode="memories"] .ai-memory-row.is-editing > .ai-memory-editor.is-inline {
+    box-sizing: border-box;
+    width: 100%;
+    margin: 12px 0 0;
+    padding: 12px;
+    border: 1px solid var(--jd-line);
+    border-radius: var(--jd-radius);
+    background: var(--jd-bg);
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-spell-check-panel[data-mode="memories"] .ai-memory-editor.is-inline .ai-memory-editor-head {
+    min-height: 0;
+    padding: 0 0 8px;
+    border-bottom: 1px solid var(--jd-line-soft);
+    font-size: 14px;
+    line-height: 1.2;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-spell-check-panel[data-mode="memories"] .ai-memory-editor.is-inline .ai-memory-editor-source {
+    margin: 8px 0 0;
+    font-size: 11px;
+    line-height: 1.35;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-spell-check-panel[data-mode="memories"] .ai-memory-editor.is-inline .ai-memory-field-row {
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 12px 0 0;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-spell-check-panel[data-mode="memories"] .ai-memory-editor.is-inline .ai-memory-field {
+    flex: 1 1 180px;
+    min-width: 0;
+    gap: 5px;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-spell-check-panel[data-mode="memories"] .ai-memory-editor.is-inline .ai-memory-field > span {
+    color: var(--jd-text-2);
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-spell-check-panel[data-mode="memories"] .ai-memory-editor.is-inline .ai-memory-field select {
+    box-sizing: border-box;
+    height: var(--dropdown-height);
+    min-height: var(--dropdown-height);
+    padding: 0 30px 0 10px;
+    border-color: var(--jd-line);
+    border-radius: 7px;
+    background-color: var(--jd-well);
+    color: var(--jd-text-1);
+    font-size: 12px;
+    line-height: 1;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-spell-check-panel[data-mode="memories"] .ai-memory-editor.is-inline .ai-memory-field textarea {
+    box-sizing: border-box;
+    min-height: 88px;
+    max-height: 180px;
+    padding: 8px 10px;
+    border-color: var(--jd-line);
+    border-radius: 7px;
+    background: var(--jd-well);
+    color: var(--jd-text-1);
+    font-size: 12.5px;
+    line-height: 1.4;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-spell-check-panel[data-mode="memories"] .ai-memory-editor.is-inline :is(.ai-memory-field select, .ai-memory-field textarea):focus {
+    border-color: var(--jd-accent);
+    outline: 2px solid color-mix(in srgb, var(--jd-accent) 22%, transparent);
+    outline-offset: 1px;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-spell-check-panel[data-mode="memories"] .ai-memory-editor.is-inline .ai-memory-editor-scope-target {
+    min-height: 0;
+    margin: 8px 0 0;
+    color: var(--jd-text-3);
+    font-size: 11px;
+    line-height: 1.35;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-spell-check-panel[data-mode="memories"] .ai-memory-editor.is-inline .ai-memory-text-field {
+    margin: 12px 0 0;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-spell-check-panel[data-mode="memories"] .ai-memory-editor.is-inline .ai-memory-editor-actions {
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+    padding: 10px 0 0;
+    border-top: 1px solid var(--jd-line-soft);
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-spell-check-panel[data-mode="memories"] .ai-memory-editor.is-inline :is(.ai-memory-btn-primary, .ai-memory-btn-secondary) {
+    box-sizing: border-box;
+    min-height: 30px;
+    height: 30px;
+    padding: 0 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-spell-check-panel[data-mode="memories"] .ai-memory-editor.is-inline .ai-memory-btn-primary {
+    border-color: var(--jd-accent);
+    background: var(--jd-accent);
+    color: var(--jd-on-accent);
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-spell-check-panel[data-mode="memories"] .ai-memory-editor.is-inline .ai-memory-btn-secondary {
+    border-color: var(--jd-line);
+    background: transparent;
+    color: var(--jd-text-2);
+  }
+
+  #ai-spell-check-modal.joe-docked .ai-assist-follow-state.is-locked {
+    color: var(--accent-color);
+    border-color: var(--jd-accent-line);
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-assist-follow-pending {
+    border-style: dashed;
+    color: var(--jd-text-2);
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-assist-follow-pending[hidden] {
+    display: none;
+  }
+
+  #ai-spell-check-modal.joe-docked .ai-assist-follow-switch {
+    flex: 0 1 auto;
+    min-width: 0;
+    max-width: 62%;
+    height: 24px;
+    padding: 0 10px;
+    border: 1px solid var(--jd-accent-line);
+    border-radius: var(--radius-full, 999px);
+    background: var(--jd-accent-soft);
+    color: var(--accent-color);
+    font: inherit;
+    font-size: 11.5px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    animation: joe-dock-rise 0.25s var(--jd-ease);
+  }
+
+  #ai-spell-check-modal.joe-docked .ai-assist-follow-switch:hover,
+  #ai-spell-check-modal.joe-docked .ai-assist-follow-switch:focus-visible {
+    background: color-mix(in srgb, var(--accent-color) 24%, transparent);
+    outline: none;
+  }
+
+  /* Lock sits last; the pending note (after it in the DOM, not focusable) is drawn before it. */
+  #ai-spell-check-modal.joe-docked #ai-assist-target-lock {
+    order: 3;
+    font-size: 12px;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-assist-target-lock.is-locked {
+    color: var(--accent-color);
+    background: var(--jd-accent-soft);
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-assist-target-lock[hidden] {
+    display: none;
+  }
+
+  /* A column narrower than ~380px drops the follow pill (row content box = column - 24px margins -
+     2px border - 13px padding = 341px). */
+  @container joe-dock-target (max-width: 341px) {
+    #ai-spell-check-modal.joe-docked .ai-assist-follow-state {
+      display: none;
+    }
+  }
+
+  /* ── Content area ── */
+  #ai-spell-check-modal.joe-docked #ai-spell-check-content {
+    min-height: 0;
+  }
+
+  #ai-spell-check-modal.joe-docked > #ai-spell-check-panel:is([data-mode="chat"], [data-mode="memories"]) #ai-spell-check-content {
+    flex: 1 1 auto;
+    padding: 0;
+    gap: 0;
+    overflow: hidden;
+  }
+
+  /* Spelling / Transcribe / Images: joeDockTabs.css (Step 3). */
+
+  /* ── Thread bar: Conversation · <target> · New · History · ⋯ ── */
+  #ai-spell-check-modal.joe-docked #chat-mode-selector {
+    gap: 0;
+  }
+
+  /* --jd-tab-section-pad / --jd-tab-section-gap's per-tier docked values live in
+     dropin/06-joe-dock-density.css (Step 4) — this is the same section-bar token pair
+     joeDockTabs.css's Transcribe/Images heading consumes, so the two bars stay in step at every
+     tier instead of drifting apart in Comfy/Dense (Compact's values are identical, so this is a
+     pixel-identical rename there). */
+  #ai-spell-check-modal.joe-docked #chat-mode-selector > .chat-mode-header {
+    position: relative;
+    gap: var(--jd-tab-section-gap);
+    height: auto;
+    min-height: 0;
+    padding: var(--jd-tab-section-pad);
+  }
+
+  #ai-spell-check-modal.joe-docked #chat-mode-selector .ai-chat-heading-group {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  #ai-spell-check-modal.joe-docked #chat-mode-selector .ai-chat-heading-group:has(.ai-chat-memories-tooltip-wrapper.is-back-to-chat) {
+    flex-wrap: wrap;
+    row-gap: 6px;
+  }
+
+  #ai-spell-check-modal.joe-docked #chat-mode-selector .ai-chat-heading-group > .joe-dock-thread-title {
+    flex: 0 0 100%;
+  }
+
+  #ai-spell-check-modal.joe-docked #chat-mode-selector .ai-chat-memories-tooltip-wrapper.is-back-to-chat {
+    margin-left: 0;
+  }
+
+  #ai-spell-check-modal.joe-docked #chat-mode-selector .ai-chat-section-label {
+    display: none;
+  }
+
+  .joe-dock-thread-title {
+    display: block;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--jd-text-2);
+    font-size: 11.5px;
+    letter-spacing: 0.3px;
+  }
+
+  .joe-dock-thread-title > b {
+    color: var(--jd-text-1);
+    font-weight: 600;
+  }
+
+  .joe-dock-thread-title-sep {
+    margin: 0 5px;
+    color: var(--jd-text-3);
+  }
+
+  #ai-spell-check-modal.joe-docked #chat-mode-selector .chat-mode-actions {
+    flex: 0 0 auto;
+    gap: 2px;
+  }
+
+  #ai-spell-check-modal.joe-docked #chat-mode-selector .chat-mode-actions > .ai-chat-select-label {
+    display: none;
+  }
+
+  /* New + History become icon buttons (their aria-labels already name them). */
+  #ai-spell-check-modal.joe-docked #chat-mode-selector :is(#ai-chat-new, #ai-chat-history) {
+    width: 28px;
+    min-width: 28px;
+    height: 28px;
+    min-height: 28px;
+    padding: 0;
+    gap: 0;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    box-shadow: none;
+    color: var(--jd-text-2);
+    font-size: 0;
+  }
+
+  #ai-spell-check-modal.joe-docked #chat-mode-selector :is(#ai-chat-new, #ai-chat-history) > i {
+    font-size: 13px;
+  }
+
+  #ai-spell-check-modal.joe-docked #chat-mode-selector :is(#ai-chat-new, #ai-chat-history):is(:hover, :focus-visible) {
+    background: var(--jd-hover);
+    color: var(--jd-text-1);
+    outline: none;
+  }
+
+  #ai-spell-check-modal.joe-docked .joe-dock-thread-menu {
+    top: calc(100% - 2px);
+  }
+
+  /* ── Conversation ── */
+  /* --chat-panel-pad-bottom / --ai-chat-messages-pad-block / -pad-inline / -gap / --chat-bubble-pad /
+     --chat-bubble-measure's per-tier docked values live in dropin/06-joe-dock-density.css (Step 4) —
+     every rule below only consumes the cascaded value, none of them set it any more. */
+  #ai-spell-check-modal.joe-docked #chat-panel {
+    padding: 0 0 var(--chat-panel-pad-bottom);
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-messages {
+    /* The transcript inset tokens take a start/end pair here: see dropin/06-joe-dock-density.css's
+       per-tier values (design tier: 6px top, 16px bottom, 14px left, 12px right). */
+    padding-block: var(--ai-chat-messages-pad-block);
+    padding-inline: var(--ai-chat-messages-pad-inline);
+    gap: var(--ai-chat-messages-gap);
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+  }
+
+  /* Joe's replies read as text beside a small mark, not as cards. */
+  #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message.assistant {
+    position: relative;
+    padding-left: 32px;
+    box-sizing: border-box;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message.assistant::before,
+  #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-welcome::before,
+  #ai-spell-check-modal.joe-docked #ai-chat-messages #ai-chat-loading.ai-chat-loading-message::before {
+    content: "\f7b6" / "";
+    position: absolute;
+    left: 0;
+    top: 1px;
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 7px;
+    background: var(--jd-hover);
+    color: var(--accent-color);
+    font: var(--fa-font-solid);
+    font-size: 10px;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message--streaming:not(.ai-chat-message--streaming-active)::before {
+    visibility: hidden;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message.assistant.has-message-state-controls::before {
+    top: calc(var(--chat-msg-state-reserve, 0px) + 1px);
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message.assistant .ai-chat-bubble {
+    max-width: var(--chat-bubble-measure);
+    padding: var(--chat-bubble-pad);
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message.assistant .ai-chat-message-state {
+    left: 0;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message.assistant .ai-chat-actions {
+    margin-left: 0;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message.assistant :is(.ai-chat-web-search-chip, .ai-chat-code-interpreter-chip, .ai-chat-outside-text-chip, .ai-chat-manual-reference-chip) {
+    margin-left: 0;
+    max-width: 100%;
+    font-size: 10px;
+    line-height: 1;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message.assistant :is(.ai-chat-web-search-chip-toggle, .ai-chat-code-interpreter-chip-toggle, .ai-chat-manual-reference-chip-toggle, .ai-chat-outside-text-chip) {
+    margin: 0;
+    padding: 3px 10px;
+    font-size: 10px;
+    line-height: 1;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message.user .ai-chat-message-state {
+    right: var(--chat-bubble-pad-x);
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-welcome {
+    position: relative;
+    padding: 1px 0 0 32px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-welcome .welcome-icon {
+    display: none;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-starter-chips {
+    gap: 4px 6px;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-starter-chip {
+    margin: 0;
+  }
+
+  /* The user's messages: right-aligned quiet bubbles. */
+  #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message.user .ai-chat-bubble {
+    max-width: var(--chat-bubble-measure);
+    padding: var(--chat-bubble-pad);
+    border: 1px solid var(--jd-line-soft);
+    border-radius: 12px 12px 4px 12px;
+    background: var(--jd-well);
+    box-shadow: none;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-msg-token-chip {
+    color: var(--jd-text-3);
+  }
+
+  /* Proposal (flow-change approval) cards keep their markup, restyled to the mockup's card. */
+  #ai-spell-check-modal.joe-docked #ai-chat-messages .flow-mutation-approval-card {
+    border: 1px solid var(--jd-accent-line);
+    border-radius: var(--jd-radius);
+    background: linear-gradient(180deg, var(--jd-accent-soft), transparent 70%);
+    box-shadow: none;
+  }
+
+  /* "Expand response window" is a floating-window-only affordance (the docked panel's height is
+     already fixed by the dock, so there's nothing for it to expand into) — drop the whole wrapper,
+     not just the button, so its absolutely-positioned tooltip span doesn't linger invisibly. The
+     underlying expand/collapse feature (joeScrollingController.js) stays intact for the floating
+     window; this only hides the docked button. */
+  #ai-spell-check-modal.joe-docked .ai-chat-expand-toggle-wrapper {
+    display: none;
+  }
+
+  /* The conversation's float controls (jump to top/bottom) stay, quieter: a jump cap that has
+     nowhere to go disappears instead of sitting dimmed over the text. */
+  #ai-spell-check-modal.joe-docked #chat-panel :is(.ai-chat-window-expand-toggle, .ai-chat-scroll-jump) {
+    width: 26px;
+    min-width: 26px;
+    height: 26px;
+    min-height: 26px;
+    border-color: var(--jd-line);
+    background: var(--jd-surface);
+    color: var(--jd-text-2);
+    box-shadow: none;
+    font-size: 11px;
+  }
+
+  #ai-spell-check-modal.joe-docked #chat-panel :is(.ai-chat-window-expand-toggle, .ai-chat-scroll-jump):is(:hover, :focus-visible) {
+    color: var(--accent-color);
+    border-color: var(--jd-accent-line);
+  }
+
+  #ai-spell-check-modal.joe-docked #chat-panel .ai-chat-scroll-jump:disabled {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-messages #ai-chat-loading {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    position: relative;
+    box-sizing: border-box;
+    min-height: 22px;
+    margin-left: 0;
+    padding: 0;
+    color: var(--jd-text-3);
+    font-size: 11.5px;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-messages #ai-chat-loading > span:first-child {
+    display: inline-grid;
+    place-items: center;
+    flex: 0 0 1em;
+    width: 1em;
+    height: 1em;
+    margin: 0;
+    line-height: 1;
+    transform-origin: center;
+  }
+
+  /* Keep the spinning hourglass beside the coffee mark; the label follows it on the same row. */
+  #ai-spell-check-modal.joe-docked #ai-chat-messages #ai-chat-loading.ai-chat-loading-message {
+    position: relative;
+    box-sizing: border-box;
+    min-height: 22px;
+    padding: 0 0 0 50px;
+    align-items: center;
+    flex-wrap: nowrap;
+    line-height: 22px;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-messages #ai-chat-loading.ai-chat-loading-message .ai-chat-loading-icon {
+    position: absolute;
+    left: 26px;
+    top: 1px;
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    margin: 0;
+    font-size: 15px;
+    line-height: 1;
+  }
+
+  /* ── Context tray (the existing "Add Extra Context" block, behind the paperclip) ── */
+  /* Short windows: an open tray must not squeeze the conversation away (at 1280x600 it used to leave
+     it ~20px). The conversation keeps min(160px, 30%) of the chat area — 160px is about six lines of
+     reply, and 30% is what still leaves a ~600px-tall window's tray room for a couple of rows. The
+     tray takes what is left, never more than 40% of the chat area, and scrolls inside. It shrinks
+     (flex) rather than being cut off, and the max-height also caps the 1fr row below, so the
+     grid-rows open/close animation is unchanged. */
+  /* --jd-inset-margin's per-tier docked values live in dropin/06-joe-dock-density.css (Step 4a) —
+     shared with .joe-dock-composer-box below (both were the identical `0 12px`). This class exists
+     only inside the docked column (never the floating modal), so it always inherits the token from
+     its #ai-spell-check-modal.joe-docked ancestor. */
+  .joe-context-tray {
+    display: grid;
+    grid-template-rows: 0fr;
+    flex: 0 1 auto;
+    min-height: 0;
+    max-height: 40%;
+    margin: var(--jd-inset-margin);
+    transition: grid-template-rows 0.28s var(--jd-ease, ease);
+  }
+
+  .joe-context-tray.is-open {
+    grid-template-rows: 1fr;
+  }
+
+  .joe-context-tray-clip {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  /* Scrollable once open — switched after the opening animation, so no scrollbar flashes mid-grow;
+     closing goes back to hidden at once (this transition applies to the open state only). */
+  .joe-context-tray.is-open > .joe-context-tray-clip {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    transition: overflow 0s linear 0.28s;
+    transition-behavior: allow-discrete;
+  }
+
+  /* border-box: the minimum is the whole conversation box, its padding included. */
+  #ai-spell-check-modal.joe-docked #chat-panel:has(> .joe-context-tray.is-open) > #ai-chat-messages {
+    box-sizing: border-box;
+    min-height: min(160px, 30%);
+  }
+
+  /* Closed: also invisible (not just 0px tall), once the collapse has played. */
+  .joe-context-tray:not(.is-open) > .joe-context-tray-clip {
+    visibility: hidden;
+    transition: visibility 0s linear 0.28s;
+  }
+
+  /* --jd-attachment-margin / --jd-attachment-pad's per-tier docked values live in
+     dropin/06-joe-dock-density.css (Step 4a) — --jd-attachment-margin is shared with the token
+     popover title below (both were the identical `0 0 8px`). */
+  #ai-spell-check-modal.joe-docked #ai-chat-attachment {
+    margin: var(--jd-attachment-margin);
+    padding: var(--jd-attachment-pad);
+    border: 1px solid var(--jd-line);
+    border-radius: var(--jd-radius);
+    background: var(--jd-surface);
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-attachment :is(.ai-chat-window-resize-zone, .ai-chat-resize-controls) {
+    display: none;
+  }
+
+  /* --jd-attachment-content-gap's per-tier docked values live in dropin/06-joe-dock-density.css
+     (Step 4a) — the card's own row/column gap, same family as the --jd-tab-card-gap the Transcribe/
+     Images cards already use. Its own children's finer internal gaps (title row, thumb inset) stay
+     fixed chrome, one level in from the card's already density-aware padding/gap. */
+  #ai-spell-check-modal.joe-docked #ai-chat-attachment .ai-chat-attachment-content {
+    display: grid;
+    grid-template-columns: 52px minmax(0, 1fr);
+    grid-template-areas:
+      "title title"
+      "thumb select"
+      "toggles toggles"
+      "picker picker";
+    align-items: center;
+    gap: var(--jd-attachment-content-gap);
+    margin: 0;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-attachment .ai-chat-attachment-right {
+    display: contents;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-attachment .ai-chat-attachment-title-row {
+    grid-area: title;
+    flex-wrap: nowrap;
+    min-height: 0;
+    gap: 6px;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-attachment .ai-chat-attachment-title {
+    flex: 1 1 auto;
+    color: var(--jd-text-3);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-attachment .ai-chat-attachment-hint {
+    color: var(--jd-text-3);
+    font-size: 11px;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-attachment .joe-context-tray-close {
+    width: 22px;
+    min-width: 22px;
+    height: 22px;
+    min-height: 22px;
+    margin-left: auto;
+    font-size: 12px;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-attachment .ai-chat-attachment-thumb-wrap {
+    grid-area: thumb;
+    width: 52px;
+    height: 52px;
+    margin: 0;
+    padding: 3px;
+    border-radius: 7px;
+    border-color: var(--jd-line);
+    background: var(--jd-well);
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-attachment .ai-chat-attachment-empty {
+    font-size: 8.5px;
+    line-height: 1.1;
+    color: var(--jd-text-3);
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-attachment #ai-chat-attachment-select {
+    grid-area: select;
+    width: 100%;
+    min-width: 0;
+    height: 30px;
+    font-size: 12px;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-attachment #ai-chat-multi-attach-picker {
+    grid-area: picker;
+  }
+
+  /* The context switches as pills (the native checkbox stays focusable and does the toggling).
+     --jd-pill-row-gap's per-tier docked values live in dropin/06-joe-dock-density.css (Step 4a) —
+     shared with Generate's mode-switch row in joeDockTabs.css (both were the identical `6px`); the
+     pill's own padding stays fixed chrome, like every other button/pill inset in this file. */
+  #ai-spell-check-modal.joe-docked #ai-chat-attachment .ai-chat-attachment-checkbox-group {
+    grid-area: toggles;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--jd-pill-row-gap);
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-attachment :is(.ai-chat-attachment-checkbox-row, .ai-chat-multi-attach-trigger) {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 0;
+    padding: 3px 10px;
+    border: 1px solid var(--jd-line);
+    border-radius: var(--radius-full, 999px);
+    background: var(--jd-bg);
+    color: var(--jd-text-2);
+    font-size: 10px;
+    line-height: 1;
+    cursor: pointer;
+    transition:
+      background-color var(--transition-speed) ease,
+      border-color var(--transition-speed) ease,
+      color var(--transition-speed) ease;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-attachment .ai-chat-attachment-checkbox-row span {
+    font-size: 10px;
+    line-height: 1;
+    color: inherit;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-attachment .ai-chat-attachment-checkbox-group > :is(.ai-chat-attachment-checkbox-row, .ai-chat-multi-attach-trigger)::before {
+    content: "\f00c" / "";
+    margin: 0;
+    font: var(--fa-font-solid);
+    font-size: 9px;
+    color: inherit;
+    opacity: 0.4;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-attachment .ai-chat-attachment-checkbox-row input[type="checkbox"] {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-attachment :is(.ai-chat-attachment-checkbox-row, .ai-chat-multi-attach-trigger):hover {
+    color: var(--jd-text-1);
+    border-color: var(--jd-text-3);
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-attachment .ai-chat-attachment-checkbox-row:has(input:checked) {
+    border-color: var(--jd-accent-line);
+    background: var(--jd-accent-soft);
+    color: var(--jd-text-1);
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-attachment .ai-chat-multi-attach-trigger.is-selected {
+    border-color: var(--jd-accent-line);
+    background: var(--jd-accent-soft);
+    color: var(--jd-text-1);
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-attachment .ai-chat-attachment-checkbox-group > .ai-chat-attachment-checkbox-row:has(input:checked)::before {
+    opacity: 1;
+    color: var(--accent-color);
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-attachment .ai-chat-multi-attach-trigger.is-selected::before {
+    opacity: 1;
+    color: var(--accent-color);
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-attachment .ai-chat-attachment-checkbox-row:has(input:focus-visible) {
+    box-shadow: 0 0 0 2px var(--jd-accent-line);
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-attachment .ai-chat-multi-attach-trigger:focus-visible {
+    box-shadow: 0 0 0 2px var(--jd-accent-line);
+    outline: none;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-attachment .ai-chat-attachment-checkbox-row:has(input:disabled) {
+    opacity: var(--disabled-opacity-field, 0.5);
+    cursor: not-allowed;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-attachment .ai-chat-multi-attach-trigger:disabled {
+    opacity: var(--disabled-opacity-field, 0.5);
+    cursor: not-allowed;
+  }
+
+  /* ── Composer box: input on top; attachments · tools/context · spell-check · dictate … tokens · send beneath ── */
+  /* --jd-inset-margin's per-tier docked values live in dropin/06-joe-dock-density.css (Step 4a) —
+     shared with .joe-context-tray above (both were the identical `0 12px`). */
+  .joe-dock-composer-box {
+    position: relative;
+    flex: 0 0 auto;
+    margin: var(--jd-inset-margin);
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-input-area {
+    --ai-meters-bottom: 0px;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    border: 1px solid var(--jd-line);
+    border-radius: 12px;
+    background: var(--jd-surface);
+    overflow: hidden;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-input-area:focus-within {
+    border-color: var(--jd-accent-line);
+    box-shadow: 0 0 0 3px var(--jd-accent-soft);
+  }
+
+  /* Hairline token meter track along the box's bottom edge; the fill is the existing pressure fill. */
+  #ai-spell-check-modal.joe-docked #ai-chat-input-area::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    background: var(--jd-line-soft);
+    pointer-events: none;
+  }
+
+  /* --jd-composer-row-pad-inline / --jd-composer-row-pad-block-end's per-tier docked values live in
+     dropin/06-joe-dock-density.css (Step 4a). The tool row's 2px gap between icon buttons stays
+     fixed chrome (same reasoning as the tab strip's 2px above). */
+  #ai-spell-check-modal.joe-docked #ai-chat-input-area > .ai-chat-input-row {
+    display: grid;
+    grid-template-columns: repeat(4, 28px) minmax(0, 1fr) 30px;
+    align-items: center;
+    justify-content: stretch;
+    gap: 2px;
+    padding: 0 var(--jd-composer-row-pad-inline) var(--jd-composer-row-pad-block-end);
+  }
+
+  /* This negative margin exists ONLY to cancel the row's own horizontal padding above (so the field
+     bleeds to the box's edges) — it is DERIVED from --jd-composer-row-pad-inline via calc(), never
+     restated as its own literal, so it tracks that token automatically at every tier instead of
+     needing a matching entry in every body.density-* block (the same "DERIVED" pattern
+     01-density-compact.css uses for --canvas-slot-under-stack-mt). */
+  #ai-spell-check-modal.joe-docked #ai-chat-input-area .ai-chat-input-field-wrap {
+    grid-column: 1 / -1;
+    flex: 1 1 100%;
+    min-width: 0;
+    margin: 0 calc(-1 * var(--jd-composer-row-pad-inline));
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-input {
+    /* --chat-input-pad's per-tier docked values live in dropin/06-joe-dock-density.css (Step 4). */
+    min-height: 64px;
+    max-height: 200px;
+    field-sizing: content;
+    padding: var(--chat-input-pad);
+    border: 0;
+    border-radius: 12px 12px 0 0;
+    background: transparent;
+    box-shadow: none;
+    outline: none;
+    font-size: calc(13px * var(--font-scale, 1) * var(--ai-font-scale, 1));
+    line-height: 1.5;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-input::placeholder {
+    color: var(--jd-text-3);
+  }
+
+  /* "show tokens" is replaced by the always-visible count + its breakdown popover; the meters wrapper
+     it toggled is empty while docked (its count and breakdown are re-homed). */
+  #ai-spell-check-modal.joe-docked :is(#ai-chat-token-toggle, #ai-chat-meters) {
+    display: none;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-input-area .ai-chat-input-row > .tooltip-wrapper {
+    flex: 0 0 auto;
+    width: 28px;
+  }
+
+  #ai-spell-check-modal.joe-docked :is(#ai-chat-spell-check, #ai-chat-dictate) {
+    flex: 0 0 28px;
+    width: 28px;
+    min-width: 28px;
+    height: 28px;
+    min-height: 28px;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    font-size: 13px;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-dictate {
+    color: var(--jd-text-2);
+  }
+
+  #ai-spell-check-modal.joe-docked :is(#ai-chat-spell-check, #ai-chat-dictate):hover:not(:disabled) {
+    background: var(--jd-hover);
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-dictate.is-listening {
+    background: var(--jd-accent-soft);
+    color: var(--accent-color);
+    box-shadow: none;
+  }
+
+  :is(.joe-context-tray-toggle, .joe-context-tools-toggle).is-on {
+    color: var(--accent-color);
+  }
+
+  #joe-context-tray-toggle > i,
+  #joe-context-tools-toggle > i {
+    transform: scaleX(-1);
+  }
+
+  .joe-context-tray-badge {
+    position: absolute;
+    top: 2px;
+    right: 0;
+    display: grid;
+    place-items: center;
+    min-width: 14px;
+    height: 14px;
+    padding: 0 3px;
+    border-radius: 7px;
+    background: var(--accent-color);
+    color: var(--text-on-accent);
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 1;
+    box-sizing: border-box;
+    pointer-events: none;
+  }
+
+  .joe-context-tray-badge[hidden] {
+    display: none;
+  }
+
+  /* Token count (the existing pressure element, moved beside Send): count / limit, hairline below.
+     The extra margin-right (on top of the row's own 2px gap) gives it visible breathing room
+     against Send — the row's shared 2px gap alone reads as no gap at all next to a solid button. */
+  #ai-spell-check-modal.joe-docked #ai-chat-input-area .ai-chat-input-row > .ai-chat-context-pressure-wrapper {
+    position: static;
+    display: inline-flex;
+    grid-column: 5;
+    justify-self: end;
+    width: auto;
+    max-width: 100%;
+    margin: 0;
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-context-pressure {
+    position: static;
+    display: inline-flex;
+    align-items: center;
+    width: auto;
+    height: 28px;
+    margin: 0;
+    padding: 0 8px;
+    border-radius: 7px;
+    background: none;
+    box-shadow: none;
+    overflow: visible;
+    cursor: pointer;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-context-pressure:hover,
+  #ai-spell-check-modal.joe-docked #ai-chat-context-pressure:focus-visible,
+  #ai-spell-check-modal.joe-docked #ai-chat-context-pressure[aria-expanded="true"] {
+    background: var(--jd-hover);
+    outline: none;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-context-pressure .ai-chat-token-counter {
+    position: static;
+    display: inline-flex;
+    gap: 4px;
+    width: auto;
+    max-width: none;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    background: none;
+    box-shadow: none;
+    text-shadow: none;
+    color: var(--jd-text-3);
+    font-family: var(--jd-mono);
+    font-size: 10.5px;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-context-pressure :is(#ai-chat-token-count, #ai-chat-token-limit, .ai-chat-token-counter-separator) {
+    color: inherit;
+    font: inherit;
+    text-shadow: none;
+  }
+
+  /* Only the compact total (data-compact-total, set with the counter text) beside Send; the full
+     breakdown text stays the element's own (accessible) text and lives in the popover. */
+  #ai-spell-check-modal.joe-docked #ai-chat-context-pressure #ai-chat-token-count {
+    font-size: 0;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-context-pressure #ai-chat-token-count::before {
+    content: attr(data-compact-total) / "";
+    font-size: 10.5px;
+    color: var(--jd-text-2);
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-context-pressure .ai-chat-token-counter-label {
+    display: none;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-context-pressure-fill {
+    top: auto;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    height: 2px;
+    border-radius: 0;
+    background-color: var(--accent-color);
+    background-image: none;
+    box-shadow: none;
+    opacity: 0.9;
+  }
+
+  /* Context pressure is visible without hovering: the hairline AND the count take the warning tint. */
+  #ai-spell-check-modal.joe-docked #ai-chat-context-pressure[data-pressure="amber"] #ai-chat-context-pressure-fill {
+    background-color: var(--warning-color);
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-context-pressure[data-pressure="red"] #ai-chat-context-pressure-fill {
+    background-color: var(--danger-color);
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-context-pressure[data-pressure="amber"] .ai-chat-token-counter {
+    color: var(--warning-color);
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-context-pressure[data-pressure="red"] .ai-chat-token-counter {
+    color: var(--danger-color);
+    font-weight: 600;
+  }
+
+  #ai-spell-check-modal.joe-docked:has(#ai-chat-context-pressure[data-pressure="amber"]) #ai-chat-input-area::after,
+  #ai-spell-check-modal.joe-docked:has(#ai-chat-context-pressure[data-pressure="red"]) #ai-chat-input-area::after {
+    height: 3px;
+  }
+
+  #ai-spell-check-modal.joe-docked:has(#ai-chat-context-pressure[data-pressure="amber"]) #ai-chat-context-pressure-fill,
+  #ai-spell-check-modal.joe-docked:has(#ai-chat-context-pressure[data-pressure="red"]) #ai-chat-context-pressure-fill {
+    height: 3px;
+  }
+
+  /* Send: a compact accent square; the same button turns into Stop while Joe works.
+     `applyChatSendButtonLabel` sets innerHTML to an icon/glyph element PLUS a trailing text node
+     (the "Send"/"Stop" label, only visible at font-size>0 in the floating window) — with
+     `display: grid; place-items: center`, that text node became a SECOND grid item, so the grid
+     split into two auto-placed columns and centered each independently, pushing the icon visibly
+     off-center toward the button's left/top instead of centering the pair as one unit. `flex` with
+     `align-items`/`justify-content: center` centers however many children/text nodes exist as a
+     single centered line, which is what a compact icon-only button actually needs here. */
+  #ai-spell-check-modal.joe-docked #ai-chat-send {
+    grid-column: 6;
+    justify-self: end;
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    min-width: 30px;
+    height: 30px;
+    min-height: 30px;
+    padding: 0;
+    gap: 0;
+    border: 0;
+    border-radius: 9px;
+    font-size: 0;
+    box-shadow: none;
+  }
+
+  /* Step 4c task B (keyboard focus-order audit, fix round 2): the global button:focus-visible rule
+     (buttons.css) suppresses the outline with `!important` and instead colors the button's own
+     BORDER, but this button's own `border: 0` above (an intentional accent-filled square, no
+     border) leaves that indicator with nothing to color — a real keyboard user tabbing here saw NO
+     focus signal at all.
+     Round 1 tried `filter: brightness(0.8)` — a self-relative darken is capped by how dark the
+     accent already is: measured against every shipped --accent-color, the worst case (a muted,
+     already-dark green) only reached ~1.76:1 contrast even at brightness(0.4), well short of WCAG
+     SC 1.4.11's 3:1 minimum for a UI component's focus state.
+     Round 2 (this rule) INVERTS the button instead of darkening it: swap background and color/icon
+     for the exact two-token pair themes.css already computes for this precise purpose —
+     --text-on-accent is the WCAG-picked color for something drawn ON --accent-color (the Send
+     icon's own resting color, via .confirm-button), so swapping which of the two is the
+     background and which is the foreground reuses that same guaranteed-readable pairing in
+     reverse. Measured across all 40 shipped theme blocks (accent-color × text-on-accent pairs):
+     worst-case contrast is 3.77:1 — a real, verified minimum, not an estimate. */
+  #ai-spell-check-modal.joe-docked #ai-chat-send:focus-visible:not(.ai-chat-send-stop-mode) {
+    background: var(--text-on-accent);
+    color: var(--accent-color);
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-send > i {
+    font-size: 12px;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-send.ai-chat-send-stop-mode {
+    border: 1px solid var(--danger-color);
+  }
+
+  /* ── Token breakdown popover (the existing breakdown bar + legend, moved in) ── */
+  /* --jd-popover-pad's per-tier docked values live in dropin/06-joe-dock-density.css (Step 4a). */
+  .joe-dock-token-popover {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + 6px);
+    z-index: 30;
+    width: min(340px, 100%);
+    max-height: min(420px, 60vh);
+    overflow: auto;
+    padding: var(--jd-popover-pad);
+    border: 1px solid var(--jd-line);
+    border-radius: var(--jd-radius);
+    background: var(--jd-surface);
+    box-shadow: var(--elev-floating);
+    box-sizing: border-box;
+    animation: joe-dock-rise 0.2s var(--jd-ease, ease);
+  }
+
+  .joe-dock-token-popover[hidden] {
+    display: none;
+  }
+
+  /* --jd-attachment-margin's per-tier docked values (shared with #ai-chat-attachment above — both
+     were the identical `0 0 8px`) live in dropin/06-joe-dock-density.css (Step 4a). */
+  .joe-dock-token-popover-title {
+    margin: var(--jd-attachment-margin);
+    color: var(--jd-text-3);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+  }
+
+  #ai-spell-check-modal.joe-docked .joe-dock-token-popover #ai-chat-token-bar {
+    gap: 10px;
+    margin: 0;
+  }
+
+  #ai-spell-check-modal.joe-docked .joe-dock-token-popover .ai-chat-token-bar-row {
+    box-sizing: border-box;
+    padding-right: 30px;
+  }
+
+  #ai-spell-check-modal.joe-docked .joe-dock-token-popover .ai-chat-token-bar-track {
+    background: var(--jd-well);
+  }
+
+  #ai-spell-check-modal.joe-docked .joe-dock-token-popover .ai-chat-token-bar-legend-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+
+  #ai-spell-check-modal.joe-docked .joe-dock-token-popover .ai-chat-token-bar-legend {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    overflow: visible;
+    gap: 3px;
+    font-size: 12px;
+    color: var(--jd-text-1);
+  }
+
+  #ai-spell-check-modal.joe-docked .joe-dock-token-popover .ai-chat-token-legend-item {
+    gap: 8px;
+    white-space: normal;
+  }
+
+  #ai-spell-check-modal.joe-docked .joe-dock-token-popover .ai-chat-token-legend-item.is-empty {
+    opacity: 0.5;
+  }
+
+  #ai-spell-check-modal.joe-docked .joe-dock-token-popover .ai-chat-token-legend-popover {
+    position: static;
+    width: auto;
+    max-height: none;
+    margin-top: 8px;
+    box-shadow: none;
+    background: var(--jd-bg);
+  }
+
+  /* ── Chip row under the composer: Model · Permissions · Memories · Compact ── */
+  /* --jd-chips-margin's per-tier docked values live in dropin/06-joe-dock-density.css (Step 4a) —
+     the row's own outer margin only; the chips' own button/select padding stays fixed chrome, like
+     every other control inset in this file. */
+  .joe-dock-chips {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2px;
+    flex: 0 0 auto;
+    margin: var(--jd-chips-margin);
+  }
+
+  #ai-spell-check-modal.joe-docked .joe-dock-chips > .tooltip-wrapper {
+    display: inline-flex;
+    align-items: center;
+    min-width: 0;
+  }
+
+  #ai-spell-check-modal.joe-docked .joe-dock-chips :is(select, button) {
+    height: 26px;
+    min-height: 26px;
+    margin: 0;
+    padding: 0 7px;
+    /* No border (the soft-shape profile re-outlines every <select> from an unlayered sheet); the
+       hover outline is an inset ring instead. */
+    border: 0;
+    border-radius: 7px;
+    background-color: transparent;
+    box-shadow: none;
+    color: var(--jd-text-2);
+    font-size: 11.5px;
+    font-weight: 450;
+    line-height: 1;
+    cursor: pointer;
+    transition:
+      background-color var(--transition-speed) ease,
+      border-color var(--transition-speed) ease,
+      color var(--transition-speed) ease;
+  }
+
+  #ai-spell-check-modal.joe-docked .joe-dock-chips :is(select, button):is(:hover, :focus-visible) {
+    box-shadow: inset 0 0 0 1px var(--jd-line);
+    background-color: var(--jd-well);
+    color: var(--jd-text-1);
+    outline: none;
+  }
+
+  #ai-spell-check-modal.joe-docked .joe-dock-chips select {
+    max-width: 136px;
+    padding-right: 20px;
+    text-overflow: ellipsis;
+    background-size: 10px;
+  }
+
+  /* Permission chip: a shield before the select (the model chip uses the provider logo). */
+  #ai-spell-check-modal.joe-docked .joe-dock-chips > .ai-chat-flow-permission-wrapper::before {
+    content: "\f3ed" / "";
+    font: var(--fa-font-solid);
+    font-size: 10px;
+    color: var(--jd-text-3);
+    margin: 0 3px 0 6px;
+    pointer-events: none;
+  }
+
+  #ai-spell-check-modal.joe-docked .joe-dock-chips > .ai-chat-model-provider-icon {
+    margin: 0 3px 0 6px;
+    opacity: 0.7;
+  }
+
+  #ai-spell-check-modal.joe-docked .joe-dock-chips > .ai-chat-model-provider-icon svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  #ai-spell-check-modal.joe-docked .joe-dock-chips button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  #ai-spell-check-modal.joe-docked .joe-dock-chips button > i {
+    font-size: 10px;
+  }
+
+  /* Memories chip: how many memories Joe will receive (from the same token estimate). */
+  #ai-spell-check-modal.joe-docked .joe-dock-chips #ai-chat-memories:not([data-memory-count="0"]):not(.is-active)[data-memory-count]::after {
+    content: attr(data-memory-count) / "";
+    padding: 1px 5px;
+    border-radius: 4px;
+    background: var(--jd-well);
+    color: var(--jd-text-1);
+    font-family: var(--jd-mono);
+    font-size: 10px;
+  }
+
+  #ai-spell-check-modal.joe-docked .joe-dock-chips #ai-chat-memories.is-active {
+    box-shadow: inset 0 0 0 1px var(--jd-accent-line);
+    background: var(--jd-accent-soft);
+    color: var(--accent-color);
+  }
+
+  #ai-spell-check-modal.joe-docked .joe-dock-chips #ai-chat-compact-now.ai-chat-compact-suggested {
+    color: var(--warning-color);
+  }
+
+  #ai-spell-check-modal.joe-docked .joe-dock-chips #ai-chat-compacted-indicator {
+    box-shadow: inset 0 0 0 1px var(--jd-line);
+    background: var(--jd-well);
+    color: var(--jd-text-1);
+  }
+
+  #ai-spell-check-modal.joe-docked .joe-dock-chips #ai-chat-compacted-indicator[hidden] {
+    display: none;
+  }
+
+  #ai-spell-check-modal.joe-docked .joe-dock-chips #ai-chat-compaction-guide-toggle {
+    width: 20px;
+    min-width: 20px;
+    height: 20px;
+    min-height: 20px;
+    padding: 0;
+    justify-content: center;
+    box-shadow: inset 0 0 0 1px var(--jd-line);
+    border-radius: 50%;
+    font-size: 10px;
+  }
+
+  /* Memories mode: like the floating window, the chat's own controls step aside (the Memories button,
+     now "Back to chat", sits in the thread bar). */
+  #ai-spell-check-modal.joe-docked > #ai-spell-check-panel[data-mode="memories"] :is(.joe-context-tray, .joe-dock-composer-box, .joe-dock-chips) {
+    display: none;
+  }
+
+  /* Expanded response window: the conversation takes the whole column. */
+  #ai-spell-check-modal.joe-docked #chat-panel.ai-chat-response-expanded :is(.joe-context-tray, .joe-dock-composer-box, .joe-dock-chips) {
+    display: none;
+  }
+
+  /* Transform only, never opacity: the ambient animation freeze (body.fj-bg-idle /
+     .fj-ambient-freeze) pauses every animation at its `from` frame, and a popover frozen at
+     opacity 0 would open invisibly. Frozen here, it is merely 5px low. */
+  @keyframes joe-dock-rise {
+    from {
+      transform: translateY(5px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .joe-context-tray,
+    .joe-context-tray.is-open > .joe-context-tray-clip,
+    #ai-spell-check-modal.joe-docked #ai-spell-check-target,
+    #ai-spell-check-modal.joe-docked #ai-chat-input-area {
+      transition: none;
+    }
+
+    .joe-dock-menu,
+    .joe-dock-token-popover,
+    #ai-spell-check-modal.joe-docked .ai-assist-follow-switch,
+    .joe-dock-live-state[data-state="working"] .joe-dock-live-dot {
+      animation: none;
+    }
+  }
+}

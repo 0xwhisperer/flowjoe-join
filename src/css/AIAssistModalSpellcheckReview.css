@@ -1,0 +1,349 @@
+@layer app {
+/* ── Summary Modal Spell-Check Review (mirrors #ai-spell-check-phase-review) ── */
+
+#summary-modal-spellcheck-review {
+  display: grid;
+  grid-template-rows: 48px minmax(0, 1fr) 48px minmax(0, 1fr) auto;
+  flex: 1 1 auto;
+  gap: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg, 8px);
+  padding: 12px;
+}
+
+#summary-modal-spellcheck-review > :not(.ai-spell-check-diff):not(#summary-modal-spellcheck-result-wrap) {
+  flex: 0 0 auto;
+}
+
+#summary-modal-spellcheck-result-wrap {
+  margin-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+#summary-modal-spellcheck-result {
+  width: 100%;
+  flex: 1 1 auto;
+  height: auto;
+  min-height: 0;
+  display: block;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md, 6px);
+  padding: 10px 12px;
+  font: inherit;
+  font-size: 0.9em;
+  line-height: 1.5;
+  resize: none;
+  box-sizing: border-box;
+  margin-bottom: 0;
+}
+
+#summary-modal-spellcheck-result:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: var(--focus-ring);
+}
+
+#preview-modal-spellcheck-review {
+  display: grid;
+  grid-template-rows: 34px 28px minmax(92px, 0.8fr) 28px minmax(120px, 1fr) auto;
+  flex: 1 1 auto;
+  width: 100%;
+  max-width: 100%;
+  gap: 8px;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg, 8px);
+  padding: 10px 12px 8px;
+  box-sizing: border-box;
+}
+
+#preview-modal-spellcheck-review .ai-spell-check-review-header,
+#preview-modal-spellcheck-review .ai-spell-check-tweaks-header {
+  min-height: 0;
+  padding: 0;
+  margin: 0;
+  align-items: center;
+}
+
+#preview-modal-spellcheck-review .ai-spell-check-label {
+  margin: 0;
+}
+
+#preview-modal-spellcheck-original-wrap,
+#preview-modal-spellcheck-result-wrap {
+  margin-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+}
+
+#preview-modal-spellcheck-original,
+#preview-modal-spellcheck-result {
+  width: 100%;
+  flex: 1 1 auto;
+  height: auto;
+  min-height: 0;
+  display: block;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md, 6px);
+  padding: 8px 12px;
+  font: inherit;
+  font-size: 0.9em;
+  line-height: 1.42;
+  resize: none;
+  box-sizing: border-box;
+  margin-bottom: 0;
+}
+
+#preview-modal-spellcheck-original {
+  color: var(--text-secondary);
+}
+
+#preview-modal-spellcheck-result:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: var(--focus-ring);
+}
+
+#preview-modal-spellcheck-review-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--cta-row-gap);
+  margin-top: 4px;
+  padding: 6px 0 0;
+  flex-shrink: 0;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+#preview-modal-spellcheck-review-actions .ai-spell-check-action-footer-left {
+  min-width: 0;
+  flex: 1 1 160px;
+}
+
+#preview-modal-spellcheck-review-actions .ai-spell-check-token-counter {
+  min-width: 0;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+#preview-modal-spellcheck-review-actions .ai-spell-check-review-actions-right {
+  display: flex;
+  gap: var(--cta-row-gap);
+  min-width: 0;
+  flex: 1 1 220px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+#preview-modal-spellcheck-review-actions .btn {
+  flex: 1 1 92px;
+  min-width: 0;
+  min-height: var(--modal-footer-btn-height);
+  padding: 8px 12px;
+  border-radius: var(--modal-footer-btn-radius);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: var(--font-control);
+}
+
+#image-modal-markdown-spellcheck-review {
+  display: grid;
+  grid-template-rows: 48px minmax(0, 1fr) 48px minmax(0, 1fr) auto;
+  flex: 1 1 auto;
+  width: 100%;
+  max-width: 100%;
+  gap: 0;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg, 8px);
+  padding: 12px;
+  box-sizing: border-box;
+}
+
+#image-modal-markdown-spellcheck-review .ai-spell-check-review-header,
+#image-modal-markdown-spellcheck-review .ai-spell-check-tweaks-header {
+  min-height: 0;
+  padding-left: 8px;
+  margin: 0;
+  align-items: center;
+}
+
+#image-modal-markdown-spellcheck-review .ai-spell-check-label {
+  margin: 0;
+}
+
+#image-modal-markdown-spellcheck-original-wrap,
+#image-modal-markdown-spellcheck-result-wrap {
+  margin-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+}
+
+#image-modal-markdown-spellcheck-original,
+#image-modal-markdown-spellcheck-result {
+  width: 100%;
+  flex: 1 1 auto;
+  height: auto;
+  min-height: 0;
+  display: block;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md, 6px);
+  padding: 8px 12px;
+  font: inherit;
+  font-size: 0.9em;
+  line-height: 1.42;
+  resize: none;
+  box-sizing: border-box;
+  margin-bottom: 0;
+}
+
+#image-modal-markdown-spellcheck-original {
+  color: var(--text-secondary);
+}
+
+#image-modal-markdown-spellcheck-result:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: var(--focus-ring);
+}
+
+#image-modal-markdown-spellcheck-review-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--cta-row-gap);
+  margin-top: 20px;
+  padding: 0;
+  flex-shrink: 0;
+  min-width: 0;
+  flex-wrap: nowrap;
+}
+
+#image-modal-markdown-spellcheck-review-actions .ai-spell-check-action-footer-left {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+#image-modal-markdown-spellcheck-review-actions .ai-spell-check-token-counter {
+  min-width: 0;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+#image-modal-markdown-spellcheck-review-actions .ai-spell-check-review-actions-right {
+  display: flex;
+  gap: var(--cta-row-gap);
+  min-width: 0;
+  flex: 0 0 auto;
+  justify-content: flex-end;
+  flex-wrap: nowrap;
+}
+
+#image-modal-markdown-spellcheck-review-actions .btn {
+  flex: 0 0 auto;
+  min-width: 108px;
+  min-height: var(--modal-footer-btn-height);
+  padding: 8px 18px;
+  border-radius: var(--modal-footer-btn-radius);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: var(--font-control);
+}
+
+#summary-modal-spellcheck-review-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--cta-row-gap);
+  margin-top: 20px;
+  padding: 10px 0;
+  flex-shrink: 0;
+}
+
+#summary-modal-spellcheck-review-actions .ai-spell-check-review-actions-right {
+  display: flex;
+  gap: var(--cta-row-gap);
+}
+
+#summary-modal-spellcheck-review-actions .btn {
+  min-width: 108px;
+  min-height: var(--modal-footer-btn-height);
+  padding: 8px 18px;
+  border-radius: var(--modal-footer-btn-radius);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: var(--font-control);
+}
+
+#summary-modal-spellcheck-loading {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 32px 20px;
+  text-align: center;
+  white-space: normal;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+#summary-modal-spellcheck-loading p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.98em;
+  line-height: 1.35;
+}
+
+#summary-modal-spellcheck-review .ai-spell-check-review-header .ai-spell-check-label {
+  margin: 0;
+}
+
+#summary-modal-spellcheck-review .ai-spell-check-label {
+  margin: 0 0 8px 8px;
+  color: var(--text-secondary);
+  font-size: 0.9em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+#summary-modal-spellcheck-review .ai-spell-check-tweaks-label {
+  margin: 0 !important;
+}
+
+#summary-modal-token-counter {
+  margin-right: auto;
+  align-self: center;
+}
+}

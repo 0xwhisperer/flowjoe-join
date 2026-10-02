@@ -1,0 +1,310 @@
+/* activityPanel.css — the History view (app rail): one timeline of saved versions with restore
+   points inline (HISTORY_REDESIGN_PLAN.md Slice 2b). Class names keep the old "activity-" prefix.
+
+   Colours come from the theme tokens every theme defines (themes.css core set). The previous rules
+   used --flowjoe-text-* / --flowjoe-border / --flowjoe-accent, which no stylesheet defines, so the
+   panel always drew with its dark fallbacks — light grey text on light themes. */
+
+.activity-panel-loading,
+.activity-panel-error,
+.activity-empty {
+  margin: 12px;
+  padding: 28px 16px;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 14px;
+  border: 1px dashed var(--border-color);
+  border-radius: var(--radius-lg, 8px);
+}
+
+.activity-header {
+  padding: 8px 12px 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.activity-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.activity-toolbar-btn,
+.activity-row-btn {
+  padding: 4px 10px;
+  font-size: 12px;
+  border: 1px solid var(--border-color);
+  background: transparent;
+  color: var(--text-primary);
+  border-radius: var(--radius-sm, 4px);
+  cursor: pointer;
+  transition:
+    background var(--transition-speed, 0.15s),
+    border-color var(--transition-speed, 0.15s);
+}
+
+.activity-toolbar-btn:hover,
+.activity-row-btn:hover {
+  background: var(--hover-bg);
+  border-color: var(--accent-color);
+}
+
+.activity-toolbar-btn:disabled,
+.activity-row-btn:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.activity-toolbar-link,
+.activity-row-link {
+  padding: 0;
+  font-size: 12px;
+  border: none;
+  background: none;
+  color: var(--text-secondary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.activity-toolbar-link {
+  margin-left: auto;
+}
+
+.activity-toolbar-link:hover,
+.activity-row-link:hover {
+  color: var(--accent-color);
+}
+
+.activity-toolbar-btn:focus-visible,
+.activity-row-btn:focus-visible,
+.activity-toolbar-link:focus-visible,
+.activity-row-link:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+.activity-retention-note {
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.activity-restored-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 8px 12px 0;
+  padding: 8px 12px;
+  border: 1px solid var(--accent-color);
+  border-radius: var(--radius-md, 6px);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 13px;
+}
+
+/* The timeline is injected into the gallery container, which is sized for image slots and never
+   scrolls a long list. It gets a scroll box of its own that fills whatever height is left under the
+   header and banner — no guessed allowance for the chrome (a fixed calc(100vh - 220px) was 40px short
+   whenever the toolbar wrapped, pushing the last row under the status bar). */
+.activity-timeline {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  flex: 1 1 auto;
+  min-height: 0;
+  padding-bottom: 12px;
+}
+
+/* Only while History is showing (:has() lets go the moment the gallery comes back, with no state to
+   clear): the gallery container becomes a column the timeline can fill, and #node-details stops
+   growing to its content — as a flex item with min-height:auto it did, and ran past the bounded
+   .content-section it sits in. */
+#image-display:has(> .activity-timeline) {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+#node-details:has(.activity-timeline) {
+  min-height: 0;
+}
+
+.activity-day-label {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  margin: 0;
+  padding: 10px 12px 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: var(--bg-primary);
+}
+
+.activity-entries {
+  display: flex;
+  flex-direction: column;
+}
+
+.activity-entry {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border-light);
+  transition: background var(--transition-speed, 0.15s);
+}
+
+.activity-entry:hover {
+  background: var(--hover-bg);
+}
+
+.activity-entry.is-unrestorable {
+  opacity: 0.55;
+}
+
+.activity-entry-main {
+  flex: 1;
+  min-width: 0;
+  /* activityPanel.js now emits .activity-entry-actions before .activity-entry-main in DOM order, so
+     a keyboard user tabbing through a row reaches the primary Restore/Mark action first, ahead of
+     the secondary buttons (expand-changes, Rename/Remove) that live in this block. `order: 1` keeps
+     this block's visual position on the left, where it has always been. */
+  order: 1;
+}
+
+.activity-entry-reason {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+/* "What changed" expand control (Slice 3, HISTORY_REDESIGN_PLAN.md). Same visual language as
+   .activity-row-link — an underlined text button, not a boxed button — since it toggles inline
+   detail rather than performing an action. */
+.activity-entry-expand {
+  display: block;
+  padding: 0;
+  margin-bottom: 4px;
+  font-size: 12px;
+  border: none;
+  background: none;
+  color: var(--text-secondary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.activity-entry-expand:hover {
+  color: var(--accent-color);
+}
+
+.activity-entry-expand:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+.activity-entry-changes {
+  margin: 0 0 6px;
+  padding-left: 18px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  list-style: disc;
+}
+
+.activity-entry-changes li {
+  margin-bottom: 2px;
+  overflow-wrap: anywhere;
+}
+
+.activity-entry-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.activity-entry-time {
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+}
+
+.activity-entry-count {
+  opacity: 0.8;
+}
+
+.activity-entry-note {
+  margin-top: 4px;
+  font-size: 11px;
+  font-style: italic;
+  color: var(--text-secondary);
+}
+
+.activity-entry-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  /* Placed first in the DOM (see renderEntryHTML) so Tab reaches Restore/Mark before a row's
+     secondary buttons; `order: 2` keeps it visually on the right, same as before. */
+  order: 2;
+}
+
+.activity-current-badge,
+.activity-point-badge {
+  padding: 2px 8px;
+  border-radius: var(--radius-xl, 10px);
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.activity-current-badge {
+  border: 1px solid var(--accent-color);
+  color: var(--accent-color);
+}
+
+.activity-point-badge {
+  background: var(--accent-color);
+  color: var(--text-on-accent);
+}
+
+.activity-point {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--text-primary);
+}
+
+.activity-point-name {
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+/* A guest's edit: the guest's mark beside "name · guest" (O6) */
+.activity-entry .gs-act-by {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  --ring: var(--bg-secondary);
+  max-width: 100%;
+  min-width: 0;
+}
+.activity-entry .gs-act-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

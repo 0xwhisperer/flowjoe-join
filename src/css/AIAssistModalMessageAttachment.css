@@ -1,0 +1,85 @@
+@layer app {
+/* Chat message attachment thumbnail */
+.ai-chat-message-attachment {
+  width: 43px;
+  height: 43px;
+  border-radius: var(--radius-md, 6px);
+  overflow: hidden;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-end;
+  margin-bottom: 0px;
+}
+
+.ai-chat-message-attachments {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  margin-left: 0;
+  flex-shrink: 0;
+}
+
+.ai-chat-message-attachment img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ai-chat-message-attachment .ai-chat-attachment-icon {
+  font-size: 1.3em;
+  opacity: 0.7;
+}
+
+.ai-chat-message-attachment-json {
+  padding: 0;
+  cursor: pointer;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--bg-secondary) 88%, transparent), var(--bg-primary));
+  color: var(--text-primary);
+}
+
+.ai-chat-message-attachment-file {
+  padding: 0;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--bg-secondary) 88%, transparent), var(--bg-primary));
+  color: var(--text-primary);
+}
+
+.ai-chat-message-attachment-json:hover,
+.ai-chat-message-attachment-file:hover {
+  border-color: var(--accent-color);
+  background: color-mix(in srgb, var(--accent-color) 12%, var(--bg-secondary));
+}
+
+.ai-chat-message-attachment-filetype {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  font-size: 0.58rem;
+  letter-spacing: 0;
+  font-weight: 700;
+  max-width: 100%;
+  padding: 0 3px;
+  overflow-wrap: anywhere;
+  text-align: center;
+  line-height: 1.05;
+}
+
+.ai-chat-message-attachment-filetype i {
+  font-size: 0.95rem;
+  line-height: 1;
+  opacity: 0.82;
+}
+
+.ai-chat-message-attachment-filetype span {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+}

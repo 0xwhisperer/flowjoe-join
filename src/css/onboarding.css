@@ -1,0 +1,320 @@
+@layer app {
+/* ============================================================
+   FlowJoe Onboarding — drop-in styles  (no framework, no deps)
+   Inherits the active FlowJoe theme colors and app font. New users
+   still resolve to the Ember Console / Courier Prime defaults.
+   ============================================================ */
+:root{
+  --ob-bg-0:var(--bg-primary,#15120e);
+  --ob-bg-1:var(--modal-bg,var(--bg-secondary,#1c1813));
+  --ob-bg-2:var(--bg-secondary,#241f18);
+  --ob-bg-3:var(--bg-tertiary,#2c261d);
+  --ob-bg-input:var(--bg-input,#211c15);
+  --ob-ink:var(--text-primary,#ece4d6);
+  --ob-ink-2:var(--text-secondary,#b8ac98);
+  --ob-ink-3:color-mix(in srgb,var(--text-secondary,#b8ac98) 70%,var(--bg-primary,#15120e));
+  --ob-amber:var(--accent-color,#ff9500);
+  --ob-amber-2:color-mix(in srgb,var(--accent-color,#ff9500) 72%,#fff);
+  --ob-amber-dim:color-mix(in srgb,var(--accent-color,#ff9500) 82%,var(--bg-primary,#15120e));
+  --ob-on-accent:var(--bg-primary,#1d1408);
+  --ob-line:var(--border-light,#3a3225);
+  --ob-line-2:var(--border-color,#4a4030);
+  --ob-green:var(--accent-green,#6fcf6f); --ob-yellow:var(--accent-yellow,#f2c94c); --ob-red:var(--accent-red,#eb6f63);
+  --ob-shadow:0 18px 50px var(--shadow-heavy,rgba(0,0,0,.6));
+  --ob-glow:0 0 0 1px color-mix(in srgb,var(--ob-amber) 42%,transparent), 0 0 24px color-mix(in srgb,var(--ob-amber) 22%,transparent);
+  --ob-accent-shadow:color-mix(in srgb,var(--ob-amber) 28%,transparent);
+  --ob-spot-shade:color-mix(in srgb,var(--ob-bg-0) 80%,transparent);
+  --ob-scrim-center:color-mix(in srgb,var(--ob-bg-0) 58%,transparent);
+  --ob-scrim-edge:color-mix(in srgb,var(--ob-bg-0) 88%,transparent);
+  --ob-font:var(--app-font-family,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif);
+  --ob-scale:var(--font-scale,1);
+  --ob-text-xxs:calc(11px * var(--ob-scale));
+  --ob-text-xs:calc(12px * var(--ob-scale));
+  --ob-text-sm:calc(13px * var(--ob-scale));
+  --ob-text-base:calc(14px * var(--ob-scale));
+  --ob-text-md:calc(15px * var(--ob-scale));
+  --ob-text-lg:calc(17px * var(--ob-scale));
+  --ob-title:calc(26px * var(--ob-scale));
+  --ob-title-mobile:calc(22px * var(--ob-scale));
+  --ob-z-scrim:100130;
+  --ob-z-spot:100131;
+  --ob-z-pop:100132;
+  --ob-z-toast:100133;
+}
+
+.ob-scrim, .ob-pop, .ob-toast { font-family: var(--ob-font); }
+.ob-scrim {
+  position: fixed; inset: 0; z-index: var(--ob-z-scrim);
+  background: radial-gradient(80% 70% at 50% 42%, var(--ob-scrim-center), var(--ob-scrim-edge));
+  backdrop-filter: blur(2px);
+  display: grid; place-items: center;
+}
+
+/* Failure-mode affordance: the scrim covers the whole viewport and eats every click,
+   so an EMPTY scrim (card failed to render, or was torn out mid-step) presents as an
+   app that is alive but ignores all input. :empty only matches when there is no card
+   inside, so in the normal case this never paints. Both escape hatches
+   (Escape, click-backdrop) work regardless — this just says so out loud. */
+.ob-scrim:empty::after {
+  content: "Press Esc or click anywhere to dismiss";
+  color: var(--ob-ink-2);
+  font-family: var(--ob-font);
+  font-size: var(--ob-text-xs);
+  letter-spacing: 0.02em;
+  padding: 10px 16px;
+  border: 1px solid var(--ob-line-2);
+  border-radius: var(--radius-xl, 10px);
+  background: var(--ob-bg-2);
+}
+
+/* ---- Welcome wizard (Direction A) ---- */
+.ob-card {
+  width: 620px; max-width: 92%;
+  background: linear-gradient(180deg, var(--ob-bg-3), var(--ob-bg-2));
+  border: 1px solid var(--ob-line-2); border-radius: 16px;
+  box-shadow: var(--ob-shadow), inset 0 1px 0 rgba(255,255,255,.04);
+  overflow: hidden; position: relative;
+}
+.ob-card::before {
+  content:""; position: absolute; inset: 0 0 auto 0; height: 3px;
+  background: linear-gradient(90deg, var(--ob-amber-dim), var(--ob-amber), var(--ob-amber-2));
+}
+.ob-hero { display: flex; gap: 18px; padding: 26px 28px 8px; align-items: center; }
+.ob-hero-img {
+  width: 96px; height: 96px; flex: none; border-radius: 14px; overflow: hidden;
+  border: 1px solid var(--ob-line-2); box-shadow: 0 0 0 4px color-mix(in srgb,var(--ob-amber) 12%,transparent);
+}
+.ob-hero-img img { width: 100%; height: 100%; object-fit: cover; }
+.ob-kicker { color: var(--ob-amber); font-size: var(--ob-text-xs); letter-spacing: 0; text-transform: uppercase; }
+.ob-card h2 { margin: 6px 0 8px; font-size: var(--ob-title); color: var(--ob-ink); letter-spacing: 0; }
+.ob-card p.sub { margin: 0; color: var(--ob-ink-2); font-size: var(--ob-text-base); line-height: 1.6; }
+.ob-steps-dots { display: flex; gap: 7px; padding: 6px 28px 0; }
+.ob-steps-dots i { width: 8px; height: 8px; border-radius: var(--radius-full, 999px); background: var(--ob-line-2); transition: .2s; }
+.ob-steps-dots i.on { background: var(--ob-amber); box-shadow: 0 0 8px var(--ob-amber); width: 22px; border-radius: 5px; }
+.ob-steps-dots i.done { background: var(--ob-amber-dim); }
+
+.ob-body { padding: 18px 28px 8px; min-height: 188px; }
+.ob-field-label { color: var(--ob-ink-2); font-size: var(--ob-text-xs); letter-spacing: 0; margin-bottom: 8px; text-transform: uppercase; }
+.ob-input {
+  width: 100%; height: 46px; padding: 0 14px; border-radius: 9px;
+  background: var(--ob-bg-input); border: 1px solid var(--ob-line-2);
+  color: var(--ob-ink); font-family: var(--ob-font); font-size: var(--ob-text-md);
+}
+.ob-input:focus { outline: none; border-color: var(--ob-amber); box-shadow: 0 0 0 3px color-mix(in srgb,var(--ob-amber) 22%,transparent); }
+.ob-hint { color: var(--ob-ink-3); font-size: var(--ob-text-xs); margin-top: 8px; }
+.ob-secret-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ob-secret-row .ob-input {
+  flex: 1;
+  min-width: 0;
+}
+.ob-eye {
+  width: 46px;
+  height: 46px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  border: 1px solid var(--ob-line-2);
+  background: var(--ob-bg-3);
+  color: var(--ob-ink-2);
+  cursor: pointer;
+  font-size: var(--ob-text-md);
+}
+.ob-eye:hover,
+.ob-eye:focus-visible {
+  color: var(--ob-amber);
+  border-color: var(--ob-amber);
+  outline: none;
+}
+
+.ob-choices { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.ob-choice {
+  display: flex; gap: 12px; align-items: flex-start; padding: 14px;
+  border: 1px solid var(--ob-line-2); border-radius: var(--radius-xl, 10px); background: var(--ob-bg-2);
+  cursor: pointer; transition: .15s;
+}
+.ob-choice:hover { border-color: var(--ob-amber); background: var(--ob-bg-3); }
+.ob-choice.sel { border-color: var(--ob-amber); box-shadow: var(--ob-glow); background: var(--ob-bg-3); }
+.ob-choice .ico { color: var(--ob-amber); flex: none; margin-top: 1px; }
+.ob-choice b { display: block; color: var(--ob-ink); font-size: var(--ob-text-base); margin-bottom: 3px; }
+.ob-choice span { color: var(--ob-ink-3); font-size: calc(11.5px * var(--ob-scale)); line-height: 1.45; }
+.ob-storage-choices { grid-template-columns: 1fr; }
+.ob-storage-radio { flex: 0 0 auto; margin: 5px 0 0; accent-color: var(--ob-amber); }
+.ob-storage-choice-label { align-self: center; }
+.ob-storage-choice-label b { margin-bottom: 0; }
+.ob-storage-choices .ob-choice:focus-within { outline: 2px solid var(--ob-amber); outline-offset: 2px; }
+
+.ob-themegrid { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; }
+.ob-swatch {
+  border: 1px solid var(--ob-line-2); border-radius: var(--radius-xl, 10px); overflow: hidden; cursor: pointer; transition: .15s;
+}
+.ob-swatch:hover { border-color: var(--ob-amber); }
+.ob-swatch.sel { border-color: var(--ob-amber); box-shadow: var(--ob-glow); }
+.ob-swatch .bar { height: 46px; display: flex; }
+.ob-swatch .bar i { flex: 1; }
+.ob-swatch .name { padding: 7px 8px; font-size: var(--ob-text-xxs); color: var(--ob-ink-2); text-align: center; border-top: 1px solid var(--ob-line); }
+
+.ob-feat { display: flex; gap: 12px; padding: 11px 4px; border-bottom: 1px dashed var(--ob-line); }
+.ob-feat:last-child { border-bottom: 0; }
+.ob-feat .ico { width: 34px; height: 34px; flex: none; border-radius: var(--radius-lg, 8px); display: grid; place-items: center; background: var(--ob-bg-3); border: 1px solid var(--ob-line-2); color: var(--ob-amber); }
+.ob-feat b { color: var(--ob-ink); font-size: var(--ob-text-base); }
+.ob-feat p { margin: 3px 0 0; color: var(--ob-ink-3); font-size: var(--ob-text-xs); line-height: 1.45; }
+.ob-lang-row { margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--ob-line); display: flex; align-items: center; gap: 12px; }
+.ob-lang-row .ob-field-label { margin-bottom: 0; flex: none; }
+/* The language picker uses the app's shared .custom-select component (styles-settings.css —
+   same base classes the theme/font pickers use: .select-button/.select-options/.select-option),
+   NOT a bare native <select>. A native select's open popup is OS-drawn chrome outside any page
+   CSS, so it can't be restyled to match the app's other dropdowns and its scroll behavior is
+   whatever the OS gives it — the shared component is a real, page-rendered, wheel/scrollbar-
+   scrollable list instead. .custom-select itself is 100%-width by default (built for full-width
+   settings rows); constrain it here since this one sits inline next to a label. */
+.ob-lang-row .custom-select { width: auto; min-width: 180px; }
+.ob-lang-row .select-button { height: 38px; }
+/* Portaled onto document.body (see buildLanguageDropdown's document.body.appendChild) to
+   escape .ob-card's overflow:hidden, which otherwise clips the open option list regardless of
+   flipDropdownIfClipped's up/down choice. position:fixed + JS-computed left/top/bottom (see
+   positionDropdownOptions) replaces the shared component's default position:absolute/top:100%
+   positioning, and z-index is raised above the onboarding scrim itself (--ob-z-scrim), since
+   the shared component's own z-index:25 would otherwise render it BEHIND the scrim.
+   Selector specificity is load-bearing: z-index-fix.css has `.select-options.show { z-index: 1 }`
+   (0,2,0) in the same @layer app, which silently beat a single-class (0,1,0) portal rule the
+   moment the panel opened — computed z-index collapsed to 1 and the OPEN panel painted BEHIND
+   the scrim/card (perfectly positioned in the DOM, invisible in every screenshot, and Playwright
+   hit-tests found card content "intercepting pointer events"). The .show state's z-index is
+   therefore written at (0,3,0) so it outranks that rule regardless of stylesheet order. */
+.select-options.ob-lang-options-portal { position: fixed; z-index: calc(var(--ob-z-scrim) + 10); }
+.select-options.ob-lang-options-portal.show { z-index: calc(var(--ob-z-scrim) + 10); }
+
+.ob-foot {
+  display: flex; align-items: center; gap: 12px;
+  padding: 16px 28px 22px; border-top: 1px solid var(--ob-line);
+}
+.ob-skip { color: var(--ob-ink-3); font-size: var(--ob-text-sm); cursor: pointer; background: none; border: none; font-family: var(--ob-font); }
+.ob-skip:hover { color: var(--ob-ink-2); }
+.ob-foot .grow { flex: 1; }
+.ob-btn {
+  height: 44px; padding: 0 22px; border-radius: var(--radius-sm, 4px); cursor: pointer;
+  font-family: var(--ob-font); font-size: var(--ob-text-base); font-weight: 700; border: 1px solid var(--ob-line-2);
+  background: var(--ob-bg-3); color: var(--ob-ink); transition: .15s;
+}
+.ob-btn:hover { border-color: var(--ob-amber); color: var(--ob-amber); }
+.ob-btn.primary {
+  background: linear-gradient(var(--ob-amber-2), var(--ob-amber-dim));
+  color: var(--ob-on-accent); border-color: var(--ob-amber-dim);
+  box-shadow: 0 6px 18px var(--ob-accent-shadow);
+}
+.ob-btn.primary:hover { color: var(--ob-on-accent); filter: brightness(1.06); }
+
+/* ---- Coach-mark tour (Direction B) ---- */
+.ob-dim {            /* darkens everything except the spotlight */
+  position: absolute; inset: 0; z-index: 30; pointer-events: none;
+}
+.ob-spot {
+  position: absolute; z-index: var(--ob-z-spot); border-radius: var(--radius-2xl, 12px); pointer-events: none;
+  box-sizing: border-box;
+  box-shadow: 0 0 0 9999px var(--ob-spot-shade), var(--ob-glow), 0 0 36px var(--ob-accent-shadow);
+  border: 1.5px solid var(--ob-amber);
+  transition: all .45s cubic-bezier(.7,0,.2,1);
+}
+.ob-pop {
+  position: absolute; z-index: var(--ob-z-pop); width: 320px;
+  background: linear-gradient(180deg, var(--ob-bg-3), var(--ob-bg-2));
+  border: 1px solid var(--ob-line-2); border-radius: var(--radius-2xl, 12px);
+  box-shadow: var(--ob-shadow);
+  transition: all .45s cubic-bezier(.7,0,.2,1);
+}
+.ob-pop::before { content:""; position: absolute; width: 14px; height: 14px; background: var(--ob-bg-3); border: 1px solid var(--ob-line-2); transform: rotate(45deg); }
+.ob-pop.arr-left::before  { left: -8px; top: 26px; border-right: 0; border-bottom: 0; }
+.ob-pop.arr-right::before { right: -8px; top: 26px; border-left: 0; border-top: 0; }
+.ob-pop.arr-top::before   { top: -8px; left: 28px; border-right: 0; border-bottom: 0; }
+.ob-pop.arr-bottom::before{ bottom: -8px; left: 28px; border-left: 0; border-top: 0; }
+.ob-pop-top { display: flex; align-items: center; gap: 9px; padding: 14px 16px 4px; }
+.ob-pop-top .badge {
+  width: 24px; height: 24px; border-radius: var(--radius-md, 6px); background: var(--ob-amber); color: var(--ob-on-accent);
+  display: grid; place-items: center; font-weight: 700; font-size: var(--ob-text-xs); flex: none;
+}
+.ob-pop-top .kick { color: var(--ob-amber); font-size: var(--ob-text-xxs); letter-spacing: 0; text-transform: uppercase; }
+.ob-pop h3 { margin: 4px 16px 0; font-size: var(--ob-text-lg); color: var(--ob-ink); }
+.ob-pop p { margin: 8px 16px 0; color: var(--ob-ink-2); font-size: var(--ob-text-sm); line-height: 1.55; }
+.ob-pop .pop-foot { display: flex; align-items: center; gap: 10px; padding: 14px 16px 15px; }
+.ob-pop .pop-foot .count { color: var(--ob-ink-3); font-size: var(--ob-text-xs); }
+.ob-pop .pop-foot .grow { flex: 1; }
+.ob-pop .pop-foot button {
+  height: 34px; padding: 0 16px; border-radius: var(--radius-sm, 4px); cursor: pointer; font-family: var(--ob-font);
+  font-size: var(--ob-text-sm); font-weight: 700; border: 1px solid var(--ob-line-2); background: var(--ob-bg-3); color: var(--ob-ink);
+}
+.ob-pop .pop-foot button.ghost { background: none; border: none; color: var(--ob-ink-3); padding: 0 4px; }
+.ob-pop .pop-foot button.ghost:hover { color: var(--ob-ink-2); }
+.ob-pop .pop-foot button.primary { background: linear-gradient(var(--ob-amber-2), var(--ob-amber-dim)); color: var(--ob-on-accent); border-color: var(--ob-amber-dim); }
+.ob-progress { height: 3px; background: var(--ob-line); border-radius: var(--radius-xs, 2px); margin: 0 16px; overflow: hidden; }
+.ob-progress i { display: block; height: 100%; background: var(--ob-amber); transition: width .4s; }
+
+/* finish toast */
+.ob-toast {
+  position: fixed; z-index: var(--ob-z-toast); left: 50%; bottom: 26px; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 12px; padding: 12px 18px;
+  width: min(860px, calc(100vw - 64px));
+  background: linear-gradient(var(--ob-bg-3),var(--ob-bg-2)); border: 1px solid var(--ob-amber-dim); border-radius: var(--radius-xl, 10px);
+  color: var(--ob-ink); box-shadow: var(--ob-shadow); font-size: var(--ob-text-sm);
+}
+.ob-toast .ck { color: var(--ob-green); }
+.ob-toast-message { flex: 1; min-width: 0; }
+.ob-toast-actions { display: flex; align-items: center; gap: 8px; flex: none; }
+
+/* restart chip on canvas */
+.ob-restart {
+  position: fixed; z-index: var(--ob-z-toast); top: 12px; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 8px; align-items: center;
+  padding: 7px 14px; border-radius: 20px; cursor: pointer;
+  background: color-mix(in srgb,var(--ob-bg-2) 88%,transparent); border: 1px solid var(--ob-line-2); color: var(--ob-amber-2);
+  font-family: var(--ob-font); font-size: var(--ob-text-xs);
+}
+.ob-restart:hover { border-color: var(--ob-amber); }
+
+.fade-in { animation: obfade .4s ease forwards; }
+@keyframes obfade { from { transform: translateY(8px) scale(.98); } to { transform: none; } }
+
+@media (max-width: 720px) {
+  .ob-card {
+    width: min(620px, calc(100vw - 24px));
+    max-height: calc(100vh - 24px);
+    overflow: auto;
+  }
+  .ob-hero {
+    align-items: flex-start;
+    padding: 22px 20px 8px;
+  }
+  .ob-hero-img {
+    width: 72px;
+    height: 72px;
+  }
+  .ob-card h2 {
+    font-size: var(--ob-title-mobile);
+  }
+  .ob-body {
+    padding: 16px 20px 8px;
+  }
+  .ob-foot {
+    padding: 14px 20px 18px;
+    gap: 8px;
+  }
+  .ob-choices,
+  .ob-themegrid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .ob-pop {
+    width: min(320px, calc(100vw - 32px));
+  }
+  .ob-toast {
+    width: calc(100vw - 32px);
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    transform: none;
+  }
+}
+}

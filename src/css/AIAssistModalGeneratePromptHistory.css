@@ -1,0 +1,177 @@
+@layer app {
+.ai-generate-prompt-history-popup {
+  min-width: 480px;
+  max-width: min(720px, 90vw);
+  max-height: min(760px, calc(100vh - 48px));
+  overflow: hidden;
+}
+
+.ai-generate-prompt-history-popup .ai-chat-history-content {
+  display: flex;
+  flex-direction: column;
+  max-height: min(760px, calc(100vh - 48px));
+  min-height: 0;
+  box-sizing: border-box;
+}
+
+.ai-generate-prompt-history-popup .ai-chat-history-scope {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.ai-generate-history-copy-btn {
+  min-height: var(--control-height-sm);
+  padding: 4px 10px;
+  font-size: 0.9em;
+}
+
+.ai-generate-prompt-history-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: calc(100vh - 180px);
+  overflow-y: auto;
+  padding-right: 4px;
+  overscroll-behavior: contain;
+}
+
+.ai-generate-prompt-history-list .ai-chat-history-item {
+  align-items: flex-start;
+  padding: 10px 0;
+}
+
+.ai-generate-prompt-history-list .ai-generate-prompt-history-entry {
+  cursor: pointer;
+  border-radius: var(--radius-2xl, 12px);
+  transition: background var(--transition-speed) ease, transform var(--transition-speed) ease;
+  pointer-events: auto;
+  user-select: text;
+}
+
+.ai-generate-prompt-history-list .ai-generate-prompt-history-entry:hover,
+.ai-generate-prompt-history-list .ai-generate-prompt-history-entry:focus-visible {
+  background: color-mix(in srgb, var(--bg-tertiary) 74%, transparent);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.ai-generate-prompt-history-item-content {
+  display: grid;
+  gap: 6px;
+  align-items: start;
+  user-select: text;
+}
+
+.ai-generate-prompt-history-meta {
+  color: var(--accent-color);
+  font-size: 0.9em;
+}
+
+.ai-generate-prompt-history-body {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: var(--radius-xl, 10px);
+  border: 1px solid color-mix(in srgb, var(--border-color) 88%, transparent);
+  background: color-mix(in srgb, var(--bg-tertiary) 72%, black 28%);
+  color: var(--text-primary);
+  font-size: 0.82em;
+  line-height: 1.45;
+  display: block;
+  max-height: min(9.5em, 28vh);
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  white-space: pre-wrap;
+  word-break: break-word;
+  user-select: text;
+}
+
+/* Guest attribution (O6): a guest's prompt line, the Person filter row and the quiet link to its picture */
+.ai-generate-prompt-history-popup .gs-ph-filter-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 8px;
+}
+.ai-generate-prompt-history-popup .gs-ph-filter-row .gs-ph-filter {
+  flex: 0 1 260px;
+}
+.ai-generate-prompt-history-entry .gs-ph-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 2px 0 6px;
+  min-width: 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+  --ring: var(--bg-secondary);
+}
+.ai-generate-prompt-history-entry .gs-ph-who b {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+.ai-generate-prompt-history-entry .gs-ph-time {
+  margin-left: auto;
+}
+.ai-generate-prompt-history-entry .gs-ph-pic {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  padding: 2px 8px 2px 2px;
+  border: 1px solid var(--text-secondary);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.ai-generate-prompt-history-entry .gs-ph-pic img {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.ai-generate-prompt-history-entry .gs-ph-pic i {
+  font-size: 10px;
+}
+.ai-generate-prompt-history-entry .gs-ph-pic:hover {
+  border-color: var(--accent-color);
+  color: var(--text-primary);
+}
+/* Keyboard focus: the app-wide button rule (buttons.css) strips outline and box-shadow on the button itself, and in this popup the border
+   stays --text-secondary (measured in the browser), so the chip's own content carries the signal: the label is underlined in
+   --text-primary and the thumbnail gets a --text-primary ring (>= 8.7:1 on the entry surface in modern-ember, modern-paper, nord-1 and
+   high-contrast-light). */
+.ai-generate-prompt-history-entry .gs-ph-pic:focus-visible {
+  color: var(--text-primary);
+}
+.ai-generate-prompt-history-entry .gs-ph-pic:focus-visible span {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.ai-generate-prompt-history-entry .gs-ph-pic:focus-visible img {
+  box-shadow: 0 0 0 2px var(--text-primary);
+}
+.ai-generate-prompt-history-entry .gs-ph-who {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ai-generate-prompt-history-entry .gs-ph-line > .ai-image-history-saved-badge,
+.ai-generate-prompt-history-entry .gs-ph-line > .cx-av,
+.ai-generate-prompt-history-entry .gs-ph-time {
+  flex: none;
+}
+.ai-generate-prompt-history-empty {
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 20px;
+}
+}

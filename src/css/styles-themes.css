@@ -1,0 +1,2241 @@
+@layer app {
+/* ── High-contrast component fixes ──
+   The default toggle/tab styling collapses under accessibility themes because
+   it reuses tokens that are near-identical at high contrast (e.g. the toggle
+   tray = --border-color and the knob = --text-primary; inactive tabs share the
+   tab-strip background and have a transparent top border). Restore clear
+   separation with outlined trays, a ringed/inverting knob, and distinct,
+   fully-bordered inactive tabs. */
+.theme-high-contrast-dark .toggle-slider,
+.theme-high-contrast-light .toggle-slider,
+.theme-high-contrast-yellow .toggle-slider {
+  background-color: var(--bg-tertiary);
+  box-shadow: inset 0 0 0 2px var(--border-color);
+}
+
+.theme-high-contrast-dark .toggle-slider:before,
+.theme-high-contrast-light .toggle-slider:before,
+.theme-high-contrast-yellow .toggle-slider:before {
+  background-color: var(--text-primary);
+  box-shadow: 0 0 0 2px var(--bg-primary);
+}
+
+.theme-high-contrast-dark input:checked + .toggle-slider,
+.theme-high-contrast-light input:checked + .toggle-slider,
+.theme-high-contrast-yellow input:checked + .toggle-slider {
+  background-color: var(--accent-color);
+  box-shadow: inset 0 0 0 2px var(--border-color);
+}
+
+.theme-high-contrast-dark input:checked + .toggle-slider:before,
+.theme-high-contrast-light input:checked + .toggle-slider:before,
+.theme-high-contrast-yellow input:checked + .toggle-slider:before {
+  background-color: var(--bg-primary);
+  box-shadow: 0 0 0 2px var(--text-primary);
+}
+
+/* High-contrast themes need a clearly bounded menu item. With the vertical layout the chip gets
+   a visible border (instead of the old solid fill + top-border accent), and the active item uses
+   the same accent fill + left-bar treatment as the default theme — just with stronger contrast. */
+.theme-high-contrast-dark .settings-tab,
+.theme-high-contrast-light .settings-tab,
+.theme-high-contrast-yellow .settings-tab {
+  border-color: var(--border-color);
+}
+
+.theme-high-contrast-dark .settings-tab.active,
+.theme-high-contrast-light .settings-tab.active,
+.theme-high-contrast-yellow .settings-tab.active {
+  background: color-mix(in srgb, var(--accent-color) 18%, var(--bg-secondary));
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+
+.selected-theme {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
+  /* Allow text truncation */
+  margin-right: 8px;
+}
+
+.theme-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
+  /* Allow text truncation */
+}
+
+/* Storage stats styles */
+.setting-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--settings-card-header-gap);
+}
+
+.setting-header h4 {
+  margin: 0;
+  font-size: 16px;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.storage-stats {
+  margin-bottom: 6px;
+}
+
+.stats-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+  align-items: center;
+  font-size: 14px;
+}
+
+/* .stats-row's own `display: flex` outranks the UA stylesheet's `[hidden] { display: none }` (a
+   class selector beats an attribute selector), so a `hidden` .stats-row (e.g. repo history usage,
+   #browser-data-stats-row, #storage-persistence-status-row) stayed visually visible in the browser
+   build despite the attribute being set — audit finding #9 / D3. */
+.stats-row[hidden] {
+  display: none;
+}
+
+.stats-label {
+  font-weight: 500;
+  color: var(--text-secondary);
+  font-size: var(--font-control);
+  white-space: nowrap;
+  margin-right: 12px;
+}
+
+.stats-label-wrap span {
+  display: block;
+}
+
+.stats-value {
+  color: var(--text-primary);
+  font-family: var(--app-font-family);
+}
+
+.stats-progress {
+  margin: 5px 0 15px 0;
+  height: 6px;
+  background-color: var(--border-color);
+  border-radius: var(--radius-xs, 2px);
+  overflow: hidden;
+  margin-top: 4px;
+  position: relative;
+}
+
+.progress-label {
+  font-size: var(--font-micro);
+  color: var(--text-secondary);
+  margin-top: 2px;
+  display: block;
+  text-align: right;
+}
+
+.small-button:active {
+  background-color: var(--selection-bg);
+}
+
+.cleanup-button-container {
+  margin: var(--action-row-gap) 0 0;
+  width: 100%;
+  display: block;
+}
+
+.cleanup-button-container .btn {
+  width: 100%;
+  display: block;
+}
+
+.cleanup-button-container .btn + .btn {
+  margin-top: 8px;
+}
+
+.cleanup-button {
+  width: 100%;
+  background-color: var(--bg-input);
+  color: var(--text-primary);
+  border: 1px solid color-mix(in srgb, var(--text-secondary) 38%, var(--border-color));
+  border-radius: var(--rect-btn-radius);
+  padding: 7px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.2;
+  cursor: pointer;
+  min-height: var(--rect-btn-height);
+  margin: 0;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: normal;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--border-color) 55%, transparent);
+  transition:
+    background-color var(--transition-speed) var(--transition-timing),
+    color var(--transition-speed) var(--transition-timing),
+    border-color var(--transition-speed) var(--transition-timing),
+    box-shadow var(--transition-speed) var(--transition-timing),
+    transform 0.12s ease;
+  text-align: center;
+}
+
+.cleanup-button:hover {
+  background-color: var(--hover-bg);
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent-color) 30%, transparent);
+}
+
+.cleanup-button:active {
+  transform: translateY(1px);
+}
+
+.cleanup-button:disabled {
+  background-color: color-mix(in srgb, var(--bg-input) 72%, var(--bg-tertiary));
+  color: var(--disabled-text);
+  cursor: not-allowed;
+  border-color: color-mix(in srgb, var(--border-color) 72%, transparent);
+  box-shadow: none;
+}
+
+#storage-stats-container+.setting-description {
+  margin-top: 8px;
+}
+
+.orphan-media-report {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+  gap: 10px;
+  max-height: min(52vh, 520px);
+  overflow: auto;
+  padding: 2px;
+}
+
+.orphan-media-card {
+  border: 1px solid color-mix(in srgb, var(--border-color) 78%, transparent);
+  border-radius: var(--radius-md, 6px);
+  background: var(--bg-tertiary);
+  overflow: hidden;
+  min-width: 0;
+}
+
+.orphan-media-thumb {
+  width: 100%;
+  aspect-ratio: 1;
+  background: var(--bg-input);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.orphan-media-thumb img,
+.orphan-media-thumb video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.orphan-media-fallback {
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.orphan-media-meta {
+  padding: 8px;
+  font-size: var(--font-meta);
+  color: var(--text-secondary);
+  line-height: 1.35;
+}
+
+.orphan-media-key {
+  color: var(--text-primary);
+  font-family: var(--app-font-family);
+  overflow-wrap: anywhere;
+  margin-bottom: 4px;
+}
+
+.orphan-media-summary {
+  margin-bottom: 10px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: var(--accent-color);
+  border-radius: var(--radius-xs, 2px);
+  width: 0;
+  transition: width var(--transition-speed-slow) ease-in-out;
+}
+
+/* Toggle Switch Styles */
+.toggle-switch {
+  position: relative;
+  display: block;
+  width: var(--toggle-switch-width);
+  height: var(--toggle-switch-height);
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--border-color);
+  transition: var(--transition-speed-slow);
+  border-radius: var(--radius-full, 999px);
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: var(--toggle-switch-knob-size);
+  width: var(--toggle-switch-knob-size);
+  left: var(--toggle-switch-inset);
+  bottom: var(--toggle-switch-inset);
+  background-color: var(--text-primary);
+  transition: var(--transition-speed-slow);
+  border-radius: var(--radius-full, 999px);
+}
+
+input:checked+.toggle-slider {
+  background-color: var(--accent-color);
+}
+
+input:checked+.toggle-slider:before {
+  transform: translateX(var(--toggle-switch-travel));
+}
+
+/* Disabled toggle: reads as inactive/non-interactive (e.g. Hover sounds while interface sounds
+   are off). The checked state + stored pref are kept, so re-enabling restores what the user had —
+   this only changes how it LOOKS while disabled, so it no longer appears fully active. */
+.toggle-switch:has(input:disabled),
+.toggle-switch input:disabled + .toggle-slider {
+  cursor: not-allowed;
+}
+
+.toggle-switch input:disabled + .toggle-slider {
+  opacity: var(--disabled-opacity-control);
+  filter: grayscale(0.55);
+}
+
+/* Overlay for when settings panel is open */
+.settings-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--modal-overlay);
+  display: none;
+}
+
+.settings-overlay.active {
+  display: block;
+}
+
+/* Style for image item to ensure proper width alignment */
+.image-item {
+  flex: 0 0 auto;
+  width: fit-content;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.image-gallery:not(.vertical-layout):not(.vertical-notes-layout) .image-item {
+  width: var(--image-gallery-width, 320px);
+  max-width: var(--image-gallery-width, 320px);
+}
+
+/* Notification system */
+#notification-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  pointer-events: none;
+  margin: 0;
+  padding: 0;
+  z-index: var(--flowjoe-z-tooltip) !important;
+  /* Ensure it's above everything else */
+}
+
+#notification-container.toast-top-center {
+  right: auto;
+  left: 50%;
+  transform: translateX(-50%);
+  align-items: center;
+}
+
+#notification-container.toast-bottom-right {
+  top: auto;
+  /* Sit ~4px ABOVE the status footer so toasts never overlap it (the var is 0 when the footer is hidden,
+     collapsing back to the original 15px). */
+  bottom: calc(15px + var(--status-footer-height, 0px) + 4px);
+  right: 20px;
+  flex-direction: column-reverse;
+}
+
+/* Keep bottom-right toasts lifted when scrubber is at bottom (also clears the status footer). */
+body:not(.scrubber-top) #notification-container.toast-bottom-right {
+  bottom: calc(46px + var(--status-footer-height, 0px) + 4px);
+}
+
+.notification {
+  background-color: var(--toast-default-bg);
+  color: var(--toast-default-text);
+  padding: 12px 20px;
+  margin-bottom: 10px;
+  border-radius: var(--radius-lg, 8px);
+  box-shadow: var(--toast-default-shadow);
+  display: flex;
+  align-items: center;
+  min-width: 250px;
+  max-width: 350px;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity var(--transition-speed-slow) ease-out, transform var(--transition-speed-slow) ease-out;
+  pointer-events: auto;
+  position: relative;
+  z-index: var(--flowjoe-z-tooltip) !important;
+  /* Even higher than container */
+  backdrop-filter: blur(5px);
+}
+
+body.toast-theme-match .notification {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  box-shadow: var(--toast-theme-match-shadow);
+  border: 1px solid var(--border-color);
+  border-left: 4px solid color-mix(in srgb, var(--accent-color) 62%, var(--border-color));
+}
+
+body.toast-theme-match .notification.info {
+  border-left-color: color-mix(in srgb, var(--accent-color) 62%, var(--border-color));
+}
+
+body.toast-theme-match .notification.success {
+  border-left-color: color-mix(in srgb, var(--accent-color) 72%, var(--border-color));
+}
+
+body.toast-theme-match .notification.warning {
+  border-left-color: color-mix(in srgb, var(--accent-color) 46%, var(--danger-confirm-warning, #f5b642));
+}
+
+body.toast-theme-match .notification.error {
+  border-left-color: color-mix(in srgb, var(--danger-color, #dc3545) 82%, #dc3545);
+}
+
+body.toast-theme-match .notification-close {
+  color: var(--text-secondary);
+}
+
+body.toast-theme-match .notification-close:hover {
+  color: var(--text-primary);
+}
+
+/* WS-043: the Cancel control used while a .fj is being written to disk (see
+   createExportProgressReporter().attachCancel). It is hosted in two places: the export progress
+   toast, and the .export-edit-hold-actions row on the write cover (themed in that section below),
+   where it is the one the user can actually reach. Themed via the same tokens as the rest of the
+   toast so it reads as part of it in both light and dark, rather than as a raw browser button. */
+.export-progress-cancel {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 4px 12px;
+  font: inherit;
+  font-size: 0.85em;
+  line-height: 1.4;
+  color: var(--text-primary);
+  background: var(--bg-secondary, transparent);
+  border: 1px solid var(--border-color, currentColor);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.export-progress-cancel:hover:not(:disabled) {
+  background: var(--bg-tertiary, var(--bg-secondary, transparent));
+}
+
+.export-progress-cancel:disabled {
+  /* Clicked once: the cancel is already in flight and a second click does nothing. */
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* Covers the Flow while an export file is being written. Cancel lives on this cover, where the
+   user can actually reach it: the notification tier (z-index 2147483647) paints ABOVE the cover,
+   so the rule below hides the toast while the cover exists — otherwise a duplicate status line
+   and a second Cancel would float over the scrim. */
+body:has(> .export-edit-hold) #notification-container {
+  display: none;
+}
+
+.export-edit-hold {
+  position: fixed;
+  inset: 0;
+  z-index: var(--flowjoe-z-app-modal);
+  background: var(--modal-overlay);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Fixed width so the panel does not resize as the status text and numbers change. */
+.export-edit-hold-panel {
+  box-sizing: border-box;
+  width: min(400px, calc(100vw - 48px));
+  padding: var(--pad-modal);
+  border: var(--modal-panel-border);
+  border-radius: var(--modal-panel-radius);
+  background: var(--modal-bg);
+  color: var(--text-primary);
+  text-align: left;
+  box-shadow: var(--elev-overlay);
+}
+
+.export-edit-hold-panel:focus {
+  outline: none;
+}
+
+.export-edit-hold-title {
+  margin: 0 0 16px;
+  font-size: var(--modal-title-font-size);
+  font-weight: var(--modal-title-font-weight);
+  line-height: 1.3;
+}
+
+.export-edit-hold-status {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+  font-size: 0.9em;
+}
+
+.export-edit-hold-message {
+  margin: 0;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.export-edit-hold-percent {
+  flex-shrink: 0;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.export-edit-hold-track {
+  position: relative;
+  height: 6px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--text-primary) 12%, transparent);
+}
+
+.export-edit-hold-bar {
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--accent-color);
+  transition: width 200ms ease-out;
+}
+
+.export-edit-hold-track.is-indeterminate .export-edit-hold-bar {
+  width: 30%;
+  transition: none;
+  animation: export-edit-hold-sweep 1.2s ease-in-out infinite;
+}
+
+@keyframes export-edit-hold-sweep {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(340%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .export-edit-hold-track.is-indeterminate .export-edit-hold-bar {
+    width: 100%;
+    opacity: 0.35;
+    animation: none;
+  }
+}
+
+.export-edit-hold-detail {
+  margin: 8px 0 0;
+  color: var(--text-secondary);
+  font-size: 0.8em;
+  font-variant-numeric: tabular-nums;
+}
+
+.export-edit-hold-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+.export-edit-hold-actions:empty {
+  display: none;
+}
+
+.export-edit-hold-actions .export-progress-cancel {
+  margin-top: 0;
+  padding: 6px 14px;
+  font-size: 0.9em;
+}
+
+.notification.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.notification.success {
+  border-left: 4px solid var(--toast-severity-success);
+}
+
+.notification.error {
+  border-left: 4px solid var(--toast-severity-error);
+}
+
+.notification.info {
+  border-left: 4px solid var(--toast-severity-info);
+}
+
+.notification.warning {
+  border-left: 4px solid var(--toast-severity-warning);
+}
+
+/* A toast that navigates on click (e.g. a background scheduled run announcing the node it
+   touched). Only ever applied when there is a real destination, so the pointer never lies. */
+.notification.notification-clickable {
+  cursor: pointer;
+}
+
+/* Hover must read as "this is a target" without ever hurting contrast, and the two toast modes
+   have different surfaces, so each gets its own step.
+
+   Default (theme-match OFF): the toast is a FIXED dark grey with white text (--toast-default-bg /
+   --toast-default-text), independent of the active theme. So the hover step is simply a lighter
+   grey. It must NOT use a theme token here: on a light theme --bg-tertiary is near-white, and the
+   white text would vanish into it (measured 1.23:1 — that was the shipped bug this replaced).
+   🚨 The literal below is DELIBERATE, not an un-tokenized oversight: a tokenization sweep that
+   "fixes" it back to var(--bg-tertiary) re-creates that exact defect. */
+.notification.notification-clickable:hover {
+  background-color: rgba(71, 71, 71, 0.97);
+}
+
+/* Theme-match ON (the default for new installs): the toast adopts --bg-secondary/--text-primary,
+   so the matching --bg-tertiary step is correct and contrast-safe in every theme. */
+body.toast-theme-match .notification.notification-clickable:hover {
+  background-color: var(--bg-tertiary);
+}
+
+.notification.notification-clickable:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+/* The close button keeps its own cursor — dismissing is not navigating. */
+.notification.notification-clickable .notification-close {
+  cursor: pointer;
+}
+
+.notification-icon {
+  margin-right: 10px;
+  font-size: 20px;
+}
+
+.notification-message {
+  flex: 1;
+}
+
+.notification-close {
+  background: none;
+  border: none;
+  color: var(--toast-default-close-color);
+  font-size: 16px;
+  cursor: pointer;
+  opacity: 0.7;
+  margin-left: 10px;
+  padding: 0;
+  line-height: 1;
+}
+
+.notification-close:hover {
+  opacity: 1;
+  background: none;
+}
+
+.delete-undo-notification {
+  align-items: center;
+}
+
+.notification-undo-timer {
+  width: 22px;
+  height: 22px;
+  margin-left: 8px;
+  flex: 0 0 auto;
+}
+
+.notification-undo-timer-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.notification-undo-timer-track {
+  fill: none;
+  stroke: color-mix(in srgb, var(--border-color) 65%, transparent);
+  stroke-width: 2;
+}
+
+.notification-undo-timer-progress {
+  fill: none;
+  stroke: color-mix(in srgb, var(--accent-color) 76%, var(--stack-nav-active-color));
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 56.55;
+  stroke-dashoffset: 0;
+  animation: undoTimerDrain var(--undo-window-ms, 5000ms) linear forwards;
+}
+
+/* The canvas keeps ambient animation frozen during its session to stop
+   decorative effects from compositing while the board is active. This ring is
+   different: it is the user's live five-second undo deadline. Keep this one
+   functional animation running, or the toast looks correct but never counts
+   down visually. The selector is intentionally more specific than the broad
+   body.fj-bg-idle * freeze rule and remains scoped to this timer only. */
+body.fj-bg-idle .notification-undo-timer-progress,
+body.fj-bg-idle .notification-undo-timer-progress::before,
+body.fj-bg-idle .notification-undo-timer-progress::after,
+body.fj-ambient-freeze .notification-undo-timer-progress,
+body.fj-ambient-freeze .notification-undo-timer-progress::before,
+body.fj-ambient-freeze .notification-undo-timer-progress::after {
+  animation-play-state: running !important;
+}
+
+@keyframes undoTimerDrain {
+  to {
+    stroke-dashoffset: 56.55;
+  }
+}
+
+.notification-undo-btn {
+  margin-left: 8px;
+  padding: 4px 10px;
+  border-radius: var(--radius-lg, 8px);
+  border: 1px solid color-mix(in srgb, var(--accent-color) 58%, var(--border-color));
+  background: color-mix(in srgb, var(--bg-secondary) 68%, transparent);
+  color: var(--accent-color);
+  font-size: calc(var(--font-size-small) * var(--font-scale));
+  line-height: 1.2;
+  cursor: pointer;
+}
+
+.notification-undo-btn:hover {
+  background: color-mix(in srgb, var(--accent-color) 18%, var(--bg-secondary));
+}
+
+/* Style for the add image position button */
+.add-image-position {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* top: -4px; */
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  /* Ensure it takes full height */
+  align-self: stretch;
+  /* Make it stretch to match the row height */
+}
+
+/* Style for dragging image items */
+.image-item.dragging,
+/* A multi-select batch drag (attachImageGalleryListeners.js's native dragstart) marks every
+   OTHER selected item .batch-drag-member — only the one item under the native drag gesture
+   itself can carry the real .dragging class (that's what the browser's own DnD state tracks).
+   This class had no rule at all until now: every batch-drag-member was added/removed correctly
+   throughout the whole gesture, but looked completely undragged the whole time — only the
+   single primary card ever visibly ghosted, for a selection of any size. Same visual as
+   .dragging for true parity with canvas/free-form mode, where every unit in the group gets the
+   real .dragging class directly (see canvasGalleryView.js's syncExternalCanvasDropPillReposition). */
+.image-item.batch-drag-member {
+  opacity: 0.5;
+  border-radius: var(--radius-xl, 10px);
+  outline: 1px dashed var(--accent-color);
+  outline-offset: -1px;
+  cursor: grabbing !important;
+  margin-left: 0;
+  margin-top: 0;
+}
+
+/* Native gallery DnD marks the inner image item, but the media is painted in
+   the enum unit's stacking context. Raise that owning unit as well so a
+   dragged slot can never slip underneath a neighboring slot's media. */
+.image-gallery .enum-image-unit:has(.image-item.dragging),
+.image-gallery .enum-image-unit:has(.image-item.batch-drag-member) {
+  z-index: 2147483000 !important;
+}
+
+#drag-image-preview {
+  position: fixed;
+  top: -9999px;
+  left: -9999px;
+  pointer-events: none;
+  /* Must clear the breadcrumbs header and gallery scrubber (the trash icon this pill
+     travels to sits visually on top of both) as reliably as the dragged card's own
+     .enum-image-unit does two rules up — matching that 2147483000 !important rather than
+     the much lower --flowjoe-z-fallback-confirm token, which sits below the header/scrubber
+     z-index range this pill needs to clear during a canvas drag. */
+  z-index: 2147483000 !important;
+}
+
+#drag-image-preview.batch-ghost .batch-drag-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 84px;
+  padding: 6px 10px;
+  border-radius: var(--radius-lg, 8px);
+  border: 1px dashed color-mix(in srgb, var(--accent-color) 75%, var(--border-color));
+  background: color-mix(in srgb, var(--bg-primary) 82%, transparent);
+  color: var(--text-primary);
+  font-size: var(--font-control);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  opacity: 0.88;
+  box-shadow: var(--elev-floating);
+}
+
+#drag-image-preview.slot-ghost .slot-drag-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 58px;
+  padding: 5px 8px;
+  border-radius: var(--radius-full, 999px);
+  border: 1px solid color-mix(in srgb, var(--accent-color) 72%, var(--border-color));
+  background: color-mix(in srgb, var(--bg-primary) 76%, transparent);
+  color: var(--text-primary);
+  font-size: var(--font-meta);
+  font-weight: 700;
+  line-height: 1;
+  opacity: 0.72;
+  box-shadow: var(--elev-floating);
+}
+
+.image-item.dragging img,
+.image-item.batch-drag-member img {
+  cursor: grabbing !important;
+}
+
+.image-item.dragging *,
+.image-item.batch-drag-member * {
+  opacity: 0.5 !important;
+}
+
+/* Keep navigation controls readable during drag/drop visual states. */
+.image-item.dragging .image-controls,
+.image-item.dragging .stack-navigation,
+.image-item.dragging .stack-audio-playback-controls,
+.image-item.batch-drag-member .image-controls,
+.image-item.batch-drag-member .stack-navigation,
+.image-item.batch-drag-member .stack-audio-playback-controls,
+.image-item.drop-glow-active .image-controls,
+.image-item.drop-glow-active .stack-navigation,
+.image-item.drop-glow-active .stack-audio-playback-controls {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+
+/* Apply the swell and glow effect to the image only */
+@keyframes glowSwell {
+  0% {
+    transform: scale(1) translateY(-2px);
+    box-shadow:
+      0 0 0 0 var(--drop-glow-flash-0),
+      inset 0 0 0 0.5px var(--drop-glow-flash-inset-mid);
+    filter: none;
+  }
+
+  50% {
+    transform: scale(1.03) translateY(-2px);
+    box-shadow:
+      0 0 24px 8px var(--drop-glow-flash-outer-peak),
+      inset 0 0 0 0.5px var(--drop-glow-flash-inset-peak);
+    filter: none;
+  }
+
+  100% {
+    transform: scale(1) translateY(-2px);
+    box-shadow:
+      0 0 0 0 var(--drop-glow-flash-0),
+      inset 0 0 0 0.5px var(--drop-glow-flash-0);
+    filter: none;
+  }
+}
+
+/* Style for the image during drop animation */
+.image-item img.drop-glow {
+  animation: glowSwell 0.8s ease-in-out;
+  will-change: transform, box-shadow;
+  transform-origin: center center;
+  position: relative;
+  z-index: 2;
+}
+
+.image-frame.drop-glow-frame {
+  animation: glowSwell 0.8s ease-in-out forwards;
+  /* forwards keeps final state */
+  will-change: transform, box-shadow;
+  transform-origin: center center;
+  position: relative;
+  z-index: 8;
+  border-radius: var(--radius-lg, 8px);
+  background: transparent !important;
+  overflow: visible !important;
+}
+
+.image-item.drop-glow-active {
+  position: relative;
+  z-index: 8;
+}
+
+.image-frame.drop-glow-frame>img {
+  border-radius: var(--radius-lg, 8px);
+  background: transparent !important;
+  backface-visibility: hidden;
+}
+
+/* Image Info Icon and Card */
+.hide-image-metadata .image-info-icon-wrapper,
+.hide-scheduler-chip .scheduler-slot-badge,
+/* Media collapse chevron (top-right of the media, next to the metadata LED) —
+   hidden by its own Gallery Display toggle (USER DECISION 2026-08-17). */
+.hide-slot-media-collapse-toggle .slot-media-collapse-toggle {
+  display: none;
+}
+
+.image-info-icon-wrapper {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  z-index: 70;
+}
+
+.image-frame .image-info-icon-wrapper,
+.image-frame .compression-status,
+.image-frame .image-info-icon {
+  z-index: 70;
+}
+
+.image-info-icon-wrapper:hover {
+  z-index: 9999;
+}
+
+/* ── Hover bridge: keep the metadata card reachable ────────────────────────────
+   The card (.image-info-card) is a child of this wrapper, so hovering the CARD
+   keeps :hover matching and the card stays open. The problem is the TRIP there.
+   The wrapper's box is only as wide as the 6px LED dot, while the card hangs
+   ~146px to the LEFT of it and starts at the wrapper's BOTTOM edge. The dot is
+   also vertically centred in a 16px-tall wrapper (see the collapse-toggle rule
+   in styles-browser.css), leaving ~4.5px of wrapper below the dot — but still
+   only 6px wide. So any move that isn't perfectly straight down exits the
+   wrapper for a pixel or two before reaching the card, :hover drops, the card
+   begins its fade, and it is already visibility:hidden by the time the cursor
+   arrives. Measured symptom: the COMPRESS button was unclickable.
+
+   The fix is two invisible strips that pave that dead band, so the cursor never
+   leaves the wrapper on its way to the card. This ::after covers the short drop
+   directly under the dot; the card's own ::before (below) covers the wider run
+   out to the COMPRESS button. Both only accept the cursor while the wrapper is
+   hovered, so they never block clicks on the media at rest, and selection mode's
+   existing pointer-events:none on the wrapper suppresses them there too. */
+.image-info-icon-wrapper::after {
+  content: "";
+  position: absolute;
+  /* start at the dot's own bottom, not the wrapper's, so the band under a
+     vertically-centred LED is covered too. Widened a few px past the wrapper on
+     both sides: the wrapper is exactly as narrow as the 6px dot, so a cursor
+     drifting even one pixel sideways on the way down would otherwise fall off. */
+  top: 50%;
+  left: -6px;
+  right: -6px;
+  /* reach from the dot down to where the card's top edge settles (wrapper bottom),
+     plus a little overlap so there is no seam against the card's own strip */
+  height: calc(50% + 4px);
+  pointer-events: none;
+  /* purely a hit-target; never paints */
+  background: transparent;
+}
+
+.image-info-icon-wrapper:hover::after {
+  pointer-events: auto;
+}
+
+/* Second half of the bridge, owned by the CARD. The wrapper's ::after above only
+   covers the narrow band directly under the dot; the diagonal run out to the
+   COMPRESS button needs cover across the card's full width. The card's width is
+   content-driven (white-space:nowrap), so a fixed pixel guess on the wrapper would
+   be outgrown by a long "Source:" row and reopen the gap. Hanging this strip off the
+   card's own ::before makes it exactly as wide as the card at any content length or
+   slot scale, with no magic number. The card is a descendant of the wrapper, so
+   hovering the strip keeps the wrapper's :hover alive. */
+.image-info-card::before {
+  content: "";
+  position: absolute;
+  /* a few px proud of the card on each side so the strip meets the wrapper's own
+     bridge with no seam for the cursor to slip through */
+  left: -6px;
+  right: -6px;
+  /* climb from the card's top edge up past the LED's bottom; 24px clears the
+     16px-tall wrapper at scale 1 and the taller box at larger slot scales */
+  bottom: 100%;
+  height: 24px;
+  pointer-events: none;
+  background: transparent;
+}
+
+/* Only live while the card is actually being revealed, so it can never intercept a
+   click on the media underneath at rest. */
+.image-info-icon-wrapper:hover .image-info-card::before,
+.image-stack-indicator:hover .image-info-card::before {
+  pointer-events: auto;
+}
+
+.compression-status {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full, 999px);
+  margin-top: 1px;
+  /* Adjusted from 2px to 1px to move up */
+  position: relative;
+  pointer-events: auto;
+  cursor: default;
+  z-index: 2;
+}
+
+.compression-status.compressed {
+  background-color: var(--success-color, #2f9e44);
+  /* Green for compressed */
+  box-shadow: 0 0 5px var(--success-color, #2f9e44);
+}
+
+.compression-status.uncompressed {
+  background-color: var(--danger-color, #dc3545);
+  /* Red for uncompressed */
+  box-shadow: 0 0 5px var(--danger-color, #dc3545);
+}
+
+.compression-status.placeholder {
+  background-color: var(--success-color, #2f9e44);
+  /* Green for placeholders (not compressible) */
+  box-shadow: 0 0 5px var(--success-color, #2f9e44);
+}
+
+.compression-status.media {
+  background-color: var(--accent-purple, #8b5cf6);
+  box-shadow: 0 0 5px var(--accent-purple, #8b5cf6);
+}
+
+/* Scale the media-status LED with the slot on resize. Revert: delete this rule. */
+.image-gallery .enum-image-unit .compression-status {
+  width: calc(6px * var(--gallery-slot-scale, 1));
+  height: calc(6px * var(--gallery-slot-scale, 1));
+}
+
+.image-info-icon {
+  font-size: 10px;
+  color: var(--image-info-icon-color);
+  background-color: var(--image-info-icon-bg);
+  padding: 2px;
+  border-radius: var(--radius-full, 999px);
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.image-info-icon:hover {
+  color: white;
+  background-color: var(--image-info-icon-hover-bg);
+}
+
+.image-info-icon.loading {
+  position: relative;
+}
+
+.image-info-icon.loading::after {
+  content: "";
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  border-radius: var(--radius-full, 999px);
+  border: 2.5px solid transparent;
+  background: conic-gradient(var(--image-info-spinner-orange) 10%, var(--image-info-spinner-white) 30%, var(--image-info-spinner-blue) 60%, var(--image-info-spinner-orange) 100%);
+  mask: radial-gradient(farthest-side, transparent calc(100% - 3.5px), #000 calc(100% - 2.5px));
+  z-index: 20;
+  animation: spin-gradient 1s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes spin-gradient {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.image-info-card {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: var(--image-info-card-bg);
+  color: white;
+  padding: 8px;
+  border-radius: var(--radius-sm, 4px);
+  box-shadow: var(--image-info-card-shadow);
+  font-size: var(--font-hover-tooltip-body);
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: opacity var(--transition-speed-slow) ease, visibility var(--transition-speed-slow) ease, transform var(--transition-speed-slow) ease;
+  pointer-events: auto;
+}
+
+/* Stack indicator tooltip should auto-size and flow right */
+.image-stack-indicator .image-info-card {
+  right: auto;
+  left: 0;
+  top: calc(100% + 4px);
+  transform: translateY(-8px);
+  min-width: auto;
+  width: auto;
+  max-width: none;
+  z-index: var(--flowjoe-z-stack-indicator-card);
+}
+
+/* Force stack indicator to allow tooltip overflow */
+.image-stack-indicator {
+  overflow: visible !important;
+  z-index: var(--flowjoe-z-surface-above-topbar-high);
+}
+
+/* Force parent containers to allow overflow when stack indicator is hovered */
+.image-frame:has(.image-stack-indicator:hover),
+.image-item:has(.image-stack-indicator:hover) {
+  overflow: visible !important;
+}
+
+.image-info-icon-wrapper:hover .image-info-card,
+.image-stack-indicator:hover .image-info-card {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.image-info-card .info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2px 0;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.image-info-card .info-row+.info-row {
+  margin-top: 2px;
+}
+
+/* Mutual exclusion for compressed pill */
+.image-info-card .image-info-compressed-pill.hidden {
+  display: none !important;
+}
+
+/* Compressed pill — shown instead of compress button when image is already compressed */
+.image-info-card .image-info-compressed-pill {
+  display: inline-flex !important;
+  align-items: center !important;
+  box-sizing: border-box !important;
+  height: 16px !important;
+  padding: 0 6px !important;
+  border-radius: var(--radius-xl, 10px) !important;
+  font-size: var(--font-micro) !important;
+  font-family: inherit !important;
+  font-weight: normal !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.03em;
+  background: var(--bg-tertiary, #333) !important;
+  color: var(--text-secondary, #999) !important;
+  border: 1px solid var(--border-color, #555) !important;
+  cursor: default !important;
+  white-space: nowrap !important;
+  margin-left: 8px !important;
+  line-height: 1 !important;
+  flex-shrink: 0 !important;
+}
+
+/* Compress button in image info card */
+.image-info-card .info-row {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+  padding: 2px 0;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+/* Add drop zone indicators between images */
+.image-gallery .drop-zone-active {
+  border-left: 2px solid var(--accent-color);
+  /* Increased from 2px to 4px as requested */
+  background-color: color-mix(in srgb, var(--accent-color) 10%, transparent);
+  width: 10px;
+  height: 100%;
+  position: absolute;
+  left: -5px;
+}
+
+.drop-indicator.drop-target {
+  background: var(--accent-color);
+  right: -5px;
+  top: 0;
+  pointer-events: none;
+  /* Allow events to pass through to elements below */
+}
+
+@keyframes pulseGlow {
+  0% {
+    opacity: 1;
+    box-shadow: 0 0 5px var(--accent-color);
+  }
+
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 10px var(--accent-color);
+  }
+
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 5px var(--accent-color);
+  }
+}
+
+/* Add visible insertion target between gallery slots. */
+.add-image-position.drop-target::before,
+.add-image-position.drop-target::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  display: block;
+}
+
+.add-image-position.drop-target::before {
+  top: calc(var(--gallery-drop-indicator-top, 0px) + 5px);
+  width: 8px;
+  height: max(0px, calc(var(--gallery-drop-indicator-height, 100%) - 10px));
+  border-radius: var(--radius-full, 999px);
+  background: color-mix(in srgb, var(--accent-color) 7%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent-color) 18%, transparent);
+  z-index: 3;
+}
+
+.add-image-position.drop-target::after {
+  top: calc(var(--gallery-drop-indicator-top, 0px) + 5px);
+  width: 2px;
+  height: max(0px, calc(var(--gallery-drop-indicator-height, 100%) - 10px));
+  border-radius: var(--radius-full, 999px);
+  background: var(--drop-indicator-tick-bg);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--bg-primary) 54%, transparent);
+  z-index: 4;
+}
+
+.breadcrumbs-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+  max-width: 100%;
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: var(--breadcrumb-text-gap);
+}
+
+.breadcrumbs-text {
+  font-size: calc(16px * var(--font-scale));
+  margin-right: 0;
+  font-weight: normal;
+  padding-top: 0;
+  margin-top: 0;
+}
+
+/* Keep the final breadcrumb state tag clear of the separate action-button group.
+   The live breadcrumb markup renders these badges directly (not inside tooltip
+   wrappers), so this targets the actual final badge while the row uses the
+   established CTA-row control spacing. */
+.breadcrumbs-left > :is(.node-locked-badge, .node-private-badge, .node-hidden-from-joe-badge):last-child {
+  margin-right: var(--cta-row-gap);
+}
+
+.breadcrumb-ellipsis {
+  display: inline-flex;
+  align-items: center;
+  opacity: 0.85;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+/* Middle breadcrumb links: shrink aggressively so the current node gets room */
+.breadcrumb-link {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+  font-weight: normal !important;
+  line-height: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+  flex: 0 10 auto;
+}
+
+/* Current node (tail): gets priority space — shrink last */
+.breadcrumb-current-node {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  flex: 1 1 auto;
+  max-width: 100%;
+  line-height: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The media-footprint figure after the current node's name — e.g. "(2.1 MB · 96.4 MB in branch)".
+   Small and dim so it reads as an annotation, never competing with the node name itself.
+   flex-shrink:0 because .breadcrumb-current-node above is `flex: 1 1 auto` and would otherwise
+   squeeze the figure to nothing on a narrow panel. It is hidden outright while renaming: the rename
+   input measures its available width from its siblings, so a visible figure would steal space from
+   the field the user is typing into. */
+.breadcrumb-storage-figure {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin-left: 6px;
+  font-size: 0.78em;
+  line-height: 1;
+  color: var(--text-secondary);
+  opacity: 0.75;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* The current-node label is `flex: 1 1 auto` so it fills the breadcrumb row. Left alone it pushes the
+   figure across to the toolbar icons, where it reads as chrome instead of an annotation on the name.
+   Letting the label size to its content keeps the figure tucked against it; it still truncates with
+   an ellipsis because min-width:0 and overflow:hidden remain in force above. The rule is scoped to a
+   row that actually HAS a figure, so breadcrumbs without one keep their existing layout exactly. */
+#selected-node-name .breadcrumbs-text:has(.breadcrumb-storage-figure) .breadcrumb-current-node {
+  flex: 0 1 auto;
+}
+
+#selected-node-name[data-breadcrumb-editing="true"] .breadcrumb-storage-figure {
+  display: none;
+}
+
+/* Selector is `input[type="text"].breadcrumb-node-edit-input` (specificity 0,1,2), matching the
+   bump made to `.node-edit-input` itself in styles-gallery-notes.css (see that rule's comment) —
+   this input carries both classes (breadcrumbs.js's startBreadcrumbRename()), so without an equal
+   specificity bump here `.node-edit-input`'s own flat `padding:0` would beat this rule's
+   `--breadcrumb-edit-input-padding`/`-radius` tokens, defeating them exactly the way the generic
+   `input[type="text"]` reset used to (0,1,1) before that fix — same bug, next selector in the
+   chain. */
+input[type="text"].breadcrumb-node-edit-input {
+  appearance: none;
+  -webkit-appearance: none;
+  align-self: center;
+  height: var(--breadcrumb-edit-input-height);
+  min-height: 0;
+  line-height: var(--breadcrumb-edit-input-line-height);
+  min-width: var(--breadcrumb-edit-input-min-width);
+  width: auto;
+  max-width: 100%;
+  flex: 0 1 auto;
+  padding: var(--breadcrumb-edit-input-padding);
+  border: none;
+  border-bottom: var(--breadcrumb-edit-input-border);
+  border-radius: var(--breadcrumb-edit-input-radius);
+  background-color: var(--breadcrumb-edit-input-bg);
+}
+
+#selected-node-name[data-breadcrumb-editing="true"] .breadcrumbs-left,
+#selected-node-name[data-breadcrumb-editing="true"] .breadcrumbs-text {
+  overflow: visible;
+  text-overflow: clip;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  gap: var(--breadcrumb-edit-text-gap);
+}
+
+
+#selected-node-name[data-breadcrumb-editing="true"] .breadcrumb-current-node,
+#selected-node-name[data-breadcrumb-editing="true"] .breadcrumb-flow {
+  flex: 0 1 auto;
+}
+
+/* During editing: truncate non-editing breadcrumb segments so the input gets room to grow */
+#selected-node-name[data-breadcrumb-editing="true"] .breadcrumb-link,
+#selected-node-name[data-breadcrumb-editing="true"] .breadcrumb-flow,
+#selected-node-name[data-breadcrumb-editing="true"] .breadcrumb-main {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 80px;
+  flex-shrink: 1;
+  min-width: 0;
+}
+
+#selected-node-name[data-breadcrumb-editing="true"] .breadcrumb-current-node[data-editing="true"] {
+  flex: 1 0 auto;
+  max-width: 100%;
+  overflow: visible;
+}
+
+#selected-node-name[data-breadcrumb-editing="true"] .breadcrumb-node-edit-input {
+  flex: 0 0 auto;
+}
+
+#selected-node-name[data-breadcrumb-editing="true"] .breadcrumb-node-edit-input:focus {
+  border: none;
+  border-bottom: var(--breadcrumb-edit-input-focus-border);
+  background-color: var(--breadcrumb-edit-input-bg);
+}
+
+.breadcrumb-link:hover,
+.breadcrumb-link:focus-visible {
+  color: var(--accent-color);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.breadcrumb-separator {
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-secondary);
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.breadcrumb-filter-row {
+  position: relative;
+  top: 5px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 0 2px 0 35px;
+  min-height: 0;
+  margin-bottom: 10px;
+}
+
+.breadcrumb-filter-row.breadcrumb-filter-row-no-trigger {
+  padding-left: 0;
+}
+
+.breadcrumb-query-row {
+  margin-top: 6px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  column-gap: 10px;
+  row-gap: 0;
+  padding-left: 0;
+}
+
+.breadcrumb-query-mainline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+  width: 100%;
+}
+
+.breadcrumb-query-row+.content-divider {
+  margin-top: calc(var(--tree-nav-vertical-gap, 10px) - 1px);
+}
+
+.breadcrumb-filter-label {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  color: var(--text-secondary);
+  font-size: calc(11px * var(--font-scale));
+  line-height: 1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  position: relative;
+  top: 1px;
+  margin-left: 5px;
+  margin-top: 10px;
+}
+
+.breadcrumb-query-label {
+  top: 0;
+}
+
+/* Flow title: shrinks moderately (less than middle links, more than current node) */
+.breadcrumb-flow {
+  display: inline-flex;
+  align-items: center;
+  margin-left: -1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+  flex: 0 5 auto;
+}
+
+#virtual-gallery-exit,
+#gallery-summary-btn {
+  margin-left: 0;
+}
+
+/* Bare glyph, no button chrome — matches .flow-summary-btn (the tree panel's "Name your Flow"
+   header icon, buttons.css) rather than the standard .icon-btn square: no background, no
+   border, bottom-aligned. Glyph size is the ABSOLUTE pixel value .flow-summary-btn's own
+   1.2em resolves to in ITS context (tree-title-container's font-size), not 1.2em re-evaluated
+   here — the breadcrumb sits in a different font-size context, so the same em multiplier does
+   not produce the same rendered size; a fixed px value is what actually keeps them identical. */
+#gallery-summary-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  width: var(--icon-btn-size-xs);
+  height: var(--icon-btn-size-xs);
+  align-items: end;
+}
+
+#gallery-summary-btn:hover,
+#gallery-summary-btn:focus {
+  background: none;
+  border: none;
+  color: var(--accent-color);
+}
+
+/* .icon-btn i's font-size: var(--icon-glyph) outranks inherited font-size (class+element beats
+   plain inheritance) — override explicitly to .flow-summary-btn's actual rendered glyph size. */
+#gallery-summary-btn i {
+  font-size: 16.8px;
+}
+
+.breadcrumb-query-chip-list {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: nowrap;
+  align-content: center;
+  min-height: 0;
+  white-space: nowrap;
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+}
+
+.breadcrumb-query-actions {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  flex: 0 0 auto;
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+/* Durable private state reuses the Locked badge geometry and header placement. Only the key
+   treatment and accent differ; this is deliberately a modifier, not a second badge system. */
+.private-session-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 10px 0;
+  padding: 8px 12px;
+  border-radius: var(--radius-md, 8px);
+  border: 1px dashed color-mix(in srgb, var(--accent-color, #6ea8fe) 45%, var(--border-color));
+  background: color-mix(in srgb, var(--accent-color, #6ea8fe) 10%, var(--bg-secondary));
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.4;
+}
+.private-session-banner i {
+  color: var(--accent-color, #6ea8fe);
+  flex-shrink: 0;
+}
+
+/* Locked (read-only) node badge in the gallery breadcrumb header — see NODE_PROTECTION_STATES.md */
+.node-locked-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  /* Between-item spacing comes from the gallery breadcrumb token on .breadcrumbs-left.
+     margin: 0 overrides buttons.css's base `button { margin: 5px; }` (this badge IS a <button>). */
+  margin: 0;
+  flex: 0 0 auto;
+  padding: 3px 10px;
+  border-radius: var(--radius-full, 999px);
+  border: 1px solid color-mix(in srgb, var(--badge-locked-gold) 56%, var(--border-color));
+  background: color-mix(in srgb, var(--badge-locked-gold) 16%, color-mix(in srgb, var(--bg-secondary) 88%, transparent));
+  color: var(--text-primary);
+  font-size: 11px; /* NOT --font-meta: this is a clickable <button> badge (unlock action), not passive meta text — PM caught this miscategorization */
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  line-height: 1;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: filter var(--transition-speed) ease, transform var(--transition-speed) ease;
+}
+
+.node-locked-badge:hover {
+  filter: brightness(1.08);
+}
+
+.node-locked-badge:active {
+  transform: translateY(1px);
+}
+
+.node-locked-badge i {
+  font-size: var(--icon-glyph-sm);
+  color: color-mix(in srgb, var(--badge-locked-gold) 78%, var(--text-primary));
+}
+
+.node-locked-badge.is-ancestor-locked {
+  cursor: default;
+  opacity: 0.82;
+}
+
+.node-locked-badge.is-ancestor-locked:hover {
+  filter: none;
+}
+
+/* Private (password) modifier for the same compact header status tag. */
+.node-locked-badge.node-private-badge {
+  cursor: default;
+  border-color: color-mix(in srgb, var(--accent-color) 50%, var(--border-color));
+  background: color-mix(in srgb, var(--accent-color) 14%, color-mix(in srgb, var(--bg-secondary) 88%, transparent));
+}
+
+.node-locked-badge.node-private-badge i {
+  color: color-mix(in srgb, var(--accent-color) 80%, var(--text-primary));
+}
+
+.node-locked-badge.node-private-badge.is-session-unlocked {
+  border-style: dashed;
+  opacity: 0.95;
+}
+
+/* Static "Locked" pill shown in modal title bars (preview / summary / AI assist) — informational. */
+.node-locked-badge.modal-locked-pill {
+  cursor: default;
+  margin-left: 12px;
+  margin-right: 0;
+  flex: 0 0 auto;
+  vertical-align: middle;
+}
+
+.node-locked-badge.modal-locked-pill:hover {
+  filter: none;
+}
+
+.node-locked-badge.modal-locked-pill:active {
+  transform: none;
+}
+
+/* Hidden-from-Joe node badge in modal title bars — see NODE_PROTECTION_STATES.md. Orange accent,
+   deliberately distinct from the gold Locked pill so both can show at once without visual confusion. */
+.node-hidden-from-joe-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  /* Trailing margin (breadcrumb row only) is handled by the shared :last-child rule above,
+     next to .node-locked-badge — see that comment. */
+  flex: 0 0 auto;
+  padding: 3px 10px;
+  border-radius: var(--radius-full, 999px);
+  border: 1px solid color-mix(in srgb, var(--badge-hidden-orange) 56%, var(--border-color));
+  background: color-mix(in srgb, var(--badge-hidden-orange) 16%, color-mix(in srgb, var(--bg-secondary) 88%, transparent));
+  color: var(--text-primary);
+  font-size: var(--font-meta);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.node-hidden-from-joe-badge i {
+  font-size: var(--icon-glyph-sm);
+  color: color-mix(in srgb, var(--badge-hidden-orange) 78%, var(--text-primary));
+}
+
+.node-hidden-from-joe-badge.modal-hidden-from-joe-pill {
+  cursor: default;
+  margin-left: 12px;
+  margin-right: 0;
+  flex: 0 0 auto;
+  vertical-align: middle;
+}
+
+.virtual-gallery-edit-notice {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0.96);
+  z-index: 120;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  width: max-content;
+  max-width: min(calc(100% - 220px), 760px);
+  border: 1px solid color-mix(in srgb, var(--badge-locked-gold) 56%, var(--border-color));
+  border-radius: var(--radius-full, 999px);
+  background: color-mix(in srgb, var(--badge-locked-gold) 16%, color-mix(in srgb, var(--bg-secondary) 88%, transparent));
+  box-shadow:
+    0 10px 22px rgba(0, 0, 0, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  white-space: nowrap;
+  opacity: 0;
+}
+
+.virtual-gallery-edit-notice[hidden],
+.virtual-gallery-edit-notice.is-hidden {
+  display: none !important;
+}
+
+.virtual-gallery-edit-notice.is-visible {
+  animation: virtualGalleryEditNoticeIn 180ms ease forwards;
+}
+
+.virtual-gallery-edit-notice.is-hiding {
+  animation: virtualGalleryEditNoticeOut 260ms ease forwards;
+}
+
+.virtual-gallery-edit-notice-copy {
+  min-width: 0;
+  color: color-mix(in srgb, var(--badge-locked-gold-light) 72%, var(--text-primary));
+  font-size: calc(11px * var(--font-scale));
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: 0;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.virtual-gallery-edit-notice-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--icon-row-gap);
+  flex: 0 0 auto;
+}
+
+.virtual-gallery-edit-notice-actions--leading {
+  margin-right: 6px;
+}
+
+.virtual-gallery-edit-notice-actions--trailing {
+  margin-left: 8px;
+}
+
+.virtual-gallery-edit-notice-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 22px;
+  padding: 0 8px;
+  border-radius: var(--radius-full, 999px);
+  border: 1px solid color-mix(in srgb, var(--badge-locked-gold) 52%, var(--border-color));
+  background: color-mix(in srgb, var(--bg-secondary) 86%, var(--badge-locked-gold) 14%);
+  color: color-mix(in srgb, var(--badge-locked-gold-light) 76%, var(--text-primary));
+  font: inherit;
+  font-size: calc(10px * var(--font-scale));
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background-color var(--transition-speed) ease,
+    border-color var(--transition-speed) ease,
+    color var(--transition-speed) ease,
+    transform var(--transition-speed) ease;
+}
+
+.virtual-gallery-edit-notice-back {
+  width: 22px;
+  min-width: 22px;
+  padding: 0;
+}
+
+.flowjoe-font-size-override-btn.is-active {
+  border-color: var(--accent-color) !important;
+  box-shadow: var(--focus-ring);
+  color: var(--accent-color) !important;
+}
+
+.gallery-notes-justification-btn.is-active {
+  border-color: var(--accent-color) !important;
+  box-shadow: var(--focus-ring);
+  color: var(--accent-color) !important;
+}
+
+.flowjoe-font-size-override-btn .ai-font-size-button-glyph {
+  font-size: var(--icon-glyph);
+}
+
+.flowjoe-font-size-override-btn .ai-font-size-button-level {
+  font-size: 8px;
+}
+
+.flowjoe-font-scale-large {
+  --flowjoe-surface-font-scale: 1.05;
+}
+
+.flowjoe-font-scale-larger {
+  --flowjoe-surface-font-scale: 1.1;
+}
+
+.flowjoe-font-scale-largest {
+  --flowjoe-surface-font-scale: 1.15;
+}
+
+.tree-section:is(.flowjoe-font-scale-large, .flowjoe-font-scale-larger, .flowjoe-font-scale-largest) :is(.node-text, .tree-search-input, .tree-search-clear),
+#tree:is(.flowjoe-font-scale-large, .flowjoe-font-scale-larger, .flowjoe-font-scale-largest) :is(.node-text, button, input) {
+  font-size: calc(14px * var(--flowjoe-surface-font-scale, 1)) !important;
+}
+
+#image-display:is(.flowjoe-font-scale-large, .flowjoe-font-scale-larger, .flowjoe-font-scale-largest) {
+  --gallery-slot-text-font-size: calc(14px * var(--flowjoe-surface-font-scale, 1) * var(--gallery-slot-scale, 1));
+}
+
+#selected-node-name:is(.flowjoe-font-scale-large, .flowjoe-font-scale-larger, .flowjoe-font-scale-largest) :is(button, select, input),
+#image-display:is(.flowjoe-font-scale-large, .flowjoe-font-scale-larger, .flowjoe-font-scale-largest) :is(.image-title, .image-notes, .image-counter, .virtual-origin-row, .gallery-notes-tiptap-display, .gallery-notes-tiptap-editor) {
+  font-size: calc(14px * var(--flowjoe-surface-font-scale, 1)) !important;
+}
+
+#image-display:is(.flowjoe-font-scale-large, .flowjoe-font-scale-larger, .flowjoe-font-scale-largest) :is(.gallery-tag-chip) {
+  font-size: calc(14px * var(--flowjoe-surface-font-scale, 1) * var(--gallery-slot-scale, 1)) !important;
+}
+
+.tree-section:is(.flowjoe-font-scale-large, .flowjoe-font-scale-larger, .flowjoe-font-scale-largest) .tree-search-input,
+#tree:is(.flowjoe-font-scale-large, .flowjoe-font-scale-larger, .flowjoe-font-scale-largest) .tree-search-input,
+#selected-node-name:is(.flowjoe-font-scale-large, .flowjoe-font-scale-larger, .flowjoe-font-scale-largest) .gallery-search-input {
+  font-size: var(--search-input-font-size) !important;
+}
+
+.tree-section:is(.flowjoe-font-scale-large, .flowjoe-font-scale-larger, .flowjoe-font-scale-largest) :is(.tree-search-clear, .tree-search-collapse),
+#tree:is(.flowjoe-font-scale-large, .flowjoe-font-scale-larger, .flowjoe-font-scale-largest) :is(.tree-search-clear, .tree-search-collapse),
+#selected-node-name:is(.flowjoe-font-scale-large, .flowjoe-font-scale-larger, .flowjoe-font-scale-largest) :is(.gallery-search-clear, .gallery-search-collapse) {
+  font-size: var(--search-control-font-size) !important;
+}
+
+#selected-node-name:is(.flowjoe-font-scale-large, .flowjoe-font-scale-larger, .flowjoe-font-scale-largest) :is(.breadcrumbs-text, .breadcrumb-link, .breadcrumb-current-node) {
+  font-size: calc(16px * var(--font-scale) * var(--flowjoe-surface-font-scale, 1)) !important;
+}
+
+#settings-panel:is(.flowjoe-font-scale-large, .flowjoe-font-scale-larger, .flowjoe-font-scale-largest) :is(h3, h4, p, label, .setting-label, button, input, select, textarea, .setting-description, .settings-tab) {
+  font-size: calc(14px * var(--flowjoe-surface-font-scale, 1)) !important;
+}
+
+#settings-panel:is(.flowjoe-font-scale-large, .flowjoe-font-scale-larger, .flowjoe-font-scale-largest) .settings-header h3 {
+  font-size: calc(18px * var(--flowjoe-surface-font-scale, 1)) !important;
+}
+
+.virtual-gallery-edit-notice-dismiss {
+  width: 22px;
+  min-width: 22px;
+  padding: 0;
+}
+
+.virtual-gallery-edit-notice-action:hover,
+.virtual-gallery-edit-notice-action:focus-visible {
+  border-color: color-mix(in srgb, var(--badge-locked-gold-light) 74%, var(--accent-color));
+  background: color-mix(in srgb, var(--badge-locked-gold) 20%, var(--bg-secondary));
+  color: color-mix(in srgb, var(--badge-locked-gold-lighter) 78%, var(--text-primary));
+  transform: translateY(-1px);
+}
+
+@keyframes virtualGalleryEditNoticeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -42%) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes virtualGalleryEditNoticeOut {
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: translate(-50%, -56%) scale(0.985);
+  }
+}
+
+/* Virtual gallery topbar hint: slide-in-from-right + fade */
+@keyframes virtualGalleryEditNoticeSlideIn {
+  from {
+    opacity: 0;
+    transform: translate(-30%, -50%) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes virtualGalleryEditNoticeSlideOut {
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: translate(-30%, -50%) scale(0.985);
+  }
+}
+
+.topbar>.virtual-gallery-edit-notice.is-visible {
+  animation: virtualGalleryEditNoticeSlideIn 220ms ease forwards;
+}
+
+.topbar>.virtual-gallery-edit-notice.is-hiding {
+  animation: virtualGalleryEditNoticeSlideOut 260ms ease forwards;
+}
+
+.breadcrumb-query-tag-picker-wrap {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+.breadcrumb-query-tag-picker {
+  height: 24px;
+  min-height: 24px;
+  padding: 0 8px;
+  margin: 0;
+  border: 1px solid color-mix(in srgb, var(--border-color) 86%, transparent);
+  border-radius: var(--radius-md, 6px);
+  background: color-mix(in srgb, var(--bg-tertiary) 92%, transparent);
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: calc(12px * var(--font-scale));
+  line-height: 1;
+  box-sizing: border-box;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+.breadcrumb-query-tag-picker:hover,
+.breadcrumb-query-tag-picker:focus-visible {
+  border-color: color-mix(in srgb, var(--accent-color) 50%, transparent);
+  color: var(--text-primary);
+  outline: none;
+}
+
+.breadcrumb-query-side-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  padding: 0 8px;
+  margin: 0;
+  border: 1px solid color-mix(in srgb, var(--accent-color) 24%, transparent);
+  border-radius: var(--radius-md, 6px);
+  background: color-mix(in srgb, var(--accent-color) 6%, transparent);
+  color: color-mix(in srgb, var(--text-secondary) 90%, white 10%);
+  font-size: calc(11px * var(--font-scale));
+  line-height: 1;
+  white-space: nowrap;
+  appearance: none;
+  -webkit-appearance: none;
+  font-family: inherit;
+  cursor: pointer;
+  flex: 0 0 auto;
+}
+
+.breadcrumb-query-side-status:hover,
+.breadcrumb-query-side-status:focus-visible {
+  border-color: color-mix(in srgb, var(--accent-color) 42%, transparent);
+  background: color-mix(in srgb, var(--accent-color) 10%, transparent);
+  color: var(--text-primary);
+}
+
+.breadcrumb-query-side-status-label {
+  opacity: 0.82;
+}
+
+.breadcrumb-query-side-status-text {
+  opacity: 0.96;
+}
+
+
+.breadcrumb-filter-row .breadcrumb-filter-trigger.tree-filter-indicator-btn {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  margin: 0;
+}
+
+.breadcrumb-query-chip {
+  position: relative;
+}
+
+.breadcrumb-query-chip.is-current {
+  color: var(--text-primary);
+}
+
+.breadcrumb-query-separator {
+  display: inline-flex;
+  align-items: center;
+  align-self: center;
+  height: 24px;
+  color: var(--text-secondary);
+  opacity: 0.75;
+  margin: 0 1px;
+  line-height: 1;
+}
+
+.breadcrumb-filter-result-count {
+  display: inline-flex;
+  align-items: center;
+  align-self: center;
+  height: 24px;
+  margin-left: 4px;
+  margin-top: 4px;
+  color: var(--text-secondary);
+  font-size: calc(12px * var(--font-scale));
+  line-height: 1;
+  white-space: nowrap;
+}
+
+#tree li.virtual-gallery-origin-node:not(.selected):not(.multi-selected):not(.context-target)>.flex-container {
+  padding: 4px 8px;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent-color) 38%, transparent);
+  background: color-mix(in srgb, var(--accent-color) 8%, transparent);
+}
+
+#tree li.virtual-gallery-origin-node:not(.selected):not(.multi-selected):not(.context-target)>.flex-container:hover {
+  padding: 4px 8px;
+  width: calc(100% - var(--tree-row-right-gutter));
+  background: color-mix(in srgb, var(--selection-bg) 55%, color-mix(in srgb, var(--accent-color) 8%, transparent));
+}
+
+#tree li.selected.virtual-gallery-origin-node>.flex-container,
+#tree li.multi-selected.virtual-gallery-origin-node>.flex-container {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent-color) 44%, transparent);
+}
+
+#tree li.virtual-gallery-origin-node:not(.selected):not(.multi-selected):not(.context-target):has(> .flex-container:hover)::after {
+  width: 22px;
+}
+
+.content-divider {
+  height: var(--hairline);
+  background-color: var(--bg-secondary);
+  width: 100%;
+  /* padding: 4px; */
+  margin-top: calc(var(--tree-nav-vertical-gap, 10px) - 1px);
+  margin-bottom: -12px;
+  position: relative;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.breadcrumb-query-row + .content-divider {
+  top: 4px;
+}
+
+/* Image width control styling */
+.image-width-control {
+  display: flex;
+  align-items: center;
+  margin: 0;
+}
+
+.image-width-control.disabled {
+  opacity: var(--disabled-opacity-field);
+  pointer-events: none;
+}
+
+#image-width-select {
+  background-color: var(--dropdown-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--dropdown-radius);
+  color: var(--text-primary);
+  font-size: var(--font-control);
+  padding: 0 28px 0 8px;
+  min-width: 140px;
+  height: var(--dropdown-height);
+  cursor: pointer;
+  outline: none;
+  margin: 0;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: var(--dropdown-chevron);
+  background-repeat: no-repeat;
+  background-position: right var(--dropdown-chevron-inset) center;
+  background-size: 12px 12px;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+#image-width-select:hover:not(:disabled) {
+  border-color: var(--accent-color);
+  background-color: var(--bg-tertiary);
+}
+
+#image-width-select:focus {
+  border-color: var(--accent-color);
+  box-shadow: var(--focus-ring);
+}
+
+#image-width-select:disabled {
+  opacity: var(--disabled-opacity-field);
+  cursor: not-allowed;
+  background-color: var(--bg-primary);
+}
+
+#image-width-select option {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+/* Hide image controls in vertical layout when using small sizes */
+body.hide-vertical-controls .image-gallery.vertical-layout .image-controls,
+/* Hide move left/right buttons at 240px (not enough room) */
+body.hide-move-buttons .move-left-btn,
+body.hide-move-buttons .move-right-btn {
+  display: none !important;
+}
+
+body.delete-undo-lock .move-left-btn,
+body.delete-undo-lock .move-right-btn,
+body.delete-undo-lock .stack-move-up-btn,
+body.delete-undo-lock .stack-move-down-btn {
+  pointer-events: none !important;
+  opacity: 0.45 !important;
+}
+
+body.delete-undo-lock .image-item img[draggable="true"] {
+  cursor: not-allowed !important;
+}
+
+/* Hide low-priority fields at 160px thumbnail size; notes stay available in preview modal.
+   The notes TITLEBAR (and its collapse/expand toggle) must never be removed this way — only
+   the textarea content, its list/URL format overlay, and the label text collapse, same as a
+   manually-collapsed notes column (see .image-notes-column.is-collapsed in
+   styles-gallery-notes.css / styles-gallery-vertical.css). The overlay is a DOM sibling of the
+   textarea (textareaAutosize.js inserts it "afterend"), so it needs its own selector here —
+   hiding just .image-notes would leave a formatted-notes preview floating with nothing behind it. */
+body.hide-thumbnail-extras .image-controls .ai-query-btn,
+body.hide-thumbnail-extras .copy-notes-btn,
+body.hide-thumbnail-extras .add-image-position .replace-image-btn,
+body.hide-thumbnail-extras .add-image-position .delete-image-btn,
+body.hide-thumbnail-extras .image-gallery.vertical-layout .image-notes-column :is(.image-notes, .notes-list-format-overlay, .gallery-notes-tiptap-display, .gallery-notes-tiptap-editor),
+body.hide-thumbnail-extras .image-gallery:not(.vertical-layout):not(.vertical-notes-layout) .image-notes-column :is(.image-notes, .notes-list-format-overlay, .gallery-notes-tiptap-display, .gallery-notes-tiptap-editor),
+body.hide-thumbnail-extras .image-gallery .gallery-tags-titlebar,
+body.hide-thumbnail-extras .image-gallery .gallery-notes-titlebar-label,
+.image-gallery.vertical-layout .gallery-tags-titlebar,
+.image-gallery.vertical-notes-layout .gallery-tags-titlebar {
+  display: none !important;
+}
+
+/* #image-modal .image-title is listed alongside the gallery's own title on purpose. The Preview
+   modal's title is meant to BE the slot title, styled identically and following every theme the
+   gallery title follows — but these rules were scoped to `.image-gallery …`, which the modal is
+   not inside, so the modal title silently missed the theme layer's own border treatment even once
+   its base rule matched. Matching base rules is not the same as matching cascades. */
+.image-gallery.vertical-layout .image-title,
+.image-gallery.vertical-notes-layout .image-title,
+#image-modal .image-title {
+  border-bottom: 1px solid var(--border-light);
+}
+
+.image-gallery.vertical-layout .image-title:focus,
+.image-gallery.vertical-notes-layout .image-title:focus,
+#image-modal .image-title:focus {
+  border-bottom-color: var(--accent-color);
+}
+
+body.hide-thumbnail-extras .image-gallery .gallery-tag-section.is-empty {
+  display: none !important;
+}
+
+
+
+
+
+
+}

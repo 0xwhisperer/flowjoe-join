@@ -1,0 +1,1859 @@
+@layer themes {
+/* 
+ * FlowJoe - Theme System
+ * CSS variables and theme definitions for the application
+ */
+
+/* Base theme variables - these will be overridden by specific themes */
+:root {
+  /* Alert-semantic colors — canonical, skin-overridable, one value across all themes. Referenced
+     across the app as var(--success-color, …) etc. Success/warning canonicalized 2026-06 (user-
+     chosen): success #2f9e44 (was #2f9e44 ×13 / #34a853 / #46b450 / #3fb950(JS) — off-shades now
+     unified, +3 bare var(--success-color) refs that rendered colorless are now green); warning
+     #e0a046 (was #e0a046 / #f0a020). The carry-forward "updated"/pressure amber sites hardcoding
+     #ffc107 / #e3a008 were reconciled 2026-07-09: 7 #ffc107 sites in AIAssistModal.css → var(--
+     warning-color); #e3a008 turned out to have 4 more live sites than a first pass caught, all in
+     src/components/AIAssistModalStyles.js's embedded <style> template literal (a JS file, outside
+     this campaign's src/css/*.css invariant-test scan scope — a real coverage gap, not assumed
+     clean going forward) — also converted to var(--warning-color, #e0a046). Both literals fully
+     closed as of this commit. */
+  --danger-color: #dc3545;
+  --success-color: #2f9e44;
+  --warning-color: #e0a046;
+  /* Task-status dots (.status-*). Deliberately bright/recognizable; default unchanged, skin-overridable. */
+  --status-not-started: #ff4d4d;
+  --status-in-progress: #ffcc00;
+  --status-completed: #33cc33;
+  --status-neutral: #999999;
+  --status-ring: rgba(0, 0, 0, 0.2); /* subtle definition ring around the status dots */
+  /* Storage-usage gauge (Settings > Storage Stats). Deliberately bright/recognizable; default unchanged, skin-overridable. */
+  --gauge-ok: #34c759;
+  --gauge-warn: #ffcc00;
+  --gauge-crit: #ff3b30;
+
+  /* --text-muted: canonical alias of --text-secondary (muted/secondary text). Many rules already
+     reference var(--text-muted, #777) but the token was undefined; defining it as the theme's
+     secondary text makes those spots theme-aware (was a frozen #777 in every theme). Phase 3. */
+  --text-muted: var(--text-secondary);
+
+  /* Core colors */
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #2a2a2a;
+  --bg-tertiary: #333;
+  --bg-input: #2a2a2a;
+  --text-primary: #e0e0e0;
+  --text-secondary: #999;
+  --accent-color: #ff9500;
+  --text-on-accent: #1a1a1a; /* WCAG-picked text color for text drawn on var(--accent-color) fills (.confirm-button, .ai-chat-bubble.user) — computed per theme, not a constant */
+  --border-color: #555;
+  --border-light: #444;
+  --border-focus: #ff9500;
+
+  /* UI element colors */
+  --topbar-bg: #333333;
+  --topbar-border: #393939;
+  --modal-bg: #333;
+  --modal-overlay: rgba(0, 0, 0, 0.5);
+  --tooltip-bg: #181c20;
+  --tooltip-border: #363c44;
+  --tree-line-color: #bbb;
+  --selection-bg: #444;
+  --hover-bg: #444;
+  --disabled-bg: #222;
+  --disabled-text: #444;
+  --scrollbar-track: #222;
+  --scrollbar-thumb: #444;
+  --drop-highlight: rgba(255, 149, 0, 0.1);
+
+  /* Shadows */
+  --shadow-light: rgba(0, 0, 0, 0.06);
+  --shadow-medium: rgba(0, 0, 0, 0.1);
+  --shadow-heavy: rgba(0, 0, 0, 0.5);
+  --focus-shadow: rgba(255, 149, 0, 0.4);
+
+  /* Font size variables */
+  --font-size-xx-small: 0.75;
+  --font-size-x-small: 0.8;
+  --font-size-small: 0.9;
+  --font-size-normal: 1;
+  --font-size-large: 1.1;
+  --font-size-extra-large: 1.25;
+  --font-scale: var(--font-size-normal);
+
+  /* Transition settings */
+  --transition-speed: 0.15s; /* ONE speed for interactive-control transitions app-wide (owner-decided 2026-07-07: "one speed is fine — buttons doing a thing"); was 0.25s with ~6 drifting literals beside it */
+  --transition-timing: ease; /* gentle default easing (was ease-out; the app's literals were already predominantly plain ease) */
+  --transition-speed-slow: 0.25s; /* the REVEAL tier: panel slides, collapses, larger layout motion — deliberately slower than --transition-speed's control feedback */
+
+  /* Border-radius tokens — canonical corner radii used across the app.
+     Always reference these via var(--radius-*, <fallback>) so an undefined
+     token degrades to the original hardcoded value. */
+  --radius-xs: 2px; /* owner-decided radius ladder: 2/4/6/8 (2026-07-08) — was 3px */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 10px;
+  --radius-2xl: 12px;
+  --radius-full: 999px;
+}
+
+/* Apply transitions to elements that will change with themes */
+body,
+.container,
+.tree-section,
+.content-section,
+.resizer,
+.topbar,
+button,
+input,
+textarea,
+#modal,
+.settings-panel,
+.settings-content,
+.setting-item,
+#tree li,
+.node-text,
+.flex-container,
+.image-gallery,
+.image-item,
+.image-controls button,
+.image-notes,
+.tree-title-input,
+.icon-btn,
+.add-root-btn,
+.arrow-btn,
+.close-btn {
+  transition:
+    background-color var(--transition-speed) var(--transition-timing),
+    color var(--transition-speed) var(--transition-timing),
+    border-color var(--transition-speed) var(--transition-timing),
+    box-shadow var(--transition-speed) var(--transition-timing);
+}
+
+/* :not(.enum-image-unit): gallery cards are excluded from the instant-theme
+   kill on purpose. This rule exists to snap THEME COLOR tweens during a theme
+   swap; a card's own transition is entrance-only (opacity/transform — canvas
+   kills its other transitions separately) and carries no theme colors. Boot
+   applies themes right as the first gallery cards enter, and the un-excluded
+   rule zeroed those cards' entrance duration — the first 2-3 cards of every
+   load "popped" instead of fading (measured live with per-card arm/release
+   instrumentation; the card's descendants stay covered by this rule). */
+html.theme-change-instant *:not(.enum-image-unit),
+html.theme-change-instant *::before,
+html.theme-change-instant *::after {
+  transition-duration: 0s !important;
+  transition-delay: 0s !important;
+  animation-duration: 0s !important;
+  animation-delay: 0s !important;
+}
+
+/* Elements to exclude from transitions */
+.dragging,
+.drop-over,
+.drop-above,
+.drop-below,
+#tree li.dragging,
+#tree li.selected.dragging {
+  transition: none !important;
+}
+
+/* Special case for the settings panel sliding in/out */
+.settings-panel {
+  transition:
+    right var(--transition-speed-slow) ease-in-out,
+    background-color var(--transition-speed) var(--transition-timing),
+    color var(--transition-speed) var(--transition-timing);
+}
+
+/* 
+ * Theme Definitions
+ * Each theme overrides the base variables
+ */
+
+/* Default theme (dark) - matches current styling */
+.theme-dark-1 {
+  /* Core colors - same as root for the default theme */
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #2a2a2a;
+  --bg-tertiary: #333;
+  --bg-input: #2a2a2a;
+  --text-primary: #e0e0e0;
+  --text-secondary: #9b9b9b;
+  --accent-color: #ff9500;
+  --text-on-accent: #1a1a1a;
+  --border-color: #555;
+  --border-light: #444;
+  --border-focus: #ff9500;
+
+  /* UI element colors */
+  --topbar-bg: #333333;
+  --topbar-border: #393939;
+  --modal-bg: #333;
+  --modal-overlay: rgba(0, 0, 0, 0.5);
+  --tooltip-bg: #181c20;
+  --tooltip-border: #363c44;
+  --tree-line-color: #bbb;
+  --selection-bg: #444;
+  --hover-bg: #444;
+  --disabled-bg: #222;
+  --disabled-text: #444;
+  --scrollbar-track: #222;
+  --scrollbar-thumb: #444;
+  --drop-highlight: rgba(255, 149, 0, 0.1);
+
+  /* Shadows */
+  --shadow-light: rgba(0, 0, 0, 0.06);
+  --shadow-medium: rgba(0, 0, 0, 0.1);
+  --shadow-heavy: rgba(0, 0, 0, 0.5);
+  --focus-shadow: rgba(255, 149, 0, 0.4);
+}
+
+.theme-dark-1 button:focus,
+.theme-dark-1 button:focus-visible,
+.theme-dark-1 .icon-btn:focus,
+.theme-dark-1 .icon-btn:focus-visible,
+.theme-dark-1 .add-root-btn:focus,
+.theme-dark-1 .add-root-btn:focus-visible,
+.theme-dark-1 .add-image-btn:focus,
+.theme-dark-1 .add-image-btn:focus-visible,
+.theme-dark-1 .arrow-btn:focus,
+.theme-dark-1 .arrow-btn:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Modern Light theme with subtle colors */
+.theme-light-1 {
+  /* Core colors */
+  --bg-primary: #f7f9fc;
+  --bg-secondary: #edf2f7;
+  --bg-tertiary: #e2e8f0;
+  --bg-input: #ffffff;
+  --text-primary: #2d3748;
+  --text-secondary: #5d697c;
+  --accent-color: #5a67d8;
+  --text-on-accent: #fff;
+  --border-color: #e2e8f0;
+  --border-light: #edf2f7;
+  --border-focus: #5a67d8;
+
+  /* UI element colors */
+  --topbar-bg: linear-gradient(90deg, #dee7f4, #d1d9e1);
+  --topbar-border: #e2e8f0;
+  --modal-bg: #ffffff;
+  --modal-overlay: rgba(45, 55, 72, 0.3);
+  --tooltip-bg: #c3d1e5;
+  --tooltip-border: #cbd5e0;
+  --tooltip-text: #2d3748;
+  --tree-line-color: #a0aec0;
+  --selection-bg: #d6e4ff;
+  --hover-bg: #e6f0ff;
+  --disabled-bg: #f7fafc;
+  --disabled-text: #a0aec0;
+  --scrollbar-track: #f7f9fc;
+  --scrollbar-thumb: #cbd5e0;
+  --drop-highlight: rgba(90, 103, 216, 0.1);
+
+  /* Accent palette */
+  --accent-indigo: #5a67d8;
+  --accent-purple: #805ad5;
+  --accent-pink: #d53f8c;
+  --accent-red: #e53e3e;
+  --accent-orange: #dd6b20;
+  --accent-yellow: #ecc94b;
+  --accent-green: #38a169;
+  --accent-teal: #319795;
+  --accent-blue: #3182ce;
+
+  /* Shadows */
+  --shadow-light: rgba(0, 0, 0, 0.03);
+  --shadow-medium: rgba(0, 0, 0, 0.05);
+  --shadow-heavy: rgba(0, 0, 0, 0.1);
+  --focus-shadow: rgba(90, 103, 216, 0.25);
+}
+
+/* Enhanced Light theme - softer palette with improved readability */
+.theme-light-2 {
+  /* Core colors - warmer whites with sage accent */
+  --bg-primary: #fafbfc;
+  --bg-secondary: #f5f7f9;
+  --bg-tertiary: #eef2f5;
+  --bg-input: #ffffff;
+  --text-primary: #1a202c;
+  --text-secondary: #5f6f84;
+  --accent-color: #64748b;
+  --text-on-accent: #fff;
+  --border-color: #e2e8f0;
+  --border-light: #f1f5f9;
+  --border-focus: #64748b;
+
+  /* UI element colors */
+  --topbar-bg: linear-gradient(135deg, #f8fafc, #f1f5f9);
+  --topbar-border: #e2e8f0;
+  --modal-bg: #ffffff;
+  --modal-overlay: rgba(30, 41, 59, 0.2);
+  --tooltip-bg: #f8fafc;
+  --tooltip-border: #cbd5e1;
+  --tooltip-text: #1e293b;
+  --tree-line-color: #94a3b8;
+  --selection-bg: #e2e8f0;
+  --hover-bg: #f1f5f9;
+  --disabled-bg: #f8fafc;
+  --disabled-text: #cbd5e1;
+  --scrollbar-track: #f8fafc;
+  --scrollbar-thumb: #cbd5e1;
+  --drop-highlight: rgba(100, 116, 139, 0.1);
+
+  /* Accent colors - sophisticated muted palette */
+  --accent-sage: #64748b;
+  --accent-sage-light: #94a3b8;
+  --accent-sage-dark: #475569;
+  --accent-blue: #3b82f6;
+  --accent-indigo: #6366f1;
+  --accent-violet: #8b5cf6;
+  --accent-purple: #a855f7;
+  --accent-emerald: #10b981;
+  --accent-teal: #14b8a6;
+  --accent-rose: #f43f5e;
+  --accent-amber: #f59e0b;
+
+  /* Shadows */
+  --shadow-light: rgba(30, 41, 59, 0.02);
+  --shadow-medium: rgba(30, 41, 59, 0.04);
+  --shadow-heavy: rgba(30, 41, 59, 0.1);
+  --focus-shadow: rgba(100, 116, 139, 0.2);
+}
+
+/* Nord theme */
+.theme-nord-1 {
+  /* Core colors - Nord palette */
+  --bg-primary: #2e3440;
+  --bg-secondary: #3b4252;
+  --bg-tertiary: #434c5e;
+  --bg-input: #3b4252;
+  --text-primary: #eceff4;
+  --text-secondary: #d8dee9;
+  --accent-color: #88c0d0;
+  --text-on-accent: #1a1a1a;
+  --border-color: #4c566a;
+  --border-light: #4c566a;
+  --border-focus: #88c0d0;
+
+  /* UI element colors */
+  --topbar-bg: linear-gradient(45deg, #444c5f, #3b4252);
+  --topbar-border: #4c566a;
+  --modal-bg: #2e3440;
+  --modal-overlay: rgba(16, 25, 44, 0.7);
+  --tooltip-bg: #2f3644;
+  --tooltip-border: #4c566a;
+  --tree-line-color: #d8dee9;
+  --selection-bg: #434c5e;
+  --hover-bg: #434c5e;
+  --disabled-bg: #2e3440;
+  --disabled-text: #4c566a;
+  --scrollbar-track: #2e3440;
+  --scrollbar-thumb: #4c566a;
+  --drop-highlight: rgba(136, 192, 208, 0.2);
+
+  /* Accent colors from Nord palette */
+  --accent-blue-light: #8fbcbb;
+  --accent-blue: #88c0d0;
+  --accent-blue-bright: #81a1c1;
+  --accent-blue-dark: #5e81ac;
+  --accent-red: #bf616a;
+  --accent-orange: #d08770;
+  --accent-yellow: #ebcb8b;
+  --accent-green: #a3be8c;
+  --accent-purple: #b48ead;
+
+  /* Shadows */
+  --shadow-light: rgba(0, 0, 0, 0.1);
+  --shadow-medium: rgba(0, 0, 0, 0.2);
+  --shadow-heavy: rgba(0, 0, 0, 0.3);
+  --focus-shadow: rgba(136, 192, 208, 0.4);
+}
+
+/* Enhanced Nord theme - improved color harmony with better contrast */
+.theme-nord-2 {
+  /* Core colors - refined Nord palette */
+  --bg-primary: #242933;
+  --bg-secondary: #2e3440;
+  --bg-tertiary: #3b4252;
+  --bg-input: #2e3440;
+  --text-primary: #f8f9fa;
+  --text-secondary: #d8dee9;
+  --accent-color: #8fbcbb;
+  --text-on-accent: #1a1a1a;
+  --border-color: #434c5e;
+  --border-light: #3b4252;
+  --border-focus: #8fbcbb;
+
+  /* UI element colors */
+  --topbar-bg: linear-gradient(135deg, #2e3440, #3b4252);
+  --topbar-border: #434c5e;
+  --modal-bg: #2e3440;
+  --modal-overlay: rgba(36, 41, 51, 0.8);
+  --tooltip-bg: #3b4252;
+  --tooltip-border: #434c5e;
+  --tree-line-color: #d8dee9;
+  --selection-bg: #3b4252;
+  --hover-bg: #434c5e;
+  --disabled-bg: #242933;
+  --disabled-text: #4c566a;
+  --scrollbar-track: #242933;
+  --scrollbar-thumb: #434c5e;
+  --drop-highlight: rgba(143, 188, 187, 0.15);
+
+  /* Enhanced Nord accent colors */
+  --accent-frost-blue: #8fbcbb;
+  --accent-cyan: #88c0d0;
+  --accent-blue: #81a1c1;
+  --accent-dark-blue: #5e81ac;
+  --accent-red: #bf616a;
+  --accent-orange: #d08770;
+  --accent-yellow: #ebcb8b;
+  --accent-green: #a3be8c;
+  --accent-purple: #b48ead;
+  --accent-snow: #e5e9f0;
+  --accent-storm: #4c566a;
+
+  /* Shadows */
+  --shadow-light: rgba(36, 41, 51, 0.1);
+  --shadow-medium: rgba(36, 41, 51, 0.2);
+  --shadow-heavy: rgba(36, 41, 51, 0.4);
+  --focus-shadow: rgba(143, 188, 187, 0.3);
+}
+
+/* Earthy theme - inspired by the FlowJoe image */
+.theme-ghibli-1 {
+  /* Core colors - Earthy palette with mint/teal and tan */
+  --bg-primary: #f8f6f2;
+  --bg-secondary: #efeae0;
+  --bg-tertiary: #e5dfd2;
+  --bg-input: #ffffff;
+  --text-primary: #3c4a44;
+  --text-secondary: #5b645f;
+  --accent-color: #53858e;
+  --text-on-accent: #1a1a1a;
+  --border-color: #d8cfc0;
+  --border-light: #e5dfd2;
+  --border-focus: #96bca3;
+
+  /* UI element colors */
+  --topbar-bg: linear-gradient(-45deg, #879a9b, #f7efdf);
+  --topbar-border: #d8cfc0;
+  --modal-bg: #f8f6f2;
+  --modal-overlay: rgba(60, 74, 68, 0.2);
+  --tooltip-bg: #dae9e2;
+  --tooltip-border: #7aa3ab94;
+  --tooltip-text: #3c4a44;
+  --tree-line-color: #b5ae9d;
+  --selection-bg: #dae8e1;
+  --hover-bg: #e8f2eb;
+  --disabled-bg: #f8f6f2;
+  --disabled-text: #b5ae9d;
+  --scrollbar-track: #efeae0;
+  --scrollbar-thumb: #c5bca8;
+  --drop-highlight: rgba(150, 188, 163, 0.2);
+
+  /* Accent colors from the earthy palette */
+  --accent-teal: #96bca3;
+  --accent-mint: #a8cfb7;
+  --accent-sage: #b8c4a7;
+  --accent-tan: #d3bc8d;
+  --accent-sand: #e0d0b7;
+  --accent-clay: #c9ada7;
+  --accent-rust: #bb8a7c;
+  --accent-moss: #739081;
+  --accent-forest: #51695a;
+
+  /* Shadows */
+  --shadow-light: rgba(60, 74, 68, 0.03);
+  --shadow-medium: rgba(60, 74, 68, 0.05);
+  --shadow-heavy: rgba(60, 74, 68, 0.1);
+  --focus-shadow: rgba(150, 188, 163, 0.25);
+}
+
+/* Enhanced Ghibli theme - refined earthy palette with improved contrast */
+.theme-ghibli-2 {
+  /* Core colors - warmer earthy palette with sage accent */
+  --bg-primary: #f5f3f0;
+  --bg-secondary: #ede7e0;
+  --bg-tertiary: #e4dccf;
+  --bg-input: #faf8f5;
+  --text-primary: #2f3a35;
+  --text-secondary: #5a635f;
+  --accent-color: #678379;
+  --text-on-accent: #1a1a1a;
+  --border-color: #d4c8b8;
+  --border-light: #e4dccf;
+  --border-focus: #7a9a8f;
+
+  /* UI element colors */
+  --topbar-bg: linear-gradient(135deg, #e4dccf, #f5f3f0);
+  --topbar-border: #d4c8b8;
+  --modal-bg: #f5f3f0;
+  --modal-overlay: rgba(47, 58, 53, 0.15);
+  --tooltip-bg: #ede7e0;
+  --tooltip-border: #d4c8b8;
+  --tooltip-text: #2f3a35;
+  --tree-line-color: #8b8d82;
+  --selection-bg: #e0e6dd;
+  --hover-bg: #e8f0ea;
+  --disabled-bg: #f5f3f0;
+  --disabled-text: #d4c8b8;
+  --scrollbar-track: #ede7e0;
+  --scrollbar-thumb: #d4c8b8;
+  --drop-highlight: rgba(122, 154, 143, 0.15);
+
+  /* Enhanced earthy accent colors */
+  --accent-sage: #7a9a8f;
+  --accent-sage-light: #a8c0b5;
+  --accent-sage-dark: #5d7d72;
+  --accent-moss: #8b9d8a;
+  --accent-olive: #9a9b7f;
+  --accent-terracotta: #c9ada7;
+  --accent-warm: #d4b5a0;
+  --accent-sand: #e0d0b7;
+  --accent-stone: #b8b29d;
+  --accent-forest: #51695a;
+  --accent-fawn: #f0e6d2;
+
+  /* Shadows */
+  --shadow-light: rgba(47, 58, 53, 0.03);
+  --shadow-medium: rgba(47, 58, 53, 0.06);
+  --shadow-heavy: rgba(47, 58, 53, 0.12);
+  --focus-shadow: rgba(122, 154, 143, 0.25);
+}
+
+/* Coffee: Mint Mocha theme - teal/mint with coffee and tan accents */
+.theme-coffee-mint-mocha {
+  /* Core colors - Coffee palette with mint/teal as main color */
+  --bg-primary: #2c2420;
+  --bg-secondary: #3a302a;
+  --bg-tertiary: #4a3f38;
+  --bg-input: #3a302a;
+  --text-primary: #e6ded5;
+  --text-secondary: #b8aea4;
+  --accent-color: #96bca3;
+  --text-on-accent: #1a1a1a;
+  --border-color: #5a4c43;
+  --border-light: #4a3f38;
+  --border-focus: #96bca3;
+
+  /* UI element colors */
+  --topbar-bg: linear-gradient(35deg, #4a4038, #3e342d);
+  --topbar-border: #4a4038;
+  --modal-bg: #2c2420;
+  --modal-overlay: rgba(28, 23, 20, 0.7);
+  --tooltip-bg: #4a4038;
+  --tooltip-border: #5a4c43;
+  --tooltip-text: #e6ded5;
+  --tree-line-color: #b8aea4;
+  --selection-bg: #4e6a59;
+  --hover-bg: #5a7964;
+  --disabled-bg: #2c2420;
+  --disabled-text: #6a5c52;
+  --scrollbar-track: #2c2420;
+  --scrollbar-thumb: #5a4c43;
+  --drop-highlight: rgba(150, 188, 163, 0.2);
+
+  /* Accent colors from the coffee palette */
+  --accent-teal: #96bca3;
+  --accent-mint: #a8cfb7;
+  --accent-mocha: #8c7b6d;
+  --accent-tan: #d3bc8d;
+  --accent-cream: #e6ded5;
+  --accent-espresso: #3a2a20;
+  --accent-caramel: #c19a6b;
+  --accent-cinnamon: #a15c38;
+  --accent-hazelnut: #7d5d50;
+
+  /* Shadows */
+  --shadow-light: rgba(0, 0, 0, 0.1);
+  --shadow-medium: rgba(0, 0, 0, 0.2);
+  --shadow-heavy: rgba(0, 0, 0, 0.3);
+  --focus-shadow: rgba(150, 188, 163, 0.4);
+}
+
+/* Coffee: Velvet Espresso theme - richer, deeper coffee tones with improved warmth */
+.theme-coffee-velvet-espresso {
+  /* Core colors - deeper coffee palette with warm teal accent */
+  --bg-primary: #1a1614;
+  --bg-secondary: #2a211f;
+  --bg-tertiary: #3a2f2c;
+  --bg-input: #2a211f;
+  --text-primary: #f0e6dc;
+  --text-secondary: #c8b8a8;
+  --accent-color: #8db5a6;
+  --text-on-accent: #1a1a1a;
+  --border-color: #4a3f38;
+  --border-light: #3a2f2c;
+  --border-focus: #8db5a6;
+
+  /* UI element colors */
+  --topbar-bg: linear-gradient(135deg, #2a211f, #3a2f2c);
+  --topbar-border: #4a3f38;
+  --modal-bg: #1a1614;
+  --modal-overlay: rgba(26, 22, 20, 0.85);
+  --tooltip-bg: #3a2f2c;
+  --tooltip-border: #4a3f38;
+  --tooltip-text: #f0e6dc;
+  --tree-line-color: #c8b8a8;
+  --selection-bg: #3d5a4f;
+  --hover-bg: #4a6658;
+  --disabled-bg: #1a1614;
+  --disabled-text: #5a4c43;
+  --scrollbar-track: #1a1614;
+  --scrollbar-thumb: #4a3f38;
+  --drop-highlight: rgba(141, 181, 166, 0.15);
+
+  /* Enhanced coffee accent colors */
+  --accent-teal: #8db5a6;
+  --accent-teal-light: #a8cfc0;
+  --accent-teal-dark: #6d9b88;
+  --accent-espresso: #2a1f1a;
+  --accent-mocha: #4a3f35;
+  --accent-caramel: #c19a6b;
+  --accent-cinnamon: #a15c38;
+  --accent-hazelnut: #7d5d50;
+  --accent-vanilla: #f0e6dc;
+  --accent-cream: #e6dcc8;
+  --accent-chocolate: #3d2817;
+
+  /* Shadows */
+  --shadow-light: rgba(26, 22, 20, 0.1);
+  --shadow-medium: rgba(26, 22, 20, 0.25);
+  --shadow-heavy: rgba(26, 22, 20, 0.4);
+  --focus-shadow: rgba(141, 181, 166, 0.3);
+}
+
+/* Teal Nord theme - Nord-inspired with teal accents */
+.theme-fern-1 {
+  /* Core colors - Nord palette with teal accent */
+  --bg-primary: #2e403d;
+  --bg-secondary: #3b5250;
+  --bg-tertiary: #435d5e;
+  --bg-input: #3b5250;
+  --text-primary: #eceff4;
+  --text-secondary: #d8dee9;
+  --accent-color: #debb79;
+  --text-on-accent: #1a1a1a;
+  --border-color: #4c6a62;
+  --border-light: #4c6a59;
+  --border-focus: #96bca3;
+
+  /* UI element colors */
+  --topbar-bg: linear-gradient(45deg, #445e5e, #374c49);
+  --topbar-border: #374744;
+  --modal-bg: #2e4036;
+  --modal-overlay: rgba(16, 25, 44, 0.7);
+  /* Was bg/border both #96bca3 with #3c4a44 ink — a light sage bubble on a dark theme
+     (--bg-primary #2e403d), and the border was identical to the background so the bubble
+     had no edge. Inverted against every sibling: fern-2/3/4 all tint their own dark
+     ground. Measured worst in the app at 1.15:1. Now follows the sibling pattern — a
+     lift off this theme's ground, a mid-tone edge, and its own light ink (#eceff4). */
+  --tooltip-bg: #3a4f4b;
+  --tooltip-border: #4e6b64;
+  --tooltip-text: #eceff4;
+  --tree-line-color: #d8dee9;
+  --selection-bg: #4c6b5a;
+  --hover-bg: #4e7a64;
+  --disabled-bg: #2e4036;
+  --disabled-text: #4c6a5c;
+  --scrollbar-track: #2e4036;
+  --scrollbar-thumb: #4c6a5c;
+  --drop-highlight: rgba(150, 188, 163, 0.2);
+
+  /* Accent colors - teal variants and Nord palette */
+  --accent-teal-light: #8fbcb0;
+  --accent-teal: #96bca3;
+  --accent-teal-dark: #7a9c87;
+  --accent-red: #bf616a;
+  --accent-orange: #d08770;
+  --accent-yellow: #ebcb8b;
+  --accent-green: #a3be8c;
+  --accent-purple: #b48ead;
+  --accent-frost: #81a1c1;
+
+  /* Shadows */
+  --shadow-light: rgba(0, 0, 0, 0.1);
+  --shadow-medium: rgb(252 232 193 / 50%); /* mainly used for tooltips */
+  --shadow-heavy: rgba(0, 0, 0, 0.3);
+  --focus-shadow: rgba(150, 188, 163, 0.4);
+}
+
+/* Enhanced Dark theme - refined contrast with modern purple accents */
+.theme-dark-2 {
+  /* Core colors - deeper blacks with purple accent */
+  --bg-primary: #0f0f0f;
+  --bg-secondary: #1a1a1a;
+  --bg-tertiary: #252525;
+  --bg-input: #1a1a1a;
+  --text-primary: #f0f0f0;
+  --text-secondary: #b0b0b0;
+  --accent-color: #8b5cf6;
+  --text-on-accent: #fff;
+  --border-color: #404040;
+  --border-light: #333333;
+  --border-focus: #8b5cf6;
+
+  /* UI element colors */
+  --topbar-bg: linear-gradient(135deg, #1a1a1a, #252525);
+  --topbar-border: #404040;
+  --modal-bg: #1a1a1a;
+  --modal-overlay: rgba(15, 15, 15, 0.8);
+  --tooltip-bg: #252525;
+  --tooltip-border: #404040;
+  /* Declared so the bubble stops falling back to --accent-color: violet #8b5cf6 on this
+     theme's own #252525 tooltip measured 3.62:1, the last sub-AA tooltip in the app.
+     Follows the dark-theme house style — a near-white carrying a trace of the theme's
+     own hue (255 vs the accent's 258) at 3% HSV saturation, between dark-4's #f2f2f8
+     (2% HSV) and dusk-4's #f0eaf8 (6% HSV) — note HSV, not the HSL that CSS's hsl()
+     would report — rather than a lifted violet, which would keep the ink
+     competing with the accent it sits beside. */
+  --tooltip-text: #f1eff7;
+  --tree-line-color: #b0b0b0;
+  --selection-bg: #2d2d2d;
+  --hover-bg: #353535;
+  --disabled-bg: #0f0f0f;
+  --disabled-text: #404040;
+  --scrollbar-track: #0f0f0f;
+  --scrollbar-thumb: #404040;
+  --drop-highlight: rgba(139, 92, 246, 0.15);
+
+  /* Accent colors - purple palette */
+  --accent-purple-light: #a78bfa;
+  --accent-purple: #8b5cf6;
+  --accent-purple-dark: #7c3aed;
+  --accent-indigo: #6366f1;
+  --accent-blue: #3b82f6;
+  --accent-cyan: #06b6d4;
+  --accent-emerald: #10b981;
+  --accent-pink: #ec4899;
+  --accent-rose: #f43f5e;
+  --accent-amber: #f59e0b;
+
+  /* Shadows */
+  --shadow-light: rgba(0, 0, 0, 0.1);
+  --shadow-medium: rgba(0, 0, 0, 0.3);
+  --shadow-heavy: rgba(0, 0, 0, 0.6);
+  --focus-shadow: rgba(139, 92, 246, 0.4);
+}
+
+/* Enhanced Fern theme - deeper, more vibrant forest colors */
+.theme-fern-2 {
+  /* Core colors - deeper forest palette with emerald accent */
+  --bg-primary: #1a2f2a;
+  --bg-secondary: #243b35;
+  --bg-tertiary: #2f4741;
+  --bg-input: #243b35;
+  --text-primary: #e8f5f0;
+  --text-secondary: #c8e0d5;
+  --accent-color: #4ade80;
+  --text-on-accent: #1a1a1a;
+  --border-color: #3a5f54;
+  --border-light: #2f4741;
+  --border-focus: #4ade80;
+
+  /* UI element colors */
+  --topbar-bg: linear-gradient(135deg, #243b35, #2f4741);
+  --topbar-border: #3a5f54;
+  --modal-bg: #1a2f2a;
+  --modal-overlay: rgba(26, 47, 42, 0.85);
+  --tooltip-bg: #2f4741;
+  --tooltip-border: #3a5f54;
+  --tooltip-text: #e8f5f0;
+  --tree-line-color: #c8e0d5;
+  --selection-bg: #2f5a4f;
+  --hover-bg: #3a6b5f;
+  --disabled-bg: #1a2f2a;
+  --disabled-text: #3a5f54;
+  --scrollbar-track: #1a2f2a;
+  --scrollbar-thumb: #3a5f54;
+  --drop-highlight: rgba(74, 222, 128, 0.15);
+
+  /* Enhanced forest accent colors */
+  --accent-emerald: #4ade80;
+  --accent-emerald-light: #86efac;
+  --accent-emerald-dark: #22c55e;
+  --accent-forest: #065f46;
+  --accent-moss: #65a30d;
+  --accent-sage: #84cc16;
+  --accent-olive: #a3e635;
+  --accent-teal: #14b8a6;
+  --accent-cyan: #06b6d4;
+  --accent-lime: #84cc16;
+  --accent-leaf: #16a34a;
+
+  /* Shadows */
+  --shadow-light: rgba(26, 47, 42, 0.1);
+  --shadow-medium: rgba(26, 47, 42, 0.25);
+  --shadow-heavy: rgba(26, 47, 42, 0.4);
+  --focus-shadow: rgba(74, 222, 128, 0.3);
+}
+
+.theme-night-1 {
+  /* Core colors - Starry Night palette */
+  --bg-primary: #0a0f23;
+  --bg-secondary: #1a213a;
+  --bg-tertiary: #2a3350;
+  --bg-input: #1a213a;
+  --text-primary: #cfd8e2;
+  --text-secondary: #a1b5d0;
+  --accent-color: #4a90e2;
+  --text-on-accent: #1a1a1a;
+  --border-color: #354a68;
+  --border-light: #2a3350;
+  --border-focus: #4a90e2;
+
+  /* UI element colors */
+  --topbar-bg: #2a3350;
+  --topbar-border: #354a68;
+  --modal-bg: #1a213a;
+  --modal-overlay: rgba(10, 15, 35, 0.7);
+  --tooltip-bg: #1a213a;
+  --tooltip-border: #354a68;
+  --tree-line-color: #a1b5d0;
+  --selection-bg: #2a3350;
+  --hover-bg: #354a68;
+  --disabled-bg: #0a0f23;
+  --disabled-text: #2a3350;
+  --scrollbar-track: #0a0f23;
+  --scrollbar-thumb: #354a68;
+  --drop-highlight: rgba(74, 144, 226, 0.1);
+
+  /* Shadows */
+  --shadow-light: rgba(10, 15, 35, 0.1);
+  --shadow-medium: rgba(10, 15, 35, 0.2);
+  --shadow-heavy: rgba(10, 15, 35, 0.5);
+  --focus-shadow: rgba(74, 144, 226, 0.4);
+}
+
+/* Enhanced Night theme - deeper cosmic atmosphere with stellar accents */
+.theme-night-2 {
+  /* Core colors - deeper space palette with stellar accent */
+  --bg-primary: #050a1a;
+  --bg-secondary: #0f1629;
+  --bg-tertiary: #1a2341;
+  --bg-input: #0f1629;
+  --text-primary: #e1e8f5;
+  --text-secondary: #a8b9d5;
+  --accent-color: #6366f1;
+  --text-on-accent: #fff;
+  --border-color: #2a3f5f;
+  --border-light: #1a2341;
+  --border-focus: #6366f1;
+
+  /* UI element colors */
+  --topbar-bg: linear-gradient(135deg, #0f1629, #1a2341);
+  --topbar-border: #2a3f5f;
+  --modal-bg: #0f1629;
+  --modal-overlay: rgba(5, 10, 26, 0.9);
+  --tooltip-bg: #1a2341;
+  --tooltip-border: #2a3f5f;
+  --tooltip-text: #e1e8f5;
+  --tree-line-color: #a8b9d5;
+  --selection-bg: #1a2f4a;
+  --hover-bg: #24345f;
+  --disabled-bg: #050a1a;
+  --disabled-text: #2a3f5f;
+  --scrollbar-track: #050a1a;
+  --scrollbar-thumb: #2a3f5f;
+  --drop-highlight: rgba(99, 102, 241, 0.15);
+
+  /* Cosmic accent colors */
+  --accent-indigo: #6366f1;
+  --accent-indigo-light: #818cf8;
+  --accent-indigo-dark: #4f46e5;
+  --accent-purple: #a855f7;
+  --accent-blue: #3b82f6;
+  --accent-cyan: #06b6d4;
+  --accent-teal: #14b8a6;
+  --accent-star: #fbbf24;
+  --accent-nebula: #ec4899;
+  --accent-aurora: #10b981;
+  --accent-comet: #f59e0b;
+
+  /* Shadows */
+  --shadow-light: rgba(5, 10, 26, 0.1);
+  --shadow-medium: rgba(5, 10, 26, 0.3);
+  --shadow-heavy: rgba(5, 10, 26, 0.6);
+  --focus-shadow: rgba(99, 102, 241, 0.4);
+}
+
+/* New Aurora theme - northern lights inspired with dynamic colors */
+.theme-aurora-2 {
+  /* Core colors - dark arctic night with aurora accent */
+  --bg-primary: #0a1929;
+  --bg-secondary: #132f4c;
+  --bg-tertiary: #1e3a5f;
+  --bg-input: #132f4c;
+  --text-primary: #e0f2fe;
+  --text-secondary: #bae6fd;
+  --accent-color: #06b6d4;
+  --text-on-accent: #1a1a1a;
+  --border-color: #1e40af;
+  --border-light: #1e3a5f;
+  --border-focus: #06b6d4;
+
+  /* UI element colors */
+  --topbar-bg: linear-gradient(135deg, #132f4c, #1e3a5f);
+  --topbar-border: #1e40af;
+  --modal-bg: #0a1929;
+  --modal-overlay: rgba(10, 25, 41, 0.85);
+  --tooltip-bg: #1e3a5f;
+  --tooltip-border: #1e40af;
+  --tooltip-text: #e0f2fe;
+  --tree-line-color: #bae6fd;
+  --selection-bg: #164e63;
+  --hover-bg: #0e7490;
+  --disabled-bg: #0a1929;
+  --disabled-text: #1e40af;
+  --scrollbar-track: #0a1929;
+  --scrollbar-thumb: #1e40af;
+  --drop-highlight: rgba(6, 182, 212, 0.15);
+
+  /* Aurora northern lights colors */
+  --accent-aurora-green: #10b981;
+  --accent-aurora-blue: #06b6d4;
+  --accent-aurora-purple: #8b5cf6;
+  --accent-aurora-pink: #ec4899;
+  --accent-aurora-yellow: #facc15;
+  --accent-aurora-cyan: #22d3ee;
+  --accent-aurora-emerald: #34d399;
+  --accent-aurora-violet: #a78bfa;
+  --accent-aurora-rose: #f43f5e;
+  --accent-aurora-lime: #84cc16;
+
+  /* Shadows */
+  --shadow-light: rgba(10, 25, 41, 0.1);
+  --shadow-medium: rgba(10, 25, 41, 0.25);
+  --shadow-heavy: rgba(10, 25, 41, 0.4);
+  --focus-shadow: rgba(6, 182, 212, 0.3);
+}
+
+/* ==========================================================================
+ * Theme Variant 3
+ * Modular add-on themes: remove this block + themeManager entries + swatches
+ * to fully remove all variant 3 themes.
+ * ========================================================================== */
+
+.theme-coffee-nightcap-cortado {
+  --bg-primary: #1f1815;
+  --bg-secondary: #2d2420;
+  --bg-tertiary: #3c312c;
+  --bg-input: #2d2420;
+  --text-primary: #efe2d7;
+  --text-secondary: #c9b4a3;
+  --accent-color: #b79d7d;
+  --text-on-accent: #1a1a1a;
+  --border-color: #4f4038;
+  --border-light: #3c312c;
+  --border-focus: #b79d7d;
+  --topbar-bg: linear-gradient(135deg, #332924, #463a33);
+  --topbar-border: #57483f;
+  --modal-bg: #2a211d;
+  --modal-overlay: rgba(20, 15, 13, 0.8);
+  --tooltip-bg: #3f322c;
+  --tooltip-border: #5a493f;
+  --tooltip-text: #efe2d7;
+  --tree-line-color: #c9b4a3;
+  --selection-bg: #4f4038;
+  --hover-bg: #5d4c42;
+  --disabled-bg: #241c19;
+  --disabled-text: #6f5a4f;
+  --scrollbar-track: #241c19;
+  --scrollbar-thumb: #5a493f;
+  --drop-highlight: rgba(183, 157, 125, 0.18);
+  --shadow-light: rgba(0, 0, 0, 0.12);
+  --shadow-medium: rgba(0, 0, 0, 0.24);
+  --shadow-heavy: rgba(0, 0, 0, 0.38);
+  --focus-shadow: rgba(183, 157, 125, 0.35);
+}
+
+.theme-nord-3 {
+  --bg-primary: #1f2631;
+  --bg-secondary: #2b3442;
+  --bg-tertiary: #364052;
+  --bg-input: #2b3442;
+  --text-primary: #edf2f7;
+  --text-secondary: #c6d1de;
+  --accent-color: #8ec5d4;
+  --text-on-accent: #1a1a1a;
+  --border-color: #445064;
+  --border-light: #364052;
+  --border-focus: #8ec5d4;
+  --topbar-bg: linear-gradient(135deg, #2b3442, #3b4760);
+  --topbar-border: #4c5b74;
+  --modal-bg: #253041;
+  --modal-overlay: rgba(16, 23, 35, 0.78);
+  --tooltip-bg: #303d52;
+  --tooltip-border: #4c5b74;
+  --tree-line-color: #c6d1de;
+  --selection-bg: #3f4d64;
+  --hover-bg: #4a5972;
+  --disabled-bg: #202936;
+  --disabled-text: #5e6c83;
+  --scrollbar-track: #202936;
+  --scrollbar-thumb: #4c5b74;
+  --drop-highlight: rgba(142, 197, 212, 0.17);
+  --shadow-light: rgba(10, 15, 22, 0.12);
+  --shadow-medium: rgba(10, 15, 22, 0.24);
+  --shadow-heavy: rgba(10, 15, 22, 0.4);
+  --focus-shadow: rgba(142, 197, 212, 0.32);
+}
+
+.theme-ghibli-3 {
+  --bg-primary: #f3efe8;
+  --bg-secondary: #e9e1d3;
+  --bg-tertiary: #ddd3c2;
+  --bg-input: #f8f4ed;
+  --text-primary: #2f4039;
+  --text-secondary: #525f58;
+  --accent-color: #5c7e6f;
+  --text-on-accent: #1a1a1a;
+  --border-color: #cdbfae;
+  --border-light: #ddd3c2;
+  --border-focus: #6f9986;
+  --topbar-bg: linear-gradient(135deg, #dfd4c4, #eee6d9);
+  --topbar-border: #cdbfae;
+  --modal-bg: #f2ece2;
+  --modal-overlay: rgba(44, 58, 52, 0.2);
+  --tooltip-bg: #e6efe8;
+  --tooltip-border: #bdd0c2;
+  --tooltip-text: #2f4039;
+  --tree-line-color: #9aa697;
+  --selection-bg: #dce8df;
+  --hover-bg: #e5efe8;
+  --disabled-bg: #eee7dc;
+  --disabled-text: #b7b09f;
+  --scrollbar-track: #e9e1d3;
+  --scrollbar-thumb: #c7b9a7;
+  --drop-highlight: rgba(111, 153, 134, 0.16);
+  --shadow-light: rgba(33, 44, 40, 0.04);
+  --shadow-medium: rgba(33, 44, 40, 0.08);
+  --shadow-heavy: rgba(33, 44, 40, 0.15);
+  --focus-shadow: rgba(111, 153, 134, 0.28);
+}
+
+.theme-fern-3 {
+  --bg-primary: #1f312c;
+  --bg-secondary: #2d453e;
+  --bg-tertiary: #3a574e;
+  --bg-input: #2d453e;
+  --text-primary: #e7f2ed;
+  --text-secondary: #c1d8cd;
+  --accent-color: #d6b975;
+  --text-on-accent: #1a1a1a;
+  --border-color: #4b6a60;
+  --border-light: #3a574e;
+  --border-focus: #d6b975;
+  --topbar-bg: linear-gradient(135deg, #2d453e, #415d55);
+  --topbar-border: #56746a;
+  --modal-bg: #253a34;
+  --modal-overlay: rgba(14, 23, 20, 0.8);
+  --tooltip-bg: #3a574e;
+  --tooltip-border: #56746a;
+  --tooltip-text: #e7f2ed;
+  --tree-line-color: #bdd0c6;
+  --selection-bg: #47685d;
+  --hover-bg: #54786b;
+  --disabled-bg: #223630;
+  --disabled-text: #6f8f83;
+  --scrollbar-track: #223630;
+  --scrollbar-thumb: #56746a;
+  --drop-highlight: rgba(214, 185, 117, 0.19);
+  --shadow-light: rgba(9, 15, 13, 0.12);
+  --shadow-medium: rgba(9, 15, 13, 0.22);
+  --shadow-heavy: rgba(9, 15, 13, 0.36);
+  --focus-shadow: rgba(214, 185, 117, 0.35);
+}
+
+.theme-dark-3 {
+  --bg-primary: #111418;
+  --bg-secondary: #1b2026;
+  --bg-tertiary: #252d36;
+  --bg-input: #1b2026;
+  --text-primary: #e6ecf3;
+  --text-secondary: #aeb8c4;
+  --accent-color: #72b0ff;
+  --text-on-accent: #1a1a1a;
+  --border-color: #374251;
+  --border-light: #2a3440;
+  --border-focus: #72b0ff;
+  --topbar-bg: linear-gradient(135deg, #1b2026, #2b3440);
+  --topbar-border: #3b4656;
+  --modal-bg: #171c22;
+  --modal-overlay: rgba(9, 11, 14, 0.84);
+  --tooltip-bg: #27313e;
+  --tooltip-border: #3b4656;
+  --tree-line-color: #b4becb;
+  --selection-bg: #2e3948;
+  --hover-bg: #394758;
+  --disabled-bg: #13181e;
+  --disabled-text: #5f6b7a;
+  --scrollbar-track: #13181e;
+  --scrollbar-thumb: #3b4656;
+  --drop-highlight: rgba(114, 176, 255, 0.16);
+  --shadow-light: rgba(0, 0, 0, 0.14);
+  --shadow-medium: rgba(0, 0, 0, 0.28);
+  --shadow-heavy: rgba(0, 0, 0, 0.44);
+  --focus-shadow: rgba(114, 176, 255, 0.3);
+}
+
+.theme-light-3 {
+  --bg-primary: #f4f7fb;
+  --bg-secondary: #e9eef5;
+  --bg-tertiary: #dde6f1;
+  --bg-input: #ffffff;
+  --text-primary: #213047;
+  --text-secondary: #566682;
+  --accent-color: #4f7dcf;
+  --text-on-accent: #1a1a1a;
+  --border-color: #c9d4e3;
+  --border-light: #e3eaf3;
+  --border-focus: #4f7dcf;
+  --topbar-bg: linear-gradient(135deg, #e6edf6, #dfe8f2);
+  --topbar-border: #c9d4e3;
+  --modal-bg: #ffffff;
+  --modal-overlay: rgba(21, 35, 56, 0.22);
+  --tooltip-bg: #eef4fb;
+  --tooltip-border: #c5d3e7;
+  --tooltip-text: #213047;
+  --tree-line-color: #8ea1bb;
+  --selection-bg: #dce8fb;
+  --hover-bg: #e7f0fe;
+  --disabled-bg: #f3f7fc;
+  --disabled-text: #afbdd0;
+  --scrollbar-track: #edf3fb;
+  --scrollbar-thumb: #c6d4e7;
+  --drop-highlight: rgba(79, 125, 207, 0.13);
+  --shadow-light: rgba(23, 40, 66, 0.04);
+  --shadow-medium: rgba(23, 40, 66, 0.08);
+  --shadow-heavy: rgba(23, 40, 66, 0.14);
+  --focus-shadow: rgba(79, 125, 207, 0.26);
+}
+
+.theme-night-3 {
+  --bg-primary: #070d1f;
+  --bg-secondary: #111a33;
+  --bg-tertiary: #1b2748;
+  --bg-input: #111a33;
+  --text-primary: #dfe8fb;
+  --text-secondary: #afc0df;
+  --accent-color: #9a8cff;
+  --text-on-accent: #1a1a1a;
+  --border-color: #304169;
+  --border-light: #1f2d53;
+  --border-focus: #9a8cff;
+  --topbar-bg: linear-gradient(135deg, #111a33, #1a2750);
+  --topbar-border: #304169;
+  --modal-bg: #0f1730;
+  --modal-overlay: rgba(6, 10, 23, 0.88);
+  --tooltip-bg: #1b2748;
+  --tooltip-border: #304169;
+  --tooltip-text: #dfe8fb;
+  --tree-line-color: #afc0df;
+  --selection-bg: #24365f;
+  --hover-bg: #30457a;
+  --disabled-bg: #0b1226;
+  --disabled-text: #415584;
+  --scrollbar-track: #0b1226;
+  --scrollbar-thumb: #304169;
+  --drop-highlight: rgba(154, 140, 255, 0.17);
+  --shadow-light: rgba(4, 7, 16, 0.14);
+  --shadow-medium: rgba(4, 7, 16, 0.3);
+  --shadow-heavy: rgba(4, 7, 16, 0.5);
+  --focus-shadow: rgba(154, 140, 255, 0.34);
+}
+
+.theme-aurora-3 {
+  --bg-primary: #071826;
+  --bg-secondary: #0f2940;
+  --bg-tertiary: #183b5c;
+  --bg-input: #0f2940;
+  --text-primary: #e2f6ff;
+  --text-secondary: #b3dbef;
+  --accent-color: #35d8b5;
+  --text-on-accent: #1a1a1a;
+  --border-color: #225275;
+  --border-light: #183b5c;
+  --border-focus: #35d8b5;
+  --topbar-bg: linear-gradient(135deg, #0f2940, #1a4264);
+  --topbar-border: #2b5e84;
+  --modal-bg: #0c2236;
+  --modal-overlay: rgba(4, 17, 28, 0.86);
+  --tooltip-bg: #1b4466;
+  --tooltip-border: #2b5e84;
+  --tooltip-text: #e2f6ff;
+  --tree-line-color: #b3dbef;
+  --selection-bg: #225275;
+  --hover-bg: #2c6792;
+  --disabled-bg: #0a1d2e;
+  --disabled-text: #3f789e;
+  --scrollbar-track: #0a1d2e;
+  --scrollbar-thumb: #2b5e84;
+  --drop-highlight: rgba(53, 216, 181, 0.16);
+  --shadow-light: rgba(5, 14, 22, 0.12);
+  --shadow-medium: rgba(5, 14, 22, 0.25);
+  --shadow-heavy: rgba(5, 14, 22, 0.4);
+  --focus-shadow: rgba(53, 216, 181, 0.32);
+}
+
+/* ==========================================================================
+ * Theme Variant 4
+ * Modular add-on themes: remove this entire block + themeManager entries
+ * + swatch entries in styles.css to fully remove all variant 4 themes.
+ * ========================================================================== */
+
+/* Coffee: Caramel Macchiato theme - caramelized espresso warmth with burnished amber accent.
+   Deeper roast than the original — like a proper single-origin pour-over. */
+.theme-coffee-caramel-macchiato {
+  --bg-primary: #1c1410;
+  --bg-secondary: #2b1f19;
+  --bg-tertiary: #3c2d25;
+  --bg-input: #241a14;
+  --text-primary: #f5e6d3;
+  --text-secondary: #c4a882;
+  --accent-color: #d4935a;
+  --text-on-accent: #1a1a1a;
+  --border-color: #4e382c;
+  --border-light: #3c2d25;
+  --border-focus: #d4935a;
+  --topbar-bg: linear-gradient(160deg, #2e2018, #3c2d25);
+  --topbar-border: #4e382c;
+  --modal-bg: #241a14;
+  --modal-overlay: rgba(20, 14, 10, 0.88);
+  --tooltip-bg: #3c2d25;
+  --tooltip-border: #5c4437;
+  --tooltip-text: #f5e6d3;
+  --tree-line-color: #c4a882;
+  --selection-bg: #5c3d28;
+  --hover-bg: #6e4b34;
+  --disabled-bg: #1c1410;
+  --disabled-text: #6a5040;
+  --scrollbar-track: #1c1410;
+  --scrollbar-thumb: #4e382c;
+  --drop-highlight: rgba(212, 147, 90, 0.2);
+  --shadow-light: rgba(0, 0, 0, 0.14);
+  --shadow-medium: rgba(0, 0, 0, 0.28);
+  --shadow-heavy: rgba(0, 0, 0, 0.48);
+  --focus-shadow: rgba(212, 147, 90, 0.38);
+}
+
+/* Dark 4: True OLED-ready black with electric violet accent.
+   Maximally high contrast — inspired by VS Code Abyss meets Tokyo Night. */
+.theme-dark-4 {
+  --bg-primary: #0c0c0e;
+  --bg-secondary: #141418;
+  --bg-tertiary: #1e1e26;
+  --bg-input: #141418;
+  --text-primary: #f2f2f8;
+  --text-secondary: #a0a0b8;
+  --accent-color: #c084fc;
+  --text-on-accent: #1a1a1a;
+  --border-color: #2e2e40;
+  --border-light: #1e1e26;
+  --border-focus: #c084fc;
+  --topbar-bg: linear-gradient(135deg, #141418, #1e1e26);
+  --topbar-border: #2e2e40;
+  --modal-bg: #141418;
+  --modal-overlay: rgba(8, 8, 10, 0.9);
+  --tooltip-bg: #1e1e26;
+  --tooltip-border: #3a3a50;
+  --tooltip-text: #f2f2f8;
+  --tree-line-color: #a0a0b8;
+  --selection-bg: #2e1f4e;
+  --hover-bg: #39285e;
+  --disabled-bg: #0c0c0e;
+  --disabled-text: #3a3a50;
+  --scrollbar-track: #0c0c0e;
+  --scrollbar-thumb: #2e2e40;
+  --drop-highlight: rgba(192, 132, 252, 0.18);
+  --shadow-light: rgba(0, 0, 0, 0.16);
+  --shadow-medium: rgba(0, 0, 0, 0.35);
+  --shadow-heavy: rgba(0, 0, 0, 0.62);
+  --focus-shadow: rgba(192, 132, 252, 0.42);
+}
+
+/* Nord 4: Cooler, more contrasty Nord with a polar-teal pop.
+   Darkened primaries with the frost palette pushed brighter. */
+.theme-nord-4 {
+  --bg-primary: #1e2430;
+  --bg-secondary: #272e3e;
+  --bg-tertiary: #313b50;
+  --bg-input: #272e3e;
+  --text-primary: #f0f4fc;
+  --text-secondary: #c8d4e8;
+  --accent-color: #7ecfdc;
+  --text-on-accent: #1a1a1a;
+  --border-color: #3d4f6a;
+  --border-light: #313b50;
+  --border-focus: #7ecfdc;
+  --topbar-bg: linear-gradient(135deg, #272e3e, #313b50);
+  --topbar-border: #3d4f6a;
+  --modal-bg: #1e2430;
+  --modal-overlay: rgba(18, 22, 32, 0.85);
+  --tooltip-bg: #313b50;
+  --tooltip-border: #3d4f6a;
+  --tooltip-text: #f0f4fc;
+  --tree-line-color: #c8d4e8;
+  --selection-bg: #2a4060;
+  --hover-bg: #354e72;
+  --disabled-bg: #1e2430;
+  --disabled-text: #3d4f6a;
+  --scrollbar-track: #1e2430;
+  --scrollbar-thumb: #3d4f6a;
+  --drop-highlight: rgba(126, 207, 220, 0.2);
+  --shadow-light: rgba(18, 22, 32, 0.14);
+  --shadow-medium: rgba(18, 22, 32, 0.28);
+  --shadow-heavy: rgba(18, 22, 32, 0.48);
+  --focus-shadow: rgba(126, 207, 220, 0.36);
+}
+
+/* Ghibli 4: Studio Ghibli-faithful — warm parchment backgrounds
+   with verdant meadow greens and soft terracotta text accents. */
+.theme-ghibli-4 {
+  --bg-primary: #f2ede4;
+  --bg-secondary: #e8e0d0;
+  --bg-tertiary: #dad0bc;
+  --bg-input: #faf6ef;
+  --text-primary: #2e3828;
+  --text-secondary: #515d4b;
+  --accent-color: #557e63;
+  --text-on-accent: #1a1a1a;
+  --border-color: #c8b89a;
+  --border-light: #dad0bc;
+  --border-focus: #5e8c6e;
+  --topbar-bg: linear-gradient(150deg, #ddd4c0, #eee6d6);
+  --topbar-border: #c8b89a;
+  --modal-bg: #f2ede4;
+  --modal-overlay: rgba(40, 50, 36, 0.18);
+  --tooltip-bg: #e0d5c4;
+  --tooltip-border: #b8a888;
+  --tooltip-text: #2e3828;
+  --tree-line-color: #94a082;
+  --selection-bg: #ceddcb;
+  --hover-bg: #d8ead4;
+  --disabled-bg: #f2ede4;
+  --disabled-text: #bfb49e;
+  --scrollbar-track: #e8e0d0;
+  --scrollbar-thumb: #c0b098;
+  --drop-highlight: rgba(94, 140, 110, 0.18);
+  --shadow-light: rgba(36, 46, 30, 0.04);
+  --shadow-medium: rgba(36, 46, 30, 0.09);
+  --shadow-heavy: rgba(36, 46, 30, 0.18);
+  --focus-shadow: rgba(94, 140, 110, 0.3);
+}
+
+/* Fern 4: Ancient forest — deep mossy greens with warm copper accent.
+   Moodier than the original fern, with richer shadows and a gold-leaf pop. */
+.theme-fern-4 {
+  --bg-primary: #182420;
+  --bg-secondary: #22332e;
+  --bg-tertiary: #2d4038;
+  --bg-input: #22332e;
+  --text-primary: #e4f0e8;
+  --text-secondary: #b8d0c0;
+  --accent-color: #c9984a;
+  --text-on-accent: #1a1a1a;
+  --border-color: #3a5848;
+  --border-light: #2d4038;
+  --border-focus: #c9984a;
+  --topbar-bg: linear-gradient(135deg, #22332e, #2d4038);
+  --topbar-border: #3a5848;
+  --modal-bg: #182420;
+  --modal-overlay: rgba(14, 22, 18, 0.85);
+  --tooltip-bg: #2d4038;
+  --tooltip-border: #3a5848;
+  --tooltip-text: #e4f0e8;
+  --tree-line-color: #b8d0c0;
+  --selection-bg: #3e6050;
+  --hover-bg: #4c7060;
+  --disabled-bg: #182420;
+  --disabled-text: #3a5848;
+  --scrollbar-track: #182420;
+  --scrollbar-thumb: #3a5848;
+  --drop-highlight: rgba(201, 152, 74, 0.2);
+  --shadow-light: rgba(10, 17, 14, 0.13);
+  --shadow-medium: rgba(10, 17, 14, 0.26);
+  --shadow-heavy: rgba(10, 17, 14, 0.44);
+  --focus-shadow: rgba(201, 152, 74, 0.38);
+}
+
+/* Light 4: Clean modernist — crisp whites with a coral-rose accent.
+   Apple HIG-inspired: airy, high-readability, no eye strain. */
+.theme-light-4 {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f7fa;
+  --bg-tertiary: #ebeef4;
+  --bg-input: #ffffff;
+  --text-primary: #1a1d26;
+  --text-secondary: #636b85;
+  --accent-color: #e05c7a;
+  --text-on-accent: #1a1a1a;
+  --border-color: #dde2ec;
+  --border-light: #ebeef4;
+  --border-focus: #e05c7a;
+  --topbar-bg: linear-gradient(135deg, #f5f7fa, #ebeef4);
+  --topbar-border: #dde2ec;
+  --modal-bg: #ffffff;
+  --modal-overlay: rgba(20, 24, 40, 0.22);
+  --tooltip-bg: #f0f3f8;
+  --tooltip-border: #c8d0e0;
+  --tooltip-text: #1a1d26;
+  --tree-line-color: #8892aa;
+  --selection-bg: #fce4ea;
+  --hover-bg: #fdeef2;
+  --disabled-bg: #f8fafc;
+  --disabled-text: #c4cad8;
+  --scrollbar-track: #f5f7fa;
+  --scrollbar-thumb: #c4cad8;
+  --drop-highlight: rgba(224, 92, 122, 0.12);
+  --shadow-light: rgba(20, 24, 40, 0.04);
+  --shadow-medium: rgba(20, 24, 40, 0.08);
+  --shadow-heavy: rgba(20, 24, 40, 0.15);
+  --focus-shadow: rgba(224, 92, 122, 0.28);
+}
+
+/* Night 4: Deep cosmos — near-black navy with a glowing indigo accent.
+   Rich star-field depth — Dracula meets Moonlight. */
+.theme-night-4 {
+  --bg-primary: #06091a;
+  --bg-secondary: #0e1530;
+  --bg-tertiary: #172044;
+  --bg-input: #0e1530;
+  --text-primary: #dce8ff;
+  --text-secondary: #8fa8d0;
+  --accent-color: #7b8fff;
+  --text-on-accent: #1a1a1a;
+  --border-color: #243060;
+  --border-light: #172044;
+  --border-focus: #7b8fff;
+  --topbar-bg: linear-gradient(135deg, #0e1530, #172044);
+  --topbar-border: #243060;
+  --modal-bg: #0e1530;
+  --modal-overlay: rgba(4, 6, 16, 0.92);
+  --tooltip-bg: #172044;
+  --tooltip-border: #243060;
+  --tooltip-text: #dce8ff;
+  --tree-line-color: #8fa8d0;
+  --selection-bg: #1e306a;
+  --hover-bg: #283d80;
+  --disabled-bg: #06091a;
+  --disabled-text: #243060;
+  --scrollbar-track: #06091a;
+  --scrollbar-thumb: #243060;
+  --drop-highlight: rgba(123, 143, 255, 0.18);
+  --shadow-light: rgba(4, 6, 20, 0.16);
+  --shadow-medium: rgba(4, 6, 20, 0.34);
+  --shadow-heavy: rgba(4, 6, 20, 0.58);
+  --focus-shadow: rgba(123, 143, 255, 0.4);
+}
+
+/* Aurora 4: Polar night sky with shimmering aurora teal & violet.
+   A deeper, more saturated take on northern lights. */
+.theme-aurora-4 {
+  --bg-primary: #071520;
+  --bg-secondary: #0d2438;
+  --bg-tertiary: #163550;
+  --bg-input: #0d2438;
+  --text-primary: #e0f8ff;
+  --text-secondary: #90d0e8;
+  --accent-color: #2ee8c0;
+  --text-on-accent: #1a1a1a;
+  --border-color: #1c4870;
+  --border-light: #163550;
+  --border-focus: #2ee8c0;
+  --topbar-bg: linear-gradient(135deg, #0d2438, #163550);
+  --topbar-border: #1c4870;
+  --modal-bg: #0d2438;
+  --modal-overlay: rgba(5, 14, 22, 0.9);
+  --tooltip-bg: #163550;
+  --tooltip-border: #1c4870;
+  --tooltip-text: #e0f8ff;
+  --tree-line-color: #90d0e8;
+  --selection-bg: #1a5a72;
+  --hover-bg: #22708e;
+  --disabled-bg: #071520;
+  --disabled-text: #1c4870;
+  --scrollbar-track: #071520;
+  --scrollbar-thumb: #1c4870;
+  --drop-highlight: rgba(46, 232, 192, 0.18);
+  --shadow-light: rgba(5, 14, 22, 0.14);
+  --shadow-medium: rgba(5, 14, 22, 0.3);
+  --shadow-heavy: rgba(5, 14, 22, 0.52);
+  --focus-shadow: rgba(46, 232, 192, 0.36);
+}
+
+/* Ember 4: Smoldering hearth fire — deep charcoal with lava-orange glow.
+   More refined than variant 3: amber embers rather than bright orange. */
+.theme-ember-4 {
+  --bg-primary: #1a1008;
+  --bg-secondary: #281a0e;
+  --bg-tertiary: #3a2416;
+  --bg-input: #281a0e;
+  --text-primary: #f8e8d0;
+  --text-secondary: #d4a87a;
+  --accent-color: #f07b38;
+  --text-on-accent: #1a1a1a;
+  --border-color: #5a3820;
+  --border-light: #3a2416;
+  --border-focus: #f07b38;
+  --topbar-bg: linear-gradient(135deg, #2e1c10, #3a2416);
+  --topbar-border: #5a3820;
+  --modal-bg: #281a0e;
+  --modal-overlay: rgba(16, 10, 6, 0.9);
+  --tooltip-bg: #3a2416;
+  --tooltip-border: #6a4228;
+  --tooltip-text: #f8e8d0;
+  --tree-line-color: #d4a87a;
+  --selection-bg: #5c3a20;
+  --hover-bg: #724a2c;
+  --disabled-bg: #1a1008;
+  --disabled-text: #7a5038;
+  --scrollbar-track: #1a1008;
+  --scrollbar-thumb: #5a3820;
+  --drop-highlight: rgba(240, 123, 56, 0.2);
+  --shadow-light: rgba(0, 0, 0, 0.16);
+  --shadow-medium: rgba(0, 0, 0, 0.32);
+  --shadow-heavy: rgba(0, 0, 0, 0.54);
+  --focus-shadow: rgba(240, 123, 56, 0.38);
+}
+
+/* === NEW ORIGINAL THEMES (Variant 4) === */
+
+/* Dusk 4: Twilight gradient hour — muted mauve and dusty rose.
+   A contemplative theme: warm grey-purples at the edge of day. */
+.theme-dusk-4 {
+  --bg-primary: #1e1824;
+  --bg-secondary: #2a2232;
+  --bg-tertiary: #362c42;
+  --bg-input: #2a2232;
+  --text-primary: #f0eaf8;
+  --text-secondary: #b0a0c8;
+  --accent-color: #e88fc0;
+  --text-on-accent: #1a1a1a;
+  --border-color: #4a3a5e;
+  --border-light: #362c42;
+  --border-focus: #e88fc0;
+  --topbar-bg: linear-gradient(135deg, #2a2232, #362c42);
+  --topbar-border: #4a3a5e;
+  --modal-bg: #2a2232;
+  --modal-overlay: rgba(18, 14, 22, 0.88);
+  --tooltip-bg: #362c42;
+  --tooltip-border: #5a4870;
+  --tooltip-text: #f0eaf8;
+  --tree-line-color: #b0a0c8;
+  --selection-bg: #4a2a56;
+  --hover-bg: #5c3668;
+  --disabled-bg: #1e1824;
+  --disabled-text: #4a3a5e;
+  --scrollbar-track: #1e1824;
+  --scrollbar-thumb: #4a3a5e;
+  --drop-highlight: rgba(232, 143, 192, 0.18);
+  --shadow-light: rgba(14, 10, 20, 0.14);
+  --shadow-medium: rgba(14, 10, 20, 0.3);
+  --shadow-heavy: rgba(14, 10, 20, 0.52);
+  --focus-shadow: rgba(232, 143, 192, 0.38);
+}
+
+/* Slate 4: Editorial minimalism — warm grey with celadon green accent.
+   A sophisticated neutral palette for distraction-free focus. */
+.theme-slate-4 {
+  --bg-primary: #f8f9f8;
+  --bg-secondary: #eef0ee;
+  --bg-tertiary: #e2e6e2;
+  --bg-input: #ffffff;
+  --text-primary: #1c2420;
+  --text-secondary: #5e6962;
+  --accent-color: #449172;
+  --text-on-accent: #1a1a1a;
+  --border-color: #d0d8d0;
+  --border-light: #e2e6e2;
+  --border-focus: #4a9e7c;
+  --topbar-bg: linear-gradient(135deg, #eef0ee, #e2e6e2);
+  --topbar-border: #d0d8d0;
+  --modal-bg: #f8f9f8;
+  --modal-overlay: rgba(20, 30, 24, 0.18);
+  --tooltip-bg: #e8ece8;
+  --tooltip-border: #c0c8c0;
+  --tooltip-text: #1c2420;
+  --tree-line-color: #7a8c80;
+  --selection-bg: #cce8da;
+  --hover-bg: #d8f0e4;
+  --disabled-bg: #f4f6f4;
+  --disabled-text: #c0c8c0;
+  --scrollbar-track: #eef0ee;
+  --scrollbar-thumb: #c0c8c0;
+  --drop-highlight: rgba(74, 158, 124, 0.14);
+  --shadow-light: rgba(20, 30, 24, 0.04);
+  --shadow-medium: rgba(20, 30, 24, 0.08);
+  --shadow-heavy: rgba(20, 30, 24, 0.16);
+  --focus-shadow: rgba(74, 158, 124, 0.28);
+}
+
+/* New original theme by GPT variant set */
+.theme-ember-3 {
+  --bg-primary: #201412;
+  --bg-secondary: #2f1d1a;
+  --bg-tertiary: #412722;
+  --bg-input: #2f1d1a;
+  --text-primary: #f2dfd8;
+  --text-secondary: #c8a89a;
+  --accent-color: #ff9463;
+  --text-on-accent: #1a1a1a;
+  --border-color: #5c3a32;
+  --border-light: #412722;
+  --border-focus: #ff9463;
+  --topbar-bg: linear-gradient(135deg, #3a241f, #4e312b);
+  --topbar-border: #68453b;
+  --modal-bg: #2a1916;
+  --modal-overlay: rgba(18, 10, 9, 0.84);
+  --tooltip-bg: #4a2d26;
+  --tooltip-border: #6b4539;
+  --tooltip-text: #f2dfd8;
+  --tree-line-color: #c8a89a;
+  --selection-bg: #5b342b;
+  --hover-bg: #714036;
+  --disabled-bg: #241613;
+  --disabled-text: #7e5a4c;
+  --scrollbar-track: #241613;
+  --scrollbar-thumb: #6b4539;
+  --drop-highlight: rgba(255, 148, 99, 0.18);
+  --shadow-light: rgba(0, 0, 0, 0.14);
+  --shadow-medium: rgba(0, 0, 0, 0.26);
+  --shadow-heavy: rgba(0, 0, 0, 0.42);
+  --focus-shadow: rgba(255, 148, 99, 0.34);
+}
+
+/* Retro 8-Bit -GPT: phosphor console vibe with CRT-inspired greens and amber */
+.theme-retro-8bit-gpt {
+  --bg-primary: #060b0b;
+  --bg-secondary: #0b1212;
+  --bg-tertiary: #111b1b;
+  --bg-input: #0b1212;
+  --text-primary: #d5ffd8;
+  --text-secondary: #8ac79a;
+  --accent-color: #57ffae;
+  --text-on-accent: #1a1a1a;
+  --border-color: #1f3f34;
+  --border-light: #173229;
+  --border-focus: #57ffae;
+
+  --topbar-bg: linear-gradient(135deg, #0d1a1a, #132625);
+  --topbar-border: #20453a;
+  --modal-bg: #0a1313;
+  --modal-overlay: rgba(4, 10, 10, 0.88);
+  --tooltip-bg: #0f1f1f;
+  --tooltip-border: #2a5d4e;
+  --tooltip-text: #d5ffd8;
+  --tree-line-color: #79d09a;
+  --selection-bg: #16362f;
+  --hover-bg: #1f473d;
+  --disabled-bg: #081010;
+  --disabled-text: #386d5a;
+  --scrollbar-track: #081010;
+  --scrollbar-thumb: #2b5a4a;
+  --drop-highlight: rgba(87, 255, 174, 0.18);
+
+  --shadow-light: rgba(0, 0, 0, 0.2);
+  --shadow-medium: rgba(0, 0, 0, 0.4);
+  --shadow-heavy: rgba(0, 0, 0, 0.62);
+  --focus-shadow: rgba(87, 255, 174, 0.36);
+}
+
+/* Space Invaders -Claude: Deep space void with phosphor cyan laser beams and neon magenta shields.
+   Vintage 8-bit arcade cabinet atmosphere — every pixel a starfield, every border a laser grid. */
+.theme-retro-space-invaders-claude {
+  --bg-primary: #040912;
+  --bg-secondary: #080f24;
+  --bg-tertiary: #0d1836;
+  --bg-input: #080f24;
+  --text-primary: #c8f0ff;
+  --text-secondary: #6aaac8;
+  --accent-color: #00e5ff;
+  --text-on-accent: #1a1a1a;
+  --border-color: #1a3a5c;
+  --border-light: #0d1836;
+  --border-focus: #00e5ff;
+
+  --topbar-bg: linear-gradient(180deg, #050c1a 0%, #0d1836 100%);
+  --topbar-border: #1a3a5c;
+  --modal-bg: #080f24;
+  --modal-overlay: rgba(2, 4, 12, 0.92);
+  --tooltip-bg: #0d1836;
+  --tooltip-border: #1a3a5c;
+  --tooltip-text: #c8f0ff;
+  --tree-line-color: #3a78a0;
+  --selection-bg: #0a2a50;
+  --hover-bg: #0f3860;
+  --disabled-bg: #040912;
+  --disabled-text: #1a3a5c;
+  --scrollbar-track: #040912;
+  --scrollbar-thumb: #1a3a5c;
+  --drop-highlight: rgba(0, 229, 255, 0.18);
+
+  /* Arcade accent palette */
+  --accent-cyan: #00e5ff;
+  --accent-cyan-glow: #00aacc;
+  --accent-magenta: #ff00cc;
+  --accent-magenta-dim: #aa0088;
+  --accent-yellow: #ffe600;
+  --accent-green: #00ff7f;
+  --accent-white: #e0f8ff;
+  --accent-red: #ff2255;
+
+  --shadow-light: rgba(0, 0, 0, 0.22);
+  --shadow-medium: rgba(0, 0, 0, 0.46);
+  --shadow-heavy: rgba(0, 0, 0, 0.72);
+  --focus-shadow: rgba(0, 229, 255, 0.45);
+}
+
+/* ==========================================================================
+ * Accessibility / High-Contrast Themes
+ * Designed for low-vision and visually-impaired users. Backgrounds, text,
+ * borders and accents are chosen to meet (and mostly exceed) the WCAG 2.1
+ * AAA contrast ratio of 7:1 for body text. Secondary text is NOT dimmed
+ * below an accessible level, focus rings are amplified (see the
+ * .theme-high-contrast-* focus rules below), and decorative shadows are kept
+ * minimal so contrast carries the UI rather than depth cues.
+ * Remove this block + the themeManager entries + themeProfiles entries +
+ * the styles.css swatches to fully remove these themes.
+ * ========================================================================== */
+
+/* High Contrast: Dark — pure-black surfaces, white text, bright amber accent.
+   The general-purpose high-contrast theme (akin to Windows High Contrast). */
+.theme-high-contrast-dark {
+  --bg-primary: #000000;
+  --bg-secondary: #000000;
+  --bg-tertiary: #1a1a1a;
+  --bg-input: #000000;
+  --text-primary: #ffffff;
+  --text-secondary: #f0f0f0;
+  --accent-color: #ffd60a;
+  --text-on-accent: #1a1a1a;
+  --border-color: #ffffff;
+  --border-light: #cfcfcf;
+  --border-focus: #ffd60a;
+  --topbar-bg: #000000;
+  --topbar-border: #ffffff;
+  --modal-bg: #000000;
+  --modal-overlay: rgba(0, 0, 0, 0.85);
+  --tooltip-bg: #000000;
+  --tooltip-border: #ffffff;
+  --tooltip-text: #ffffff;
+  --tree-line-color: #ffffff;
+  --selection-bg: #2d2d2d;
+  --hover-bg: #1f1f1f;
+  --disabled-bg: #000000;
+  --disabled-text: #9a9a9a;
+  --scrollbar-track: #000000;
+  --scrollbar-thumb: #ffffff;
+  --drop-highlight: rgba(255, 214, 10, 0.28);
+  --shadow-light: rgba(0, 0, 0, 0.4);
+  --shadow-medium: rgba(0, 0, 0, 0.6);
+  --shadow-heavy: rgba(0, 0, 0, 0.85);
+  --focus-shadow: rgba(255, 214, 10, 0.65);
+}
+
+/* High Contrast: Light — a high-contrast take on the "Indigo Canvas"
+   (theme-light-1) palette. Keeps the indigo identity but deepens the accent
+   to #3730a3 (~8.9:1 on white, AAA), near-black indigo text, dark visible
+   borders and undimmed secondary text. For users who need maximum contrast
+   but find bright-on-dark uncomfortable (e.g. cataracts, light scatter). */
+.theme-high-contrast-light {
+  --bg-primary: #ffffff;
+  --bg-secondary: #eef1fb;
+  --bg-tertiary: #dde3f5;
+  --bg-input: #ffffff;
+  --text-primary: #14172b;
+  --text-secondary: #2c3358;
+  --accent-color: #3730a3;
+  --text-on-accent: #fff;
+  --border-color: #1a1d2e;
+  --border-light: #4a5078;
+  --border-focus: #3730a3;
+  --topbar-bg: linear-gradient(90deg, #dde7fb, #cdd6f4);
+  --topbar-border: #1a1d2e;
+  --modal-bg: #ffffff;
+  --modal-overlay: rgba(20, 23, 43, 0.55);
+  --tooltip-bg: #eef1fb;
+  --tooltip-border: #1a1d2e;
+  --tooltip-text: #14172b;
+  --tree-line-color: #1a1d2e;
+  --selection-bg: #c2cdfb;
+  --hover-bg: #dde3fb;
+  --disabled-bg: #ffffff;
+  --disabled-text: #4d5577;
+  --scrollbar-track: #ffffff;
+  --scrollbar-thumb: #1a1d2e;
+  --drop-highlight: rgba(55, 48, 163, 0.18);
+
+  /* Accent palette — Indigo Canvas hues deepened for AAA contrast on white */
+  --accent-indigo: #3730a3;
+  --accent-purple: #6b21a8;
+  --accent-pink: #9d174d;
+  --accent-red: #b91c1c;
+  --accent-orange: #9a3412;
+  --accent-yellow: #854d0e;
+  --accent-green: #166534;
+  --accent-teal: #115e59;
+  --accent-blue: #1e40af;
+
+  --shadow-light: rgba(20, 23, 43, 0.08);
+  --shadow-medium: rgba(20, 23, 43, 0.16);
+  --shadow-heavy: rgba(20, 23, 43, 0.3);
+  --focus-shadow: rgba(55, 48, 163, 0.5);
+}
+
+/* High Contrast: Yellow on Black — the palette most recommended by low-vision
+   organisations (RNIB / AbilityNet). Yellow text on black reduces glare while
+   keeping a ~19:1 contrast ratio, helping users with macular degeneration,
+   glaucoma and severe contrast sensitivity loss. */
+.theme-high-contrast-yellow {
+  --bg-primary: #000000;
+  --bg-secondary: #000000;
+  --bg-tertiary: #1a1500;
+  --bg-input: #000000;
+  --text-primary: #ffff00;
+  --text-secondary: #ffe14d;
+  --accent-color: #ffff00;
+  --text-on-accent: #1a1a1a;
+  --border-color: #ffff00;
+  --border-light: #b3b300;
+  --border-focus: #ffffff;
+  --topbar-bg: #000000;
+  --topbar-border: #ffff00;
+  --modal-bg: #000000;
+  --modal-overlay: rgba(0, 0, 0, 0.88);
+  --tooltip-bg: #000000;
+  --tooltip-border: #ffff00;
+  --tooltip-text: #ffff00;
+  --tree-line-color: #ffff00;
+  --selection-bg: #333300;
+  --hover-bg: #262600;
+  --disabled-bg: #000000;
+  --disabled-text: #999900;
+  --scrollbar-track: #000000;
+  --scrollbar-thumb: #ffff00;
+  --drop-highlight: rgba(255, 255, 0, 0.22);
+  --shadow-light: rgba(0, 0, 0, 0.4);
+  --shadow-medium: rgba(0, 0, 0, 0.6);
+  --shadow-heavy: rgba(0, 0, 0, 0.85);
+  --focus-shadow: rgba(255, 255, 0, 0.6);
+}
+
+/* Amplified, always-visible focus indicators for the high-contrast themes.
+   Unlike .theme-dark-1 (which suppresses button focus rings), accessibility
+   themes must surface a strong, unambiguous focus outline for keyboard and
+   low-vision users. */
+.theme-high-contrast-dark :focus-visible,
+.theme-high-contrast-light :focus-visible,
+.theme-high-contrast-yellow :focus-visible {
+  outline: 3px solid var(--border-focus) !important;
+  outline-offset: 2px !important;
+  box-shadow: var(--focus-ring-high-contrast) !important;
+}
+}

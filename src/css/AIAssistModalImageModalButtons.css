@@ -1,0 +1,152 @@
+@layer app {
+#image-modal #image-modal-font-size-increase {
+  color: var(--text-primary);
+}
+
+#image-modal .flowjoe-modal-control-btn {
+  background: var(--bg-tertiary) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-secondary) !important;
+  box-shadow: none !important;
+}
+
+#image-modal .flowjoe-modal-control-btn:hover:not(:disabled) {
+  background: var(--hover-bg) !important;
+  border-color: var(--accent-color) !important;
+  color: var(--accent-color) !important;
+}
+
+#image-modal .flowjoe-modal-control-btn:focus-visible:not(:disabled) {
+  background: var(--hover-bg) !important;
+  border-color: var(--accent-color) !important;
+  color: var(--accent-color) !important;
+  outline: none !important;
+  box-shadow: var(--focus-ring) !important;
+}
+
+#image-modal #image-modal-cancel:focus:not(:disabled) {
+  background: var(--hover-bg) !important;
+  border-color: var(--accent-color) !important;
+  color: var(--accent-color) !important;
+  outline: none !important;
+  box-shadow: var(--focus-ring) !important;
+}
+
+#image-modal[data-summary-mode-active="true"] #image-modal-cancel:focus:not(:disabled) {
+  background: var(--hover-bg) !important;
+  border-color: var(--accent-color) !important;
+  color: var(--accent-color) !important;
+  outline: none !important;
+  box-shadow: var(--focus-ring) !important;
+}
+
+#image-modal .flowjoe-modal-control-btn:active:not(:disabled) {
+  background: color-mix(in srgb, var(--accent-color) 18%, var(--bg-tertiary)) !important;
+  border-color: var(--accent-color) !important;
+  color: var(--accent-color) !important;
+  box-shadow: none !important;
+}
+
+#image-modal .flowjoe-modal-control-btn.is-active:not(:disabled),
+#image-modal .flowjoe-modal-control-btn[aria-pressed="true"]:not(:disabled) {
+  background: color-mix(in srgb, var(--accent-color) 14%, var(--bg-secondary)) !important;
+  border-color: var(--accent-color) !important;
+  color: var(--accent-color) !important;
+  box-shadow: none !important;
+}
+
+#image-modal .flowjoe-modal-control-btn:disabled {
+  color: var(--text-muted, #999) !important;
+  cursor: not-allowed !important;
+  opacity: var(--disabled-opacity-control) !important;
+}
+
+#image-modal .flowjoe-modal-control-btn.flowjoe-modal-highlight-icon:not(:disabled) {
+  color: var(--accent-color) !important;
+}
+
+/* Pin the spell-check glyph to a fixed advance width. These buttons swap their
+   icon between fa-spell-check (15.75px) and fa-spinner (14px) on click; because
+   the button is flex-centred, that 1.75px difference re-centres the glyph and
+   the icon visibly jumps sideways on a single click.
+   Font Awesome's own .fa-fw {text-align:center;width:1.25em} would do this, but
+   it only helps where the swap markup remembers to include the class — and
+   several swap sites in joeImageModalLifecycle.js do not. Pinning by button id
+   here makes the fix hold regardless of which site sets the icon. (FA is loaded
+   from a CDN, so its rules are NOT greppable under src/ and are unreadable via
+   cssRules cross-origin — don't conclude .fa-fw is missing from either check.) */
+#summary-modal-spellcheck-btn > i,
+#preview-modal-spellcheck-btn > i {
+  width: 1.25em;
+  text-align: center;
+  flex: 0 0 auto;
+}
+
+#image-modal #modal-notes-wrapper {
+  position: relative;
+}
+
+#image-modal #image-modal-notes {
+  padding-right: 54px;
+}
+
+#image-modal #image-modal-dictate-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 3;
+  width: var(--icon-btn-size);
+  min-width: var(--icon-btn-size);
+  height: var(--icon-btn-size);
+  min-height: var(--icon-btn-size);
+  padding: 0;
+  margin: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--icon-btn-radius, 4px); /* unified square-button radius */
+}
+
+#image-modal #image-modal-dictate-btn.is-listening {
+  background: color-mix(in srgb, var(--accent-color) 18%, var(--bg-tertiary) 82%) !important;
+  border-color: var(--accent-color) !important;
+  color: var(--accent-color) !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-color) 18%, transparent) !important;
+}
+
+#image-modal #image-modal-markdown-save[data-dirty="true"]:not(:disabled),
+#image-modal #image-modal-markdown-save.is-armed:not(:disabled) {
+  background: color-mix(in srgb, var(--accent-color) 14%, var(--bg-secondary)) !important;
+  border-color: var(--accent-color) !important;
+  color: var(--accent-color) !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+  cursor: pointer !important;
+}
+
+#image-modal #image-modal-done.preview-save-dirty:not(:disabled),
+#image-modal #preview-modal-inline-save-btn.preview-save-dirty:not(:disabled),
+#image-modal #summary-modal-inline-save-btn.preview-save-dirty:not(:disabled) {
+  background: color-mix(in srgb, var(--accent-color) 14%, var(--bg-secondary)) !important;
+  border-color: var(--accent-color) !important;
+  color: var(--accent-color) !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+}
+
+#image-modal .flowjoe-modal-control-btn i,
+#image-modal .flowjoe-modal-control-btn .ai-font-size-button-glyph {
+  color: inherit;
+}
+
+#image-modal #image-modal-font-size-increase.is-active {
+  border-color: var(--accent-color) !important;
+  box-shadow: none !important;
+  color: var(--accent-color) !important;
+}
+
+#image-modal #image-modal-font-size-increase:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+}

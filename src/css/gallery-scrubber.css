@@ -1,0 +1,812 @@
+@layer app {
+/* ==========================================
+   Gallery Scrubber
+   ========================================== */
+
+:root {
+  --gallery-header-bottom-lock-top: 49px;
+  --gallery-header-virtual-extra-height: 45px;
+  --gallery-scrubber-gap-top: 0px;
+  --gallery-scrubber-gap-top-virtual: 0px;
+  --gallery-scrubber-y-offset: 3px;
+  --gallery-scrubber-sticky-lock-correction: 0px;
+  --gallery-scrubber-top-locked-margin-top: 5px;
+  --gallery-scrubber-top-locked-margin-bottom: 14px;
+  --gallery-scrubber-bottom-locked-bottom: 6px;
+  --gallery-scrubber-bottom-locked-margin-bottom: 8px;
+  --gallery-scrubber-cast-shadow: color-mix(in srgb, black 44%, transparent);
+}
+
+/* Default Scrubber Rail (Integrated Design) */
+#gallery-top-scrubber {
+  display: none;
+  width: auto;
+  height: var(--canvas-scrubber-rail-h, 26px);
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  position: fixed;
+  left: calc(var(--tree-width, 280px) + 20px);
+  right: 20px;
+  bottom: var(--gallery-scrubber-bottom-locked-bottom);
+  z-index: var(--flowjoe-z-image-modal);
+  border-radius: var(--radius-2xl, 12px);
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--bg-secondary) 76%, transparent) 0%,
+    color-mix(in srgb, var(--bg-primary) 86%, transparent) 100%
+  );
+  backdrop-filter: blur(7px) saturate(1.18);
+  -webkit-backdrop-filter: blur(7px) saturate(1.18);
+  border: 1px solid color-mix(in srgb, var(--border-color) 82%, transparent);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, white 12%, transparent),
+    inset 0 -1px 0 color-mix(in srgb, black 24%, transparent),
+    0 2px 8px color-mix(in srgb, black 16%, transparent);
+  cursor: pointer;
+  transition:
+    opacity 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
+  pointer-events: auto !important; /* Catch all clicks on the rail */
+  overflow: visible;
+}
+
+/* Fixed to the rail so gallery content scrolls underneath the cast shadow. */
+#gallery-top-scrubber::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% - 1px);
+  height: 30px;
+  border-radius: 0 0 16px 16px;
+  background: linear-gradient(
+    to bottom,
+    var(--gallery-scrubber-cast-shadow) 0%,
+    color-mix(in srgb, black 20%, transparent) 42%,
+    transparent 100%
+  );
+  filter: blur(3px);
+  opacity: 0.86;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  z-index: 1;
+}
+
+body:not(.scrubber-top) #gallery-top-scrubber::after {
+  top: auto;
+  bottom: calc(100% - 1px);
+  border-radius: 16px 16px 0 0;
+  background: linear-gradient(
+    to top,
+    var(--gallery-scrubber-cast-shadow) 0%,
+    color-mix(in srgb, black 20%, transparent) 42%,
+    transparent 100%
+  );
+}
+
+body.scrubber-shadow-disabled #gallery-top-scrubber::after {
+  display: none;
+}
+
+/* Rail cavity line for stronger depth */
+#gallery-top-scrubber::before {
+  content: "";
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: 50%;
+  height: 12px;
+  transform: translateY(-50%);
+  border-radius: var(--radius-full, 999px);
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, black 28%, transparent) 0%,
+    color-mix(in srgb, var(--bg-primary) 10%, transparent) 100%
+  );
+  box-shadow:
+    inset 0 1px 1px color-mix(in srgb, black 34%, transparent),
+    inset 0 -1px 1px color-mix(in srgb, white 10%, transparent);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Scrubber Top override (Fixed) */
+body.scrubber-top #gallery-top-scrubber {
+  position: fixed !important;
+  top: calc(var(--gallery-scrubber-fixed-top, var(--gallery-header-bottom-lock-top)) + var(--gallery-scrubber-y-offset, 0px)) !important;
+  left: var(--gallery-scrubber-fixed-left, calc(var(--tree-width, 280px) + 20px)) !important;
+  right: var(--gallery-scrubber-fixed-right, 20px) !important;
+  bottom: auto !important;
+  margin: 0 !important;
+  z-index: var(--flowjoe-z-image-modal) !important;
+  width: auto !important;
+  max-width: 100% !important;
+}
+
+body.scrubber-top #node-info:has(#image-display[data-gallery-source-type="tag-query"]) #gallery-top-scrubber {
+  top: calc(
+    var(--gallery-scrubber-fixed-top, var(--gallery-header-bottom-lock-top)) +
+    var(--gallery-scrubber-gap-top-virtual) +
+    var(--gallery-scrubber-y-offset, 0px) +
+    var(--gallery-scrubber-sticky-lock-correction)
+  ) !important;
+  margin-top: 0 !important;
+}
+
+/* Scrubber Thumb (Base) */
+#gallery-top-scrubber-inner {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  height: 16px;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--accent-color) 54%, white) 0%,
+    color-mix(in srgb, var(--accent-color) 88%, var(--bg-primary)) 100%
+  );
+  border-radius: var(--radius-lg, 8px);
+  border: 1px solid color-mix(in srgb, var(--accent-color) 52%, var(--border-color));
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, white 28%, transparent),
+    inset 0 -1px 0 color-mix(in srgb, black 18%, transparent),
+    0 1px 3px color-mix(in srgb, black 24%, transparent),
+    0 0 8px color-mix(in srgb, var(--accent-color) 18%, transparent);
+  transition: width var(--transition-speed) linear;
+  will-change: transform;
+  z-index: 6;
+  pointer-events: auto !important; /* Must be auto to allow dragging the thumb directly */
+  cursor: pointer !important;
+}
+
+/* Default Markings (Center detail) */
+#gallery-top-scrubber-inner::before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 8px;
+  border-radius: var(--radius-sm, 4px);
+  background-image: radial-gradient(circle, var(--text-secondary) 1px, transparent 1.35px);
+  background-size: 4px 4px;
+  background-position: 0 0;
+  background-repeat: repeat;
+  opacity: 0.92;
+  z-index: 14;
+  pointer-events: none;
+}
+
+/* ==========================================
+   BEVELED STYLE OVERRIDE
+   ========================================== */
+body.scrubber-beveled #gallery-top-scrubber {
+  background-color: color-mix(in srgb, var(--bg-primary) 65%, transparent);
+  background-image: none;
+  border: 1px solid color-mix(in srgb, var(--border-color) 88%, transparent);
+  backdrop-filter: blur(12px) saturate(1.4);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, white 6%, transparent),
+    inset 0 -1px 0 color-mix(in srgb, black 24%, transparent);
+}
+
+body.scrubber-beveled #gallery-top-scrubber::before {
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, black 22%, transparent) 0%,
+    color-mix(in srgb, var(--bg-secondary) 20%, transparent) 100%
+  );
+}
+
+body.scrubber-beveled #gallery-top-scrubber-inner {
+  background: linear-gradient(
+    to bottom,
+    var(--scrub-handle-beveled-fill-start) 0%,
+    var(--scrub-handle-beveled-fill-end) 100%
+  );
+  border-color: var(--scrub-handle-beveled-border);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, white 24%, transparent),
+    inset 0 -1px 0 color-mix(in srgb, black 24%, transparent),
+    0 1px 2px color-mix(in srgb, black 24%, transparent);
+}
+
+/* ==========================================
+   FLAT STYLE OVERRIDE (Legacy Flat)
+   ========================================== */
+body.scrubber-flat #gallery-top-scrubber {
+  background-color: color-mix(in srgb, var(--bg-primary) 65%, transparent);
+  background-image: none;
+  backdrop-filter: blur(12px) saturate(1.4);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  border: 1px solid var(--border-color);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+body.scrubber-flat #gallery-top-scrubber::before {
+  display: none;
+}
+
+body.scrubber-flat #gallery-top-scrubber-inner {
+  background: var(--accent-color);
+  border: 1px solid color-mix(in srgb, var(--accent-color) 36%, var(--border-color));
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.2),
+    0 1px 3px color-mix(in srgb, black 20%, transparent),
+    0 0 8px color-mix(in srgb, var(--accent-color) 18%, transparent);
+  margin-top: -1px;
+}
+
+body.scrubber-flat #gallery-top-scrubber-inner::before {
+  display: block;
+}
+
+/* ==========================================
+   GLASS STYLE OVERRIDE
+   ========================================== */
+body.scrubber-glass #gallery-top-scrubber {
+  background:
+    linear-gradient(
+      to bottom,
+      color-mix(in srgb, white 11%, transparent) 0%,
+      color-mix(in srgb, var(--bg-primary) 74%, transparent) 100%
+    );
+  backdrop-filter: blur(14px) saturate(1.35);
+  -webkit-backdrop-filter: blur(14px) saturate(1.35);
+  border: 1px solid color-mix(in srgb, white 16%, var(--border-color));
+  box-shadow:
+    0 4px 18px color-mix(in srgb, black 22%, transparent),
+    inset 0 1px 0 color-mix(in srgb, white 22%, transparent),
+    inset 0 0 0 1px color-mix(in srgb, white 7%, transparent);
+}
+
+body.scrubber-glass #gallery-top-scrubber::before {
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, black 30%, transparent) 0%,
+    color-mix(in srgb, var(--accent-color) 8%, transparent) 100%
+  );
+}
+
+body.scrubber-glass #gallery-top-scrubber-inner {
+  background: linear-gradient(
+    to bottom,
+    var(--scrub-handle-glass-fill-start) 0%,
+    var(--scrub-handle-glass-fill-end) 100%
+  );
+  border-color: var(--scrub-handle-glass-border);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, white 38%, transparent),
+    inset 0 -1px 0 color-mix(in srgb, black 18%, transparent),
+    0 1px 4px color-mix(in srgb, black 20%, transparent),
+    0 0 14px color-mix(in srgb, var(--accent-color) 44%, transparent);
+}
+
+/* Glass Sheen highlight (Fixed Sphere Bug) */
+body.scrubber-glass #gallery-top-scrubber-inner::after {
+  content: "";
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  right: 1px;
+  height: 6px;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0) 100%);
+  border-radius: 4px 4px 0 0;
+  pointer-events: none;
+  z-index: 5;
+  transform: none !important;
+  width: auto !important;
+}
+
+/* Clean up redundant pseudo-elements */
+body.scrubber-glass #gallery-top-scrubber-inner::before {
+  display: block !important;
+  background-image: radial-gradient(circle, var(--text-secondary) 1px, transparent 1.35px);
+  opacity: 0.92;
+}
+
+#gallery-top-scrubber.active {
+  display: block;
+
+}
+
+#gallery-top-scrubber.restoring-thumb #gallery-top-scrubber-inner {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#gallery-top-scrubber:hover #gallery-top-scrubber-inner {
+  filter: brightness(1.03);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--accent-color) 52%, var(--border-color)),
+    inset 0 1px 0 color-mix(in srgb, white 32%, transparent),
+    0 1px 4px color-mix(in srgb, black 18%, transparent),
+    0 0 12px color-mix(in srgb, var(--accent-color) 34%, transparent);
+}
+
+#gallery-top-scrubber.dragging #gallery-top-scrubber-inner {
+  cursor: pointer !important;
+  filter: brightness(1.06);
+  transform: translateY(-0.5px);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--accent-color) 64%, var(--border-color)),
+    inset 0 1px 0 color-mix(in srgb, white 36%, transparent),
+    0 0 16px color-mix(in srgb, var(--accent-color) 48%, transparent);
+}
+
+/* Top + Drag mode uses move cursor on the thumb */
+body.scrubber-top #gallery-top-scrubber-inner {
+  cursor: move !important;
+}
+
+body.scrubber-top #gallery-top-scrubber.dragging #gallery-top-scrubber-inner {
+  cursor: move !important;
+}
+
+#gallery-top-scrubber.repositioning,
+#gallery-top-scrubber.repositioning #gallery-top-scrubber-inner {
+  cursor: ns-resize !important;
+}
+
+#gallery-top-scrubber.dragging {
+  opacity: 1;
+}
+
+#gallery-top-scrubber:hover #gallery-top-scrubber-inner::after,
+#gallery-top-scrubber.dragging #gallery-top-scrubber-inner::after {
+  opacity: 0.62;
+}
+
+#gallery-top-scrubber.disabled {
+  opacity: var(--disabled-opacity-field);
+  cursor: default;
+}
+
+#gallery-top-scrubber-graduations {
+  position: absolute;
+  inset: 0 0 0 0;
+  z-index: 8;
+  pointer-events: none;
+}
+
+.gallery-top-tick {
+  position: absolute;
+  top: 3px;
+  width: 1px;
+  height: 7px;
+  background: color-mix(in srgb, var(--border-color) 76%, transparent);
+  transform: translateX(-50%);
+  pointer-events: none; /* Events pass to rail */
+}
+
+.gallery-top-tick.major {
+  width: 1px;
+  height: 10px;
+  background: color-mix(in srgb, var(--accent-color) 35%, var(--border-color));
+  pointer-events: none; /* Numbers remain clickable via label, but tick shouldn't block */
+}
+
+.gallery-top-tick.minor {
+  top: 5px;
+  width: 12px;
+  background: color-mix(in srgb, var(--border-color) 60%, transparent);
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.gallery-top-tick.minor.half {
+  height: 8px;
+  background: linear-gradient(
+    to right,
+    transparent calc(50% - 0.5px),
+    color-mix(in srgb, var(--accent-color) 26%, var(--border-color)) calc(50% - 0.5px),
+    color-mix(in srgb, var(--accent-color) 26%, var(--border-color)) calc(50% + 0.5px),
+    transparent calc(50% + 0.5px)
+  );
+}
+
+.gallery-top-tick.minor.quarter {
+  height: 6px;
+  background: linear-gradient(
+    to right,
+    transparent calc(50% - 0.5px),
+    color-mix(in srgb, var(--border-color) 60%, transparent) calc(50% - 0.5px),
+    color-mix(in srgb, var(--border-color) 60%, transparent) calc(50% + 0.5px),
+    transparent calc(50% + 0.5px)
+  );
+}
+
+.gallery-top-tick-label {
+  position: absolute;
+  bottom: 1px;
+  transform: translateX(-50%);
+  font-size: var(--font-control);
+  font-weight: 800;
+  line-height: 1;
+  color: color-mix(in srgb, var(--text-secondary) 78%, var(--accent-color));
+  white-space: nowrap;
+  pointer-events: auto !important; /* Enable mouse events for tooltips */
+  cursor: pointer;
+  z-index: 9;
+  transition: color var(--transition-speed) ease, text-shadow var(--transition-speed) ease;
+}
+
+.gallery-top-tick-label.active-slot {
+  color: var(--text-primary);
+  text-shadow: 0 0 6px color-mix(in srgb, var(--accent-color) 28%, transparent);
+}
+
+.gallery-top-tick-label.edge-label {
+  top: 50%;
+  bottom: auto;
+  transform: translate(-50%, -50%);
+}
+
+#gallery-top-scrubber-count {
+  position: absolute;
+  right: 5px;
+  top: calc(50% + 1px);
+  transform: translateY(-50%);
+  font-size: var(--font-micro);
+  line-height: 1;
+  color: color-mix(in srgb, var(--text-secondary) 88%, var(--accent-color));
+  background: color-mix(in srgb, var(--bg-primary) 64%, transparent);
+  border: 1px solid color-mix(in srgb, var(--border-color) 70%, transparent);
+  border-radius: var(--radius-lg, 8px);
+  padding: var(--pad-compact); /* was a drifted 2px 6px */
+  pointer-events: none;
+  z-index: 10;
+}
+
+#gallery-top-scrubber-spacer {
+  display: none;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+body.gallery-top-scrubber-visible.scrubber-top #gallery-top-scrubber-spacer {
+  display: block;
+}
+
+.gallery-top-scrub-tooltip {
+  position: absolute;
+  top: calc(100% + 5px); /* Default: show UNDER the rail */
+  transform: translateX(-50%);
+  padding: 4px 8px;
+  border-radius: var(--radius-sm, 4px);
+  font-size: var(--font-meta);
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--text-primary);
+  background: color-mix(in srgb, var(--bg-primary) 82%, black);
+  border: 1px solid color-mix(in srgb, var(--accent-color) 45%, var(--border-color));
+  box-shadow: 0 4px 10px color-mix(in srgb, black 30%, transparent);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  pointer-events: none;
+  white-space: nowrap;
+  max-width: calc(100% - 12px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  z-index: var(--flowjoe-z-tooltip) !important;
+  opacity: 0;
+  transition: opacity var(--transition-speed) ease;
+}
+
+/* Tooltip position when scrubber is at bottom (default position) */
+body:not(.scrubber-top) #gallery-top-scrubber .gallery-top-scrub-tooltip {
+  bottom: calc(100% + 5px);
+  top: auto;
+}
+
+/* Tooltip position when scrubber is at top (Sticky) */
+body.scrubber-top #gallery-top-scrubber .gallery-top-scrub-tooltip {
+  top: calc(100% + 5px);
+  bottom: auto;
+}
+
+.gallery-top-scrub-tooltip.visible {
+  opacity: 1;
+}
+
+/* Edge alignment to prevent clipping at viewport boundaries */
+.gallery-top-scrub-tooltip.tooltip-edge-left {
+  transform: translateX(0);
+  margin-left: 0;
+}
+
+.gallery-top-scrub-tooltip.tooltip-edge-right {
+  transform: translateX(-100%);
+  margin-left: 0;
+}
+
+/* ==========================================
+   Side (Y) Gallery Scrubber — canvas only
+   Vertical twin of #gallery-top-scrubber.
+   ========================================== */
+
+:root {
+  --canvas-side-scrubber-band: 0px;
+}
+
+body.gallery-side-scrubber-visible {
+  /* Zoom/HUD only — horizontal scrubber is NOT shortened. */
+  --canvas-side-scrubber-band: var(--canvas-side-scrubber-band-visible, 38px);
+}
+
+#gallery-side-scrubber {
+  display: none;
+  box-sizing: border-box;
+  position: fixed;
+  width: var(--canvas-side-scrubber-rail-w, 26px);
+  border-radius: var(--radius-2xl, 12px);
+  background: linear-gradient(
+    to right,
+    color-mix(in srgb, var(--bg-secondary) 76%, transparent) 0%,
+    color-mix(in srgb, var(--bg-primary) 86%, transparent) 100%
+  );
+  backdrop-filter: blur(7px) saturate(1.18);
+  -webkit-backdrop-filter: blur(7px) saturate(1.18);
+  border: 1px solid color-mix(in srgb, var(--border-color) 82%, transparent);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, white 12%, transparent),
+    inset 0 -1px 0 color-mix(in srgb, black 24%, transparent),
+    0 2px 8px color-mix(in srgb, black 16%, transparent);
+  cursor: pointer;
+  z-index: var(--flowjoe-z-gallery-scrubber, 100015);
+  pointer-events: auto !important;
+  overflow: visible;
+}
+
+/* Cast shadow leftward onto gallery content */
+#gallery-side-scrubber::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: calc(100% - 1px);
+  width: 30px;
+  border-radius: 16px 0 0 16px;
+  background: linear-gradient(
+    to left,
+    var(--gallery-scrubber-cast-shadow, color-mix(in srgb, black 44%, transparent)) 0%,
+    color-mix(in srgb, black 20%, transparent) 42%,
+    transparent 100%
+  );
+  filter: blur(3px);
+  opacity: 0.86;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  z-index: 1;
+}
+
+body.scrubber-shadow-disabled #gallery-side-scrubber::after {
+  display: none;
+}
+
+#gallery-side-scrubber::before {
+  content: "";
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  left: 50%;
+  width: 12px;
+  transform: translateX(-50%);
+  border-radius: var(--radius-full, 999px);
+  background: linear-gradient(
+    to right,
+    color-mix(in srgb, black 28%, transparent) 0%,
+    color-mix(in srgb, var(--bg-primary) 10%, transparent) 100%
+  );
+  box-shadow:
+    inset 1px 0 1px color-mix(in srgb, black 34%, transparent),
+    inset -1px 0 1px color-mix(in srgb, white 10%, transparent);
+  pointer-events: none;
+  z-index: 2;
+}
+
+#gallery-side-scrubber-inner {
+  position: absolute;
+  left: 4px;
+  top: 4px;
+  width: 16px;
+  height: 28px;
+  background: linear-gradient(
+    to right,
+    color-mix(in srgb, var(--accent-color) 54%, white) 0%,
+    color-mix(in srgb, var(--accent-color) 88%, var(--bg-primary)) 100%
+  );
+  border-radius: var(--radius-lg, 8px);
+  border: 1px solid color-mix(in srgb, var(--accent-color) 52%, var(--border-color));
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, white 28%, transparent),
+    inset 0 -1px 0 color-mix(in srgb, black 18%, transparent),
+    0 1px 3px color-mix(in srgb, black 24%, transparent),
+    0 0 8px color-mix(in srgb, var(--accent-color) 18%, transparent);
+  transition: height var(--transition-speed) linear;
+  will-change: transform;
+  z-index: 6;
+  pointer-events: auto !important;
+  cursor: pointer !important;
+}
+
+#gallery-side-scrubber-inner::before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 20px;
+  border-radius: var(--radius-sm, 4px);
+  background-image: radial-gradient(circle, var(--text-secondary) 1px, transparent 1.35px);
+  background-size: 4px 4px;
+  background-repeat: repeat;
+  opacity: 0.92;
+  z-index: 14;
+  pointer-events: none;
+}
+
+body.scrubber-beveled #gallery-side-scrubber {
+  background-color: color-mix(in srgb, var(--bg-primary) 65%, transparent);
+  background-image: none;
+  border: 1px solid color-mix(in srgb, var(--border-color) 88%, transparent);
+  backdrop-filter: blur(12px) saturate(1.4);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, white 6%, transparent),
+    inset 0 -1px 0 color-mix(in srgb, black 24%, transparent);
+}
+
+body.scrubber-beveled #gallery-side-scrubber-inner {
+  background: linear-gradient(
+    to right,
+    var(--scrub-handle-beveled-fill-start, color-mix(in srgb, var(--accent-color) 54%, white)) 0%,
+    var(--scrub-handle-beveled-fill-end, color-mix(in srgb, var(--accent-color) 88%, var(--bg-primary))) 100%
+  );
+  border-color: var(--scrub-handle-beveled-border, color-mix(in srgb, var(--accent-color) 52%, var(--border-color)));
+}
+
+body.scrubber-flat #gallery-side-scrubber {
+  background-color: color-mix(in srgb, var(--bg-primary) 65%, transparent);
+  background-image: none;
+  backdrop-filter: blur(12px) saturate(1.4);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  border: 1px solid var(--border-color);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+body.scrubber-flat #gallery-side-scrubber::before {
+  display: none;
+}
+
+body.scrubber-flat #gallery-side-scrubber-inner {
+  background: var(--accent-color);
+  border: 1px solid color-mix(in srgb, var(--accent-color) 36%, var(--border-color));
+}
+
+body.scrubber-glass #gallery-side-scrubber {
+  background: linear-gradient(
+    to right,
+    color-mix(in srgb, white 11%, transparent) 0%,
+    color-mix(in srgb, var(--bg-primary) 74%, transparent) 100%
+  );
+  backdrop-filter: blur(14px) saturate(1.35);
+  -webkit-backdrop-filter: blur(14px) saturate(1.35);
+  border: 1px solid color-mix(in srgb, white 16%, var(--border-color));
+}
+
+body.scrubber-glass #gallery-side-scrubber-inner {
+  background: linear-gradient(
+    to right,
+    var(--scrub-handle-glass-fill-start, color-mix(in srgb, var(--accent-color) 60%, white)) 0%,
+    var(--scrub-handle-glass-fill-end, color-mix(in srgb, var(--accent-color) 90%, var(--bg-primary))) 100%
+  );
+  border-color: var(--scrub-handle-glass-border, color-mix(in srgb, var(--accent-color) 52%, white));
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, white 38%, transparent),
+    0 0 14px color-mix(in srgb, var(--accent-color) 44%, transparent);
+}
+
+/* Long-axis glass sheen (vertical twin of horizontal thumb sheen) */
+body.scrubber-glass #gallery-side-scrubber-inner::after {
+  content: "";
+  position: absolute;
+  top: 1px;
+  bottom: 1px;
+  left: 1px;
+  width: 6px;
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0) 100%);
+  border-radius: 4px 0 0 4px;
+  pointer-events: none;
+}
+
+#gallery-side-scrubber.dragging #gallery-side-scrubber-inner {
+  filter: brightness(1.06);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--accent-color) 64%, var(--border-color)),
+    0 0 16px color-mix(in srgb, var(--accent-color) 48%, transparent);
+}
+
+#gallery-side-scrubber-graduations {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  pointer-events: none;
+}
+
+.gallery-side-tick {
+  position: absolute;
+  left: 3px;
+  height: 1px;
+  width: 7px;
+  background: color-mix(in srgb, var(--border-color) 76%, transparent);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.gallery-side-tick.major {
+  width: 10px;
+  background: color-mix(in srgb, var(--accent-color) 35%, var(--border-color));
+}
+
+.gallery-side-tick.minor {
+  left: 5px;
+  width: 6px;
+  height: 1px;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.gallery-side-tick.minor.half {
+  width: 8px;
+  background: color-mix(in srgb, var(--accent-color) 26%, var(--border-color));
+}
+
+.gallery-side-tick-label {
+  position: absolute;
+  right: 1px;
+  transform: translateY(-50%);
+  font-size: var(--font-control);
+  font-weight: 800;
+  line-height: 1;
+  color: color-mix(in srgb, var(--text-secondary) 78%, var(--accent-color));
+  white-space: nowrap;
+  pointer-events: auto !important;
+  cursor: pointer;
+  z-index: 9;
+  writing-mode: horizontal-tb;
+}
+
+.gallery-side-tick-label.active-slot {
+  color: var(--text-primary);
+  text-shadow: 0 0 6px color-mix(in srgb, var(--accent-color) 28%, transparent);
+}
+
+.gallery-side-scrub-tooltip {
+  position: absolute;
+  right: calc(100% + 6px);
+  transform: translateY(-50%);
+  padding: 4px 8px;
+  border-radius: var(--radius-md, 6px);
+  background: color-mix(in srgb, var(--bg-primary) 92%, transparent);
+  border: 1px solid color-mix(in srgb, var(--border-color) 80%, transparent);
+  color: var(--text-primary);
+  font-size: var(--font-control);
+  font-weight: 700;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 12;
+  transition: opacity 0.12s ease;
+}
+
+.gallery-side-scrub-tooltip.visible {
+  opacity: 1;
+}
+}

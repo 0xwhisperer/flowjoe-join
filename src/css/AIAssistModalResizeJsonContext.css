@@ -1,0 +1,67 @@
+@layer app {
+.ai-chat-window-resize-zone {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 28px;
+  z-index: 11;
+  cursor: grab;
+  touch-action: none;
+}
+
+.ai-chat-window-resize-zone.is-dragging {
+  cursor: grabbing;
+}
+
+.ai-chat-resize-controls {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  position: absolute;
+  left: 50%;
+  top: 1px;
+  transform: translateX(-50%);
+  z-index: 12;
+}
+
+.ai-chat-inline-resize-handle {
+  margin: 0 2px;
+}
+
+.ai-chat-json-context-row {
+  flex-wrap: nowrap;
+}
+
+.ai-chat-json-context-label {
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.ai-chat-context-sent {
+  color: var(--success-color, #2f9e44) !important;
+}
+/* "Updated since sent" highlight — shared by the selected-item label (classList.toggle in AIAssistModal). */
+.ai-chat-node-context-warning {
+  color: var(--warning-color) !important;
+}
+
+
+#ai-chat-json-context-select {
+  width: min(260px, 44vw);
+  min-width: 210px;
+  max-width: 100%;
+}
+
+#ai-chat-json-context-select.has-sent-selected-json {
+  border-color: color-mix(in srgb, var(--success-color, #2f9e44) 65%, var(--border-color));
+  color: var(--success-color, #2f9e44);
+}
+
+#ai-chat-json-context-select.has-updated-selected-json {
+  border-color: color-mix(in srgb, var(--warning-color) 65%, var(--border-color));
+  color: var(--warning-color);
+}
+
+}

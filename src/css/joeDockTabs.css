@@ -1,0 +1,1264 @@
+@layer app {
+  /* ── Docked Joe column — Step 3: Spelling, Transcribe and Images (JOE_DOCKED_PANEL_PLAN.md §Step 3) ──
+     The Chat tab's design language (joeDockChat.css, mockups/joe-docked-panel.html) carried to the
+     other three tabs, docked only — every selector carries #ai-spell-check-modal.joe-docked, so the
+     floating window is untouched. The same --jd-* surface ladder (declared on the docked panel in
+     joeDockChat.css): quiet micro labels, raised cards, composer-style text boxes with the accent
+     focus ring, and one action row at the foot of each pane (status on the left, the primary action
+     rightmost).
+
+     Spelling lives at the column's chat width; Transcribe and Images auto-widen it (plan D9 —
+     joeDockLayout.js), and lay their two panes side by side once the TAB is wide enough, stacked
+     below that. Those decisions are container queries on the tab panels (never the viewport), so the
+     floating window's viewport breakpoints (AIAssistModalGenerateTranscribeResponsive.css) must not
+     leak in: every property those @media rules set is re-declared here for the docked column.
+
+     Specificity: AIAssistModalFontScale.css sizes these elements through
+     `#ai-spell-check-panel :is(…#id…)` groups, which weigh (2,0,0)–(2,0,1). Every rule below is
+     prefixed with the docked panel AND the tab panel's id (≥ (2,1,0)), so it wins without !important.
+     Text inside the boxes still follows the app font scale and Joe's A+ step (the calc()s below);
+     chrome (labels, buttons, counters) sits at the column's fixed chrome sizes, like Step 2.
+     Main spacing (panel padding, card padding, the section bar, the composer-style text boxes, the
+     action rows and the status pill) is density-aware via the --jd-tab-* tokens defined per tier in
+     dropin/06-joe-dock-density.css (Step 4); fine-grained spacing inside individual controls
+     (field/button insets, icon gaps, the preview stage, etc.) stays at fixed chrome sizes, like the
+     chip row and tab strip icons above. */
+
+  /* ── Frame: the header, tabs and target stay put; each tab scrolls inside itself (as Chat does) ── */
+  #ai-spell-check-modal.joe-docked > #ai-spell-check-panel:is([data-mode="spell-check"], [data-mode="transcribe-audio"], [data-mode="generate-images"]) {
+    overflow: hidden;
+  }
+
+  #ai-spell-check-modal.joe-docked > #ai-spell-check-panel:is([data-mode="spell-check"], [data-mode="transcribe-audio"], [data-mode="generate-images"]) #ai-spell-check-content {
+    flex: 1 1 auto;
+    padding: 0;
+    gap: 0;
+    overflow: hidden;
+  }
+
+  /* Each tab panel is the container its layout queries measure (the column minus nothing). */
+  #ai-spell-check-modal.joe-docked #ai-spell-check-content > :is(#spell-check-panel, #transcribe-panel, #generate-panel) {
+    container: joe-dock-tab / inline-size;
+    flex: 1 1 auto;
+    min-height: 0;
+    gap: 0;
+    overflow: hidden;
+  }
+
+  /* ── Shared pieces ─────────────────────────────────────────────────────────────────────────── */
+
+  /* Section bar — the Chat tab's thread bar: a quiet title on the left, icon actions on the right. */
+  #ai-spell-check-modal.joe-docked #transcribe-panel > .ai-transcribe-mode-heading,
+  #ai-spell-check-modal.joe-docked #generate-panel > .ai-generate-mode-heading {
+    position: relative;
+    flex: 0 0 auto;
+    gap: var(--jd-tab-section-gap);
+    height: auto;
+    min-height: 0;
+    max-height: none;
+    margin: 0;
+    padding: var(--jd-tab-section-pad);
+  }
+
+  #ai-spell-check-modal.joe-docked #transcribe-panel .ai-transcribe-mode-label,
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-mode-label {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--jd-text-2);
+    font-size: 11.5px;
+    font-weight: 400;
+    letter-spacing: 0.3px;
+    line-height: 28px;
+    text-transform: none;
+  }
+
+  /* Micro labels over a pane or card ("TEXT PREVIEW", "SOURCE", "TRANSCRIPT", "PROMPT", "PREVIEW"…) —
+     the context tray's title style. */
+  #ai-spell-check-modal.joe-docked :is(#spell-check-panel, #transcribe-panel, #generate-panel) :is(.ai-spell-check-label, .ai-spell-check-tweaks-label) {
+    display: flex;
+    align-items: center;
+    height: auto;
+    min-height: 0;
+    max-height: none;
+    flex: 0 0 auto;
+    margin: 0;
+    padding: 0;
+    color: var(--jd-text-3);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.6px;
+    line-height: 1.3;
+    text-transform: uppercase;
+  }
+
+  /* Cards: the raised surface the tray and the target chip use. */
+  #ai-spell-check-modal.joe-docked #transcribe-panel :is(.ai-transcribe-card),
+  #ai-spell-check-modal.joe-docked #generate-panel :is(.ai-generate-pickers-card, .ai-generate-reference-card) {
+    gap: var(--jd-tab-card-gap);
+    min-width: 0;
+    margin: 0;
+    padding: var(--jd-tab-card-pad);
+    border: 1px solid var(--jd-line);
+    border-radius: var(--jd-radius);
+    background: var(--jd-surface);
+    box-shadow: none;
+  }
+
+  /* Composer-style text boxes: the chat composer's surface, radius and accent focus ring. */
+  #ai-spell-check-modal.joe-docked #spell-check-panel :is(#ai-spell-check-preview, #ai-spell-check-result),
+  #ai-spell-check-modal.joe-docked #transcribe-panel #ai-transcribe-result {
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    margin: 0;
+    padding: var(--jd-tab-box-pad);
+    border: 1px solid var(--jd-line);
+    border-radius: 12px;
+    background: var(--jd-surface);
+    box-shadow: none;
+    color: var(--jd-text-1);
+    font-family: inherit;
+    font-size: calc(13px * var(--font-scale, 1) * var(--ai-font-scale, 1));
+    line-height: 1.55;
+    resize: none;
+    outline: none;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  #ai-spell-check-modal.joe-docked #spell-check-panel :is(#ai-spell-check-preview, #ai-spell-check-result):focus,
+  #ai-spell-check-modal.joe-docked #transcribe-panel #ai-transcribe-result:focus {
+    border-color: var(--jd-accent-line);
+    box-shadow: 0 0 0 3px var(--jd-accent-soft);
+    outline: none;
+  }
+
+  #ai-spell-check-modal.joe-docked :is(#spell-check-panel, #transcribe-panel, #generate-panel) :is(textarea)::placeholder {
+    color: var(--jd-text-3);
+  }
+
+  /* Fields (selects): quiet 30px wells with the theme's chevron, the chip row's hover language. */
+  #ai-spell-check-modal.joe-docked #transcribe-panel :is(#ai-transcribe-source-select, #ai-transcribe-model, #ai-transcribe-language),
+  #ai-spell-check-modal.joe-docked #generate-panel :is(#ai-generate-model, #ai-generate-quality, #ai-generate-format, #ai-generate-background, #ai-generate-style, #ai-generate-reference-select) {
+    width: 100%;
+    min-width: 0;
+    height: 30px;
+    min-height: 30px;
+    margin: 0;
+    padding: 0 26px 0 10px;
+    border: 1px solid var(--jd-line);
+    border-radius: 8px;
+    background-color: var(--jd-bg);
+    background-position: right 9px center;
+    background-size: 10px;
+    box-shadow: none;
+    color: var(--jd-text-1);
+    font-size: 12px;
+    line-height: 1.2;
+    text-overflow: ellipsis;
+  }
+
+  #ai-spell-check-modal.joe-docked #transcribe-panel :is(#ai-transcribe-source-select, #ai-transcribe-model, #ai-transcribe-language):hover:not(:disabled),
+  #ai-spell-check-modal.joe-docked #generate-panel :is(#ai-generate-model, #ai-generate-quality, #ai-generate-format, #ai-generate-background, #ai-generate-style, #ai-generate-reference-select):hover:not(:disabled) {
+    border-color: var(--jd-text-3);
+    background-color: var(--jd-well);
+  }
+
+  #ai-spell-check-modal.joe-docked #transcribe-panel :is(#ai-transcribe-source-select, #ai-transcribe-model, #ai-transcribe-language):focus-visible,
+  #ai-spell-check-modal.joe-docked #generate-panel :is(#ai-generate-model, #ai-generate-quality, #ai-generate-format, #ai-generate-background, #ai-generate-style, #ai-generate-reference-select):focus-visible {
+    border-color: var(--jd-accent-line);
+    box-shadow: 0 0 0 3px var(--jd-accent-soft);
+    outline: none;
+  }
+
+  /* Field titles ("Model", "Quality", "Language"…). */
+  #ai-spell-check-modal.joe-docked #transcribe-panel .ai-transcribe-option,
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-options-pickers > .ai-generate-option {
+    gap: 5px;
+    width: 100%;
+    min-width: 0;
+    color: var(--jd-text-3);
+    letter-spacing: 0;
+  }
+
+  #ai-spell-check-modal.joe-docked :is(#transcribe-panel, #generate-panel) .ai-generate-option-title {
+    min-height: 0;
+    margin: 0;
+    padding: 0 0 0 2px;
+    color: var(--jd-text-3);
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1.3;
+  }
+
+  /* Action buttons: the proposal card's buttons — a compact accent primary and quiet outlined
+     secondaries, 30px tall like Send. */
+  #ai-spell-check-modal.joe-docked #spell-check-panel :is(#ai-spell-check-actions, #ai-spell-check-review-actions) .btn,
+  #ai-spell-check-modal.joe-docked #transcribe-panel :is(#ai-transcribe-run, #ai-transcribe-copy, #ai-transcribe-apply, #ai-transcribe-cancel),
+  #ai-spell-check-modal.joe-docked #generate-panel #ai-generate-submit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: auto;
+    min-width: 0;
+    height: 30px;
+    min-height: 30px;
+    margin: 0;
+    padding: 0 14px;
+    border: 1px solid var(--border-color);
+    border-radius: 9px;
+    background: transparent;
+    box-shadow: none;
+    color: var(--jd-text-1);
+    font-size: 12.5px;
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+    opacity: 1;
+    transition:
+      background-color var(--transition-speed) ease,
+      border-color var(--transition-speed) ease,
+      color var(--transition-speed) ease,
+      filter var(--transition-speed) ease;
+  }
+
+  #ai-spell-check-modal.joe-docked #spell-check-panel :is(#ai-spell-check-actions, #ai-spell-check-review-actions) .btn.confirm-button,
+  #ai-spell-check-modal.joe-docked #transcribe-panel :is(#ai-transcribe-run, #ai-transcribe-apply),
+  #ai-spell-check-modal.joe-docked #generate-panel #ai-generate-submit {
+    border-color: var(--jd-accent);
+    background: var(--jd-accent);
+    color: var(--jd-on-accent);
+    font-weight: 600;
+  }
+
+  #ai-spell-check-modal.joe-docked #spell-check-panel :is(#ai-spell-check-actions, #ai-spell-check-review-actions) .btn:not(.confirm-button):is(:hover, :focus-visible):not(:disabled),
+  #ai-spell-check-modal.joe-docked #transcribe-panel :is(#ai-transcribe-copy, #ai-transcribe-cancel):is(:hover, :focus-visible):not(:disabled) {
+    border-color: var(--jd-text-3);
+    background: var(--jd-hover);
+    color: var(--jd-text-1);
+    box-shadow: none;
+    outline: none;
+  }
+
+  #ai-spell-check-modal.joe-docked #spell-check-panel :is(#ai-spell-check-actions, #ai-spell-check-review-actions) .btn.confirm-button:is(:hover, :focus-visible):not(:disabled),
+  #ai-spell-check-modal.joe-docked #transcribe-panel :is(#ai-transcribe-run, #ai-transcribe-apply):is(:hover, :focus-visible):not(:disabled),
+  #ai-spell-check-modal.joe-docked #generate-panel #ai-generate-submit:is(:hover, :focus-visible):not(:disabled) {
+    filter: brightness(1.08);
+    box-shadow: 0 0 0 3px var(--jd-accent-soft);
+    outline: none;
+  }
+
+  #ai-spell-check-modal.joe-docked :is(#spell-check-panel, #transcribe-panel, #generate-panel) .btn:disabled {
+    opacity: var(--disabled-opacity-field, 0.5);
+    cursor: not-allowed;
+  }
+
+  /* Counters and meta: the composer's mono token readout. */
+  #ai-spell-check-modal.joe-docked :is(#spell-check-panel, #transcribe-panel) .ai-spell-check-token-counter,
+  #ai-spell-check-modal.joe-docked :is(#transcribe-panel, #generate-panel) .ai-generate-preview-meta {
+    /* Not a flex box: its text runs ("21", " / 1,050,000 ", "tokens") keep their spaces. */
+    display: inline-block;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    color: var(--jd-text-3);
+    font-family: var(--jd-mono);
+    font-size: 10.5px;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.4;
+    white-space: nowrap;
+  }
+
+  #ai-spell-check-modal.joe-docked #spell-check-panel :is(#ai-spell-check-preview-token-count, #ai-spell-check-result-token-count) {
+    padding: 0;
+    color: var(--jd-text-2);
+    font-weight: 500;
+  }
+
+  /* Status lines (Transcribe / Images): quiet text, tinted pills for errors and successes. */
+  #ai-spell-check-modal.joe-docked :is(#transcribe-panel .ai-transcribe-status, #generate-panel .ai-generate-status) {
+    align-self: center;
+    flex: 1 1 auto;
+    min-width: 0;
+    max-height: 60px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--jd-text-3);
+    font-size: 11.5px;
+    line-height: 1.35;
+  }
+
+  #ai-spell-check-modal.joe-docked :is(#transcribe-panel .ai-transcribe-status, #generate-panel .ai-generate-status):is([data-state="error"], [data-state="success"]) {
+    padding: var(--jd-tab-status-pad);
+    border: 1px solid;
+    border-radius: 8px;
+  }
+
+  #ai-spell-check-modal.joe-docked :is(#transcribe-panel .ai-transcribe-status, #generate-panel .ai-generate-status)[data-state="error"] {
+    border-color: color-mix(in srgb, var(--danger-color) 32%, transparent);
+    background: color-mix(in srgb, var(--danger-color) 10%, transparent);
+    color: var(--danger-color);
+  }
+
+  #ai-spell-check-modal.joe-docked :is(#transcribe-panel .ai-transcribe-status, #generate-panel .ai-generate-status)[data-state="success"] {
+    border-color: color-mix(in srgb, var(--success-color) 32%, transparent);
+    background: color-mix(in srgb, var(--success-color) 10%, transparent);
+    color: var(--success-color);
+  }
+
+  /* ── Spelling (chat width): TEXT PREVIEW · the text box · counter … Check / Cancel ──────────── */
+  #ai-spell-check-modal.joe-docked #spell-check-panel #ai-spell-check-phase-action {
+    flex: 1 1 auto;
+    min-height: 0;
+    gap: 0;
+  }
+
+  /* --jd-tab-inset's per-tier docked values live in dropin/06-joe-dock-density.css (Step 4a) —
+     shared with #ai-spell-check-diff's margin and #ai-spell-check-result-wrap's margin below (all
+     three were the identical `0 12px`). */
+  #ai-spell-check-modal.joe-docked #spell-check-panel #ai-spell-check-preview-wrap {
+    flex: 1 1 auto;
+    min-height: 0;
+    margin: 0;
+    padding: var(--jd-tab-inset);
+  }
+
+  /* --jd-tab-label-pad's per-tier docked values live in dropin/06-joe-dock-density.css (Step 4a). */
+  #ai-spell-check-modal.joe-docked #spell-check-panel #ai-spell-check-preview-wrap > .ai-spell-check-label {
+    padding: var(--jd-tab-label-pad);
+  }
+
+  #ai-spell-check-modal.joe-docked #spell-check-panel #ai-spell-check-preview {
+    flex: 1 1 auto;
+    min-height: 96px;
+  }
+
+  /* The action row (and the review footer below): counter + error on the left, actions rightmost.
+     It wraps in a narrow column instead of squeezing the buttons. */
+  #ai-spell-check-modal.joe-docked #spell-check-panel :is(#ai-spell-check-action-footer, .ai-spell-check-review-footer) {
+    flex-wrap: wrap;
+    align-items: center;
+    min-height: 0;
+    margin: 0;
+    padding: var(--jd-tab-action-row-pad);
+    row-gap: var(--jd-tab-action-row-gap);
+  }
+
+  #ai-spell-check-modal.joe-docked #spell-check-panel .ai-spell-check-action-footer-left {
+    flex-wrap: wrap;
+    gap: var(--jd-tab-actions-gap) var(--jd-tab-action-row-col-gap);
+    min-width: 0;
+  }
+
+  #ai-spell-check-modal.joe-docked #spell-check-panel :is(#ai-spell-check-actions, #ai-spell-check-review-actions) {
+    gap: var(--jd-tab-actions-gap);
+    margin: 0 0 0 auto;
+  }
+
+  #ai-spell-check-modal.joe-docked #spell-check-panel #ai-spell-check-error {
+    flex: 1 1 100%;
+    padding: 6px 10px;
+    border-color: color-mix(in srgb, var(--danger-color) 32%, transparent);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--danger-color) 10%, transparent);
+    font-size: 11.5px;
+    line-height: 1.4;
+  }
+
+  /* --jd-tab-loading-gap / --jd-tab-loading-pad's per-tier docked values live in
+     dropin/06-joe-dock-density.css (Step 4a). */
+  #ai-spell-check-modal.joe-docked #spell-check-panel #ai-spell-check-loading {
+    gap: var(--jd-tab-loading-gap);
+    padding: var(--jd-tab-loading-pad);
+  }
+
+  #ai-spell-check-modal.joe-docked #spell-check-panel #ai-spell-check-loading p {
+    color: var(--jd-text-3);
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  #ai-spell-check-modal.joe-docked #spell-check-panel .ai-spell-check-spinner {
+    width: 20px;
+    height: 20px;
+    border-width: 2px;
+    border-color: var(--jd-line);
+    border-top-color: var(--accent-color);
+  }
+
+  /* Review: REVIEW CORRECTED TEXT · AI RESPONSE / the diff card / MY TWEAKS (drag to split) / the text
+     box / counter … Accept · Try again · Cancel. */
+  #ai-spell-check-modal.joe-docked #spell-check-panel #ai-spell-check-phase-review {
+    grid-template-rows: auto minmax(0, 1fr) auto minmax(0, 1fr) auto;
+    flex: 1 1 auto;
+    gap: 0;
+    min-height: 0;
+  }
+
+  /* --jd-tab-review-header-pad / --jd-tab-review-header-gap / --jd-tab-tweaks-header-pad-top's
+     per-tier docked values live in dropin/06-joe-dock-density.css (Step 4a). */
+  #ai-spell-check-modal.joe-docked #spell-check-panel :is(.ai-spell-check-review-header, .ai-spell-check-tweaks-header) {
+    min-height: 0;
+    margin: 0;
+    padding: var(--jd-tab-review-header-pad);
+    gap: var(--jd-tab-review-header-gap);
+  }
+
+  #ai-spell-check-modal.joe-docked #spell-check-panel .ai-spell-check-tweaks-header {
+    padding-top: var(--jd-tab-tweaks-header-pad-top);
+  }
+
+  #ai-spell-check-modal.joe-docked #spell-check-panel .ai-spell-check-response-badge {
+    height: 20px;
+    min-height: 20px;
+    padding: 0 8px;
+    border: 1px solid var(--jd-accent-line);
+    border-radius: var(--radius-full, 999px);
+    background: var(--jd-accent-soft);
+    color: var(--accent-color);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+  }
+
+  /* --jd-tab-inset (shared with #ai-spell-check-preview-wrap above) / --jd-tab-diff-pad's per-tier
+     docked values live in dropin/06-joe-dock-density.css (Step 4a). */
+  #ai-spell-check-modal.joe-docked #spell-check-panel #ai-spell-check-diff {
+    min-height: 0;
+    margin: var(--jd-tab-inset);
+    padding: var(--jd-tab-diff-pad);
+    border: 1px solid var(--jd-line);
+    border-radius: var(--jd-radius);
+    background: var(--jd-surface);
+    color: var(--jd-text-1);
+    font-size: calc(13px * var(--font-scale, 1) * var(--ai-font-scale, 1));
+    line-height: 1.6;
+  }
+
+  /* --jd-tab-inset (shared above) live in dropin/06-joe-dock-density.css (Step 4a). */
+  #ai-spell-check-modal.joe-docked #spell-check-panel #ai-spell-check-result-wrap {
+    min-height: 0;
+    margin: var(--jd-tab-inset);
+  }
+
+  #ai-spell-check-modal.joe-docked #spell-check-panel #ai-spell-check-result {
+    flex: 1 1 auto;
+  }
+
+  /* ── Transcribe (wide): SOURCE + settings | TRANSCRIPT ─────────────────────────────────────── */
+  /* Stacked (a narrow tab): one scrolling column. */
+  #ai-spell-check-modal.joe-docked #transcribe-panel .ai-transcribe-grid {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    gap: var(--jd-tab-panel-gap);
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    padding: var(--jd-tab-panel-pad);
+    box-sizing: border-box;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    overscroll-behavior: contain;
+  }
+
+  /* --jd-tab-result-gap (per tier in dropin/06-joe-dock-density.css): the header-to-card gap for
+     both panes; .ai-transcribe-controls below overrides it with the stack gap (two stacked cards). */
+  #ai-spell-check-modal.joe-docked #transcribe-panel :is(.ai-transcribe-controls, .ai-transcribe-result-panel) {
+    flex: 0 0 auto;
+    gap: var(--jd-tab-result-gap);
+    width: 100%;
+    height: auto;
+    min-width: 0;
+    min-height: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+    overflow: visible;
+  }
+
+  /* --jd-tab-stack-gap (per tier in 06; shared with .ai-generate-controls): the gap BETWEEN stacked
+     cards — never tighter than the in-card gap, so cards keep reading as separate groups. */
+  #ai-spell-check-modal.joe-docked #transcribe-panel .ai-transcribe-controls {
+    gap: var(--jd-tab-stack-gap);
+    flex: 0 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  #ai-spell-check-modal.joe-docked #transcribe-panel .ai-transcribe-result-panel {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  #ai-spell-check-modal.joe-docked #transcribe-panel :is(.ai-transcribe-controls-header, .ai-transcribe-result-header) {
+    align-items: center;
+    min-height: 0;
+    margin: 0;
+    padding: 0 2px;
+  }
+
+  #ai-spell-check-modal.joe-docked #transcribe-panel .ai-generate-section-header .ai-spell-check-label {
+    margin: 0;
+  }
+
+  /* Source card: artwork · title / details, then the source picker. */
+  #ai-spell-check-modal.joe-docked #transcribe-panel .ai-transcribe-source-content {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+  }
+
+  #ai-spell-check-modal.joe-docked #transcribe-panel .ai-transcribe-source-thumb-wrap {
+    width: 64px;
+    height: 64px;
+    padding: 0;
+    border: 1px solid var(--jd-line);
+    border-radius: var(--radius-lg, 8px);
+    background: var(--jd-well);
+  }
+
+  #ai-spell-check-modal.joe-docked #transcribe-panel #ai-transcribe-source-image {
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    border-radius: 0;
+    object-fit: cover;
+  }
+
+  #ai-spell-check-modal.joe-docked #transcribe-panel .ai-transcribe-source-icon {
+    border-radius: 0;
+    background: var(--jd-accent-soft);
+    font-size: 22px;
+  }
+
+  #ai-spell-check-modal.joe-docked #transcribe-panel .ai-transcribe-source-details {
+    gap: 2px;
+    padding: 0;
+  }
+
+  #ai-spell-check-modal.joe-docked #transcribe-panel .ai-transcribe-source-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--jd-text-1);
+    font-size: calc(13px * var(--font-scale, 1) * var(--ai-font-scale, 1));
+    font-weight: 600;
+  }
+
+  #ai-spell-check-modal.joe-docked #transcribe-panel :is(.ai-transcribe-source-subtitle, .ai-transcribe-source-location, .ai-transcribe-source-meta) {
+    color: var(--jd-text-3);
+    font-size: 11.5px;
+    line-height: 1.35;
+  }
+
+  #ai-spell-check-modal.joe-docked #transcribe-panel .ai-transcribe-source-location {
+    color: var(--jd-text-2);
+  }
+
+  #ai-spell-check-modal.joe-docked #transcribe-panel .ai-transcribe-empty-state {
+    min-height: 34px;
+    border-color: var(--jd-line);
+    border-radius: 8px;
+    color: var(--jd-text-3);
+    font-size: 12px;
+  }
+
+  /* Settings card: Model | Language, then the model's note. */
+  #ai-spell-check-modal.joe-docked #transcribe-panel .ai-transcribe-options-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  #ai-spell-check-modal.joe-docked #transcribe-panel .ai-transcribe-model-info {
+    gap: 3px;
+    min-height: 0;
+    margin: 0;
+    padding: 8px 10px;
+    border: 0;
+    border-radius: 8px;
+    background: var(--jd-well);
+    color: var(--jd-text-3);
+    font-size: 11.5px;
+    line-height: 1.4;
+  }
+
+  #ai-spell-check-modal.joe-docked #transcribe-panel .ai-transcribe-model-info-primary {
+    color: var(--jd-text-1);
+    font-weight: 600;
+  }
+
+  #ai-spell-check-modal.joe-docked #transcribe-panel #ai-transcribe-model-cost-summary {
+    color: var(--jd-text-3);
+    font-size: 11px;
+  }
+
+  /* Action rows: status … Transcribe; word count … Copy · Save · Cancel. */
+  #ai-spell-check-modal.joe-docked #transcribe-panel #ai-transcribe-footer {
+    margin: 0;
+  }
+
+  /* --jd-tab-progress-gap / --jd-tab-progress-pad's per-tier docked values live in
+     dropin/06-joe-dock-density.css (Step 4a). */
+  #ai-spell-check-modal.joe-docked #transcribe-panel .ai-transcribe-progress {
+    gap: var(--jd-tab-progress-gap);
+    padding: var(--jd-tab-progress-pad);
+  }
+
+  #ai-spell-check-modal.joe-docked #transcribe-panel .ai-transcribe-progress-track {
+    height: 3px;
+    border: 0;
+    background: var(--jd-line-soft);
+  }
+
+  #ai-spell-check-modal.joe-docked #transcribe-panel .ai-transcribe-progress-label {
+    color: var(--jd-text-3);
+    font-size: 11px;
+  }
+
+  #ai-spell-check-modal.joe-docked #transcribe-panel :is(.ai-transcribe-bottom-row, .ai-transcribe-result-footer) {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--jd-tab-action-row-gap) var(--jd-tab-action-row-col-gap);
+    min-height: 0;
+    padding: 0 0 0 2px;
+  }
+
+  #ai-spell-check-modal.joe-docked #transcribe-panel #ai-transcribe-actions {
+    margin-left: auto;
+  }
+
+  #ai-spell-check-modal.joe-docked #transcribe-panel .ai-transcribe-result-actions {
+    gap: var(--jd-tab-actions-gap);
+    margin-left: auto;
+  }
+
+  /* In a stacked dock, the transcript takes the height left after the source/settings controls. */
+  #ai-spell-check-modal.joe-docked #transcribe-panel .ai-transcribe-result-card {
+    flex: 1 1 auto;
+    gap: 0;
+    height: auto;
+    min-height: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+  }
+
+  #ai-spell-check-modal.joe-docked #transcribe-panel #ai-transcribe-result {
+    flex: 1 1 auto;
+    min-height: 180px;
+    overflow-y: auto;
+  }
+
+  /* Wide tab: the two panes side by side, each scrolling on its own; the transcript fills its height.
+     --jd-tab-wide-gap's per-tier docked values (shared with #generate-panel's own wide-tab grid
+     below) live in dropin/06-joe-dock-density.css (Step 4a). This is a container-query
+     override of the column gap, so per the density-contract note at the top of 06, its per-tier
+     values are declared there (06 is unlayered and always wins) rather than as a literal here. */
+  @container joe-dock-tab (min-width: 620px) {
+    #ai-spell-check-modal.joe-docked #transcribe-panel .ai-transcribe-grid {
+      display: grid;
+      grid-template-columns: minmax(270px, 0.85fr) minmax(0, 1.15fr);
+      align-items: stretch;
+      gap: var(--jd-tab-wide-gap);
+      overflow: hidden;
+    }
+
+    #ai-spell-check-modal.joe-docked #transcribe-panel :is(.ai-transcribe-controls, .ai-transcribe-result-panel) {
+      height: 100%;
+      min-height: 0;
+    }
+
+    #ai-spell-check-modal.joe-docked #transcribe-panel .ai-transcribe-controls {
+      flex: 1 1 0;
+    }
+
+    #ai-spell-check-modal.joe-docked #transcribe-panel .ai-transcribe-controls {
+      overflow-x: hidden;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+
+    #ai-spell-check-modal.joe-docked #transcribe-panel #ai-transcribe-footer {
+      margin-top: auto;
+    }
+
+    #ai-spell-check-modal.joe-docked #transcribe-panel .ai-transcribe-result-card {
+      flex: 1 1 auto;
+      height: auto;
+    }
+  }
+
+  /* ── Images (wide): settings, reference, prompt + Generate | PREVIEW ───────────────────────── */
+  /* Section bar: New / History become the thread bar's icon buttons (their names stay their text). */
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-mode-actions {
+    flex: 0 0 auto;
+    gap: 2px;
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel :is(#ai-generate-new, #ai-generate-history) {
+    display: inline-grid;
+    place-items: center;
+    width: 28px;
+    min-width: 28px;
+    height: 28px;
+    min-height: 28px;
+    padding: 0;
+    gap: 0;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    box-shadow: none;
+    color: var(--jd-text-2);
+    font-size: 0;
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel :is(#ai-generate-new, #ai-generate-history) > i {
+    font-size: 13px;
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel :is(#ai-generate-new, #ai-generate-history):is(:hover, :focus-visible) {
+    background: var(--jd-hover);
+    color: var(--jd-text-1);
+    outline: none;
+  }
+
+  /* Stacked (a narrow tab): one scrolling column — settings, reference, prompt, then the preview. */
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-grid {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    gap: var(--jd-tab-panel-gap);
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    padding: var(--jd-tab-panel-pad);
+    box-sizing: border-box;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  /* --jd-tab-stack-gap's per-tier docked values (shared with #transcribe-panel .ai-transcribe-controls
+     above) live in dropin/06-joe-dock-density.css (Step 4a). */
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-controls {
+    flex: 0 0 auto;
+    gap: var(--jd-tab-stack-gap);
+    width: 100%;
+    height: auto;
+    min-width: 0;
+    min-height: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+    overflow: visible;
+  }
+
+  /* The PROMPT label (a <label for> the prompt) is drawn right above the prompt box it names, after
+     the settings cards; it is not focusable, so the keyboard order is unchanged. */
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-controls > .ai-generate-pickers-card {
+    order: 1;
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-controls > .ai-generate-reference-card {
+    order: 2;
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-controls > .ai-generate-controls-header {
+    order: 3;
+    margin: 4px 0 -2px;
+    padding: 0 2px;
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-controls > .ai-generate-prompt-card {
+    order: 4;
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-controls > #ai-generate-footer {
+    order: 5;
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-section-header .ai-spell-check-label {
+    margin: 0;
+  }
+
+  /* Settings card: Model | Quality, Format | Background, Aspect | Style. */
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-options-pickers {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-options-pickers > :is(.ai-generate-option-model, .ai-generate-option-format, .ai-generate-option-size) {
+    grid-column: 1;
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-options-pickers > :is(.ai-generate-option-quality, .ai-generate-option-background, .ai-generate-option-style) {
+    grid-column: 2;
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-size-toggle {
+    gap: 4px;
+    height: 30px;
+    min-height: 30px;
+    max-height: 30px;
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-size-btn {
+    border: 1px solid var(--jd-line);
+    border-radius: 8px;
+    background: var(--jd-bg);
+    color: var(--jd-text-2);
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-size-btn:is(:hover, :focus-visible) {
+    border-color: var(--jd-text-3);
+    background: var(--jd-well);
+    color: var(--jd-text-1);
+    outline: none;
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-size-btn.is-active {
+    border-color: var(--jd-accent-line);
+    background: var(--jd-accent-soft);
+    color: var(--accent-color);
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-size-icon-square {
+    width: 12px;
+    height: 12px;
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-size-icon-landscape {
+    width: 18px;
+    height: 12px;
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-size-icon-portrait {
+    width: 9px;
+    height: 13px;
+  }
+
+  /* Reference card: thumbnail · REFERENCE, the use-it switch, the picker, the mode switches. */
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-option-reference {
+    gap: 0;
+    width: 100%;
+    min-width: 0;
+  }
+
+  /* The context tray's attachment grid: the thumbnail beside REFERENCE and its switch, then the picker
+     and the mode row across the card's full width (the right-hand group dissolves into the grid; the
+     areas follow the DOM order, so the keyboard order matches what is drawn). */
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-reference-content {
+    display: grid;
+    grid-template-columns: 52px minmax(0, 1fr);
+    grid-template-areas:
+      "thumb title"
+      "thumb check"
+      "select select"
+      "mode mode";
+    align-items: center;
+    gap: 6px 10px;
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-reference-right {
+    display: contents;
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-reference-content > .ai-generate-reference-thumb-wrap {
+    grid-area: thumb;
+    align-self: start;
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-reference-right > .ai-generate-option-title {
+    grid-area: title;
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-reference-right > #ai-generate-reference-select {
+    grid-area: select;
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-reference-right > .ai-generate-checkbox-row {
+    grid-area: check;
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-reference-right > .ai-generate-action-row {
+    grid-area: mode;
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-reference-thumb-wrap {
+    width: 52px;
+    height: 52px;
+    padding: 0;
+    border: 1px solid var(--jd-line);
+    border-radius: var(--radius-lg, 8px);
+    background: var(--jd-well);
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel #ai-generate-reference-thumb {
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    border-radius: 0;
+    object-fit: cover;
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-reference-empty {
+    padding: 4px;
+    color: var(--jd-text-3);
+    font-size: 9.5px;
+    line-height: 1.15;
+  }
+
+  /* --jd-pill-row-gap's per-tier docked values (shared with joeDockChat.css's attachment
+     checkbox-group — both were the identical `6px`) live in dropin/06-joe-dock-density.css
+     (Step 4a). */
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-action-row {
+    gap: var(--jd-pill-row-gap);
+    margin: 0;
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-option-subtitle {
+    color: var(--jd-text-3);
+    font-size: 11px;
+  }
+
+  /* The reference switch and the Auto / New / Edit modes as the context tray's pills: the native
+     checkbox / radio stays on top of its pill (invisible), focusable, and does the toggling. */
+  #ai-spell-check-modal.joe-docked #generate-panel :is(.ai-generate-checkbox-row, .ai-generate-action-option) {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    gap: 6px;
+    min-height: 0;
+    padding: 4px 10px 4px 9px;
+    border: 1px solid var(--jd-line);
+    /* A pill on one line (half its 26px height); a softly rounded box if a long label wraps. */
+    border-radius: 13px;
+    background: var(--jd-bg);
+    color: var(--jd-text-2);
+    font-size: 11.5px;
+    line-height: 1.3;
+    cursor: pointer;
+    transition:
+      background-color var(--transition-speed) ease,
+      border-color var(--transition-speed) ease,
+      color var(--transition-speed) ease;
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel :is(.ai-generate-checkbox-row, .ai-generate-action-option) span {
+    color: inherit;
+    font-size: 11.5px;
+    line-height: 1.3;
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel :is(.ai-generate-checkbox-row, .ai-generate-action-option)::before {
+    content: "\f00c" / "";
+    font: var(--fa-font-solid);
+    font-size: 9px;
+    opacity: 0.4;
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel :is(.ai-generate-checkbox-row, .ai-generate-action-option) input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel :is(.ai-generate-checkbox-row, .ai-generate-action-option):hover {
+    border-color: var(--jd-text-3);
+    color: var(--jd-text-1);
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel :is(.ai-generate-checkbox-row, .ai-generate-action-option):has(input:checked) {
+    border-color: var(--jd-accent-line);
+    background: var(--jd-accent-soft);
+    color: var(--jd-text-1);
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel :is(.ai-generate-checkbox-row, .ai-generate-action-option):has(input:checked)::before {
+    color: var(--accent-color);
+    opacity: 1;
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel :is(.ai-generate-checkbox-row, .ai-generate-action-option):has(input:focus-visible) {
+    box-shadow: 0 0 0 2px var(--jd-accent-line);
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel :is(.ai-generate-checkbox-row, .ai-generate-action-option):has(input:disabled) {
+    opacity: var(--disabled-opacity-field, 0.5);
+    cursor: not-allowed;
+  }
+
+  /* Prompt: the chat composer — the box, its text, and a tool row along its foot (dictate, spell-check,
+     prompt history) with the Enter hint beside it. */
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-prompt-card {
+    position: relative;
+    flex: 0 0 auto;
+    gap: 0;
+    height: 190px;
+    min-height: 0;
+    max-height: none;
+    padding: 0;
+    border: 1px solid var(--jd-line);
+    border-radius: 12px;
+    background: var(--jd-surface);
+    box-shadow: none;
+    overflow: hidden;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-prompt-card:focus-within {
+    border-color: var(--jd-accent-line);
+    box-shadow: 0 0 0 3px var(--jd-accent-soft);
+  }
+
+  /* --jd-tab-prompt-pad's per-tier docked values (top/inline text inset only) live in
+     dropin/06-joe-dock-density.css (Step 4a). The 44px BOTTOM component stays a fixed literal on
+     purpose: it is clearance for the fixed-size tool-row icons overlaid at the box's bottom edge
+     (28px tall, sitting at `bottom: 7px` below), not text rhythm — scaling it down in Dense would
+     shrink the reserve below the 35px (7+28) the icons actually need and start clipping the
+     textarea's own text under them. */
+  #ai-spell-check-modal.joe-docked #generate-panel #ai-generate-prompt {
+    flex: 1 1 auto;
+    height: 100%;
+    min-height: 0;
+    margin: 0;
+    padding: var(--jd-tab-prompt-pad) 44px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    color: var(--jd-text-1);
+    font-size: calc(13px * var(--font-scale, 1) * var(--ai-font-scale, 1));
+    line-height: 1.55;
+    outline: none;
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-prompt-empty-state {
+    /* Below the placeholder, which can wrap to two lines in a narrow pane. */
+    top: 56px;
+    left: 12px;
+    right: 12px;
+    color: var(--jd-text-3);
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-prompt-empty-state strong {
+    color: var(--jd-text-2);
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel :is(#ai-generate-prompt-spell-check, #ai-generate-prompt-dictate, #ai-generate-prompt-history-chip) {
+    top: auto;
+    right: auto;
+    bottom: 7px;
+    width: 28px;
+    min-width: 28px;
+    height: 28px;
+    min-height: 28px;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    box-shadow: none;
+    color: var(--jd-text-2);
+    font-size: 13px;
+    opacity: 1;
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel #ai-generate-prompt-dictate {
+    left: 6px;
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel #ai-generate-prompt-spell-check {
+    left: 36px;
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel #ai-generate-prompt-history-chip {
+    left: 66px;
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel :is(#ai-generate-prompt-spell-check, #ai-generate-prompt-dictate, #ai-generate-prompt-history-chip):is(:hover, :focus-visible):not(:disabled) {
+    background: var(--jd-hover);
+    color: var(--jd-text-1);
+    outline: none;
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel #ai-generate-prompt-dictate.is-listening {
+    background: var(--jd-accent-soft);
+    color: var(--accent-color);
+    box-shadow: none;
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel :is(#ai-generate-prompt-spell-check, #ai-generate-prompt-dictate, #ai-generate-prompt-history-chip):disabled {
+    background: transparent;
+    opacity: var(--disabled-opacity-field, 0.5);
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-prompt-hint {
+    left: 102px;
+    right: 12px;
+    bottom: 13px;
+    color: var(--jd-text-3);
+    font-size: 11px;
+    line-height: 16px;
+    opacity: 1;
+  }
+
+  /* Action row: status … Generate. */
+  #ai-spell-check-modal.joe-docked #generate-panel #ai-generate-footer {
+    margin: 0;
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-controls .ai-generate-bottom-row {
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--jd-tab-action-row-gap) var(--jd-tab-action-row-col-gap);
+    padding: 0 0 0 2px;
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel #ai-generate-actions {
+    margin: 0 0 0 auto;
+  }
+
+  /* Preview: a card of its own — PREVIEW · size/format, then the image (or its placeholder) centred on
+     a well; stacked, it takes a height that follows the tab's width. */
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-preview-panel {
+    flex: 0 0 auto;
+    gap: 8px;
+    width: 100%;
+    height: auto;
+    min-width: 0;
+    min-height: 0;
+    padding: var(--jd-tab-card-pad);
+    border: 1px solid var(--jd-line);
+    border-radius: var(--jd-radius);
+    background: var(--jd-surface);
+    box-shadow: none;
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-preview-header {
+    align-items: center;
+    min-height: 0;
+    margin: 0;
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-preview-stage {
+    flex: 0 0 auto;
+    height: clamp(220px, 78cqi, 560px);
+    min-height: 0;
+    border-radius: 8px;
+    background: var(--jd-well);
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-preview-card {
+    padding: 10px;
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel #ai-generate-preview-placeholder {
+    border: 1.5px dashed var(--jd-line);
+    border-radius: var(--jd-radius);
+    background: radial-gradient(circle at 50% 35%, color-mix(in srgb, var(--accent-color) 7%, transparent), transparent 65%);
+    color: var(--jd-text-3);
+    font-size: 12px;
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-placeholder-text {
+    min-height: 0;
+    padding: 4px 10px;
+    border-radius: 7px;
+    background: var(--jd-surface);
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel #ai-generate-preview-image {
+    border-color: var(--jd-line);
+    border-radius: var(--jd-radius);
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-save-overlay {
+    min-height: 32px;
+    padding: 0 14px;
+    border: 1px solid var(--jd-accent-line);
+    background: var(--jd-surface);
+    box-shadow: var(--elev-floating);
+    filter: none;
+    color: var(--jd-text-1);
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  /* Wide tab: settings/prompt pane | preview pane, side by side; the prompt box and the preview grow
+     into the height, the settings pane scrolls on its own if the column is short.
+     --jd-tab-wide-gap's per-tier docked values (shared with #transcribe-panel's own wide-tab grid
+     above) live in dropin/06-joe-dock-density.css (Step 4a) — see that rule's comment. */
+  @container joe-dock-tab (min-width: 640px) {
+    #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-grid {
+      display: grid;
+      grid-template-columns: minmax(290px, 0.85fr) minmax(0, 1.15fr);
+      align-items: stretch;
+      gap: var(--jd-tab-wide-gap);
+      overflow: hidden;
+    }
+
+    #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-controls {
+      height: 100%;
+      overflow-x: hidden;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+
+    #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-prompt-card {
+      flex: 1 0 170px;
+      height: auto;
+    }
+
+    #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-preview-panel {
+      height: 100%;
+    }
+
+    #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-preview-stage {
+      flex: 1 1 auto;
+      height: auto;
+    }
+  }
+
+  /* A very narrow tab: the transcription model names need the full row. */
+  @container joe-dock-tab (max-width: 330px) {
+    #ai-spell-check-modal.joe-docked #transcribe-panel .ai-transcribe-options-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #ai-spell-check-modal.joe-docked :is(#spell-check-panel, #transcribe-panel) :is(#ai-spell-check-preview, #ai-spell-check-result, #ai-transcribe-result),
+    #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-prompt-card,
+    #ai-spell-check-modal.joe-docked #generate-panel :is(.ai-generate-checkbox-row, .ai-generate-action-option) {
+      transition: none;
+    }
+  }
+}

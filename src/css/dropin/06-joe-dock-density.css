@@ -1,0 +1,325 @@
+/* FlowJoe · 06 · joe-dock-density  —  UNLAYERED ON PURPOSE (see 01's header comment: dropin files sit
+   outside @layer app, so they always win the cascade over the app's own layered rules — exactly the
+   mechanism every other density tier file already relies on).
+
+   Step 4a (JOE_DOCKED_PANEL_PLAN.md, "Density"): the docked Joe column's Chat tab used to PIN ten
+   tokens to one fixed (Compact) value inside joeDockChat.css, so the Density setting never reached it
+   (see DENSITY_PINNED_TOKENS' history in tests/unit/densityTokenReachability.test.js — now empty).
+   This file supplies the missing per-tier values instead. joeDockChat.css keeps the `padding: var(...)`
+   / `gap: var(...)` / `max-width: var(...)` consuming declarations; only the LOCAL re-declaration of
+   each custom property moved here, so it can vary by tier without ever redeclaring itself (a rule that
+   does `selector { --x: calc(var(--x) + 1px) }` on the SAME selector is a genuine CSS cycle — see
+   tests/unit/browserTabHeightToken.test.js's comment on --browser-tab-height for the same trap).
+
+   Values: the block with NO body class (Comfy — the density default absent a class, see
+   src/js/settingsPanel.js's normalizeDensity()) and the body.density-dense block are each the
+   Compact/"design tier" value (unchanged, verbatim from the removed pins — Compact is the app's actual
+   runtime default: flowjoe_density falls back to "compact", and en.js's Density setting description
+   says so explicitly) OFFSET by the SAME delta the floating token itself steps by between tiers
+   (measured from styles-variables.css's :root defaults and dropin/01-density-compact.css's two tier
+   blocks). Two tokens floor at their Compact value in Dense because the floating delta would have
+   pushed them negative (--chat-panel-pad-bottom, and the assistant bubble's already-near-flush top
+   inset) — noted inline. Selectors duplicate joeDockChat.css's chain exactly (ID + docked class +
+   descendant), so a class-qualified block here only outranks the bare block above it by the SAME
+   specificity margin body.density-compact/-dense already uses over :root everywhere else in the app.
+   That floating-delta method applies to the Chat tab's ten pre-existing tokens only (the ones with a
+   floating counterpart to measure a delta from) — every --jd-* token below (the Spelling/Transcribe/
+   Images tokens, and the Step 4a "rest of the column" tokens) instead uses the same Compact/0.65 ≈
+   Comfy, Compact × 0.75 ≈ Dense ratio (rounded to the nearest px, floored at 0), since those have no
+   floating layout to measure a delta from.
+
+   Any container-query (or other) override of one of these docked tokens must also live in THIS
+   file. 06 is unlayered like every dropin, so it beats every layered rule regardless of selector
+   specificity — a `@container {...}` override written in joeDockChat.css/joeDockTabs.css instead
+   would silently lose to whatever 06 last declared for that token, no matter how specific it looks. */
+
+/* ── #ai-assist-mode-tabs > .ai-mode-tab — --ai-mode-tab-pad ──────────────────────────────────────
+   Floating (styles-variables.css / 01-density-compact.css), top / left-right components only (the
+   docked tab never used the floating token's separate bottom component): comfy 10px/4px, compact
+   6px/4px, dense 4px/4px. */
+#ai-spell-check-modal.joe-docked #ai-assist-mode-tabs > .ai-mode-tab {
+  --ai-mode-tab-pad: 10px 4px;
+}
+body.density-compact #ai-spell-check-modal.joe-docked #ai-assist-mode-tabs > .ai-mode-tab {
+  --ai-mode-tab-pad: 6px 4px; /* design tier — unchanged from the removed pin */
+}
+body.density-dense #ai-spell-check-modal.joe-docked #ai-assist-mode-tabs > .ai-mode-tab {
+  --ai-mode-tab-pad: 4px 4px;
+}
+
+/* ── #chat-panel — --chat-panel-pad-bottom ──────────────────────────────────────────────────────
+   Floating: comfy 6px, compact 4px, dense 3px (delta -2px / -1px from compact). Docked's design value
+   is already 0px (flush footer), so the dense step floors at 0 rather than going negative. */
+#ai-spell-check-modal.joe-docked #chat-panel {
+  --chat-panel-pad-bottom: 2px;
+}
+body.density-compact #ai-spell-check-modal.joe-docked #chat-panel {
+  --chat-panel-pad-bottom: 0px; /* design tier — unchanged from the removed pin */
+}
+body.density-dense #ai-spell-check-modal.joe-docked #chat-panel {
+  --chat-panel-pad-bottom: 0px; /* floored — the floating delta (-1px) would go negative */
+}
+
+/* ── #ai-chat-messages — --ai-chat-messages-pad-block / -inline / -gap ─────────────────────────────
+   Floating (single value per tier, applied to both components): pad-block/pad-inline comfy 20px,
+   compact 12px, dense 9px (delta +8px / -3px from compact); gap comfy 12px, compact 8px, dense 6px
+   (delta +4px / -2px from compact). Docked's asymmetric per-axis pairs each get the SAME delta added
+   to both of their own components. */
+#ai-spell-check-modal.joe-docked #ai-chat-messages {
+  --ai-chat-messages-pad-block: 14px 24px;
+  --ai-chat-messages-pad-inline: 22px 20px;
+  --ai-chat-messages-gap: 18px;
+}
+body.density-compact #ai-spell-check-modal.joe-docked #ai-chat-messages {
+  /* design tier — unchanged from the removed pins */
+  --ai-chat-messages-pad-block: 6px 16px;
+  --ai-chat-messages-pad-inline: 14px 12px;
+  --ai-chat-messages-gap: 14px;
+}
+body.density-dense #ai-spell-check-modal.joe-docked #ai-chat-messages {
+  --ai-chat-messages-pad-block: 3px 13px;
+  --ai-chat-messages-pad-inline: 11px 9px;
+  --ai-chat-messages-gap: 12px;
+}
+
+/* ── assistant bubble — --chat-bubble-pad / --chat-bubble-measure ──────────────────────────────────
+   Floating vertical component: comfy 12px, compact 7px, dense 5px (delta +5px / -2px from compact).
+   The assistant bubble is deliberately near-flush (design tier: 1px top, 0 elsewhere) — only the top
+   inset tracks the floating delta; left/right/bottom stay 0 at every tier by design. Dense floors at 0
+   (the -2px delta would go negative). --chat-bubble-measure: the design is uncapped (100%, no real
+   measure) at every tier — the assistant bubble never had a floating-measure counterpart to derive a
+   Comfy/Dense delta from, so all three tiers stay 100%. */
+#ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message.assistant .ai-chat-bubble {
+  --chat-bubble-measure: 100%;
+  --chat-bubble-pad: 6px 0 0;
+}
+body.density-compact #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message.assistant .ai-chat-bubble {
+  /* design tier — unchanged from the removed pins */
+  --chat-bubble-measure: 100%;
+  --chat-bubble-pad: 1px 0 0;
+}
+body.density-dense #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message.assistant .ai-chat-bubble {
+  --chat-bubble-measure: 100%; /* uncapped at every tier, see above */
+  --chat-bubble-pad: 0 0 0; /* floored — the floating delta (-2px) would go negative */
+}
+
+/* ── user bubble — --chat-bubble-pad / --chat-bubble-measure ──────────────────────────────────────
+   Same floating deltas as the assistant bubble above (vertical +5px/-2px, horizontal +5px/-2px,
+   measure -7%/+4%), applied to the user bubble's own (non-flush) design-tier base. */
+#ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message.user .ai-chat-bubble {
+  --chat-bubble-measure: 79%;
+  --chat-bubble-pad: 13px 17px;
+}
+body.density-compact #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message.user .ai-chat-bubble {
+  /* design tier — unchanged from the removed pins */
+  --chat-bubble-measure: 86%;
+  --chat-bubble-pad: 8px 12px;
+}
+body.density-dense #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message.user .ai-chat-bubble {
+  --chat-bubble-measure: 90%;
+  --chat-bubble-pad: 6px 10px;
+}
+
+/* --chat-bubble-pad-x, restated for docked mode (13px 17px / 8px 12px / 6px 10px above -> 17px /
+   12px / 10px), the same way every OTHER --chat-bubble-pad override in dropin/ already does.
+   Declared on .ai-chat-message.user itself, NOT .ai-chat-bubble — .ai-chat-message-state is a
+   SIBLING of the bubble under that same row (both direct children of .ai-chat-message), so a custom
+   property scoped only to .ai-chat-bubble never reaches it; the row is the nearest common ancestor.
+   Without this, AIAssistModal.css's .ai-chat-message.user .ai-chat-message-state inherited the
+   FLOATING tiers' pad-x (16/11/9) instead, 1px short of this docked bubble's own inset at every one
+   of these 3 tiers, so the Omit/Pin/Delete strip on a docked user message drifted 1px outward from
+   the text (external audit, 2026-09-26). */
+#ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message.user {
+  --chat-bubble-pad-x: 17px;
+}
+body.density-compact #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message.user {
+  --chat-bubble-pad-x: 12px;
+}
+body.density-dense #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message.user {
+  --chat-bubble-pad-x: 10px;
+}
+
+/* ── #ai-chat-input — --chat-input-pad ──────────────────────────────────────────────────────────
+   Floating vertical/horizontal components: comfy 12px/12px, compact 7px/10px, dense 5px/8px (delta
+   +5px/-2px vertical, +2px/-2px horizontal, comfy/dense relative to compact). Docked's 3-value
+   design (asymmetric top/bottom: top/left-right/bottom = 16/14/9 comfy, 11/12/4 compact, 9/10/2
+   dense) applies the vertical delta to its top AND bottom components separately (11→16/9, 4→9/2 —
+   both +5/-2, matching the floating vertical delta), and the horizontal delta to left-right
+   (12→14/10, +2/-2, matching the floating horizontal delta). */
+#ai-spell-check-modal.joe-docked #ai-chat-input {
+  --chat-input-pad: 16px 14px 9px;
+}
+body.density-compact #ai-spell-check-modal.joe-docked #ai-chat-input {
+  --chat-input-pad: 11px 12px 4px; /* design tier — unchanged from the removed pin */
+}
+body.density-dense #ai-spell-check-modal.joe-docked #ai-chat-input {
+  --chat-input-pad: 9px 10px 2px;
+}
+
+/* ── Spelling / Transcribe / Images tabs (joeDockTabs.css) — new, docked-only tokens ────────────────
+   These have no floating counterpart (Transcribe/Images have no floating-equivalent docked layout to
+   measure a delta from), so the steps follow the app's own general density ratio instead: comfy ≈
+   compact / 0.65, dense ≈ compact * 0.75 — the same rough proportions styles-variables.css's own
+   comfy/compact/dense tokens already move by elsewhere (e.g. --pad-modal 20/12/9, --header-gap
+   12/8/6). Declared once at the docked panel root; every consuming rule in joeDockTabs.css inherits
+   them, so there is nothing to redeclare per element (unlike the Chat tokens above, these did not
+   previously exist anywhere else, so there is no ambient value to override). */
+#ai-spell-check-modal.joe-docked {
+  --jd-tab-panel-pad: 9px 18px 18px;
+  --jd-tab-panel-gap: 22px;
+  --jd-tab-card-pad: 15px 18px 18px;
+  --jd-tab-card-gap: 15px;
+  --jd-tab-section-pad: 15px 15px 6px 22px;
+  --jd-tab-section-gap: 6px;
+  --jd-tab-box-pad: 17px 18px;
+  --jd-tab-action-row-pad: 12px 18px 18px;
+  --jd-tab-action-row-gap: 12px;
+  --jd-tab-action-row-col-gap: 15px;
+  --jd-tab-actions-gap: 9px;
+  --jd-tab-status-pad: 8px 14px;
+
+  /* Step 4a (JOE_DOCKED_PANEL_PLAN.md "Density", fix round): the REST of the docked column's
+     layout-rhythm spacing — margins between regions, and padding/gap inside cards and rows — none
+     of which had a density-aware token yet. Same ratio method as the tab tokens just above: comfy ≈
+     compact / 0.65, dense ≈ compact * 0.75, rounded to the nearest px, floored at 0. Two or more
+     properties that were the SAME literal in the "before" state share one token below (each rule
+     comment in joeDockChat.css/joeDockTabs.css names its sharing partner). NOT tokenized, and left
+     as fixed chrome, on purpose: borders/hairlines, icon glyph sizes, hit-target minimum control
+     sizes (buttons/selects/pills, generally >=26px), border-radii, focus-ring offsets, any gap/pad
+     at 1-3px (reads as icon-cluster alignment, not density rhythm), a button/pill's OWN padding
+     (only the GAP between pills in a row is rhythm-tokenized, matching how --jd-tab-actions-gap
+     already treats action-row buttons), and spacing nested one level inside an already-tokenized
+     card (its card-level padding/gap is tokenized; finer spacing among its own fields is not — same
+     scope line this file's own Step 3 header comment already draws for joeDockTabs.css). */
+  --jd-header-pad: 15px 15px 15px 22px;
+  --jd-header-gap: 12px;
+  --jd-row-margin-top: 15px 18px 0; /* #ai-assist-mode-tabs AND #ai-spell-check-target */
+  --jd-tabstrip-pad: 5px;
+  --jd-target-pad: 5px 5px 5px 15px;
+  --jd-target-gap: 9px;
+  --jd-inset-margin: 0 18px; /* .joe-context-tray AND .joe-dock-composer-box */
+  --jd-attachment-margin: 0 0 12px; /* #ai-chat-attachment AND .joe-dock-token-popover-title */
+  --jd-attachment-pad: 15px 18px;
+  --jd-attachment-content-gap: 12px 15px;
+  --jd-pill-row-gap: 9px; /* chat's attachment checkbox-group AND generate's mode-switch row */
+  --jd-composer-row-pad-inline: 9px; /* also drives the field-wrap's -1x negative margin via calc() */
+  --jd-composer-row-pad-block-end: 11px;
+  --jd-popover-pad: 15px 18px 18px;
+  --jd-chips-margin: 9px 18px 15px;
+  --jd-menu-pad: 9px;
+  --jd-tab-inset: 0 18px; /* preview-wrap padding, #ai-spell-check-diff margin, result-wrap margin */
+  --jd-tab-label-pad: 18px 3px 12px;
+  --jd-tab-review-header-pad: 18px 22px 12px;
+  --jd-tab-review-header-gap: 12px;
+  --jd-tab-tweaks-header-pad-top: 15px;
+  --jd-tab-diff-pad: 17px 18px;
+  --jd-tab-loading-gap: 18px;
+  --jd-tab-loading-pad: 37px 25px;
+  --jd-tab-progress-gap: 8px;
+  --jd-tab-progress-pad: 0 3px 12px;
+  --jd-tab-prompt-pad: 17px 18px; /* top/inline text inset only — the 44px bottom clearance for the
+     fixed-size tool-row icons stays a literal in joeDockTabs.css, see that rule's comment */
+
+  /* Step 4a (finding 8): the card-to-card gaps in Transcribe/Images, which the first Step
+     4b pass missed — these are BETWEEN cards (and between the two wide-layout panes), not inside
+     one, so they belong beside --jd-tab-card-gap/-panel-gap above rather than with the "rest of the
+     column" group below. */
+  --jd-tab-stack-gap: 15px; /* .ai-transcribe-controls, .ai-generate-controls */
+  --jd-tab-result-gap: 12px; /* .ai-transcribe-result-panel (and -controls' own header-to-first-card gap before the stack-gap override) */
+  --jd-tab-wide-gap: 25px; /* the two-pane grid column gap, ≥620/640px container queries */
+}
+body.density-compact #ai-spell-check-modal.joe-docked {
+  /* design tier — the exact literals joeDockTabs.css used to hardcode */
+  --jd-tab-panel-pad: 6px 12px 12px;
+  --jd-tab-panel-gap: 14px;
+  --jd-tab-card-pad: 10px 12px 12px;
+  --jd-tab-card-gap: 10px;
+  --jd-tab-section-pad: 10px 10px 4px 14px;
+  --jd-tab-section-gap: 4px;
+  --jd-tab-box-pad: 11px 12px;
+  --jd-tab-action-row-pad: 8px 12px 12px;
+  --jd-tab-action-row-gap: 8px;
+  --jd-tab-action-row-col-gap: 10px;
+  --jd-tab-actions-gap: 6px;
+  --jd-tab-status-pad: 5px 9px;
+
+  /* design tier — the exact literals joeDockChat.css/joeDockTabs.css used to hardcode */
+  --jd-header-pad: 10px 10px 10px 14px;
+  --jd-header-gap: 8px;
+  --jd-row-margin-top: 10px 12px 0;
+  --jd-tabstrip-pad: 3px;
+  --jd-target-pad: 3px 3px 3px 10px;
+  --jd-target-gap: 6px;
+  --jd-inset-margin: 0 12px;
+  --jd-attachment-margin: 0 0 8px;
+  --jd-attachment-pad: 10px 12px;
+  --jd-attachment-content-gap: 8px 10px;
+  --jd-pill-row-gap: 6px;
+  --jd-composer-row-pad-inline: 6px;
+  --jd-composer-row-pad-block-end: 7px;
+  --jd-popover-pad: 10px 12px 12px;
+  --jd-chips-margin: 6px 12px 10px;
+  --jd-menu-pad: 6px;
+  --jd-tab-inset: 0 12px;
+  --jd-tab-label-pad: 12px 2px 8px;
+  --jd-tab-review-header-pad: 12px 14px 8px;
+  --jd-tab-review-header-gap: 8px;
+  --jd-tab-tweaks-header-pad-top: 10px;
+  --jd-tab-diff-pad: 11px 12px;
+  --jd-tab-loading-gap: 12px;
+  --jd-tab-loading-pad: 24px 16px;
+  --jd-tab-progress-gap: 5px;
+  --jd-tab-progress-pad: 0 2px 8px;
+  --jd-tab-prompt-pad: 11px 12px;
+
+  /* design tier — the exact literals joeDockTabs.css used to hardcode */
+  --jd-tab-stack-gap: 10px;
+  --jd-tab-result-gap: 8px;
+  --jd-tab-wide-gap: 16px;
+}
+body.density-dense #ai-spell-check-modal.joe-docked {
+  --jd-tab-panel-pad: 5px 9px 9px;
+  --jd-tab-panel-gap: 11px;
+  --jd-tab-card-pad: 8px 9px 9px;
+  --jd-tab-card-gap: 8px;
+  --jd-tab-section-pad: 8px 8px 3px 11px;
+  --jd-tab-section-gap: 3px;
+  --jd-tab-box-pad: 8px 9px;
+  --jd-tab-action-row-pad: 6px 9px 9px;
+  --jd-tab-action-row-gap: 6px;
+  --jd-tab-action-row-col-gap: 8px;
+  --jd-tab-actions-gap: 5px;
+  --jd-tab-status-pad: 4px 7px;
+
+  --jd-header-pad: 8px 8px 8px 11px;
+  --jd-header-gap: 6px;
+  --jd-row-margin-top: 8px 9px 0;
+  --jd-tabstrip-pad: 2px;
+  --jd-target-pad: 2px 2px 2px 8px;
+  --jd-target-gap: 5px;
+  --jd-inset-margin: 0 9px;
+  --jd-attachment-margin: 0 0 6px;
+  --jd-attachment-pad: 8px 9px;
+  --jd-attachment-content-gap: 6px 8px;
+  --jd-pill-row-gap: 5px;
+  --jd-composer-row-pad-inline: 5px;
+  --jd-composer-row-pad-block-end: 5px;
+  --jd-popover-pad: 8px 9px 9px;
+  --jd-chips-margin: 5px 9px 8px;
+  --jd-menu-pad: 5px;
+  --jd-tab-inset: 0 9px;
+  --jd-tab-label-pad: 9px 2px 6px;
+  --jd-tab-review-header-pad: 9px 11px 6px;
+  --jd-tab-review-header-gap: 6px;
+  --jd-tab-tweaks-header-pad-top: 8px;
+  --jd-tab-diff-pad: 8px 9px;
+  --jd-tab-loading-gap: 9px;
+  --jd-tab-loading-pad: 18px 12px;
+  --jd-tab-progress-gap: 4px;
+  --jd-tab-progress-pad: 0 2px 6px;
+  --jd-tab-prompt-pad: 8px 9px;
+
+  --jd-tab-stack-gap: 8px;
+  --jd-tab-result-gap: 6px;
+  --jd-tab-wide-gap: 12px;
+}

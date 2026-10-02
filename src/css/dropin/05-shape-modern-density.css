@@ -1,0 +1,80 @@
+/* FlowJoe · 05 · shape-soft's own rhythm  —  ADDENDUM 01.
+   Purely additive. Loads after 01–04. Changes nothing unless .shape-soft is on
+   <body> together with a density tier — .density-compact (the original block) or
+   .density-dense (added 2026-07-29, see that block's note).
+
+   Why this file exists: 01-density-compact.css is one density step shared by
+   every shape layer. The reviewed "1b" mockup used slightly different numbers
+   than "1a" — tighter icon rows and list rows, marginally roomier cards and
+   modal headers. Those deltas are here rather than in 01, so 1a's numbers stay
+   exactly as reviewed and approved.
+
+   Note that not everything gets smaller. The modal header grows 30px -> 34px
+   because in the 1b treatment it carries a status dot, the title and the
+   context path on one line instead of a bare title. Density is not "shrink
+   everything"; it is "spend the pixels where they earn it."
+
+   To decouple: change the selectors to a standalone class (e.g. .rhythm-soft)
+   and add it to <body> separately — both the compact and the dense block below.
+   Nothing else depends on the pairing. */
+
+body.shape-soft.density-compact {
+
+  /* Tighter — chrome rows and dense lists */
+  --icon-row-gap:       4px;      /* 01 sets 6px */
+  --list-row-gap:       2px;      /* 01 sets 3px */
+  --action-row-gap:     6px;      /* 01 sets 8px */
+
+  /* Roomier — content cards, which carry text rather than controls */
+  --pad-card:           10px 12px;/* 01 sets 10px */
+  --pad-card-compact:   9px 11px; /* 01 sets 8px 10px */
+  --pad-menu-item:      6px 10px; /* 01 sets 5px 10px */
+  --modal-row-gap:      7px;      /* 01 sets 6px */
+  --modal-row-gap-loose: 9px;     /* 01 sets 8px */
+
+  /* Modal chrome — grows, on purpose (see header note above) */
+  --modal-header-min-height:       34px;  /* 01 sets 30px */
+  --modal-header-padding:          4px 8px 4px 14px;
+  --modal-section-header-height:   28px;  /* 01 sets 26px */
+  --ai-chat-header-control-height: 26px;  /* 01 sets 24px */
+  --rect-btn-height:               27px;  /* 01 sets 26px */
+
+  /* Formerly the three RULE-level blocks below this comment: this file used to
+     re-declare #ai-chat-messages / .ai-chat-bubble / .setting-item outright,
+     because those values were literals no token could reach. Phase 2 tokenized
+     them (2026-07-29), so — exactly as the note that stood here instructed —
+     the rules are gone and these are plain token overrides instead. */
+  --ai-chat-messages-pad-block:  12px; /* 01 sets 12px */
+  --ai-chat-messages-pad-inline: 14px; /* 01 sets 12px — 1b runs a wider side gutter */
+  --ai-chat-messages-gap:  10px;       /* 01 sets 8px */
+  --chat-bubble-pad:       8px 12px;   /* 01 sets 7px 11px */
+  --chat-bubble-pad-x:     12px;       /* --chat-bubble-pad's horizontal value, restated (see styles-variables.css) */
+  --settings-card-gap:     6px;        /* 01 sets 8px */
+}
+
+/* 1b's deltas for the DENSE tier. Before Phase 2 the three rules above existed
+   only in a .density-compact flavour, so pairing shape-soft with density-dense
+   fell back to compact-tier spacing for them — an untuned mix that became
+   reachable when Dense shipped as a real setting (792d94ba). Same relationship
+   to 01's dense values as the compact block above has to 01's compact ones. */
+body.shape-soft.density-dense {
+  --ai-chat-messages-pad-block:  9px;  /* 01 sets 9px */
+  --ai-chat-messages-pad-inline: 11px; /* 01 sets 9px — same wider side gutter, dense tier */
+  --ai-chat-messages-gap:  8px;        /* 01 sets 6px */
+  --chat-bubble-pad:       6px 10px;   /* 01 sets 5px 9px */
+  --chat-bubble-pad-x:     10px;       /* --chat-bubble-pad's horizontal value, restated (see styles-variables.css) */
+  --settings-card-gap:     5px;        /* 01 sets 6px */
+}
+
+/* The transcript container's outline. In the reviewed 1b it is a fill against
+   the panel, not an outlined box — one fewer rectangle in a view that already
+   has the panel edge, the modal edge and the window edge around it.
+
+   Kept in this file rather than 03 because #ai-chat-messages is a SCROLL
+   region: removing its border removes the visual cue for where the scrollable
+   area ends. In 1b the fill contrast carries that instead. If it reads as
+   ambiguous in use, delete this block first — it is the most arguable rule in
+   the whole package. */
+body.shape-soft #ai-chat-messages {
+  border-color: transparent;
+}
