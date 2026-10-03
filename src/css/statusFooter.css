@@ -569,3 +569,25 @@ body.surface-effects-disabled .status-footer-brain-menu {
   font-weight: 700;
 }
 }
+
+/* A guest's media-loading progress: a thin bar inside the sync segment, only while files are still arriving. */
+.status-footer-media-bar {
+  width: 56px;
+  height: 4px;
+  border-radius: var(--radius-full, 999px);
+  background: var(--border-color, rgba(255, 255, 255, 0.18));
+  overflow: hidden;
+  flex: 0 0 auto;
+}
+
+.status-footer-media-bar[hidden] {
+  display: none;
+}
+
+.status-footer-media-fill {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--accent-color, #ff9500);
+  transition: width var(--transition-fast, 0.2s) linear;
+}
