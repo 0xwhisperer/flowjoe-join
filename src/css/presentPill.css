@@ -174,3 +174,7 @@
     animation: none;
   }
 }
+
+.cx-pill.present-start[hidden] {
+  display: none;
+}
