@@ -215,9 +215,9 @@
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
-  width: 360px;
+  width: 420px;
   max-width: calc(100vw - 32px);
-  padding: 12px 14px;
+  padding: 14px 16px;
   box-sizing: border-box;
   border-radius: var(--radius-md, 10px);
   border: 1px solid var(--border-color);
@@ -225,6 +225,42 @@
   box-shadow: var(--shadow-modal, 0 10px 30px rgba(0, 0, 0, 0.35));
   cursor: default;
   user-select: text;
+}
+.present-pill-panel h3 {
+  margin: 0 0 8px;
+  font-size: 15px;
+  font-weight: 650;
+}
+.present-pill-panel .present-pill-setting-row + .present-pill-setting-row {
+  margin-top: 12px;
+}
+.present-pill-guests {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.present-pill-guests[hidden] {
+  display: none;
+}
+.present-pill-guest {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.present-pill-guest-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.present-pill-guest-status {
+  flex: none;
+  color: var(--text-secondary);
+  font-size: 12px;
 }
 .present-pill-setting-row {
   display: flex;
@@ -241,23 +277,11 @@
   color: var(--text-secondary);
   font-size: 12px;
 }
-/* A follower's Joe column showing the owner's chat: read-only, the owner's text in the box at the bottom. */
-#ai-chat-messages.is-present-mirror {
+/* A follower's Joe column showing the owner's: the whole column is a picture of the owner's, nothing in it acts; only the message list scrolls. */
+#joe-dock.is-present-mirror * {
+  pointer-events: none;
+}
+#joe-dock.is-present-mirror #ai-chat-messages {
+  pointer-events: auto;
   user-select: text;
-}
-.present-joe-input {
-  position: sticky;
-  bottom: 0;
-  margin-top: 8px;
-  padding: 8px 12px;
-  border-radius: var(--radius-md, 10px);
-  border: 1px solid var(--border-color);
-  background: var(--bg-secondary);
-  color: var(--text-secondary);
-  font-size: 13px;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-}
-.present-joe-input:empty::before {
-  content: "…";
 }
