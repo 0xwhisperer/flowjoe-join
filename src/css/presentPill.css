@@ -8,7 +8,9 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  max-width: min(640px, calc(100vw - 32px));
+  /* A fixed shape: it never squeezes or stretches, wherever it is dragged (near an edge it is the position that is held inside the window, not the size). */
+  width: 600px;
+  max-width: calc(100vw - 32px);
   padding: 10px 12px 10px 14px;
   box-sizing: border-box;
   border-radius: var(--radius-full);
@@ -127,6 +129,7 @@
   color: var(--text-primary);
 }
 .present-pill.is-mini {
+  width: max-content;
   gap: 6px;
   height: 28px;
   padding: 0 6px;
