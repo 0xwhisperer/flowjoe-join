@@ -1,0 +1,150 @@
+/* presentPill.css -- the round Presenting pill (src/js/collaboration/presentPill.js), look from the approved Presenting mockup. Tokens only. */
+.present-pill {
+  position: fixed;
+  top: 92px;
+  left: calc(50% + 150px);
+  transform: translateX(-50%);
+  z-index: 100001; /* just above the topbar (100000), below every modal: see Z-INDEX-HIERARCHY.md */
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: min(640px, calc(100vw - 32px));
+  padding: 10px 12px 10px 14px;
+  box-sizing: border-box;
+  border-radius: var(--radius-full);
+  border: 1px solid color-mix(in srgb, var(--accent-color) 55%, var(--border-color));
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 13px;
+  line-height: 1.35;
+  box-shadow: var(--shadow-modal, 0 10px 30px rgba(0, 0, 0, 0.35));
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+.present-pill.is-dragging {
+  cursor: grabbing;
+}
+.present-pill-lead {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+}
+.present-pill-text {
+  min-width: 0;
+  text-wrap: pretty;
+}
+.present-pill-text b {
+  font-weight: 650;
+}
+.present-pill-text small {
+  display: block;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+.present-pill-actions {
+  display: flex;
+  gap: 8px;
+  flex: none;
+}
+.present-pill-live {
+  width: 9px;
+  height: 9px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--success-color);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--success-color) 25%, transparent);
+  animation: present-pill-blink 1.8s ease-in-out infinite;
+}
+@keyframes present-pill-blink {
+  50% {
+    opacity: 0.35;
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--success-color) 10%, transparent);
+  }
+}
+.present-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 14px;
+  flex: none;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-color);
+  background: transparent;
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.present-pill-btn:hover {
+  background: var(--hover-bg);
+}
+.present-pill-btn.is-primary {
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+  color: var(--text-on-accent, var(--bg-primary));
+  font-weight: 650;
+}
+.present-pill-btn:focus-visible,
+.present-pill-fold:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+.present-pill-fold {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 0;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 11px;
+}
+.present-pill-fold:hover {
+  background: var(--hover-bg);
+  color: var(--text-primary);
+}
+.present-pill.is-mini {
+  gap: 6px;
+  height: 28px;
+  padding: 0 6px;
+  line-height: 1;
+}
+.present-pill.is-mini .present-pill-text,
+.present-pill.is-mini .present-pill-actions {
+  display: none;
+}
+.present-pill.is-mini .present-pill-fold {
+  width: 20px;
+  height: 20px;
+}
+.present-pill.is-mini .present-pill-fold i {
+  transform: rotate(180deg);
+}
+.cx-pill.present-start {
+  font: inherit;
+  font-size: var(--font-control);
+  font-family: var(--cx-mono);
+  cursor: pointer;
+  border-color: color-mix(in srgb, var(--accent-color) 70%, var(--border-color));
+  background: color-mix(in srgb, var(--accent-color) 14%, transparent);
+}
+.cx-pill.present-start:hover {
+  background: color-mix(in srgb, var(--accent-color) 24%, transparent);
+}
+.cx-pill.present-start:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .present-pill-live {
+    animation: none;
+  }
+}
