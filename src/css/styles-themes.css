@@ -295,6 +295,11 @@
   height: 0;
 }
 
+/* The switch's real checkbox stays invisible when it is disabled too: the general disabled-checkbox opacity rule is stronger than the one above and would show a stray check mark under the switch. */
+.toggle-switch input[type="checkbox"]:disabled {
+  opacity: 0;
+}
+
 .toggle-slider {
   position: absolute;
   cursor: pointer;
