@@ -9,7 +9,7 @@
   align-items: center;
   gap: 12px;
   /* A fixed shape: it never squeezes or stretches, wherever it is dragged (near an edge it is the position that is held inside the window, not the size). */
-  width: 600px;
+  width: 560px;
   max-width: calc(100vw - 32px);
   padding: 10px 12px 10px 14px;
   box-sizing: border-box;
@@ -34,6 +34,7 @@
   flex: none;
 }
 .present-pill-text {
+  flex: 1 1 auto; /* the spare room sits here, so the button and the close X stay snug at the right edge */
   min-width: 0;
 }
 .present-pill-text b {
