@@ -296,3 +296,18 @@
 .present-window-mirror * {
   pointer-events: none;
 }
+
+/* A Settings section a guest can see but not change. */
+.settings-tab-panel.is-guest-locked .settings-guest-locked-note {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border-radius: var(--radius-md, 10px);
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+.settings-tab-panel.is-guest-locked :is(input, select, textarea, button):disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
