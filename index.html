@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="flowjoe-profile" content="guest" />
     <script src="boot/framebust.b6e4dceb977cdbc4.js"></script>
-    <style id="fj-guest-boot-cover">html:not([data-guest-ready]) body > :not(.gj-screen) { visibility: hidden; } html:not([data-guest-ready]) .gj-screen, html:not([data-guest-ready]) .gj-screen * { visibility: visible; }</style>
+    <style id="fj-guest-boot-cover">html:not([data-guest-ready]) body > :not(.gj-screen):not(.fj-boot-loader) { visibility: hidden; } html:not([data-guest-ready]) .gj-screen, html:not([data-guest-ready]) .gj-screen * { visibility: visible; } .fj-boot-loader { position: fixed; inset: 0; z-index: 2147483000; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; background: #1b1b1d; color: #e9e6e0; font: 600 20px/1.2 ui-monospace, "JetBrains Mono", "Fira Mono", monospace; } .fj-boot-loader img { width: 56px; height: 56px; } .fj-boot-loader small { font-weight: 400; font-size: 13px; opacity: 0.7; } .fj-boot-spin { width: 28px; height: 28px; border: 3px solid rgba(255, 255, 255, 0.18); border-top-color: #f0a030; border-radius: 50%; animation: fj-boot-spin 0.9s linear infinite; } @keyframes fj-boot-spin { to { transform: rotate(360deg); } } @media (prefers-reduced-motion: reduce) { .fj-boot-spin { animation-duration: 3s; } } html[data-guest-ready] .fj-boot-loader, body:has(> .gj-screen) .fj-boot-loader { display: none; }</style>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Content Security Policy sets the allowed sources for various content types and scripts -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self'; connect-src 'self' https://dvo.flowjoe.app https://shalom.flowjoe.app https://matt.flowjoe.app; frame-src 'none'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'" />
@@ -26,6 +26,7 @@
     <!-- canvas-confetti is now bundled (see VENDOR_GLOBALS in scripts/build-bundle-esm.js) — no CDN dependency. -->
   </head>
   <body>
+    <div class="fj-boot-loader" role="status" aria-live="polite"><img src="src/assets/app-icon.png" alt="" /><div>FlowJoe</div><div class="fj-boot-spin" aria-hidden="true"></div><small>Opening the shared Flow…</small></div>
     <script src="boot/density.92dc4c7dfa1e65e7.js"></script>
     <!-- Notification container -->
     <div class="notification-container" id="notification-container"></div>
