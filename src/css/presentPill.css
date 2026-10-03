@@ -307,7 +307,12 @@
   color: var(--text-secondary);
   font-size: 13px;
 }
-.settings-tab-panel.is-guest-locked :is(input, select, textarea, button):disabled {
+.settings-tab-panel.is-guest-locked :is(input:not(.toggle-switch input), select, textarea, button):disabled {
   opacity: 0.55;
   cursor: not-allowed;
+}
+
+/* A rail button the guest app hides (Joe off or paused for this share) stays hidden: the rail item's own display would otherwise win over the hidden attribute. */
+.app-rail-item[hidden] {
+  display: none;
 }
