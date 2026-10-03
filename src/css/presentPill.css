@@ -128,6 +128,14 @@
   background: var(--hover-bg);
   color: var(--text-primary);
 }
+.present-pill.is-docked {
+  position: static;
+  transform: none;
+  z-index: auto;
+  flex: none;
+  box-shadow: none;
+  margin: 0 8px;
+}
 .present-pill.is-mini {
   width: max-content;
   gap: 6px;
