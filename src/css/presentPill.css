@@ -316,3 +316,77 @@
 .app-rail-item[hidden] {
   display: none;
 }
+
+/* The owner's Presenting panel: lock or release guests (Lock all / Unlock all, and one guest). */
+.present-pill-bulk {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 10px 0;
+  border-top: 1px solid var(--border-color);
+}
+.present-pill-lock {
+  margin-left: auto;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: 1px solid var(--border-color);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+.present-pill-lock.is-locked {
+  color: var(--accent-color);
+  border-color: var(--accent-color);
+}
+.present-pill-lock:hover {
+  background: var(--hover-bg);
+}
+.present-pill-lock:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+/* The waiting screen of a locked link, before the owner presents. */
+.present-wait {
+  position: fixed;
+  inset: 0;
+  z-index: 100118;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: var(--bg-primary);
+}
+.present-wait-card {
+  display: grid;
+  gap: 10px;
+  justify-items: start;
+  width: min(440px, 100%);
+  padding: 22px 24px;
+  border-radius: var(--radius-lg, 16px);
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+.present-wait-card small {
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.present-wait-times {
+  display: grid;
+  gap: 2px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  font-size: 12.5px;
+}
+.present-wait-times .is-strong {
+  color: var(--text-primary);
+  font-weight: 650;
+}
