@@ -3770,6 +3770,28 @@ button:focus-visible,
   padding: 7px 8px;
   border-radius: var(--radius-md, 7px);
 }
+.cx-prow {
+  position: relative;
+}
+/* A guest's role pill in the Everyone-here list is the same dropdown as on the avatar card; its menu opens under the row, at the pill's end. */
+.cx-prow .file-menu-dropdown {
+  right: auto;
+  inset-inline-end: 0;
+  top: calc(100% + 2px);
+  width: 180px;
+  z-index: 3;
+}
+.cx-prow .file-menu-item {
+  text-align: start;
+}
+.cx-prow .cx-chip[data-role-chip] {
+  cursor: pointer;
+}
+.cx-prow .cx-chip[data-role-chip]:hover,
+.cx-prow .cx-chip[data-role-chip]:focus-visible {
+  background: var(--hover-bg);
+  border-color: var(--accent-color);
+}
 .cx-prow:hover {
   background: var(--hover-bg);
 }

@@ -869,7 +869,7 @@
   }
   #modal-message .cx-inv {
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
     gap: 4px 12px;
     padding: 8px 12px;
@@ -878,6 +878,20 @@
   }
   #modal-message .cx-inv:last-child {
     border-bottom: 0;
+  }
+  /* The right side is two lines: the status with its expiry on the first, the role dropdown and the actions under it. */
+  #modal-message .cx-inv > .cx-av,
+  #modal-message .cx-inv .who {
+    grid-row: 1 / span 2;
+  }
+  #modal-message .cx-inv .st {
+    grid-column: 3;
+    grid-row: 1;
+  }
+  #modal-message .cx-inv .acts {
+    grid-column: 3;
+    grid-row: 2;
+    justify-self: end;
   }
   #modal-message .cx-inv .who {
     min-width: 0;
@@ -907,9 +921,10 @@
     white-space: nowrap;
   }
   #modal-message .cx-inv .st {
-    display: grid;
-    justify-items: end;
-    gap: var(--text-stack-gap);
+    display: flex;
+    align-items: baseline;
+    justify-content: flex-end;
+    gap: 6px;
     text-align: right;
     white-space: nowrap;
     font-size: var(--font-control);
@@ -919,6 +934,13 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
+  }
+  #modal-message .cx-inv .st small:empty {
+    display: none;
+  }
+  #modal-message .cx-inv .st small::before {
+    content: "\00b7";
+    margin-inline-end: 6px;
   }
   #modal-message .cx-inv .st small {
     color: var(--text-secondary);
@@ -963,6 +985,19 @@
   #modal-message .cx-inv.is-new {
     box-shadow: inset 3px 0 0 var(--accent-color);
   }
+  /* "Clear all ended" sits at the right end of the Ended line, inside the section, level with the line's text. */
+  #modal-message .cx-ended-wrap {
+    position: relative;
+  }
+  #modal-message .cx-ended-clear {
+    position: absolute;
+    top: 4px;
+    inset-inline-end: 12px;
+  }
+  #modal-message .cx-ended-wrap details.cx-ended > summary {
+    padding-inline-end: 160px;
+    min-height: 24px;
+  }
   #modal-message details.cx-ended {
     border-top: 1px solid color-mix(in srgb, var(--border-color) 70%, transparent);
   }
@@ -999,13 +1034,20 @@
     #modal-message .cx-inv {
       grid-template-columns: auto minmax(0, 1fr);
     }
+    #modal-message .cx-inv > .cx-av,
+    #modal-message .cx-inv .who {
+      grid-row: auto;
+    }
     #modal-message .cx-inv .st {
       grid-column: 2;
-      justify-items: start;
+      grid-row: auto;
+      justify-content: flex-start;
       text-align: left;
     }
     #modal-message .cx-inv .acts {
       grid-column: 2;
+      grid-row: auto;
+      justify-self: start;
     }
     #modal-message .cx-link-row {
       flex-wrap: wrap;
