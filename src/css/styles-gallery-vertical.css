@@ -2815,6 +2815,12 @@
   .scheduler-task-meta {
     margin-top: 6px;
   }
+  /* A task a guest of a shared Flow made: a quiet tag beside the title (the tooltip says where it runs and what it may touch). */
+  .scheduler-task-guest {
+    font-size: var(--font-scheduler-review-body);
+    color: var(--text-secondary);
+    cursor: help;
+  }
   /* Token chips: the per-run estimate/actual on the schedule line, and the actual on each run-history row. Muted,
    tabular figures, default cursor (they carry a tooltip but aren't clickable). */
   .scheduler-task-tokens,
