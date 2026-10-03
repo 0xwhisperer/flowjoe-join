@@ -110,3 +110,39 @@
   color: var(--text-primary);
   font-weight: 650;
 }
+
+/* A slot whose file stays on the owner's computer: the preview window explains it in place of the picture (guestLocalFile.js); it covers the media area, including the app's own "missing" placeholder. */
+#image-container:has(> .gs-localfile) {
+  position: relative;
+}
+.gs-localfile {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  box-sizing: border-box;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 12px;
+  padding: 24px;
+  text-align: center;
+  border: 1.5px dashed var(--border-color);
+  border-radius: var(--radius-lg, 8px);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+.gs-localfile i {
+  font-size: 30px;
+  color: var(--text-secondary);
+}
+.gs-localfile b {
+  font-size: 15px;
+}
+.gs-localfile p {
+  margin: 0;
+  max-width: 46ch;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.5;
+  text-wrap: pretty;
+}
