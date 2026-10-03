@@ -285,3 +285,14 @@
   pointer-events: auto;
   user-select: text;
 }
+
+/* A follower's picture of the owner's open windows: above the page, read-only (nothing in it takes a click). */
+.present-window-mirror {
+  position: fixed;
+  inset: 0;
+  z-index: 100021;
+  pointer-events: none;
+}
+.present-window-mirror * {
+  pointer-events: none;
+}
