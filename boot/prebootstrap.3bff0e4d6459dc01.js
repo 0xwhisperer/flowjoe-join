@@ -133,7 +133,7 @@ root.style.setProperty("--tree-resizer-width", resizerPx + "px");
 // document.write here is correct and necessary — it must run synchronously in <head>
 // to inject CSS <link> tags before <body> renders. Do NOT replace with appendChild.
 const search = new URLSearchParams(window.location.search);
-const cacheToken = "cc33657f2e09923c"; // join-site guest build: stylesheets carry the build id (scripts/build-join-site-app.js)
+const cacheToken = "e3747f7d58629153"; // join-site guest build: stylesheets carry the build id (scripts/build-join-site-app.js)
 window.__flowjoeAssetUrl = function (path) {
   const safePath = String(path || "");
   if (!cacheToken || !safePath) return safePath;

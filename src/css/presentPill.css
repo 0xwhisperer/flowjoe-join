@@ -4,7 +4,7 @@
   top: 92px;
   left: calc(50% + 150px);
   transform: translateX(-50%);
-  z-index: 100019; /* above the gallery header and scrubber controls (100016) and the TipTap popup (100017), below every modal (100020): see Z-INDEX-HIERARCHY.md */
+  z-index: 100022; /* above everything the work area raises: the gallery header and scrubber controls (100016), the TipTap popup (100017) and the content area while its search flyout is open (100020, the app-modal rung); see Z-INDEX-HIERARCHY.md */
   display: flex;
   align-items: center;
   gap: 12px;
