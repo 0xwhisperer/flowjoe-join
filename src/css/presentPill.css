@@ -4,7 +4,7 @@
   top: 92px;
   left: calc(50% + 150px);
   transform: translateX(-50%);
-  z-index: 100001; /* just above the topbar (100000), below every modal: see Z-INDEX-HIERARCHY.md */
+  z-index: 100019; /* above the gallery header and scrubber controls (100016) and the TipTap popup (100017), below every modal (100020): see Z-INDEX-HIERARCHY.md */
   display: flex;
   align-items: center;
   gap: 12px;
