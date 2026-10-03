@@ -1,0 +1,85 @@
+/* The guest's presence markers (guestPresenceView.js), ported from the approved presence mockup (browser-collaboration-presence.html): who is on this node (the breadcrumb
+   row), who is on which tree row, and who is typing in a slot. The avatars themselves (.cx-av, marks, states, sizes) are the app's own, in buttons.css / shareModal.css. */
+
+/* Who is on THIS node, at the start of the breadcrumb row's tools. */
+.cx-here {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: 8px;
+  padding: 2px 8px 2px 6px;
+  border-radius: 999px;
+  border: 1px solid var(--border-light);
+  color: var(--text-secondary);
+  font-size: 11.5px;
+  white-space: nowrap;
+  --ring: var(--bg-secondary);
+}
+.cx-here .cx-av {
+  margin-left: -5px;
+  box-shadow: 0 0 0 1.5px var(--bg-primary);
+}
+.cx-here .cx-av:first-of-type {
+  margin-left: 0;
+}
+@media (max-width: 1300px) {
+  .cx-here {
+    display: none; /* the tree row already shows who is on this node */
+  }
+}
+
+/* The tree: who is on which node, at the end of the row's meta. */
+.cx-tree-here {
+  display: inline-flex;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+.cx-tree-here .cx-av {
+  margin-left: -4px;
+  box-shadow: 0 0 0 1.5px var(--bg-secondary);
+}
+.cx-tree-here .cx-av:first-child {
+  margin-left: 0;
+}
+
+/* A slot someone else is typing in: an outline in their colour and a line under the notes. */
+.enum-image-unit.cx-remote {
+  outline: 2px solid var(--mk);
+  outline-offset: 2px;
+  border-radius: 12px;
+}
+.cx-typing {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0 10px 10px;
+  color: var(--text-secondary);
+  font-size: 11.5px;
+  --ring: var(--bg-secondary);
+}
+.cx-typing b {
+  color: var(--text-primary);
+  font-weight: 650;
+}
+.cx-typing .dots {
+  display: inline-flex;
+  gap: 3px;
+}
+.cx-typing .dots b {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--text-secondary);
+  animation: cx-blip 1.2s infinite;
+}
+.cx-typing .dots b:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.cx-typing .dots b:nth-child(3) {
+  animation-delay: 0.3s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cx-typing .dots b {
+    animation: none;
+  }
+}
