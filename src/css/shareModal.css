@@ -567,6 +567,7 @@
   /* node picker */
   #modal-message .cx-picker {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: 2px;
     margin-top: 8px;
     padding: 6px;
@@ -576,6 +577,7 @@
   }
   #modal-message .cx-node {
     --depth: 0;
+    min-width: 0;
     display: flex;
     align-items: center;
     gap: 8px;

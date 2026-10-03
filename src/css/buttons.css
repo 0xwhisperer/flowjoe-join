@@ -3366,10 +3366,18 @@ button:focus-visible,
   border-radius: 50%;
   display: grid;
   place-items: center;
+  /* Font Awesome's own .fa-solid rule (display, line-height) is not layered and wins over this one, so the glyph is centred by the
+     ::before below (text metrics), which Font Awesome leaves alone: it stays in the middle of the badge whichever display applies. */
   background: var(--accent-color);
   color: var(--text-on-accent);
   font-size: 7.5px;
   box-shadow: 0 0 0 2px var(--ring, var(--cx-ring));
+}
+.cx-av .crown::before {
+  display: block;
+  width: 100%;
+  text-align: center;
+  line-height: 15px;
 }
 .cx-member {
   position: relative;
@@ -3388,11 +3396,16 @@ button:focus-visible,
     0 0 0 2.5px var(--cx-ring),
     0 0 0 4px var(--accent-color);
 }
+/* Whoever is looking sees their own avatar in front: the owner's in the owner's app. Any other avatar comes to the front while hovered,
+   focused or open, and goes back behind on mouse out. */
+.cx-member:has(> .cx-av.is-you) {
+  z-index: 3;
+}
 .cx-member:hover,
 .cx-member:focus-visible,
 .cx-member[aria-expanded="true"] {
   transform: translateY(-2px);
-  z-index: 2;
+  z-index: 4;
 }
 .cx-member[aria-expanded="true"] .cx-av.is-you {
   box-shadow:
