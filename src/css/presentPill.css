@@ -35,7 +35,12 @@
 }
 .present-pill-text {
   min-width: 0;
-  text-wrap: pretty;
+}
+.present-pill-text b {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .present-pill-text b {
   font-weight: 650;
@@ -44,6 +49,9 @@
   display: block;
   color: var(--text-secondary);
   font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* the pill is always two lines: a title and one line of explanation (the full text is in its tooltip) */
 }
 .present-pill-actions {
   display: flex;
