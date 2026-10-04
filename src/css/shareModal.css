@@ -1090,3 +1090,87 @@
 #modal-message .cx-switch-row.is-dim {
   opacity: 0.6;
 }
+
+/* "Joe conversations with guests" (mockup 4l): the owner's read-only record, grouped by guest. */
+#modal-message .cx-oc-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0 8px;
+}
+#modal-message .cx-oc-chip {
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+#modal-message .cx-oc-chip.is-on {
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+  color: var(--accent-contrast, var(--bg-primary));
+}
+#modal-message .cx-oc-chip:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+#modal-message .cx-oc-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-inline-end: 4px;
+  text-align: start;
+}
+#modal-message .cx-oc-group h4 {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 0 0 6px;
+  font-size: 13px;
+  color: var(--text-primary);
+}
+#modal-message .cx-oc-group h4 small {
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+#modal-message .cx-oc-turn {
+  padding: 8px 0;
+  border-top: 1px solid var(--border-light, var(--border-color));
+}
+#modal-message .cx-oc-who {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--text-primary);
+}
+#modal-message .cx-oc-who small {
+  color: var(--text-secondary);
+}
+#modal-message .cx-oc-turn p {
+  margin: 4px 0 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--text-primary);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+#modal-message .cx-oc-suggest {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 6px 10px;
+  border-radius: var(--radius-md, 8px);
+  border: 1px solid var(--border-color);
+  background: var(--bg-tertiary);
+  font-size: 12.5px;
+}
+#modal-message .cx-oc-suggest em {
+  margin-inline-start: auto;
+  font-style: normal;
+  color: var(--success-color);
+}
