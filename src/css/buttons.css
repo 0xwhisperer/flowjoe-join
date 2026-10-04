@@ -3536,6 +3536,26 @@ button:focus-visible,
     inset 0 0 0 2px var(--text-secondary),
     0 0 0 2px var(--ring, var(--cx-ring));
 }
+/* While the owner's FlowJoe is away everyone else in the room reads as reconnecting: a dashed ring that turns slowly (the owner's own avatar stays plainly away, and yours waits). */
+body.guest-owner-away #guest-presence .cx-av:not(.is-you):not(:has(.crown))::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1.5px dashed var(--text-secondary);
+  pointer-events: none;
+  animation: cx-ring-turn 6s linear infinite;
+}
+@keyframes cx-ring-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  body.guest-owner-away #guest-presence .cx-av:not(.is-you):not(:has(.crown))::after {
+    animation: none;
+  }
+}
 /* Overlap by narrowing the box of every avatar that another one follows (the avatar itself overflows by the 8px the mockup shows).
    Not a negative margin: the header's right-side reset (styles-browser.css) zeroes margins on every descendant. */
 .cx-stack .cx-member:has(+ .cx-member),
