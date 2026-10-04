@@ -3915,3 +3915,12 @@ button:focus-visible,
   }
 }
 }
+
+/* The role dropdown on a guest's pill (owner presence card and Everyone-here list): its choices open under the pill, over the card. */
+body .file-menu-dropdown.cx-role-menu {
+  right: auto;
+  inset-inline-end: auto;
+  width: auto;
+  min-width: 176px;
+  padding: 4px;
+}
