@@ -111,6 +111,54 @@
   font-weight: 650;
 }
 
+/* In a summary or preview window's footer: who wrote the text last ("Last edited by Noah · 1 hour ago"), or that the summary is built from the shared area. */
+.cx-win-attrib {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  margin-right: auto;
+  color: var(--text-secondary);
+  font-size: 13px;
+  white-space: nowrap;
+  --ring: var(--bg-secondary);
+}
+.cx-win-attrib b {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+.cx-scope-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 0 0 var(--modal-row-gap, 8px);
+  padding: 10px 12px;
+  border-radius: var(--radius-lg, 8px);
+  border: 1px solid color-mix(in srgb, var(--accent-color) 45%, var(--border-color));
+  background: color-mix(in srgb, var(--accent-color) 8%, var(--bg-secondary));
+  color: var(--text-primary);
+  font-size: 13px;
+}
+.cx-scope-note > i {
+  margin-top: 2px;
+  color: var(--accent-color);
+}
+.cx-scope-note .main {
+  flex: 1;
+  min-width: 0;
+  text-wrap: pretty;
+}
+.cx-scope-note small {
+  display: block;
+  margin-top: 2px;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+.cx-win-attrib > i.fa-layer-group {
+  color: var(--accent-color);
+  font-size: 12px;
+}
+
 /* A slot whose file stays on the owner's computer: the preview window explains it in place of the picture (guestLocalFile.js); it covers the media area, including the app's own "missing" placeholder. */
 #image-container:has(> .gs-localfile) {
   position: relative;
@@ -260,4 +308,91 @@
 }
 .flow-mutation-approval-card.fm-approval-collapsed .fm-approval-guest-credit {
   display: none;
+}
+
+/* "Changes are waiting to send": the note that stays at the bottom right while the owner's FlowJoe cannot be reached (and while the waiting changes go out). */
+.gs-sy-note {
+  position: fixed;
+  right: 20px;
+  bottom: 44px;
+  z-index: 100019; /* under the app's own dialogs (100020), so the Discard confirmation covers the note; above the gallery header and scrubber controls */
+  width: 372px;
+  max-width: calc(100vw - 32px);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 12px;
+  padding: 14px 16px;
+  border-radius: var(--radius-lg, 12px);
+  border: 1px solid color-mix(in srgb, var(--warning-color) 55%, var(--border-color));
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 13px;
+  line-height: 1.4;
+  box-shadow: var(--shadow-modal, 0 10px 30px rgba(0, 0, 0, 0.35));
+}
+.gs-sy-note.is-sending {
+  border-color: color-mix(in srgb, var(--accent-color) 55%, var(--border-color));
+}
+.gs-sy-note > :not(i) {
+  grid-column: 2;
+  min-width: 0;
+}
+.gs-sy-note > i {
+  grid-column: 1;
+  grid-row: 1 / span 6;
+  margin-top: 2px;
+  font-size: 16px;
+  color: var(--warning-color);
+}
+.gs-sy-note.is-sending > i {
+  color: var(--accent-color);
+}
+.gs-sy-note b {
+  font-weight: 650;
+}
+.gs-sy-note p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 12.5px;
+  text-wrap: pretty;
+}
+.gs-sy-note p.is-warn {
+  color: var(--text-primary);
+}
+.gs-sy-list {
+  margin: 2px 0 0;
+  padding: 8px 10px;
+  list-style: none;
+  display: grid;
+  gap: 4px;
+  border-radius: var(--radius-md, 8px);
+  background: color-mix(in srgb, var(--bg-primary) 60%, transparent);
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+.gs-sy-list li {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.gs-sy-list li b {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+.gs-sy-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 6px;
+}
+.gs-sy-spin {
+  animation: gs-sy-turn 1.1s linear infinite;
+}
+@keyframes gs-sy-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gs-sy-spin {
+    animation: none;
+  }
 }

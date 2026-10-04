@@ -906,6 +906,19 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+  #modal-message .cx-inv .who b small {
+    margin-inline-start: 8px;
+    color: var(--text-secondary);
+    font-size: var(--font-control);
+    font-weight: 400;
+  }
+  #modal-message .cx-inv .meta.cx-fn {
+    gap: 6px;
+  }
+  #modal-message .cx-inv .meta.cx-fn i {
+    font-size: 11px;
+    flex: none;
+  }
   #modal-message .cx-inv .meta {
     display: flex;
     align-items: center;
