@@ -242,3 +242,22 @@
   margin-top: 2px;
   font-size: 11px;
 }
+
+/* A Joe suggestion on a guest's card (mockup 4b): who it will be credited to. It goes with the card's collapsed outcome line. */
+.flow-mutation-approval-card .fm-approval-guest-credit {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  color: var(--text-secondary);
+  font-size: var(--font-approval-card-body, var(--font-control));
+  line-height: 1.4;
+  --ring: var(--bg-secondary);
+}
+.flow-mutation-approval-card .fm-approval-guest-credit b {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+.flow-mutation-approval-card.fm-approval-collapsed .fm-approval-guest-credit {
+  display: none;
+}

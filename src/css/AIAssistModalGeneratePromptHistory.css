@@ -89,6 +89,11 @@
 }
 
 /* Guest attribution (O6): a guest's prompt line, the Person filter row and the quiet link to its picture */
+.ai-generate-prompt-history-popup .gs-ph-note {
+  margin: 0 0 8px;
+  color: var(--text-secondary);
+  font-size: var(--font-control);
+}
 .ai-generate-prompt-history-popup .gs-ph-filter-row {
   display: flex;
   align-items: center;
