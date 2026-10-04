@@ -190,3 +190,55 @@
     animation: none;
   }
 }
+
+/* Joe cannot answer for a moment, or at all, and the panel is still open (approved mockups 4i, 4k): a card in the conversation says why; the composer and the dimmed tabs
+   (guestJoeState.js) show it. Tokens only. */
+.guest-joe-state {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 12px 0;
+  padding: 12px 14px;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+.guest-joe-state i {
+  margin-top: 2px;
+  color: var(--warning-color);
+}
+.guest-joe-state small {
+  display: block;
+  margin-top: 4px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+.ai-mode-tab.guest-joe-dim {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.guest-image-paused {
+  margin: 0 0 8px;
+  color: var(--warning-color);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+/* The line under Joe's welcome for a guest (mockup 4a). */
+.guest-joe-note {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin: 8px 0;
+  padding: 8px 10px;
+  border: 1px dashed var(--border-color);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.45;
+}
+.guest-joe-note i {
+  margin-top: 2px;
+  font-size: 11px;
+}

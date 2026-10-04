@@ -390,3 +390,58 @@
   color: var(--text-primary);
   font-weight: 650;
 }
+
+/* The thin accent frame around a following guest's whole screen (mockups 7b, 7d, 7j): "you are in a presentation". Under the pill, over the content, never takes a click. */
+html[data-presenting-frame]::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100021;
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--accent-color) 60%, transparent);
+}
+
+/* The Locked label inside the guest's pill (mockup 7j). */
+.present-pill-lockstate {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+.present-pill-lockstate.is-locked {
+  color: var(--accent-color);
+}
+
+/* The marks of the people following, at the left of the owner's pill (mockup 7f). */
+.present-pill-stack {
+  display: inline-flex;
+  align-items: center;
+}
+.present-pill-stack .cx-av {
+  margin-inline-start: -8px;
+}
+.present-pill-stack .cx-av:first-child {
+  margin-inline-start: 0;
+}
+
+/* The first-time card under the Present button (mockup 7g). */
+.present-intro {
+  position: fixed;
+  z-index: 100022;
+  width: 320px;
+  max-width: calc(100vw - 24px);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  border: 1px solid var(--accent-color);
+  border-radius: 14px;
+  background: var(--panel-bg, var(--bg-secondary));
+  color: var(--text-primary);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+}
+.present-intro small {
+  color: var(--text-secondary);
+  line-height: 1.4;
+}

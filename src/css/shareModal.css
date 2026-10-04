@@ -1072,3 +1072,8 @@
     }
   }
 }
+
+/* A choice that is not available yet (the Joe chat switch before presenting, mockup 7h): dimmed, still readable. */
+#modal-message .cx-switch-row.is-dim {
+  opacity: 0.6;
+}
