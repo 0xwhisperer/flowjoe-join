@@ -3,41 +3,687 @@
 
    Row quality matches activityPanel.css's own established bar (.activity-entry's row rhythm, hover
    states, meta-line treatment) — real design tokens only, no invented colors/spacing. */
+/* ============================== Panel frame (Source Control redesign S1) ==============================
+   The panel reads its own width (container query on .source-control-panel, named "scm"), never the window's, so it adapts to whatever width the tree column
+   has (270 to 420 px and beyond) and nothing is clipped. Tokens only, no forced-priority declarations. */
 
 .source-control-panel {
-  display: grid;
-  grid-template-rows: auto auto auto minmax(0, 1fr);
+  --scm-row-h: 22px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
   height: 100%;
   min-height: 0;
   overflow: hidden;
   overscroll-behavior: contain;
+  container-type: inline-size;
+  container-name: scm;
+  color: var(--text-primary);
+  font-size: var(--font-control);
 }
+
+.source-control-panel [hidden] {
+  display: none;
+}
+
+.source-control-panel :focus-visible {
+  outline: 1px solid var(--border-focus);
+  outline-offset: -1px;
+}
+
+/* Title bar */
+
+.scm-panel-header {
+  flex: none;
+  position: relative;
+}
+
+.scm-title-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 6px 0 12px;
+}
+
+.scm-panel-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  color: var(--text-primary);
+  font-size: var(--font-control);
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* GitHub account line (sign in / sign out): its own row under the title, wraps instead of clipping */
+
+.scm-account-status-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 4px 6px;
+  min-width: 0;
+  padding: 0 12px 6px;
+  font-size: var(--font-meta);
+}
+
+.scm-account-status-row:empty {
+  display: none;
+}
+
+.scm-account-status-row.scm-loading {
+  padding-top: 0;
+}
+
+/* Small icon buttons (section heads, rows, title bar) */
+
+.scm-icon-button {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 4px;
+  border: 0;
+  border-radius: var(--radius-sm, 4px);
+  background: transparent;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: var(--font-meta);
+  cursor: pointer;
+}
+
+.scm-icon-button:hover:not(:disabled),
+.scm-icon-button[aria-expanded="true"] {
+  background: var(--hover-bg);
+  color: var(--text-primary);
+}
+
+.scm-icon-button i {
+  font-size: 12px;
+}
+
+.scm-icon-button,
+.scm-pill,
+.scm-section-header,
+.scm-wide-button,
+.scm-text-button {
+  transition: none;
+}
+
+/* Sections: Repositories (its own height, up to six rows then it scrolls), Changes (takes what is left), Graph (a fixed share) */
 
 .scm-section {
-  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  min-height: 0;
+  position: relative;
+  border-top: var(--hairline) solid var(--border-light);
 }
 
-.scm-section:last-child {
-  border-bottom: none;
+.scm-changes-section {
+  flex: 1 1 0;
+}
+
+.scm-graph-section {
+  flex: 0 0 var(--scm-graph-h, 38%);
+  box-sizing: border-box;
+}
+
+.scm-sash {
+  --scm-sash-hit: 0.375rem;
+  position: absolute;
+  top: calc(var(--scm-sash-hit) / -2);
+  right: 0;
+  left: 0;
+  z-index: 2;
+  height: var(--scm-sash-hit);
+  cursor: row-resize;
+}
+
+.scm-sash:hover,
+.scm-sash:focus-visible,
+.scm-sash-dragging {
+  background: linear-gradient(to bottom, transparent calc(50% - var(--hairline) / 2), var(--accent-color) calc(50% - var(--hairline) / 2), var(--accent-color) calc(50% + var(--hairline) / 2), transparent calc(50% + var(--hairline) / 2));
+}
+
+.scm-section-collapsed {
+  flex: 0 0 auto;
+}
+
+.source-control-panel:has(> .scm-changes-section:is(.scm-section-collapsed, .scm-section-hidden)) > .scm-graph-section:not(.scm-section-collapsed),
+.source-control-panel:has(> .scm-graph-section:is(.scm-section-collapsed, .scm-section-hidden)) > .scm-changes-section:not(.scm-section-collapsed) {
+  flex: 1 1 0;
+}
+
+.scm-section.scm-section-hidden {
+  display: none;
+}
+
+.scm-section-collapsed > :not(.scm-section-head) {
+  display: none;
+}
+
+.scm-section-head {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 2px;
+  height: 26px;
+  padding: 0 6px 0 2px;
 }
 
 .scm-section-header {
-  padding: 10px 12px 6px;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-primary);
+  font: inherit;
+  font-size: var(--font-meta);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-align: left;
   text-transform: uppercase;
+  cursor: pointer;
+}
+
+.scm-section-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scm-section-chevron {
+  flex: none;
+  width: 16px;
+  color: var(--text-secondary);
+  font-size: 10px;
+  text-align: center;
+  rotate: 0deg;
+}
+
+.scm-section-header[aria-expanded="true"] .scm-section-chevron {
+  rotate: 90deg;
+}
+
+.scm-section-count {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 5px;
+  overflow: hidden;
+  border-radius: 8px;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  font-size: var(--font-micro);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.scm-section-actions {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 1px;
+}
+
+.scm-changes-section > .scm-changes-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* Repositories */
+
+.scm-repositories-list {
+  position: relative;
+  isolation: isolate;
+  max-height: calc(var(--scm-row-h) * 6 + 6px);
+  padding-bottom: 4px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+
+.scm-repositories-list:has(.scm-state) {
+  max-height: none;
+}
+
+.scm-repo-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: var(--scm-row-h);
+  min-width: 0;
+  margin: 0 4px;
+  padding: 0 4px 0 8px;
+  border-radius: var(--radius-sm, 4px);
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+/* The selected fill fades in as the travelling highlight leaves. Only while the panel's motion is on (flowjoe_motion_scm, flowjoe_motion, reduced motion). */
+.source-control-panel.scm-motion-on .scm-repo-row {
+  transition:
+    background-color var(--transition-speed, 0.15s) ease,
+    box-shadow var(--transition-speed, 0.15s) ease;
+}
+
+.scm-repo-row > * {
+  position: relative;
+  z-index: 1;
+}
+
+.scm-repo-row:hover {
+  background: var(--hover-bg);
+}
+
+.scm-repo-row-active,
+.scm-repo-row-active:hover {
+  background: var(--selection-bg);
+  box-shadow: inset 0 0 0 1px var(--accent-color);
+}
+
+.scm-repo-row-icon {
+  flex: none;
+  width: 14px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  text-align: center;
+}
+
+.scm-repo-row-active .scm-repo-row-icon {
+  color: var(--accent-color);
+}
+
+.scm-repo-row-name {
+  flex: 1 1 auto;
+  min-width: 24px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scm-repo-row-locked .scm-repo-row-name {
   color: var(--text-secondary);
 }
 
-.scm-empty-state {
-  margin: 4px 12px 12px;
-  padding: 16px;
-  text-align: center;
+.scm-repo-tools {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+}
+
+.scm-pill {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 4px;
+  height: 18px;
+  min-width: 0;
+  max-width: 96px;
+  padding: 0 6px;
+  border: var(--hairline) solid var(--border-color);
+  border-radius: 9px;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: var(--font-meta);
+  box-sizing: border-box;
+}
+
+button.scm-pill {
+  cursor: pointer;
+}
+
+button.scm-pill:hover {
+  border-color: var(--text-secondary);
+}
+
+.scm-pill > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scm-pill i {
+  flex: none;
   color: var(--text-secondary);
-  font-size: 13px;
-  border: 1px dashed var(--border-color);
-  border-radius: var(--radius-lg, 8px);
+  font-size: 9px;
+}
+
+.scm-sync-row {
+  position: relative;
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 1px;
+  min-width: 0;
+  padding: 0;
+  font-size: var(--font-meta);
+}
+
+.scm-sync-row.scm-loading {
+  color: var(--text-secondary);
+}
+
+.scm-sync-n {
+  display: inline-flex;
+  gap: 3px;
+  font-size: var(--font-meta);
+  font-variant-numeric: tabular-nums;
+}
+
+.scm-sync-overflow {
+  position: relative;
+  flex: none;
+}
+
+.scm-sync-overflow-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm, 4px);
+  background: transparent;
+  color: var(--text-secondary);
+  font: inherit;
+  cursor: pointer;
+}
+
+.scm-sync-overflow-button:hover,
+.scm-sync-overflow-button[aria-expanded="true"] {
+  background: var(--hover-bg);
+  color: var(--text-primary);
+}
+
+.scm-selection-traveller {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  pointer-events: none;
+  transform-origin: left top;
+}
+
+.scm-motion-ghost {
+  position: absolute;
+  z-index: 3;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* The small shared pieces: state cards, banners, text buttons, loading bars */
+
+.scm-empty-state,
+.scm-empty-note {
+  margin: 0 12px 6px 16px;
+  padding: 4px 0;
+  color: var(--text-secondary);
+  font-size: var(--font-meta);
+  text-align: left;
+}
+
+.scm-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 12px;
+  padding: 16px 12px;
+  border: var(--hairline) dashed var(--border-color);
+  border-radius: var(--radius-md, 6px);
+  color: var(--text-secondary);
+  font-size: var(--font-meta);
+  line-height: 1.4;
+  text-align: center;
+}
+
+.scm-state > i {
+  color: var(--text-secondary);
+  font-size: 18px;
+}
+
+.scm-state strong {
+  color: var(--text-primary);
+  font-size: var(--font-control);
+  font-weight: 600;
+}
+
+.scm-wide-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm, 4px);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.scm-wide-button-primary {
+  background: var(--accent-color);
+  color: var(--text-on-accent);
+}
+
+.scm-wide-button-primary:hover {
+  background: var(--accent-hover);
+}
+
+.scm-wide-button-secondary {
+  background: var(--bg-tertiary);
+  box-shadow: inset 0 0 0 var(--hairline) var(--border-color);
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.scm-wide-button-secondary:hover {
+  background: var(--hover-bg);
+}
+
+.scm-banner {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0 10px 8px 12px;
+  padding: 7px 8px;
+  border: var(--hairline) solid var(--border-color);
+  border-radius: var(--radius-sm, 4px);
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  font-size: var(--font-meta);
+  line-height: 1.35;
+}
+
+.scm-banner-danger {
+  border-color: color-mix(in srgb, var(--danger-color) 45%, var(--border-color));
+  color: var(--text-primary);
+}
+
+.scm-banner-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.scm-banner-head i {
+  margin-top: 2px;
+  color: var(--danger-color);
+  font-size: 11px;
+}
+
+.scm-banner-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.scm-text-button {
+  flex: none;
+  height: 20px;
+  padding: 0 7px;
+  border: var(--hairline) solid var(--border-color);
+  border-radius: var(--radius-sm, 4px);
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: var(--font-meta);
+  cursor: pointer;
+}
+
+.scm-text-button:hover {
+  border-color: var(--text-secondary);
+}
+
+.scm-skeleton-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: var(--scm-row-h);
+  padding: 0 16px;
+}
+
+.scm-skeleton {
+  flex: none;
+  width: 32%;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--border-color);
+}
+
+.scm-skeleton-dim {
+  width: 16%;
+  opacity: 0.6;
+}
+
+.scm-skeleton-row:nth-child(2) .scm-skeleton:first-child {
+  width: 26%;
+}
+
+.scm-skeleton-row:nth-child(3) .scm-skeleton:first-child {
+  width: 42%;
+}
+
+.scm-skeleton-row:nth-child(4) .scm-skeleton:first-child {
+  width: 24%;
+}
+
+/* Panel and Repositories menus: the app's context-menu look (.image-context-menu gives the glass surface and row hover), positioned by scmMenu.js */
+
+.scm-menu {
+  position: fixed;
+  z-index: var(--flowjoe-z-scm-menu);
+  flex-direction: column;
+  min-width: 200px;
+  max-width: 300px;
+  padding: var(--pad-menu);
+  border: var(--hairline) solid var(--border-color);
+  border-radius: var(--radius-md, 6px);
+  outline: none;
+}
+
+.scm-menu .scm-menu-item {
+  position: relative;
+  width: 100%;
+  padding: 4px 8px;
+  border: 0;
+  background: none;
+  box-sizing: border-box;
+  font: inherit;
+  font-size: var(--font-control);
+  text-align: left;
+}
+
+.scm-menu .scm-menu-item:hover,
+.scm-menu .scm-menu-item:focus-visible {
+  background: var(--hover-bg);
+  outline: none;
+}
+
+.scm-menu.fj-glide .scm-menu-item:hover {
+  background: none;
+}
+
+.scm-menu .scm-menu-item:disabled {
+  cursor: default;
+  opacity: var(--disabled-opacity-control);
+}
+
+.scm-mi-check {
+  flex: none;
+  width: 14px;
+  color: var(--text-primary);
+  font-size: 10px;
+  text-align: center;
+}
+
+.scm-mi-label {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scm-menu .context-menu-separator {
+  margin: 4px 0;
+}
+
+/* Width-adaptive: under 320 px other repositories show their tools on hover only, Generate becomes an icon, pills shrink. */
+@container scm (max-width: 319px) {
+  .scm-repo-row:not(.scm-repo-row-active):not(:hover):not(:focus-within) .scm-hover-only {
+    display: none;
+  }
+
+  .scm-pill {
+    max-width: 74px;
+  }
+
+  .scm-commit-generate-button > span {
+    display: none;
+  }
+
+  .source-control-panel .scm-commit-message-wrap .scm-commit-message {
+    padding-right: 44px;
+  }
+}
+
+@container scm (min-width: 400px) {
+  .scm-pill {
+    max-width: 140px;
+  }
 }
 
 .scm-status-error {
@@ -51,19 +697,6 @@
 }
 
 /* GitHub account status (Task 1) */
-
-.scm-account-status-row {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 6px;
-  padding: 0;
-  font-size: 12px;
-}
-
-.scm-account-status-row.scm-loading {
-  color: var(--text-secondary);
-}
 
 .scm-github-signin-btn,
 .scm-github-signout-btn {
@@ -90,7 +723,8 @@
 
 .scm-github-account {
   display: flex;
-  flex: none;
+  flex: 0 1 auto;
+  max-width: 100%;
   align-items: center;
   justify-content: flex-end;
   gap: 8px;
@@ -119,56 +753,7 @@
 
 /* Repositories */
 
-.scm-repositories-list {
-  padding-bottom: 4px;
-}
-
-.scm-repo-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: var(--pad-compact);
-  padding-left: 12px;
-  padding-right: 12px;
-  cursor: pointer;
-  transition: background var(--transition-speed, 0.15s);
-}
-
-.scm-repo-row:hover {
-  background: var(--hover-bg);
-}
-
-.scm-repo-row-active {
-  background: var(--bg-secondary);
-}
-
-.scm-repo-row-icon {
-  color: var(--text-secondary);
-  font-size: 13px;
-  flex: none;
-}
-
-.scm-repo-row-name {
-  font-size: 13px;
-  color: var(--text-primary);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 /* Push/pull actions remain available from the repository overflow menu. */
-
-.scm-sync-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 4px 12px 10px;
-  font-size: 12px;
-}
-
-.scm-sync-row.scm-loading {
-  color: var(--text-secondary);
-}
 
 .scm-sync-push-btn,
 .scm-sync-pull-btn {
@@ -643,477 +1228,27 @@
   font-style: italic;
 }
 
-/* Source Control polish: keep the panel reading like one focused tool view. The previous
-   treatment made each state feel like a separate card and let the branch controls consume more
-   space than the repository or its changes. */
+/* Source Control polish: the panel replaces the tree's rows, so the tree's own toolbar and title are hidden while it is open and #tree becomes a flex column
+   that the panel fills. #tree's generic rules (styles-search.css) force a bottom padding for scrolling, a max-height and overflow as forced-priority
+   declarations, which a selector cannot beat, so the panel does not fight them: it takes the padded strip back with its own height (the padding is the --tree-scroll-end-padding
+   token) and fits inside the capped height, so #tree never has anything to scroll. */
 .tree-section:has(> #tree > .source-control-panel) > .tree-toolbar,
 .tree-section:has(> #tree > .source-control-panel) > .tree-title-container,
 .tree-section:has(> #tree > .source-control-panel) > #tree-tag-match-status {
-  display: none !important;
-}
-
-.tree-section:has(> #tree > .source-control-panel) > #tree {
-  display: flex !important;
-  flex-direction: column;
-  height: 100% !important;
-  max-height: none !important;
-  min-height: 0 !important;
-  overflow: hidden !important;
-  padding: 0 !important;
-}
-
-.scm-panel-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 7px 12px 7px 16px;
-  border-bottom: 1px solid var(--border-color);
-  position: relative;
-}
-
-.scm-panel-heading {
-  grid-column: 1;
-  grid-row: 1 / span 2;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-}
-
-.scm-panel-header-main {
-  display: grid;
-  flex: 1 1 auto;
-  grid-template-columns: minmax(0, 1fr) auto;
-  grid-template-rows: auto auto;
-  align-items: center;
-  column-gap: 8px;
-  min-width: 0;
-}
-
-.scm-panel-title {
-  margin: 0;
-  color: var(--text-primary);
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.scm-panel-repo {
-  overflow: hidden;
-  color: var(--text-secondary);
-  font-size: 12px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.scm-panel-menu-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex: none;
-  width: 32px;
-  height: 32px;
-  border: 1px solid transparent;
-  border-radius: var(--radius-sm, 4px);
-  background: transparent;
-  color: var(--text-secondary);
-  font-size: 14px;
-  cursor: pointer;
-}
-
-.scm-account-status-row > .scm-panel-menu-button {
-  margin-left: 0;
-}
-
-.scm-panel-header-main > .scm-account-status-row {
-  grid-column: 2;
-  grid-row: 1 / span 2;
-  align-self: center;
-  justify-self: end;
-}
-
-.scm-panel-menu-button:hover,
-.scm-panel-menu-button[aria-expanded="true"] {
-  border-color: var(--border-color);
-  background: var(--hover-bg);
-  color: var(--text-primary);
-}
-
-.scm-panel-menu-button:focus-visible,
-.scm-sync-overflow-button:focus-visible {
-  outline: 2px solid var(--border-focus);
-  outline-offset: 1px;
-}
-
-.scm-panel-views-menu {
-  position: absolute;
-  z-index: 20;
-  top: calc(100% - 4px);
-  right: 8px;
-  display: flex;
-  flex-direction: column;
-  min-width: 188px;
-  padding: 4px;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md, 6px);
-  background: var(--bg-secondary);
-  box-shadow: var(--elev-floating);
-}
-
-.scm-panel-view-item {
-  display: grid;
-  grid-template-columns: 20px minmax(0, 1fr);
-  align-items: center;
-  gap: 4px;
-  width: calc(100% - 8px);
-  margin: 0 4px;
-  box-sizing: border-box;
-  min-height: 32px;
-  padding: 4px 8px;
-  border: 0;
-  border-radius: var(--radius-sm, 4px);
-  background: transparent;
-  color: var(--text-primary);
-  font: inherit;
-  text-align: left;
-  cursor: pointer;
-}
-
-.scm-panel-view-item:hover,
-.scm-panel-view-item:focus-visible {
-  outline: none;
-  background: var(--hover-bg);
-}
-
-.scm-panel-view-check {
-  color: var(--text-primary);
-  font-size: 14px;
-}
-
-.scm-section {
-  border-bottom-color: var(--border-color);
-}
-
-.scm-section-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-  min-height: 32px;
-  box-sizing: border-box;
-  padding: 5px 12px;
-  border: 0;
-  background: transparent;
-  color: var(--text-primary);
-  font-size: 13px;
-  font-weight: 600;
-  font-family: inherit;
-  text-align: left;
-  letter-spacing: normal;
-  text-transform: none;
-  cursor: pointer;
-}
-
-.scm-section-header:hover {
-  color: var(--text-primary);
-}
-
-.scm-section-header:focus-visible {
-  outline: 2px solid var(--border-focus);
-  outline-offset: -2px;
-  background: var(--hover-bg);
-  color: var(--text-primary);
-}
-
-.scm-section-count {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 20px;
-  height: 20px;
-  margin-left: auto;
-  padding: 0 5px;
-  border-radius: 999px;
-  background: var(--bg-secondary);
-  color: var(--text-secondary);
-  font-size: 11px;
-  letter-spacing: normal;
-  text-transform: none;
-}
-
-.scm-section-count[hidden] {
   display: none;
 }
 
-.scm-section-chevron {
-  flex: none;
-  font-size: 10px;
-  transition: transform var(--transition-speed, 0.15s);
-}
-
-.scm-section-header[aria-expanded="true"] .scm-section-chevron {
-  transform: rotate(90deg);
-}
-
-.scm-section-collapsed > :not(.scm-section-header) {
-  display: none !important;
-}
-
-.scm-section-hidden {
-  display: none !important;
-}
-
-.scm-account-status-row {
-  padding: 0;
-  gap: 6px;
-}
-
-.scm-account-status-row.scm-loading {
+.tree-section:has(> #tree > .source-control-panel) > #tree {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   min-height: 0;
-  padding-top: 0;
 }
 
-.scm-changes-section {
-  position: relative;
-}
-
-.scm-changes-section > .scm-section-header {
-  padding-right: 112px;
-}
-
-.scm-changes-header-actions {
-  position: absolute;
-  z-index: 1;
-  top: 1px;
-  right: 12px;
-  display: flex;
-  align-items: center;
-  gap: 2px;
-}
-
-.scm-changes-header-action {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border: 1px solid transparent;
-  border-radius: var(--radius-sm, 4px);
-  background: transparent;
-  color: var(--text-secondary);
-  font-size: 13px;
-  cursor: pointer;
-}
-
-.scm-changes-header-action:hover,
-.scm-changes-header-action:focus-visible {
-  outline: none;
-  border-color: var(--border-color);
-  background: var(--hover-bg);
-  color: var(--text-primary);
-}
-
-.scm-repositories-section {
-  position: relative;
-}
-
-.scm-repositories-section > .scm-section-header {
-  padding-right: 48px;
-}
-
-.scm-repo-sort-wrap {
-  position: absolute;
-  z-index: 2;
-  top: 1px;
-  right: 8px;
-}
-
-.scm-repo-sort-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border: 1px solid transparent;
-  border-radius: var(--radius-sm, 4px);
-  background: transparent;
-  color: var(--text-secondary);
-  cursor: pointer;
-}
-
-.scm-repo-sort-button:hover,
-.scm-repo-sort-button[aria-expanded="true"] {
-  border-color: var(--border-color);
-  background: var(--hover-bg);
-  color: var(--text-primary);
-}
-
-.scm-repo-sort-menu {
-  position: fixed;
-  z-index: var(--flowjoe-z-tooltip);
-  min-width: 190px;
-  padding: 4px;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md, 6px);
-  background: var(--bg-secondary);
-  box-shadow: var(--elev-floating);
-}
-
-.scm-repo-sort-choice {
-  display: grid;
-  grid-template-columns: 20px minmax(0, 1fr);
-  align-items: center;
-  width: 100%;
-  min-height: 32px;
-  padding: 4px 8px;
-  border: 0;
-  border-radius: var(--radius-sm, 4px);
-  background: transparent;
-  color: var(--text-primary);
-  font: inherit;
-  text-align: left;
-  cursor: pointer;
-}
-
-.scm-repo-sort-choice:hover,
-.scm-repo-sort-choice:focus-visible {
-  outline: none;
-  background: var(--hover-bg);
-}
-
-.scm-repositories-list,
-.scm-branch-list {
-  padding-bottom: 2px;
-}
-
-.scm-repo-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto auto auto;
-  align-items: center;
-  column-gap: 8px;
-  min-height: 42px;
-  box-sizing: border-box;
-  padding: 5px 12px;
-}
-
-.scm-repo-row-active {
-  box-shadow: inset 2px 0 0 var(--accent-color);
-  background: color-mix(in srgb, var(--accent-color) 8%, transparent);
-}
-
-.scm-repo-row-name {
-  grid-column: 1;
-  grid-row: 1;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-width: 0;
-}
-
-.scm-repo-current-branch {
-  grid-column: 2;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  min-width: 0;
-  max-width: 140px;
-  overflow: hidden;
-  color: var(--text-secondary);
-  font-size: 12px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.scm-repo-branches-toggle {
-  grid-column: 3;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 22px;
-  height: 22px;
-  padding: 0;
-  border: 0;
-  border-radius: var(--radius-sm, 4px);
-  background: transparent;
-  color: var(--text-secondary);
-  cursor: pointer;
-}
-
-.scm-repo-branches-toggle:hover,
-.scm-repo-branches-toggle:focus-visible {
-  outline: none;
-  background: var(--hover-bg);
-  color: var(--text-primary);
-}
-
-.scm-repo-branches-toggle[aria-expanded="true"] i {
-  transform: rotate(180deg);
-}
-
-.scm-repo-branches-toggle i {
-  transition: transform var(--transition-speed, 0.15s);
-}
-
-.scm-sync-row {
-  position: relative;
-  grid-column: 4;
-  min-width: 0;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 4px;
-  padding: 0;
-}
-
-.scm-repo-refresh-button,
-.scm-sync-overflow-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  padding: 0;
-  border: 1px solid transparent;
-  border-radius: var(--radius-sm, 4px);
-  background: transparent;
-  color: var(--text-secondary);
-  font: inherit;
-  cursor: pointer;
-}
-
-.scm-repo-refresh-button:hover,
-.scm-sync-overflow-button:hover,
-.scm-sync-overflow-button[aria-expanded="true"] {
-  border-color: var(--border-color);
-  background: var(--hover-bg);
-  color: var(--text-primary);
-}
-
-.scm-sync-overflow {
-  position: relative;
-  flex: none;
-}
-
-.scm-sync-overflow-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  padding: 0;
-  border: 1px solid transparent;
-  border-radius: var(--radius-sm, 4px);
-  background: transparent;
-  color: var(--text-secondary);
-  font: inherit;
-  cursor: pointer;
-}
-
-.scm-sync-overflow-button:hover,
-.scm-sync-overflow-button[aria-expanded="true"] {
-  border-color: var(--border-color);
-  background: var(--hover-bg);
-  color: var(--text-primary);
+#tree > .source-control-panel {
+  flex: 0 0 auto;
+  height: calc(100% + var(--tree-scroll-end-padding, 0px));
+  margin-bottom: calc(-1 * var(--tree-scroll-end-padding, 0px));
 }
 
 .scm-sync-overflow-menu {
@@ -1208,16 +1343,6 @@
 
 .scm-changes-body {
   padding-bottom: 4px;
-}
-
-.scm-empty-state {
-  margin: 0 16px 5px;
-  padding: 4px 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  text-align: left;
-  font-size: 13px;
 }
 
 .scm-change-group-label {
@@ -1446,37 +1571,6 @@
   color: var(--accent-color);
   font: inherit;
   cursor: pointer;
-}
-
-@media (max-width: 520px) {
-  .scm-panel-header-main {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto auto;
-    row-gap: 4px;
-  }
-
-  .scm-panel-heading {
-    grid-column: 1;
-    grid-row: 1;
-  }
-
-  .scm-panel-header-main > .scm-account-status-row {
-    grid-column: 1;
-    grid-row: 2;
-    justify-self: start;
-  }
-
-  .scm-branch-row {
-    padding-left: 24px;
-  }
-
-  .scm-branch-rename-error {
-    padding-left: 40px;
-  }
-
-  .scm-branch-row-actions {
-    opacity: 1;
-  }
 }
 
 .scm-commit-message-wrap {

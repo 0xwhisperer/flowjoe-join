@@ -38,6 +38,7 @@
   --flowjoe-z-gallery-drop-glow: 100011;    /* gallery drop-glow layer (above image-modal, below app-modal) */
   --flowjoe-z-tag-menu: 100012;             /* tag assignment color/merge menu */
   --flowjoe-z-tag-submenu: 100013;          /* tag assignment submenu (above tag-menu) */
+  --flowjoe-z-scm-menu: 100012;             /* Source Control panel menus (panel ..., Repositories ...): the context-menu tier, same level as the tag menu */
   --flowjoe-z-gallery-scrubber: 100015;     /* gallery scrubber fixed positioning */
   --flowjoe-z-gallery-scrubber-controls: 100016; /* gallery scrubber controls (above scrubber) */
   --flowjoe-z-tiptap-editor-popup: 100017;  /* tiptap flow-summary editor floating popups (slash menu, bubble menu, emoji picker) */
