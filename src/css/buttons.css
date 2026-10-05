@@ -3807,6 +3807,19 @@ body.guest-owner-away #guest-presence .cx-av:not(.is-you):not(:has(.crown))::aft
   cursor: not-allowed;
   text-decoration: none;
 }
+/* The guest's own card ends with Leave this Flow, set apart by a line. */
+.cx-card .cx-sep {
+  border: 0;
+  border-top: 1px solid var(--border-color);
+  margin: 8px 0;
+}
+.cx-card .cx-leave {
+  display: block;
+  width: 100%;
+  padding: 6px 0;
+  text-align: left;
+  color: var(--text-primary);
+}
 .cx-panel h6 {
   display: flex;
   justify-content: space-between;
