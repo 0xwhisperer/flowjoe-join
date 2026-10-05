@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script src="../workbench-frameguard.1333444aee016d0b.js"></script>
+    <!--
+      Rich Document Workbench island (Phase 0.5 spike).
+
+      Direct mirror of src/spreadsheet-workbench/workbench.html, but for Univer DOCS.
+      This is an ISOLATED same-origin document hosted inside an <iframe> by the main app.
+      Univer (React + RxJS + its own CSS + doc engine) lives ONLY here, so:
+        - Univer globals / CSS never enter FlowJoe's main renderer.
+        - Keyboard events do not cross the frame boundary into the tree/gallery handlers.
+        - Teardown = the parent removes the iframe node (no lingering React tree / listeners).
+        - This document's CSP is independent of the main app's, so the 'unsafe-eval' the
+          engine may need is CONTAINED here and the main app CSP stays hardened.
+
+      The parent talks to this island via postMessage only — see
+      src/js/richDocuments/richDocumentWorkbench.js. No gallery/modal wiring exists yet;
+      this island is exercised by scripts/rich-document-workbench-smoke.js.
+    -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self';
+      script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:;
+      style-src 'self' 'unsafe-inline';
+      font-src 'self' data:;
+      img-src 'self' data: blob:;
+      connect-src 'self' blob: data:;
+      worker-src 'self' blob:;" />
+    <title>FlowJoe Rich Document Workbench</title>
+
+    <!-- Univer docs-core stylesheet (vendored into src/vendor via scripts/vendor-workbench-deps.js). -->
+    <link rel="stylesheet" href="../vendor/univer-preset-docs-core.css" />
+    <!-- Docs drawing preset stylesheet (inline image rendering). -->
+    <link rel="stylesheet" href="../vendor/univer-preset-docs-drawing.css" />
+    <link rel="stylesheet" href="./workbench.css" />
+  </head>
+  <body>
+    <div id="fj-doc-root"></div>
+    <button id="fj-doc-dictate" class="flowjoe-modal-control-btn flowjoe-modal-dictate-btn flowjoe-modal-highlight-icon" type="button" aria-label="Dictate document text" aria-pressed="false" title="Dictate document text">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v5a3 3 0 0 0 3 3Z"></path>
+        <path d="M19 11a7 7 0 0 1-14 0"></path>
+        <path d="M12 18v4"></path>
+        <path d="M8 22h8"></path>
+      </svg>
+    </button>
+
+    <!--
+      Load order is load-bearing. External peers (React/ReactDOM/RxJS) FIRST, then FlowJoe's
+      vendored Univer presets bridge (core/facade/design/render + createUniver only), then
+      preset-docs-core, then the locale, then our island controller.
+    -->
+    <script src="../vendor/react.production.min.js"></script>
+    <script src="../vendor/react-dom.production.min.js"></script>
+    <script src="../vendor/rxjs.umd.min.js"></script>
+    <script src="../univer-shared/vendor/univer-presets-core-bridge.js"></script>
+    <script src="../vendor/univer-preset-docs-core.umd.js"></script>
+    <script src="../vendor/univer-preset-docs-core-locale-en-US.js"></script>
+    <!-- Docs drawing preset (inline images): self-contained UMD bundle + its locale. Defines
+         UniverPresetDocsDrawing (UniverDocsDrawingPreset) + UniverPresetDocsDrawingEnUS. -->
+    <script src="../vendor/univer-preset-docs-drawing.umd.js"></script>
+    <script src="../vendor/univer-preset-docs-drawing-locale-en-US.js"></script>
+    <!-- Dictation + workbench controller: loaded as ES modules (the source files use export/import).
+         The UMD libs above attach to window, which is accessible from module scope. -->
+    <script type="module" src="./workbench.js"></script>
+  </body>
+</html>

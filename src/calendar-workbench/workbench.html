@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script src="../workbench-frameguard.1333444aee016d0b.js"></script>
+    <!--
+      Calendar Workbench island (Phase 0 spike — FullCalendar Standard MIT proof).
+
+      This is an ISOLATED same-origin document hosted inside an <iframe> by the main app,
+      following the src/spreadsheet-workbench/ and src/rich-document-workbench/ precedent.
+      FullCalendar Standard (MIT) lives ONLY here, so:
+        - FullCalendar's runtime-injected CSS lands in THIS document's <head>, never the
+          main renderer (v6 injects styles via JS rather than shipping a <link> stylesheet).
+        - Keyboard events do not cross the frame boundary into the tree/gallery handlers.
+        - Teardown = calendar.destroy() + the parent removes the iframe node (no lingering
+          DOM / listeners / injected styles in the main app).
+
+      The parent talks to this island via postMessage only — mirroring the spreadsheet/
+      rich-document islands. The eventual parent adapter is src/js/calendar/calendarWorkbench.js
+      (Phase 4); this spike stands alone and is driven by scripts/calendar-workbench-smoke.js.
+
+      Phase 0 uses FullCalendar Standard plugins ONLY (core/daygrid/timegrid/list/interaction).
+      No Premium/Scheduler package, CSS, or code is loaded here. See THIRD_PARTY_NOTICES.md and
+      docs/ROADMAP/CALENDAR_IMPORTS_PHASE0.md for the license attribution path.
+    -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self';
+      script-src 'self';
+      style-src 'self' 'unsafe-inline';
+      font-src 'self' data:;
+      img-src 'self' data: blob:;
+      connect-src 'self';" />
+    <title>FlowJoe Calendar Workbench</title>
+
+    <link rel="stylesheet" href="./workbench.css" />
+  </head>
+  <body>
+    <div id="fj-calendar-root"></div>
+
+    <!--
+      Load order is load-bearing. FullCalendar core FIRST (defines the global + plugin
+      registry), then each Standard plugin global build (each auto-registers into
+      FullCalendar.globalPlugins), then our island controller. CSS is injected by these
+      bundles at runtime; there is no FullCalendar <link> stylesheet in v6.
+    -->
+    <script src="../vendor/fullcalendar-core.global.min.js"></script>
+    <script src="../vendor/fullcalendar-daygrid.global.min.js"></script>
+    <script src="../vendor/fullcalendar-timegrid.global.min.js"></script>
+    <script src="../vendor/fullcalendar-list.global.min.js"></script>
+    <script src="../vendor/fullcalendar-interaction.global.min.js"></script>
+    <script src="./workbench.js"></script>
+  </body>
+</html>

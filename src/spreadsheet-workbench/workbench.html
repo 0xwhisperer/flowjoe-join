@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script src="../workbench-frameguard.1333444aee016d0b.js"></script>
+    <!--
+      Spreadsheet Workbench island (Phase 0/0.5 spike).
+
+      This is an ISOLATED same-origin document hosted inside an <iframe> by the main app.
+      Univer (React + RxJS + its own CSS + formula engine) lives ONLY here, so:
+        - Univer globals / CSS never enter FlowJoe's main renderer.
+        - Keyboard events do not cross the frame boundary into the tree/gallery handlers.
+        - Teardown = the parent removes the iframe node (no lingering React tree / listeners).
+        - This document's CSP is independent of the main app's, so the 'unsafe-eval' the
+          formula engine may need is CONTAINED here and the main app CSP stays hardened.
+
+      The parent talks to this island via postMessage only — see src/js/spreadsheets/spreadsheetWorkbench.js.
+    -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self';
+      script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:;
+      style-src 'self' 'unsafe-inline';
+      font-src 'self' data:;
+      img-src 'self' data: blob:;
+      connect-src 'self' blob: data:;
+      worker-src 'self' blob:;" />
+    <title>FlowJoe Spreadsheet Workbench</title>
+
+    <!-- Univer core stylesheet (vendored into src/vendor via scripts/vendor-workbench-deps.js). -->
+    <link rel="stylesheet" href="../vendor/univer-preset-sheets-core.css" />
+    <link rel="stylesheet" href="./workbench.css" />
+  </head>
+  <body>
+    <div id="fj-sheet-root"></div>
+
+    <!--
+      Load order is load-bearing. External peers (React/ReactDOM/RxJS) FIRST, then FlowJoe's
+      vendored Univer presets bridge (core/facade/design/render + createUniver only), then
+      preset-sheets-core, then the locale, then our island controller.
+      echarts is intentionally omitted — preset-sheets-core (non-Pro core) does not use it.
+    -->
+    <script src="../vendor/react.production.min.js"></script>
+    <script src="../vendor/react-dom.production.min.js"></script>
+    <script src="../vendor/rxjs.umd.min.js"></script>
+    <script src="../univer-shared/vendor/univer-presets-core-bridge.js"></script>
+    <script src="../vendor/univer-preset-sheets-core.umd.js"></script>
+    <script src="../vendor/univer-preset-sheets-core-locale-en-US.js"></script>
+    <script src="./workbench.js"></script>
+  </body>
+</html>

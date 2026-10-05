@@ -1,0 +1,18 @@
+/* Spreadsheet Workbench island styles (Phase 0/0.5 spike).
+   Univer measures its container, so the mount must fill the iframe with a real height. */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #fff;
+}
+
+#fj-sheet-root {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}

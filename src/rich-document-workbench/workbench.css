@@ -1,0 +1,77 @@
+/* Rich Document Workbench island styles (Phase 0.5 spike).
+   Univer measures its container, so the mount must fill the iframe with a real height. */
+html,
+body {
+  /* Chrome fallbacks — overridden at runtime by the parent's theme bridge (applyTheme sets
+     these on documentElement from the app's CSS vars; see richDocumentWorkbench.js
+     collectWorkbenchTheme). Kept as the no-theme defaults; do not remove. */
+  --bg-tertiary: #18191a;
+  --border-color: #444;
+  --hover-bg: #2d3136;
+  --accent-color: #ff9900;
+  --text-muted: #777;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #fff;
+}
+
+#fj-doc-root {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#fj-doc-dictate {
+  position: fixed;
+  right: 14px;
+  top: 14px;
+  z-index: 20;
+  width: 40px;
+  min-width: 40px;
+  height: 40px;
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: var(--bg-tertiary);
+  color: var(--accent-color);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+  cursor: pointer;
+  font: inherit;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+
+#fj-doc-dictate:hover,
+#fj-doc-dictate:focus-visible {
+  background: var(--hover-bg);
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+  outline: none;
+}
+
+#fj-doc-dictate[aria-pressed="true"] {
+  border-color: var(--accent-color);
+  background: color-mix(in srgb, var(--accent-color) 18%, var(--bg-tertiary) 82%);
+  color: var(--accent-color);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.22),
+    0 0 0 2px color-mix(in srgb, var(--accent-color) 18%, transparent);
+}
+
+#fj-doc-dictate svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
