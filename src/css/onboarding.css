@@ -188,6 +188,8 @@
    therefore written at (0,3,0) so it outranks that rule regardless of stylesheet order. */
 .select-options.ob-lang-options-portal { position: fixed; z-index: calc(var(--ob-z-scrim) + 10); }
 .select-options.ob-lang-options-portal.show { z-index: calc(var(--ob-z-scrim) + 10); }
+/* While picker motion is on (class set when the list opens) the list's grow-in is the shared picker motion, so the base max-height/opacity transition steps aside. */
+.select-options.ob-lang-options-portal.fj-motion-pickers { transition: none; }
 
 .ob-foot {
   display: flex; align-items: center; gap: 12px;

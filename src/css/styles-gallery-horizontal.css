@@ -505,58 +505,98 @@ body.fj-ambient-freeze *::after {
   animation-play-state: paused !important;
 }
 
-/* Functional progress indicators are EXEMPT from the ambient freeze above.
-   The freeze exists to stop decorative compositing (ripples, LEDs, "breathe").
-   A spinner is not decoration — it is the only signal that in-flight work is
-   still running, and a frozen spinner reads as a hung app. These must keep
-   animating whenever they are on screen, including while a long-lived ambient
-   hold (canvas reposition session, backgrounded window) is active. Same
-   !important weight as the pause rule and later in the cascade, so it wins.
-   Covers the functional-progress families, each verified as never
-   decorative: the chat/generate stop ring (only while its button is in active stop mode),
-   .ai-spell-check-spinner (spell-check + TipTap AI action cards),
-   .fa-spin (Font Awesome busy icons on Joe compaction/generate/dictation),
-   .spinner (shared AI component + compress button), and the Generate tab's
-   pixel-wave/static shimmer on .ai-generate-preview-card/.ai-generate-preview-
-   placeholder while .is-generating (the only signal an image generation is
-   still running — same "frozen reads as hung" reasoning as a spinner; it was
-   left off this list when first built, so canvas sessions silently killed it).
-   Add any new functional/progress animation to this list. Keep this comment
-   block's markers balanced: an early close swallows the selectors below into
-   an invalid prelude and silently disables the whole rule, with no build
-   warning (the CSS analogue of the i18n wrong-parent hazard). */
-body.fj-bg-idle #ai-chat-send.ai-chat-send-stop-mode .ai-chat-stop-ring,
-body.fj-bg-idle #ai-generate-submit.ai-chat-send-stop-mode .ai-chat-stop-ring,
-body.fj-bg-idle .ai-spell-check-spinner,
-body.fj-bg-idle .ai-spell-check-spinner::before,
-body.fj-bg-idle .ai-spell-check-spinner::after,
-body.fj-bg-idle .fa-spin,
-body.fj-bg-idle .fa-spin::before,
-body.fj-bg-idle .fa-spin::after,
-body.fj-bg-idle .spinner,
-body.fj-bg-idle .spinner::before,
-body.fj-bg-idle .spinner::after,
-body.fj-bg-idle .ai-generate-preview-card.is-generating::before,
-body.fj-bg-idle .ai-generate-preview-card.is-generating::after,
-body.fj-bg-idle .ai-generate-preview-placeholder.is-generating::before,
-body.fj-bg-idle .ai-generate-preview-placeholder.is-generating::after,
-body.fj-ambient-freeze #ai-chat-send.ai-chat-send-stop-mode .ai-chat-stop-ring,
-body.fj-ambient-freeze #ai-generate-submit.ai-chat-send-stop-mode .ai-chat-stop-ring,
-body.fj-ambient-freeze .ai-spell-check-spinner,
-body.fj-ambient-freeze .ai-spell-check-spinner::before,
-body.fj-ambient-freeze .ai-spell-check-spinner::after,
-body.fj-ambient-freeze .fa-spin,
-body.fj-ambient-freeze .fa-spin::before,
-body.fj-ambient-freeze .fa-spin::after,
-body.fj-ambient-freeze .spinner,
-body.fj-ambient-freeze .spinner::before,
-body.fj-ambient-freeze .spinner::after,
-body.fj-ambient-freeze .ai-generate-preview-card.is-generating::before,
-body.fj-ambient-freeze .ai-generate-preview-card.is-generating::after,
-body.fj-ambient-freeze .ai-generate-preview-placeholder.is-generating::before,
-body.fj-ambient-freeze .ai-generate-preview-placeholder.is-generating::after {
+/* Functional progress indicators are EXEMPT from the ambient freeze above — and ONLY while they can be seen.
+   The freeze exists to stop decorative compositing (ripples, LEDs, "breathe"). A spinner is not decoration — it is the only signal that in-flight work is
+   still running, and a frozen spinner reads as a hung app — so it keeps animating while it is on screen, including while a long-lived ambient hold (canvas
+   reposition session) is active. USER RULE: nothing runs while hidden. visibleSpinners.js marks each of these elements .fj-in-view while it intersects the
+   viewport; an unmarked one is paused (with or without a freeze), and nothing is exempt while the window itself is hidden (body.fj-window-hidden, set with
+   the background-idle hold in eventListeners.js). Covers the functional-progress families, each verified as never decorative: the chat/generate stop ring
+   (only while its button is in active stop mode), .ai-spell-check-spinner (spell-check + TipTap AI action cards), .fa-spin (Font Awesome busy icons on Joe
+   compaction/generate/dictation), .spinner (shared AI component + compress button), the Generate tab's pixel-wave/static shimmer on
+   .ai-generate-preview-card/.ai-generate-preview-placeholder while .is-generating, and the loading ring on a blank URL / document card
+   (.gallery-inline-blank-loader-ring), the Image Generation History drawer's loading line (.ai-image-history-progress-fill), and the Slow Roast game's loading ring (.coffee-break-loader::before, only until the game is ready). The five-second undo timer is exempt the same way, in styles-themes.css. Add any new functional/progress animation to
+   this list AND to the selector list in visibleSpinners.js. !important is required to beat the freeze's own !important (same weight, later in the cascade).
+   Keep this comment block's markers balanced: an early close swallows the selectors below into an invalid prelude and silently disables the whole rule, with
+   no build warning (the CSS analogue of the i18n wrong-parent hazard). */
+/* stylelint-disable declaration-no-important -- these counter the universal `animation-play-state: paused !important` freeze above */
+body.fj-bg-idle:not(.fj-window-hidden) #ai-chat-send.ai-chat-send-stop-mode .ai-chat-stop-ring.fj-in-view,
+body.fj-bg-idle:not(.fj-window-hidden) #ai-generate-submit.ai-chat-send-stop-mode .ai-chat-stop-ring.fj-in-view,
+body.fj-bg-idle:not(.fj-window-hidden) .ai-spell-check-spinner.fj-in-view,
+body.fj-bg-idle:not(.fj-window-hidden) .ai-spell-check-spinner.fj-in-view::before,
+body.fj-bg-idle:not(.fj-window-hidden) .ai-spell-check-spinner.fj-in-view::after,
+body.fj-bg-idle:not(.fj-window-hidden) .fa-spin.fj-in-view,
+body.fj-bg-idle:not(.fj-window-hidden) .fa-spin.fj-in-view::before,
+body.fj-bg-idle:not(.fj-window-hidden) .fa-spin.fj-in-view::after,
+body.fj-bg-idle:not(.fj-window-hidden) .spinner.fj-in-view,
+body.fj-bg-idle:not(.fj-window-hidden) .spinner.fj-in-view::before,
+body.fj-bg-idle:not(.fj-window-hidden) .spinner.fj-in-view::after,
+body.fj-bg-idle:not(.fj-window-hidden) .ai-generate-preview-card.is-generating.fj-in-view::before,
+body.fj-bg-idle:not(.fj-window-hidden) .ai-generate-preview-card.is-generating.fj-in-view::after,
+body.fj-bg-idle:not(.fj-window-hidden) .ai-generate-preview-placeholder.is-generating.fj-in-view::before,
+body.fj-bg-idle:not(.fj-window-hidden) .ai-generate-preview-placeholder.is-generating.fj-in-view::after,
+body.fj-bg-idle:not(.fj-window-hidden) .ai-image-history-progress-fill.fj-in-view::after,
+body.fj-bg-idle:not(.fj-window-hidden) .gallery-inline-blank-loader-ring.fj-in-view::before,
+/* The Slow Roast game's loading ring: only while the loader is showing (the overlay is not game-ready) and on screen. */
+body.fj-bg-idle:not(.fj-window-hidden) .coffee-break-overlay:not(.game-ready) .coffee-break-loader.fj-in-view::before,
+/* Other "work in progress" signals: scheduler run status and bars, transcribe progress, browser tab / address (only while the address bar is loading: the indicator is invisible otherwise) / import loading, the export hold bar, the loading info icon, Joe's working dots, guest sync. */
+body.fj-bg-idle:not(.fj-window-hidden) .ai-transcribe-progress-bar.fj-in-view,
+body.fj-bg-idle:not(.fj-window-hidden) .ai-scheduler-runnow-bar-fill.fj-in-view,
+body.fj-bg-idle:not(.fj-window-hidden) .scheduler-status-dot.fj-in-view,
+body.fj-bg-idle:not(.fj-window-hidden) .scheduler-task-bar-fill.fj-in-view,
+body.fj-bg-idle:not(.fj-window-hidden) .browser-tab-spinner.fj-in-view,
+body.fj-bg-idle:not(.fj-window-hidden) .url-import-progress-spinner.fj-in-view,
+body.fj-bg-idle:not(.fj-window-hidden) .export-edit-hold-bar.fj-in-view,
+body.fj-bg-idle:not(.fj-window-hidden) .cx-scope-note > i.fj-in-view,
+body.fj-bg-idle:not(.fj-window-hidden) .gs-sy-spin.fj-in-view,
+body.fj-bg-idle:not(.fj-window-hidden) .joe-dock-live-dot.fj-in-view,
+body.fj-bg-idle:not(.fj-window-hidden) .ai-assist-minimized-pill-dot.fj-in-view,
+body.fj-bg-idle:not(.fj-window-hidden) [class*="ai-scheduler-runnow-status"].fj-in-view::before,
+body.fj-bg-idle:not(.fj-window-hidden) [class*="scheduler-task-runstatus"].fj-in-view::before,
+body.fj-bg-idle:not(.fj-window-hidden) .browser-address-wrap.is-loading .browser-address-loading-indicator.fj-in-view::before,
+body.fj-bg-idle:not(.fj-window-hidden) .image-info-icon.fj-in-view::after,
+body.fj-bg-idle:not(.fj-window-hidden) #app-rail-joe-btn .app-rail-icon.fj-in-view::after {
   animation-play-state: running !important;
 }
+
+#ai-chat-send.ai-chat-send-stop-mode .ai-chat-stop-ring:not(.fj-in-view),
+#ai-generate-submit.ai-chat-send-stop-mode .ai-chat-stop-ring:not(.fj-in-view),
+.ai-spell-check-spinner:not(.fj-in-view),
+.ai-spell-check-spinner:not(.fj-in-view)::before,
+.ai-spell-check-spinner:not(.fj-in-view)::after,
+.fa-spin:not(.fj-in-view),
+.fa-spin:not(.fj-in-view)::before,
+.fa-spin:not(.fj-in-view)::after,
+.spinner:not(.fj-in-view),
+.spinner:not(.fj-in-view)::before,
+.spinner:not(.fj-in-view)::after,
+.ai-generate-preview-card.is-generating:not(.fj-in-view)::before,
+.ai-generate-preview-card.is-generating:not(.fj-in-view)::after,
+.ai-generate-preview-placeholder.is-generating:not(.fj-in-view)::before,
+.ai-generate-preview-placeholder.is-generating:not(.fj-in-view)::after,
+.ai-image-history-progress-fill:not(.fj-in-view)::after,
+.gallery-inline-blank-loader-ring:not(.fj-in-view)::before,
+.coffee-break-loader:not(.fj-in-view)::before,
+.coffee-break-overlay.game-ready .coffee-break-loader::before,
+.ai-transcribe-progress-bar:not(.fj-in-view),
+.ai-scheduler-runnow-bar-fill:not(.fj-in-view),
+.scheduler-status-dot:not(.fj-in-view),
+.scheduler-task-bar-fill:not(.fj-in-view),
+.browser-tab-spinner:not(.fj-in-view),
+.url-import-progress-spinner:not(.fj-in-view),
+.export-edit-hold-bar:not(.fj-in-view),
+.cx-scope-note > i:not(.fj-in-view),
+.gs-sy-spin:not(.fj-in-view),
+.joe-dock-live-dot:not(.fj-in-view),
+.ai-assist-minimized-pill-dot:not(.fj-in-view),
+[class*="ai-scheduler-runnow-status"]:not(.fj-in-view)::before,
+[class*="scheduler-task-runstatus"]:not(.fj-in-view)::before,
+.browser-address-loading-indicator:not(.fj-in-view)::before,
+.browser-address-wrap:not(.is-loading) .browser-address-loading-indicator::before,
+.image-info-icon:not(.fj-in-view)::after,
+#app-rail-joe-btn .app-rail-icon:not(.fj-in-view)::after {
+  animation-play-state: paused !important;
+}
+/* stylelint-enable declaration-no-important */
 
 
 #node-info {

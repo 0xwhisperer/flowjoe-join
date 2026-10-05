@@ -78,6 +78,7 @@
   /* Fallback + tooltip ceiling */
   --flowjoe-z-guest-join-screen: 999998;   /* browser guest join screens (entry dialog, owner offline, invitation ended): shown before any Flow loads, above every app surface (guest real-app plan R9) */
   --flowjoe-z-fallback-confirm: 999999;    /* #inapp-confirm-overlay fallback (modalUtils) — can outrank modals by design */
+  --flowjoe-z-joe-pet: 2147483645;         /* Pet Joe and his menu: above every app and AI surface (history popups, dialogs, previews, the dragged slot), just under the force-top modal and tooltips; the stage ignores the pointer, so it never covers a control */
   --flowjoe-z-modal-force-top: 2147483646; /* #modal raised above all app+AI chrome while a save-reminder/prompt modal is active (tooltips still win); shares the tooltip-arrow-underlay value by design */
   --flowjoe-z-tooltip-low: 2147483646;     /* tooltip arrow underlay */
   --flowjoe-z-tooltip: 2147483647;         /* tooltips (max safe integer) */

@@ -99,6 +99,11 @@ body.hide-status-footer .status-footer {
      width so it stays clear of the panel — mirrors the header's right group (buttons.css). */
   transition: transform var(--transition-speed-slow) ease-in-out;
 }
+@media (prefers-reduced-motion: reduce) {
+  .status-footer-right {
+    transition: none;
+  }
+}
 
 body.settings-panel-open .status-footer-right {
   transform: translateX(calc(-1 * var(--settings-panel-width, min(460px, 100vw))));
@@ -170,7 +175,7 @@ body.settings-panel-open .status-footer-right {
 }
 
 .status-footer-segment-interactive:focus-visible {
-  outline: 1px solid var(--border-focus, var(--accent-color, #ff9500));
+  outline: 1px solid var(--border-focus, var(--accent-color));
   outline-offset: -1px;
 }
 
@@ -195,13 +200,13 @@ body.settings-panel-open .status-footer-right {
 }
 
 .status-footer-scheduler i {
-  color: var(--accent-color, #ff9500);
+  color: var(--accent-color);
 }
 
 /* Theme segment (far right, next to Shortcuts). The palette icon uses the live theme accent so it RECOLORS
    when the (global) theme changes — it tracks --accent-color, which every theme redefines. */
 .status-footer-theme i {
-  color: var(--accent-color, #ff9500);
+  color: var(--accent-color);
 }
 
 /* Language segment (between Theme and Shortcuts). The globe icon uses the same accent as the theme
@@ -501,7 +506,7 @@ body.surface-effects-disabled .status-footer-brain-menu {
 }
 
 .status-footer-brain-item.is-active {
-  background: color-mix(in srgb, var(--accent-color, #ff9500) 16%, transparent);
+  background: color-mix(in srgb, var(--accent-color) 16%, transparent);
 }
 
 .status-footer-brain-item:disabled,
@@ -565,7 +570,7 @@ body.surface-effects-disabled .status-footer-brain-menu {
 
 .status-footer-brain-check {
   flex: 0 0 auto;
-  color: var(--accent-color, #ff9500);
+  color: var(--accent-color);
   font-weight: 700;
 }
 }
@@ -575,7 +580,7 @@ body.surface-effects-disabled .status-footer-brain-menu {
   width: 56px;
   height: 4px;
   border-radius: var(--radius-full, 999px);
-  background: var(--border-color, rgba(255, 255, 255, 0.18));
+  background: var(--border-color);
   overflow: hidden;
   flex: 0 0 auto;
 }
@@ -588,6 +593,6 @@ body.surface-effects-disabled .status-footer-brain-menu {
   display: block;
   height: 100%;
   width: 0;
-  background: var(--accent-color, #ff9500);
+  background: var(--accent-color);
   transition: width var(--transition-fast, 0.2s) linear;
 }

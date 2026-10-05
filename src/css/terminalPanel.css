@@ -29,6 +29,10 @@
   transform: translateY(0) scale(1);
   pointer-events: auto;
 }
+/* Window motion (chromeMotion.js) owns the show/hide while it is on; with it off, the fade above stays. */
+.terminal-panel.fj-motion-chrome {
+  transition: none;
+}
 .terminal-panel.is-maximized {
   border-radius: 0;
 }

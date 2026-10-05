@@ -471,7 +471,22 @@
 
 /* NO opacity animation on images, ever — the ONLY opacity animation in a
    stack flip is the outgoing snapshot's fade-out (user-directed). Pixels
-   appear the instant they exist. */
+   appear the instant they exist.
+   2026-10-04 (user-approved exception, motion-design #2): a picture that finishes
+   loading AFTER its slot has already arrived fades in over 160 ms. That fade is
+   a Web Animation started from galleryMotion.js fadePicturesIn, not a CSS
+   transition, so the rules below stay as they are. To turn it off, run
+   localStorage.setItem("flowjoe_motion_pictures", "off") in the console (no
+   reload needed); localStorage.setItem("flowjoe_motion", "off") turns off ALL
+   tree/gallery motion. Remove the localStorage key to bring it back.
+   2026-10-05 (user-approved exception, motion-design #6 "Stack: the top
+   picture changes"): a stack's arrows and arrow keys slide the pictures — the
+   outgoing snapshot slides out the way you are going and fades, while the
+   next picture slides in from the other side and fades up with it. It still
+   starts only once the next picture can paint, so nothing flashes blank.
+   Web Animations from stackFlipMotion.js, not CSS, so the rules below stay
+   as they are. localStorage.setItem("flowjoe_motion_stack", "off") turns it
+   off (no reload needed) and the flip is the plain fade again. */
 .image-item img.lazy {
   filter: none;
   opacity: 0;
@@ -2156,6 +2171,21 @@ body.glass-effects-disabled .settings-panel {
 
 .settings-panel.active {
   transform: translateX(0);
+}
+
+/* Settings drawer motion (settingsMotion.js): while it is on, the drawer takes its place at once and a spring on the independent `translate` property
+   brings it there (the 0.25s transform transition would add up with it). Leaving, it keeps its shadow until the spring has carried it off screen. */
+.settings-panel.fj-motion-settings {
+  transition: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .settings-panel {
+    transition: none;
+  }
+}
+
+.settings-panel.fj-settings-leaving:not(.active):not(.edge-pulse-opening) {
+  box-shadow: -2px 0 10px var(--shadow-heavy);
 }
 
 .settings-panel::before {

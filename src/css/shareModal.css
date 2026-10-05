@@ -503,6 +503,16 @@
   #modal-message .cx-switch-row .toggle-switch {
     margin-top: 2px;
   }
+  /* Motion (mockup "Share window"): the switches flip on the quick spring while share motion is on (shareMotion.js keeps .fj-motion-share and the
+     spring curve current on the window); with it off the app's own instant flip is untouched. */
+  #modal.fj-motion-share .toggle-switch .toggle-slider {
+    transition: background-color var(--fj-t-snappy) var(--fj-ease-snappy);
+  }
+  #modal.fj-motion-share .toggle-switch .toggle-slider:before {
+    transition:
+      transform var(--fj-t-snappy) var(--fj-ease-snappy),
+      background-color var(--transition-speed) ease;
+  }
   #modal-message .cx-joe-points {
     margin-top: 8px;
   }
@@ -817,6 +827,22 @@
     background: var(--accent-hover, var(--accent-color));
     border-color: var(--accent-hover, var(--accent-color));
   }
+  #modal-message .cx-head-btn.is-quiet {
+    background: transparent;
+    border-color: var(--border-color);
+    color: var(--text-primary);
+  }
+  #modal-message .cx-head-btn.is-quiet:hover {
+    background: var(--hover-bg, var(--border-color));
+    border-color: var(--accent-color);
+  }
+  #modal-message .cx-head-actions {
+    display: flex;
+    flex: none;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px;
+  }
   #modal-message .cx-head-left {
     display: flex;
     align-items: baseline;
@@ -1107,6 +1133,11 @@
   font: inherit;
   font-size: 13px;
   cursor: pointer;
+}
+/* Motion (windowMotion.js travelBetween): while the filled chip's fill travels to the picked chip, the chips' row holds it underneath them. */
+#modal-message .cx-oc-filter.fj-travel-host {
+  position: relative;
+  isolation: isolate;
 }
 #modal-message .cx-oc-chip.is-on {
   background: var(--accent-color);

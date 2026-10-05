@@ -552,6 +552,46 @@ body:not(.tree-collapsed) .header-bg-left,
   transform: translateY(-50%) scale(1);
 }
 
+/* Motion (mockup "Header player with tracks"): while window motion is on (windowMotion.js sets .fj-motion-windows and the spring curve), the player
+   widens on the snappy spring and its four buttons unfold out of the play button nearest first (Playlist, speed, Next, Restart); closing hides them
+   together and they stop taking clicks once they have faded. */
+.header-audio-player.fj-motion-windows {
+  --fj-beat: 0.03s;
+  transition-duration: var(--fj-t-snappy);
+  transition-timing-function: var(--fj-ease-snappy);
+}
+
+.header-audio-player.fj-motion-windows :is(#header-audio-restart-btn, #header-audio-next-btn, #header-audio-rate-btn, #header-audio-playlist-btn) {
+  transition:
+    opacity var(--fj-t-snappy) var(--fj-ease-snappy),
+    transform var(--fj-t-snappy) var(--fj-ease-snappy),
+    visibility 0s linear var(--fj-t-snappy),
+    background-color var(--transition-speed) var(--transition-timing),
+    border-color var(--transition-speed) var(--transition-timing),
+    color var(--transition-speed) var(--transition-timing);
+}
+
+.header-audio-player.fj-motion-windows:is(:hover, .is-playlist-open, .is-seek-open, .is-drag-target) :is(#header-audio-restart-btn, #header-audio-next-btn, #header-audio-rate-btn, #header-audio-playlist-btn) {
+  transition-delay: 0s;
+}
+
+.header-audio-player.fj-motion-windows:is(:hover, .is-playlist-open, .is-seek-open, .is-drag-target) #header-audio-rate-btn {
+  transition-delay: var(--fj-beat), var(--fj-beat), 0s, 0s, 0s, 0s;
+}
+
+.header-audio-player.fj-motion-windows:is(:hover, .is-playlist-open, .is-seek-open, .is-drag-target) #header-audio-next-btn {
+  transition-delay: calc(var(--fj-beat) * 2), calc(var(--fj-beat) * 2), 0s, 0s, 0s, 0s;
+}
+
+.header-audio-player.fj-motion-windows:is(:hover, .is-playlist-open, .is-seek-open, .is-drag-target) #header-audio-restart-btn {
+  transition-delay: calc(var(--fj-beat) * 3), calc(var(--fj-beat) * 3), 0s, 0s, 0s, 0s;
+}
+
+/* One hover highlight glides between the track menu's rows (windowMotion.js glideHighlight): the row's own hover fill is held back while it shows. */
+.header-audio-playlist-context-menu.fj-glide .header-audio-playlist-context-item:hover {
+  background: transparent;
+}
+
 .header-audio-btn-primary {
   color: var(--text-primary);
   border-color: var(--border-color);

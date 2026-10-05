@@ -649,7 +649,9 @@
     -moz-box-shadow: none;
   }
 
-  .image-gallery .image-item.external-import-slot-hover .image-frame .external-import-slot-plus {
+  /* .merge-disc-leaving keeps the disc painted while it shrinks away after its slot is disarmed (slotReorderMotion.js). */
+  .image-gallery .image-item.external-import-slot-hover .image-frame .external-import-slot-plus,
+  .image-gallery .image-item .image-frame .external-import-slot-plus.merge-disc-leaving {
     position: absolute;
     left: 50%;
     top: 50%;
@@ -672,7 +674,9 @@
   }
 
   .image-gallery .image-item.external-import-slot-hover .image-frame .external-import-slot-plus::before,
-  .image-gallery .image-item.external-import-slot-hover .image-frame .external-import-slot-plus::after {
+  .image-gallery .image-item.external-import-slot-hover .image-frame .external-import-slot-plus::after,
+  .image-gallery .image-item .image-frame .external-import-slot-plus.merge-disc-leaving::before,
+  .image-gallery .image-item .image-frame .external-import-slot-plus.merge-disc-leaving::after {
     content: "";
     position: absolute;
     border-radius: var(--radius-full, 999px);
@@ -680,18 +684,30 @@
     box-shadow: 0 0 10px color-mix(in srgb, var(--accent-color) 26%, transparent);
   }
 
-  .image-gallery .image-item.external-import-slot-hover .image-frame .external-import-slot-plus::before {
+  .image-gallery .image-item.external-import-slot-hover .image-frame .external-import-slot-plus::before,
+  .image-gallery .image-item .image-frame .external-import-slot-plus.merge-disc-leaving::before {
     width: 18px;
     height: 2px;
   }
 
-  .image-gallery .image-item.external-import-slot-hover .image-frame .external-import-slot-plus::after {
+  .image-gallery .image-item.external-import-slot-hover .image-frame .external-import-slot-plus::after,
+  .image-gallery .image-item .image-frame .external-import-slot-plus.merge-disc-leaving::after {
     width: 2px;
     height: 18px;
   }
 
-  .image-gallery .image-item.external-import-slot-hover .image-frame .external-import-slot-plus {
+  .image-gallery .image-item.external-import-slot-hover .image-frame .external-import-slot-plus,
+  .image-gallery .image-item .image-frame .external-import-slot-plus.merge-disc-leaving {
     display: flex;
+  }
+
+  /* Armed by a card held by the pointer (slotPointerDrag.js, which sizes it to the merge zone on screen at any zoom): a clear ring and glow. */
+  .image-gallery .image-item .image-frame .external-import-slot-plus.merge-disc-armed {
+    border: 2px solid var(--accent-color);
+    box-shadow:
+      0 0 0 3px color-mix(in srgb, var(--accent-color) 28%, transparent),
+      0 0 22px color-mix(in srgb, var(--accent-color) 45%, transparent),
+      inset 0 1px 0 color-mix(in srgb, var(--text-primary) 12%, transparent);
   }
 
   /* Placeholder for images while loading */

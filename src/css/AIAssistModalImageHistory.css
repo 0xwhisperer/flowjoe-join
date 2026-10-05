@@ -31,12 +31,68 @@
 }
 
 .ai-image-history-drawer-header {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
   padding: 18px 18px 12px;
   flex: 0 0 auto;
+}
+
+/* Loading line along the bottom edge of the title area: fills as the pictures arrive, then goes. It moves only while loading AND on screen (the sheen is
+   paused by the shared visibility rules in styles-gallery-horizontal.css; see visibleSpinners.js) and is not drawn at all once loaded. */
+.ai-image-history-progress {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 2px;
+  overflow: hidden;
+  background: var(--border-color);
+  opacity: 1;
+  transition: opacity var(--transition-speed-slow) ease;
+}
+
+.ai-image-history-progress.is-done {
+  opacity: 0;
+}
+
+.ai-image-history-progress.is-done .ai-image-history-progress-fill::after {
+  animation: none;
+}
+
+.ai-image-history-progress-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--history-progress, 0%);
+  overflow: hidden;
+  background: var(--accent-color);
+  transition: width var(--transition-speed-slow) ease;
+}
+
+.ai-image-history-progress.is-indeterminate .ai-image-history-progress-fill {
+  width: 100%;
+  opacity: 0.45;
+}
+
+.ai-image-history-progress-fill::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--text-on-accent) 70%, transparent), transparent);
+  transform: translateX(-100%);
+  animation: aiHistoryProgressSheen 1.1s linear infinite;
+}
+
+@keyframes aiHistoryProgressSheen {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ai-image-history-progress-fill::after {
+    animation: none;
+  }
 }
 
 .ai-image-history-drawer-header h4 {
@@ -320,9 +376,12 @@
   background: color-mix(in srgb, var(--danger-color, #dc3545) 15%, transparent);
 }
 
+/* The thumbnail's frame takes the PICTURE's shape (--thumb-ratio: from the saved size at first, then the loaded picture's own), so it hugs the picture
+   instead of sitting in a fixed square with bars. */
 .ai-image-history-thumb-wrap {
   width: 112px;
-  aspect-ratio: 1;
+  align-self: start;
+  aspect-ratio: var(--thumb-ratio, 1);
   border-radius: var(--radius-sm, 4px);
   overflow: hidden;
   background: var(--bg-primary);

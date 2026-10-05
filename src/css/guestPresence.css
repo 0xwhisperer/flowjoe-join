@@ -61,6 +61,16 @@
   color: var(--text-primary);
   font-weight: 650;
 }
+/* Where a change landed (presenceMotion.js ringOnce): one ring in the author's colour just outside the slot, which fades by itself. */
+.cx-flash {
+  position: absolute;
+  inset: -4px;
+  z-index: 30;
+  border: 2px solid var(--mk-flash, var(--accent-color));
+  border-radius: 14px;
+  pointer-events: none;
+  opacity: 0;
+}
 .cx-typing .dots {
   display: inline-flex;
   gap: 3px;
@@ -346,7 +356,7 @@
   color: var(--text-primary);
   font-size: 13px;
   line-height: 1.4;
-  box-shadow: var(--shadow-modal, 0 10px 30px rgba(0, 0, 0, 0.35));
+  box-shadow: 0 10px 30px color-mix(in srgb, var(--shadow-heavy) 70%, transparent);
 }
 .gs-sy-note.is-sending {
   border-color: color-mix(in srgb, var(--accent-color) 55%, var(--border-color));

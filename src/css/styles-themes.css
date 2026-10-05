@@ -430,6 +430,11 @@ body:not(.scrubber-top) #notification-container.toast-bottom-right {
   /* Even higher than container */
   backdrop-filter: blur(5px);
 }
+@media (prefers-reduced-motion: reduce) {
+  .notification {
+    transition: none;
+  }
+}
 
 body.toast-theme-match .notification {
   background-color: var(--bg-secondary);
@@ -624,6 +629,14 @@ body:has(> .export-edit-hold) #notification-container {
   transform: translateY(0);
 }
 
+/* Toast motion (toastMotion.js): while it is on, springs on the independent opacity / translate properties replace the opacity + transform transition
+   above (the two would add up), and a toast can be flicked sideways without the page scrolling. */
+#notification-container.fj-motion-toasts .notification {
+  transition: none;
+  transform: none;
+  touch-action: pan-y;
+}
+
 .notification.success {
   border-left: 4px solid var(--toast-severity-success);
 }
@@ -740,14 +753,20 @@ body.toast-theme-match .notification.notification-clickable:hover {
    functional animation running, or the toast looks correct but never counts
    down visually. The selector is intentionally more specific than the broad
    body.fj-bg-idle * freeze rule and remains scoped to this timer only. */
-body.fj-bg-idle .notification-undo-timer-progress,
-body.fj-bg-idle .notification-undo-timer-progress::before,
-body.fj-bg-idle .notification-undo-timer-progress::after,
-body.fj-ambient-freeze .notification-undo-timer-progress,
-body.fj-ambient-freeze .notification-undo-timer-progress::before,
-body.fj-ambient-freeze .notification-undo-timer-progress::after {
+/* It runs only while it is on screen and the window is not hidden (nothing runs while hidden): visibleSpinners.js marks it .fj-in-view. */
+/* stylelint-disable declaration-no-important -- counters the universal `animation-play-state: paused !important` freeze */
+body.fj-bg-idle:not(.fj-window-hidden) .notification-undo-timer-progress.fj-in-view,
+body.fj-bg-idle:not(.fj-window-hidden) .notification-undo-timer-progress.fj-in-view::before,
+body.fj-bg-idle:not(.fj-window-hidden) .notification-undo-timer-progress.fj-in-view::after {
   animation-play-state: running !important;
 }
+
+.notification-undo-timer-progress:not(.fj-in-view),
+.notification-undo-timer-progress:not(.fj-in-view)::before,
+.notification-undo-timer-progress:not(.fj-in-view)::after {
+  animation-play-state: paused !important;
+}
+/* stylelint-enable declaration-no-important */
 
 @keyframes undoTimerDrain {
   to {
@@ -825,6 +844,28 @@ body.fj-ambient-freeze .notification-undo-timer-progress::after {
      the much lower --flowjoe-z-fallback-confirm token, which sits below the header/scrubber
      z-index range this pill needs to clear during a canvas drag. */
   z-index: 2147483000 !important;
+}
+
+/* The merge zone of the slot under a card held by the pointer (slotPointerDrag.js sets its size and place on screen): drawn above the card,
+   which covers that slot's centre, until the zone arms and the card turns into the pill. */
+.slot-merge-zone {
+  position: fixed;
+  top: 0;
+  left: 0;
+  box-sizing: border-box;
+  border-radius: var(--radius-full, 999px);
+  border: 2px dashed var(--accent-color);
+  background: color-mix(in srgb, var(--accent-color) 16%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--bg-primary) 55%, transparent),
+    inset 0 0 0 1px color-mix(in srgb, var(--bg-primary) 55%, transparent);
+  pointer-events: none;
+  z-index: calc(var(--canvas-slot-drag-z) + 1);
+  display: none;
+}
+
+.slot-merge-zone.is-shown {
+  display: block;
 }
 
 #drag-image-preview.batch-ghost .batch-drag-pill {

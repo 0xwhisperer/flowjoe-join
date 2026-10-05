@@ -19,7 +19,7 @@
   color: var(--text-primary);
   font-size: 13px;
   line-height: 1.35;
-  box-shadow: var(--shadow-modal, 0 10px 30px rgba(0, 0, 0, 0.35));
+  box-shadow: 0 10px 30px color-mix(in srgb, var(--shadow-heavy) 70%, transparent);
   cursor: grab;
   touch-action: none;
   user-select: none;
@@ -222,7 +222,7 @@
   border-radius: var(--radius-md, 10px);
   border: 1px solid var(--border-color);
   background: var(--bg-secondary);
-  box-shadow: var(--shadow-modal, 0 10px 30px rgba(0, 0, 0, 0.35));
+  box-shadow: 0 10px 30px color-mix(in srgb, var(--shadow-heavy) 70%, transparent);
   cursor: default;
   user-select: text;
 }
@@ -392,7 +392,9 @@
 }
 
 /* The thin accent frame around a following guest's whole screen (mockups 7b, 7d, 7j): "you are in a presentation". Under the pill, over the content, never takes a click. */
-html[data-presenting-frame]::after {
+/* data-presenting-frame-leaving keeps the frame drawn for the moment it fades out (windowMotion.js setRootFrame); the app's own attribute is already gone. */
+html[data-presenting-frame]::after,
+html[data-presenting-frame-leaving]::after {
   content: "";
   position: fixed;
   inset: 0;
@@ -439,9 +441,18 @@ html[data-presenting-frame]::after {
   border-radius: 14px;
   background: var(--panel-bg, var(--bg-secondary));
   color: var(--text-primary);
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 10px 28px color-mix(in srgb, var(--shadow-heavy) 70%, transparent);
 }
 .present-intro small {
   color: var(--text-secondary);
   line-height: 1.4;
+}
+/* Motion (mockup "People"): the pill's settings switches flip on the quick spring while share motion is on (shareMotion.js keeps .fj-motion-share and the spring curve current). */
+.present-pill.fj-motion-share .toggle-switch .toggle-slider {
+  transition: background-color var(--fj-t-snappy) var(--fj-ease-snappy);
+}
+.present-pill.fj-motion-share .toggle-switch .toggle-slider:before {
+  transition:
+    transform var(--fj-t-snappy) var(--fj-ease-snappy),
+    background-color var(--transition-speed) ease;
 }

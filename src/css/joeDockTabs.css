@@ -1019,9 +1019,10 @@
     position: relative;
     flex: 0 0 auto;
     gap: 0;
-    height: 190px;
-    min-height: 0;
-    max-height: none;
+    height: 136px; /* a short box by default so the preview below keeps its room; drag the bottom-right corner to make it taller */
+    min-height: 96px; /* never shorter than the tool row along its foot needs */
+    max-height: 420px;
+    resize: vertical;
     padding: 0;
     border: 1px solid var(--jd-line);
     border-radius: 12px;

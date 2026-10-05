@@ -1251,6 +1251,37 @@ body.resizing .resizer::after,
   top: calc(var(--tree-line-height-middle) + var(--tree-line-height-middle-padding));
 }
 
+/* Tree motion (src/js/treeMotion.js): one highlight travels between rows while the destination row's own highlight waits (hidden inline, since the theme
+   decides the selected row's look). The traveller's fill, shape and shadow are copied from the selected row at the moment it starts.
+   The ghost is a picture of children that just closed, fading out while the rows below close up. */
+.tree-selection-traveller {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: -1;
+  pointer-events: none;
+  transform-origin: left top;
+}
+
+/* Gallery handover (src/js/galleryMotion.js): the header, the canvas toolbar and the scrubber are re-created on a node switch and must not animate as they
+   settle; only the slots and the changed words move. */
+#node-info.gallery-handover #selected-node-name,
+#node-info.gallery-handover #selected-node-name *,
+#node-info.gallery-handover #gallery-top-scrubber,
+#node-info.gallery-handover #gallery-top-scrubber *,
+#node-info.gallery-handover #gallery-side-scrubber,
+#node-info.gallery-handover #gallery-side-scrubber *,
+#node-info.gallery-handover #image-display > :not(.image-gallery),
+#node-info.gallery-handover #image-display > :not(.image-gallery) * {
+  transition: none;
+}
+
+.tree-motion-ghost {
+  position: absolute;
+  pointer-events: none;
+  overflow: hidden;
+}
+
 /* Status Indicator Styles */
 .status-indicator {
   display: inline-block;
@@ -1334,6 +1365,11 @@ body.resizing .resizer::after,
    keeps showing through behind it otherwise — pausing on open and resuming on close (via
    animation-play-state, not display:none) avoids a visible restart glitch either way. */
 body.settings-panel-open .status-in-progress::after {
+  animation-play-state: paused;
+}
+
+/* The ripple runs only while its badge is on screen (visibleSpinners.js marks it .fj-in-view): a badge on a row scrolled out of the tree never animates. */
+.status-in-progress:not(.fj-in-view)::after {
   animation-play-state: paused;
 }
 

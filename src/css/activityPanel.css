@@ -17,6 +17,37 @@
   border-radius: var(--radius-lg, 8px);
 }
 
+/* History's title row reuses the gallery breadcrumb row's structure (activityPanel.js buildHistoryTitle); this is only its icon slot (the close button is a standard .icon-btn in .breadcrumbs-actions). */
+#selected-node-name:has(.activity-title-icon) {
+  padding-bottom: 10px; /* a node's breadcrumb row is 46px tall; History's row has no filter line below it, so it takes the same height */
+}
+
+.activity-title-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: var(--icon-btn-size);
+  height: var(--icon-btn-size);
+  color: var(--text-secondary);
+}
+
+.activity-title-icon i {
+  font-size: var(--icon-glyph);
+  line-height: 1;
+}
+
+.activity-close-btn:hover,
+.activity-close-btn:focus-visible {
+  color: var(--text-primary);
+  border-color: var(--accent-color);
+}
+
+.activity-close-btn:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
 .activity-header {
   padding: 8px 12px 12px;
   border-bottom: 1px solid var(--border-color);
@@ -31,6 +62,7 @@
 
 .activity-toolbar-btn,
 .activity-row-btn {
+  margin: 0; /* the global button margin (5px) would sit these buttons inset from the text they line up with */
   padding: 4px 10px;
   font-size: 12px;
   border: 1px solid var(--border-color);
@@ -57,6 +89,7 @@
 
 .activity-toolbar-link,
 .activity-row-link {
+  margin: 0;
   padding: 0;
   font-size: 12px;
   border: none;
@@ -128,6 +161,34 @@
   overflow: hidden;
 }
 
+/* The gallery's scrubber is a fixed bar outside the gallery area, so it would show through History laid over the gallery: it is hidden (not removed, so it is
+   exactly as it was when History closes). */
+body:has(.activity-host) #gallery-top-scrubber,
+body:has(.activity-host) #gallery-side-scrubber {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* History laid over a live gallery (activityPanel.js .activity-host): it covers the whole gallery area and the gallery stays untouched underneath, so closing History
+   puts everything back with no redraw. The gallery's own canvas handlers ignore anything inside it. */
+#image-display:has(> .activity-host) {
+  overflow: hidden; /* nothing underneath scrolls while History is over it */
+}
+
+.activity-host {
+  position: absolute;
+  inset: 0;
+  z-index: var(--flowjoe-z-app-modal);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  padding-top: var(--activity-host-top-inset, 0px);
+  box-sizing: border-box;
+  border-radius: inherit;
+  background: var(--bg-primary);
+}
+
 #node-details:has(.activity-timeline) {
   min-height: 0;
 }
@@ -190,7 +251,7 @@
 .activity-entry-expand {
   display: block;
   padding: 0;
-  margin-bottom: 4px;
+  margin: 0 0 4px;
   font-size: 12px;
   border: none;
   background: none;
@@ -307,4 +368,14 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* Motion (historyMotion.js, glideHighlight): one hover highlight glides between the version rows; a row's own hover fill is held back while it shows. */
+.activity-timeline.fj-glide {
+  position: relative;
+  isolation: isolate;
+}
+
+.activity-timeline.fj-glide .activity-entry:hover {
+  background: transparent;
 }

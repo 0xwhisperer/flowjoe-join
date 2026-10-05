@@ -318,19 +318,38 @@
   box-sizing: border-box;
 }
 
-#ai-generate-preview-placeholder[data-aspect="1024x1024"],
-#ai-generate-preview-image[data-aspect="1024x1024"] {
-  aspect-ratio: 1 / 1;
+/* The Generate tab's preview — the "No generated image yet" placeholder and the finished picture — always scales to the
+   largest box of the chosen shape that fits the preview area (up as well as down), instead of shrinking to its text or
+   its pixel size. The card is a size container so the sizes can be read off its inner width and height. */
+#generate-panel .ai-generate-preview-card {
+  container-type: size;
+}
+
+#ai-generate-preview-placeholder,
+#ai-generate-preview-image {
+  --gen-preview-ratio: 1;
+  width: min(100cqw, calc(100cqh * var(--gen-preview-ratio)));
+  height: auto;
+  max-width: none;
+  max-height: none;
+  aspect-ratio: var(--gen-preview-ratio);
+}
+
+/* While Joe is working the placeholder fills the whole preview area (the animation and phrase need the room), whatever the shape. */
+#ai-generate-preview-placeholder.is-generating {
+  width: 100cqw;
+  height: 100cqh;
+  aspect-ratio: auto;
 }
 
 #ai-generate-preview-placeholder[data-aspect="1536x1024"],
 #ai-generate-preview-image[data-aspect="1536x1024"] {
-  aspect-ratio: 3 / 2;
+  --gen-preview-ratio: 1.5;
 }
 
 #ai-generate-preview-placeholder[data-aspect="1024x1536"],
 #ai-generate-preview-image[data-aspect="1024x1536"] {
-  aspect-ratio: 2 / 3;
+  --gen-preview-ratio: 0.6667;
 }
 
 #ai-generate-submit {

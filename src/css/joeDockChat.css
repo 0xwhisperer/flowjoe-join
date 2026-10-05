@@ -25,6 +25,7 @@
     --jd-surface: var(--bg-secondary);
     --jd-well: var(--bg-tertiary);
     --jd-hover: var(--hover-bg);
+    --jd-reply-indent: 34px;
     --jd-line: color-mix(in srgb, var(--border-color) 80%, transparent);
     --jd-line-soft: color-mix(in srgb, var(--border-color) 55%, transparent);
     --jd-text-1: var(--text-primary);
@@ -126,6 +127,18 @@
     gap: 9px;
     flex: 1 1 auto;
     min-width: 0;
+  }
+
+  /* Joe's illustration in place of the coffee mug (mockup flowjoe-joe-avatar.html). To restore the coffee mug at the top, follow the comment
+     in joeDockChatLayout.js (put the mug icon back into the span AND drop the "joe-dock-avatar" class); this rule alone only draws the picture. */
+  .joe-dock-mark.joe-dock-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: url("../assets/joe-avatar.png") center / cover no-repeat;
+    box-shadow:
+      0 0 0 1.5px var(--jd-hover),
+      0 2px 10px color-mix(in srgb, var(--accent-color) 30%, transparent);
   }
 
   .joe-dock-mark {
@@ -1027,26 +1040,23 @@
   /* Joe's replies read as text beside a small mark, not as cards. */
   #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message.assistant {
     position: relative;
-    padding-left: 32px;
+    padding-left: var(--jd-reply-indent);
     box-sizing: border-box;
   }
 
   #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message.assistant::before,
   #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-welcome::before,
   #ai-spell-check-modal.joe-docked #ai-chat-messages #ai-chat-loading.ai-chat-loading-message::before {
-    content: "\f7b6" / "";
+    /* Joe's illustration beside his replies. The old mark was the coffee mug glyph: content "\f7b6" / "" in the Font Awesome solid font, 22px rounded square, accent colour on --jd-hover. */
+    content: "" / "";
     position: absolute;
     left: 0;
     top: 1px;
-    display: grid;
-    place-items: center;
-    width: 22px;
-    height: 22px;
-    border-radius: 7px;
-    background: var(--jd-hover);
-    color: var(--accent-color);
-    font: var(--fa-font-solid);
-    font-size: 10px;
+    display: block;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: url("../assets/joe-avatar.png") center / cover no-repeat;
   }
 
   #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message--streaming:not(.ai-chat-message--streaming-active)::before {
@@ -1127,6 +1137,38 @@
     color: var(--jd-text-3);
   }
 
+  /* The copy/download/… buttons and the token note always sit on their own line under the bubble, on the
+     bubble's own side (the floating window's "buttons beside the bubble when there is room" layout reads as
+     scattered in a column). Joe's: left, in line with the reply text. Yours: right. */
+  #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message.assistant .ai-chat-bubble {
+    flex: 0 0 100%;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message.assistant .ai-chat-actions {
+    flex: 0 0 100%;
+    justify-content: flex-start;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message.assistant .ai-chat-actions .ai-chat-msg-token-chip {
+    order: 99;
+    flex: 0 0 100%;
+    margin: 0;
+    text-align: left;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message.user .ai-chat-bubble {
+    order: 1;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message.user .ai-chat-actions {
+    order: 2;
+    flex: 0 0 100%;
+    max-width: 100%;
+    justify-content: flex-end;
+    padding-right: var(--chat-bubble-pad-x);
+    box-sizing: border-box;
+  }
+
   /* Proposal (flow-change approval) cards keep their markup, restyled to the mockup's card. */
   #ai-spell-check-modal.joe-docked #ai-chat-messages .flow-mutation-approval-card {
     border: 1px solid var(--jd-accent-line);
@@ -1192,12 +1234,12 @@
     transform-origin: center;
   }
 
-  /* Keep the spinning hourglass beside the coffee mark; the label follows it on the same row. */
+  /* Keep the spinning hourglass beside Joe's avatar, lined up with where his reply text starts (--jd-reply-indent); the label follows it on the same row. */
   #ai-spell-check-modal.joe-docked #ai-chat-messages #ai-chat-loading.ai-chat-loading-message {
     position: relative;
     box-sizing: border-box;
     min-height: 22px;
-    padding: 0 0 0 50px;
+    padding: 0 0 0 calc(var(--jd-reply-indent) + 22px);
     align-items: center;
     flex-wrap: nowrap;
     line-height: 22px;
@@ -1205,7 +1247,7 @@
 
   #ai-spell-check-modal.joe-docked #ai-chat-messages #ai-chat-loading.ai-chat-loading-message .ai-chat-loading-icon {
     position: absolute;
-    left: 26px;
+    left: calc(var(--jd-reply-indent) - 2px);
     top: 1px;
     display: grid;
     place-items: center;

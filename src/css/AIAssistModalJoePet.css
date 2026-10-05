@@ -3,7 +3,7 @@
     --joe-pet-size: 96px;
     --joe-pet-control-height: 32px;
     position: fixed;
-    z-index: calc(var(--flowjoe-z-ai-shell, 200008) + 1);
+    z-index: var(--flowjoe-z-joe-pet, 2147483645);
     left: 0;
     bottom: var(--status-footer-height, 22px);
     width: 360px;

@@ -193,4 +193,14 @@
   overflow-y: auto;
 }
 
+/* Motion (windowMotion.js glideHighlight): one hover highlight glides between the conversations; a row's own hover fill is held back while it shows. */
+.ai-chat-history-list.fj-glide {
+  position: relative;
+  isolation: isolate;
+}
+
+.ai-chat-history-list.fj-glide .ai-chat-history-item:hover {
+  background: transparent;
+}
+
 }
