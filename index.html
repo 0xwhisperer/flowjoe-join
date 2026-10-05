@@ -7,7 +7,7 @@
     <style id="fj-guest-boot-cover">html:not([data-guest-ready]) body > :not(.gj-screen):not(.fj-boot-loader) { visibility: hidden; } html:not([data-guest-ready]) .gj-screen, html:not([data-guest-ready]) .gj-screen * { visibility: visible; } html:not([data-guest-ready]) body:has(.gj-screen.is-dialog) > :not(.gj-screen):not(.fj-boot-loader) { visibility: visible; } .fj-boot-loader { position: fixed; inset: 0; z-index: 2147483000; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; background: #1b1b1d; color: #e9e6e0; font: 600 20px/1.2 ui-monospace, "JetBrains Mono", "Fira Mono", monospace; } .fj-boot-loader img { width: 56px; height: 56px; } .fj-boot-loader small { font-weight: 400; font-size: 13px; opacity: 0.7; } .fj-boot-ring { width: 36px; height: 36px; animation: fj-boot-spin 1.6s linear infinite; } .fj-boot-ring circle { fill: none; stroke-width: 3; } .fj-boot-track { stroke: rgba(255, 255, 255, 0.18); } .fj-boot-arc { stroke: #f0a030; stroke-linecap: round; stroke-dasharray: var(--fj-boot-fill, 12) 100; transition: stroke-dasharray 0.2s linear; } @keyframes fj-boot-spin { to { transform: rotate(360deg); } } @media (prefers-reduced-motion: reduce) { .fj-boot-ring { animation-duration: 6s; } } html[data-guest-ready] .fj-boot-loader, body:has(.gj-screen) .fj-boot-loader { display: none; }</style>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Content Security Policy sets the allowed sources for various content types and scripts -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self'; connect-src 'self' blob: https://dvo.flowjoe.app https://shalom.flowjoe.app https://matt.flowjoe.app; frame-src 'self' https:; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob: https://dvo.flowjoe.app https://shalom.flowjoe.app https://matt.flowjoe.app; font-src 'self'; connect-src 'self' blob: https://dvo.flowjoe.app https://shalom.flowjoe.app https://matt.flowjoe.app; frame-src 'self' https:; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'" />
     <meta name="referrer" content="no-referrer" />
     <title>FlowJoe</title>
     <link rel="icon" type="image/png" href="src/favicons/favicon-96x96.png" sizes="96x96" />
@@ -22,7 +22,7 @@
     <link rel="preload" as="font" type="font/woff2" crossorigin="anonymous" href="vendor/fontawesome-free-6.5.0/webfonts/fa-regular-400.woff2" />
     <!-- App typography families -->
     <link rel="stylesheet" href="vendor/fonts/fonts.css" />
-    <script src="boot/prebootstrap.f129f0ad32b62e39.js"></script>
+    <script src="boot/prebootstrap.9a8bc4143e8c649f.js"></script>
     <!-- canvas-confetti is now bundled (see VENDOR_GLOBALS in scripts/build-bundle-esm.js) — no CDN dependency. -->
   </head>
   <body>
@@ -2050,7 +2050,7 @@
         </div><!-- /settings-content -->
       </div><!-- /settings-body -->
     </div><!-- /settings-panel -->
-    <script src="boot/progress.228452fd256ceee2.js"></script>
-    <script type="module" src="bundle.06c6e1b0fc6699e8.js"></script>
+    <script src="boot/progress.2390af11eb91811c.js"></script>
+    <script type="module" src="bundle.be6993e0f0645fcb.js"></script>
   </body>
 </html>
