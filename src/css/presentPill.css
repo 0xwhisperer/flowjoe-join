@@ -317,19 +317,33 @@
   display: none;
 }
 
-/* The owner's Presenting panel: lock or release guests (Lock all / Unlock all, and one guest). */
+/* The owner's Presenting panel: one switch locks or releases every guest, and each guest row has its own. */
 .present-pill-bulk {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
   padding: 10px 0;
   border-top: 1px solid var(--border-color);
+}
+.present-pill-bulk[hidden] {
+  display: none;
+}
+.present-pill-lock-switch {
+  margin-left: auto;
+}
+/* Guests differ: the switch rests halfway, in the accent colour. */
+.present-pill-lock-switch.is-mixed .toggle-slider {
+  background-color: var(--accent-color);
+}
+.present-pill-lock-switch.is-mixed .toggle-slider:before {
+  transform: translateX(calc(var(--toggle-switch-travel) / 2));
 }
 .present-pill-lock {
   margin-left: auto;
   flex: none;
   width: 28px;
   height: 28px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  line-height: 1;
   border-radius: 999px;
   border: 1px solid var(--border-color);
   background: transparent;

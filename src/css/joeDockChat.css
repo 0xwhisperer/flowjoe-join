@@ -657,6 +657,7 @@
   }
 
   .ai-assist-follow-state[hidden],
+  .ai-assist-follow-back[hidden],
   .ai-assist-follow-switch[hidden] {
     display: none;
   }
@@ -878,6 +879,33 @@
   #ai-spell-check-modal.joe-docked .ai-assist-follow-switch:hover,
   #ai-spell-check-modal.joe-docked .ai-assist-follow-switch:focus-visible {
     background: color-mix(in srgb, var(--accent-color) 24%, transparent);
+    outline: none;
+  }
+
+  /* "Back to <name>": quieter than the Switch-to offer (no fill), shown for a few seconds after Joe moves to another target. */
+  #ai-spell-check-modal.joe-docked .ai-assist-follow-back {
+    flex: 0 1 auto;
+    min-width: 0;
+    max-width: 62%;
+    height: 24px;
+    padding: 0 8px;
+    border: 0;
+    border-radius: var(--radius-full, 999px);
+    background: transparent;
+    color: var(--accent-color);
+    font: inherit;
+    font-size: 11.5px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    animation: joe-dock-rise 0.25s var(--jd-ease);
+  }
+
+  #ai-spell-check-modal.joe-docked .ai-assist-follow-back:hover,
+  #ai-spell-check-modal.joe-docked .ai-assist-follow-back:focus-visible {
+    background: var(--jd-accent-soft);
     outline: none;
   }
 
@@ -2072,6 +2100,7 @@
     .joe-dock-menu,
     .joe-dock-token-popover,
     #ai-spell-check-modal.joe-docked .ai-assist-follow-switch,
+    #ai-spell-check-modal.joe-docked .ai-assist-follow-back,
     .joe-dock-live-state[data-state="working"] .joe-dock-live-dot {
       animation: none;
     }

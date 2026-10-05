@@ -157,6 +157,15 @@
     overflow-x: hidden;
     overflow-y: auto;
     margin-bottom: 12px;
+    /* A guest avatar's ring (the dashed one, or "you") reaches 4px outside the circle and this scroll area cuts off anything past its padding,
+       so an avatar at the start of a line (Joe conversations) lost the side of its ring. 4px of room on both sides, taken back by the margin
+       so the text still lines up with the title. */
+    padding-inline: 4px;
+    margin-inline: -4px;
+  }
+  /* The Export panel's scrollable rule (styles-gallery-horizontal.css) sets its own right padding and is more specific: keep the ring room. */
+  #modal > div.cx-share.modal-panel-export.is-export-scrollable #modal-message {
+    padding-inline: 4px;
   }
   #modal > div.cx-share #modal-button-container {
     flex: none;

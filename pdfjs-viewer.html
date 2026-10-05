@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="flowjoe-profile" content="guest" />
+  <script src="boot/framebust.b6e4dceb977cdbc4.js"></script>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self'; connect-src 'self' blob: https://dvo.flowjoe.app https://shalom.flowjoe.app https://matt.flowjoe.app; frame-src 'none'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'" />
+  <meta name="referrer" content="no-referrer" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PDF Preview</title>
+  <link rel="stylesheet" href="vendor/fontawesome-free-6.5.0/css/all.min.css">
+  <style>
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #d8dadd;
+      color: #202124;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    #toolbar {
+      box-sizing: border-box;
+      position: relative;
+      height: 55px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 0 18px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      background: #3b3b3b;
+      color: #f4f4f4;
+      font: 14px/1 Arial, Helvetica, sans-serif;
+      user-select: none;
+    }
+
+    .image-modal-pdf-tool {
+      box-sizing: border-box;
+      width: 28px;
+      height: 28px;
+      min-width: 28px;
+      min-height: 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      border-radius: 4px;
+      background: transparent;
+      color: #e8eaed;
+      cursor: pointer;
+      font: 15px/1 Arial, Helvetica, sans-serif;
+    }
+
+    .image-modal-pdf-tool:hover,
+    .image-modal-pdf-tool.is-active {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .image-modal-pdf-tool:disabled {
+      opacity: 0.38;
+      cursor: default;
+    }
+
+    .image-modal-pdf-separator {
+      width: 1px;
+      height: 28px;
+      margin: 0 6px;
+      background: rgba(255, 255, 255, 0.24);
+    }
+
+    #downloadPdf {
+      margin-left: auto;
+    }
+
+    .image-modal-pdf-page-number,
+    .image-modal-pdf-zoom-readout {
+      box-sizing: border-box;
+      height: 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      border-radius: 4px;
+      background: #202124;
+      color: #fff;
+      font: 14px/28px Arial, Helvetica, sans-serif;
+      text-align: center;
+    }
+
+    .image-modal-pdf-page-number {
+      width: 38px;
+      min-width: 38px;
+      max-width: 38px;
+      padding: 0 3px;
+      margin: 0;
+    }
+
+    .image-modal-pdf-page-total {
+      min-width: 44px;
+      color: #fff;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .image-modal-pdf-zoom-readout {
+      min-width: 50px;
+      padding: 0 7px;
+    }
+
+    #status {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: 260px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 12px;
+      pointer-events: none;
+    }
+
+    #moreMenu {
+      position: absolute;
+      right: 18px;
+      top: 50px;
+      z-index: 2;
+      min-width: 138px;
+      padding: 6px 0;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 3px;
+      background: #303134;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    #moreMenu button {
+      display: block;
+      width: 100%;
+      padding: 8px 14px;
+      border: 0;
+      background: transparent;
+      color: #f1f3f4;
+      font: 13px/1.3 Arial, Helvetica, sans-serif;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    #moreMenu button:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    #shell {
+      width: 100vw;
+      height: calc(100vh - 55px);
+      display: flex;
+      overflow: hidden;
+      background: #d8dadd;
+    }
+
+    #sidebar {
+      box-sizing: border-box;
+      flex: 0 0 170px;
+      width: 170px;
+      padding: 14px 10px;
+      overflow: auto;
+      border-right: 1px solid #b9bdc3;
+      background: #eef0f2;
+    }
+
+    body:not(.sidebar-open) #sidebar {
+      display: none;
+    }
+
+    .thumbnail {
+      box-sizing: border-box;
+      width: 126px;
+      margin: 0 auto 14px;
+      padding: 6px;
+      border: 2px solid transparent;
+      border-radius: 4px;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .thumbnail.active {
+      border-color: #1a73e8;
+      background: rgba(26, 115, 232, 0.12);
+    }
+
+    .thumbnail canvas {
+      display: block;
+      max-width: 100%;
+      margin: 0 auto;
+      background: #fff;
+      box-shadow: 0 1px 4px rgba(60, 64, 67, 0.35);
+    }
+
+    .thumbnail-label {
+      margin-top: 5px;
+      color: #5f6368;
+      font-size: 11px;
+      text-align: center;
+    }
+
+    #viewer {
+      flex: 1 1 auto;
+      min-width: 0;
+      height: 100%;
+      overflow: auto;
+      scrollbar-gutter: stable;
+      background: #d8dadd;
+    }
+
+    #pages {
+      box-sizing: border-box;
+      width: 100%;
+      min-height: 100%;
+      padding: 0;
+    }
+
+    .page {
+      display: block;
+      max-width: 100%;
+      margin: 0 auto 8px;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(60, 64, 67, 0.45);
+    }
+
+    .page:last-child {
+      margin-bottom: 0;
+    }
+
+    @media (max-width: 720px) {
+      #sidebar {
+        flex-basis: 132px;
+        width: 132px;
+      }
+
+      .thumbnail {
+        width: 100px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header id="toolbar" class="image-modal-pdf-header">
+    <button id="sidebarToggle" class="image-modal-pdf-tool" type="button" title="Toggle sidebar" aria-label="Toggle sidebar"><i class="fas fa-bars" aria-hidden="true"></i></button>
+    <input id="pageNumber" class="image-modal-pdf-page-number" type="text" inputmode="numeric" pattern="[0-9]*" value="1" aria-label="Page number">
+    <span id="pageCount" class="image-modal-pdf-page-total">/ <span id="pageCountValue">0</span></span>
+    <span class="image-modal-pdf-separator" aria-hidden="true"></span>
+    <button id="zoomOut" class="image-modal-pdf-tool" type="button" title="Zoom out" aria-label="Zoom out"><i class="fas fa-minus" aria-hidden="true"></i></button>
+    <span id="zoomReadout" class="image-modal-pdf-zoom-readout">Fit</span>
+    <button id="zoomIn" class="image-modal-pdf-tool" type="button" title="Zoom in" aria-label="Zoom in"><i class="fas fa-plus" aria-hidden="true"></i></button>
+    <span class="image-modal-pdf-separator" aria-hidden="true"></span>
+    <button id="fitWidth" class="image-modal-pdf-tool" type="button" title="Fit to width" aria-label="Fit to width"><i class="fas fa-arrows-left-right-to-line" aria-hidden="true"></i></button>
+    <button id="rotatePdf" class="image-modal-pdf-tool" type="button" title="Rotate clockwise" aria-label="Rotate clockwise"><i class="fas fa-rotate-right" aria-hidden="true"></i></button>
+    <span class="image-modal-pdf-separator" aria-hidden="true"></span>
+    <button id="downloadPdf" class="image-modal-pdf-tool" type="button" title="Download" aria-label="Download"><i class="fas fa-download" aria-hidden="true"></i></button>
+    <button id="printPdf" class="image-modal-pdf-tool" type="button" title="Print" aria-label="Print"><i class="fas fa-print" aria-hidden="true"></i></button>
+    <button id="moreButton" class="image-modal-pdf-tool" type="button" title="More" aria-label="More"><i class="fas fa-ellipsis-vertical" aria-hidden="true"></i></button>
+    <span id="status">Loading...</span>
+    <div id="moreMenu" class="image-modal-pdf-more-menu" style="display:none;">
+      <button type="button" data-more-action="download">Download</button>
+      <button type="button" data-more-action="print">Print</button>
+    </div>
+  </header>
+  <div id="shell">
+    <aside id="sidebar" aria-label="PDF sidebar">
+      <div id="thumbnails"></div>
+    </aside>
+    <main id="viewer" aria-label="PDF preview">
+      <div id="pages"></div>
+    </main>
+  </div>
+
+  <script type="module" src="boot/pdfjs-viewer.00940682bfaf2835.js"></script>
+</body>
+</html>
