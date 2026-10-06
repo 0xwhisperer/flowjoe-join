@@ -2778,6 +2778,20 @@ body.settings-panel-open .topbar > div[style*="margin-left: auto"] {
   cursor: not-allowed;
 }
 
+/* Guest browser: the desktop-only buttons (Browser, Terminal, Source Control, Data) are shown but do nothing, so they read as dimmed. Colour, not opacity, so the tooltip stays fully visible. */
+.icon-btn.guest-desktop-only,
+.icon-btn.guest-desktop-only:hover,
+.app-rail-item.guest-desktop-only,
+.app-rail-item.guest-desktop-only:hover {
+  color: var(--disabled-text);
+  cursor: not-allowed;
+}
+
+.app-rail-item.guest-desktop-only .app-rail-icon,
+.app-rail-item.guest-desktop-only .app-rail-label {
+  color: var(--disabled-text);
+}
+
 /* Breadcrumbs wrapper styling */
 .breadcrumbs-wrapper {
   display: flex;
