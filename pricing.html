@@ -620,8 +620,8 @@
         </div>
         <div class="price-box">
           <span class="currency">$</span>
-          <span class="amount" id="teamPrice">16</span>
-          <span class="period" id="teamPeriod">/ seat / mo <span style="display: block; font-size: 12px; color: #A3A4AC; font-weight: 500; margin-top: 2px;">($192/seat billed annually)</span></span>
+          <span class="amount" id="teamPrice">12</span>
+          <span class="period" id="teamPeriod">/ seat / mo <span style="display: block; font-size: 12px; color: #A3A4AC; font-weight: 500; margin-top: 2px;">($144/seat billed annually)</span></span>
         </div>
         <a href="#contact" class="btn btn-secondary">Get Team Access</a>
 
@@ -734,13 +734,13 @@
         </div>
 
         <div class="proposal-box">
-          <h5>3. Team & Studio ($16/seat)</h5>
+          <h5>3. FlowJoe Team ($12/seat)</h5>
           <ul style="margin: 6px 0 0 18px; color: #C5C6CD; font-size: 15px; line-height: 1.75;">
             <li>Built for business continuity and team coordination.</li>
-            <li>Every team seat can host sessions and share links.</li>
+            <li>Priced at an approachable $12/seat to prevent single-Pro sharing.</li>
+            <li>Every team seat can host sessions and share links independently.</li>
             <li>Centralized billing to add or reassign licenses.</li>
-            <li>Pools company AI keys with usage visibility.</li>
-            <li>Transfer project ownership so flows never get orphaned.</li>
+            <li>Pools company AI keys and allows project ownership transfer.</li>
           </ul>
         </div>
 
@@ -823,10 +823,10 @@
       <div class="qa-banner" style="background: rgba(168, 85, 247, 0.08); border-color: rgba(168, 85, 247, 0.35); margin-top: 20px;">
         <h5 style="color: #C084FC;">🏢 Key Question 5: What Is the Distinction Between Team and Studio, and How Do We Future-Proof It?</h5>
         <ul style="margin: 10px 0 0 20px; color: #D8D8DF; font-size: 15.5px; line-height: 1.75;">
-          <li><strong>What a Team needs ($16/seat):</strong> Fluid daily coordination among 5–20 creators, unlimited concurrent editors, pooled company AI keys, and fast project handoff.</li>
+          <li><strong>What a Team needs ($12/seat):</strong> Fluid daily coordination among 5–20 creators, unlimited concurrent editors, pooled company AI keys, and fast project handoff.</li>
           <li><strong>What a Studio needs (Enterprise):</strong> Stringent IT governance for 20–100+ seats, SAML SSO, self-hosted private relay containers behind company firewalls, and zero-telemetry local LLMs.</li>
-          <li><strong>Option A (Lean 3-card model):</strong> Keep three primary cards with Team at $16/seat, paired with a dedicated enterprise banner routing large organizations to Studio Sales.</li>
-          <li><strong>Option B (Formal 4-tier model):</strong> Expand to Solo ($0), Pro ($8/mo), Team ($16/seat), and Studio/Enterprise ($32+/seat or custom contract) as enterprise sales demand matures.</li>
+          <li><strong>Option A (Lean 3-card model):</strong> Keep three primary cards with Team at $12/seat, paired with a dedicated enterprise banner routing large organizations to Studio Sales.</li>
+          <li><strong>Option B (Formal 4-tier model):</strong> Expand to Solo ($0), Pro ($8/mo), Team ($12/seat), and Studio/Enterprise ($32+/seat or custom contract) as enterprise sales demand matures.</li>
         </ul>
       </div>
 
@@ -841,12 +841,12 @@
       </div>
 
       <div class="qa-banner" style="background: rgba(234, 179, 8, 0.08); border-color: rgba(234, 179, 8, 0.35); margin-top: 20px;">
-        <h5 style="color: #FACC15;">🌉 Key Question 7: How Do We Bridge the Pricing Cliff Between Pro ($96/yr) and Team ($960/yr)?</h5>
+        <h5 style="color: #FACC15;">🌉 Key Question 7: Why $12/Seat Prevents Small Companies From Just Using Pro</h5>
         <ul style="margin: 10px 0 0 20px; color: #D8D8DF; font-size: 15.5px; line-height: 1.75;">
-          <li><strong>The pricing cliff:</strong> A solo Pro license includes 3 free live guest editors for $96/year, while a 5-person team plan costs nearly $1,000/year.</li>
-          <li><strong>The sharing risk:</strong> Without an intermediate step, small creative duos and pods will share a single Pro login instead of upgrading.</li>
-          <li><strong>The add-on bridge:</strong> Our development roadmap can support an "Extra Host Slot" add-on (+ $6/month) for small co-creator partnerships.</li>
-          <li><strong>Clear team boundary:</strong> Full $16/seat pricing is reserved for organizations that require centralized license reassignment, host ownership handoff, and pooled company AI keys.</li>
+          <li><strong>The sharing risk at $16:</strong> When Team is $16/seat ($192/yr), small 3–4 person agencies will jerry-rig a single $8 Pro account instead of upgrading.</li>
+          <li><strong>The approachable math of $12:</strong> At $12/seat ($144/seat/yr), an entire 4-person design studio pays just $48/month, which slides easily into standard company expenses.</li>
+          <li><strong>The extra host bridge:</strong> For indie duos, our roadmap can still offer an "Extra Host Slot" add-on (+ $6/month) before requiring full company license management.</li>
+          <li><strong>Clear team value:</strong> Team seats give every member their own independent host address, central billing reassignment, pooled company AI keys, and project ownership handoff.</li>
         </ul>
       </div>
     </div>
@@ -867,14 +867,14 @@
         monthlyBtn.classList.remove('active');
         proPrice.textContent = '8';
         proPeriod.innerHTML = '/ mo <span style="display: block; font-size: 12px; color: #FFB340; font-weight: 600; margin-top: 2px;">($96 billed annually)</span>';
-        teamPrice.textContent = '16';
-        teamPeriod.innerHTML = '/ seat / mo <span style="display: block; font-size: 12px; color: #A3A4AC; font-weight: 500; margin-top: 2px;">($192/seat billed annually)</span>';
+        teamPrice.textContent = '12';
+        teamPeriod.innerHTML = '/ seat / mo <span style="display: block; font-size: 12px; color: #A3A4AC; font-weight: 500; margin-top: 2px;">($144/seat billed annually)</span>';
       } else {
         monthlyBtn.classList.add('active');
         annualBtn.classList.remove('active');
         proPrice.textContent = '10';
         proPeriod.innerHTML = '/ month';
-        teamPrice.textContent = '20';
+        teamPrice.textContent = '15';
         teamPeriod.innerHTML = '/ seat / month';
       }
     }
