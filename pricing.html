@@ -679,11 +679,29 @@
       </div>
 
       <div class="qa-banner">
-        <h5>💡 Key Question: Are Pro Guests View-Only, or Can They Edit for Free?</h5>
+        <h5>💡 Key Question 1: Are Pro Guests View-Only, or Can They Edit for Free?</h5>
         <p>
-          <strong>Proposal: Pro guests should definitely be able to EDIT for free (up to 5 concurrent editors per session).</strong><br>
+          <strong>Recommendation: Pro guests should definitely be able to EDIT for free (up to 5 concurrent editors per session).</strong><br>
           Charging per-guest (the Canva trap) introduces huge friction when a freelancer or consultant just wants client review notes. Instead, guests join free directly in their browser without an account. Only the <em>host</em> who owns the project and provisions the tunnel needs a paid Pro license. The concurrency cap prevents companies from abusing a single host license.
         </p>
+      </div>
+
+      <div class="qa-banner" style="background: rgba(255, 149, 0, 0.08); border-color: rgba(255, 149, 0, 0.35); margin-top: 16px;">
+        <h5 style="color: #FFB340;">🔒 Key Question 2: How Do We Stop People Rolling Free Trials With Burner Gmails?</h5>
+        <p>
+          Because FlowJoe is a local-first Electron desktop app, an anonymous rolling 14-day trial risks abuse. Here is the recommended 3-layer anti-abuse architecture:
+        </p>
+        <ul style="margin: 10px 0 0 18px; color: #D3D5DC; font-size: 13.5px; line-height: 1.6;">
+          <li>
+            <strong>1. Hardware / Device ID Locking (Primary Shield):</strong> When a trial activates, the desktop app registers the machine's hardware UUID with your auth server. Even if a user creates 10 different Gmail accounts, that specific computer is locked to exactly one 14-day trial per year.
+          </li>
+          <li>
+            <strong>2. Subdomain Friction:</strong> Pro users get a personal address (e.g. <code>dan.flowjoe.app</code>). If a freelancer rolls burner accounts, their URL changes every 2 weeks and all previously shared client links break permanently. Professional reputation protects against trial-hopping.
+          </li>
+          <li>
+            <strong>3. Zero Data Hostage:</strong> When the 14 days expire, no local work is locked. The user keeps all nodes, workbenches, and media on their hard drive. Only the outbound sharing tunnel pauses, making upgrading to $8/month an easy, unresented decision.
+          </li>
+        </ul>
       </div>
     </div>
 
