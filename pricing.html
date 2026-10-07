@@ -9,20 +9,23 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0c0e14;
-      --surface: #141824;
-      --surface-card: #171c2b;
-      --surface-hover: #1e2438;
-      --border: rgba(255, 255, 255, 0.08);
-      --border-strong: rgba(255, 255, 255, 0.16);
-      --text-main: #f0f3fa;
-      --text-muted: #8b95aa;
-      --text-faint: #5a6478;
-      --accent: #5e6ad2;
-      --accent-glow: rgba(94, 106, 210, 0.25);
-      --accent-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%);
-      --pro-card-border: rgba(139, 92, 246, 0.5);
-      --pro-card-bg: radial-gradient(circle at top right, rgba(99, 102, 241, 0.12), transparent 50%), #161b2e;
+      /* Modern Ember Theme (FlowJoe) */
+      --bg: #121214;
+      --surface: #191A1D;
+      --surface-card: #1D1E22;
+      --surface-hover: #26272C;
+      --border: #2B2C31;
+      --border-strong: #3D3F46;
+      --text-main: #ECECEF;
+      --text-muted: #8A8A93;
+      --text-faint: #5A5B63;
+      --accent: #FF9500;
+      --accent-hover: #FFAA33;
+      --accent-dark: #C97600;
+      --accent-glow: rgba(255, 149, 0, 0.22);
+      --accent-gradient: linear-gradient(135deg, #FF9500 0%, #FF5E00 60%, #E5484D 100%);
+      --pro-card-border: rgba(255, 149, 0, 0.55);
+      --pro-card-bg: radial-gradient(circle at top right, rgba(255, 149, 0, 0.12), transparent 55%), #1C1D21;
       --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
     }
@@ -46,15 +49,15 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* Ambient background glow */
+    /* Ambient background glow — Modern Ember */
     .glow-backdrop {
       position: fixed;
       top: 0;
       left: 50%;
       transform: translateX(-50%);
-      width: 1000px;
+      width: 1100px;
       height: 480px;
-      background: radial-gradient(circle, rgba(94, 106, 210, 0.15) 0%, rgba(13, 15, 24, 0) 70%);
+      background: radial-gradient(circle, rgba(255, 149, 0, 0.12) 0%, rgba(18, 18, 20, 0) 70%);
       pointer-events: none;
       z-index: 0;
     }
@@ -81,9 +84,9 @@
       gap: 6px;
       padding: 5px 14px;
       border-radius: 9999px;
-      background: rgba(94, 106, 210, 0.12);
-      border: 1px solid rgba(94, 106, 210, 0.3);
-      color: #9aa5ff;
+      background: rgba(255, 149, 0, 0.12);
+      border: 1px solid rgba(255, 149, 0, 0.35);
+      color: #FFB340;
       font-size: 13px;
       font-weight: 600;
       letter-spacing: 0.02em;
@@ -96,7 +99,7 @@
       letter-spacing: -0.03em;
       line-height: 1.15;
       margin-bottom: 18px;
-      background: linear-gradient(180deg, #ffffff 0%, #cbd2e1 100%);
+      background: linear-gradient(180deg, #ffffff 0%, #D8D8DF 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
@@ -113,7 +116,7 @@
       align-items: center;
       gap: 12px;
       margin-bottom: 48px;
-      background: rgba(255, 255, 255, 0.04);
+      background: #191A1D;
       padding: 4px;
       border-radius: 12px;
       border: 1px solid var(--border);
@@ -134,13 +137,13 @@
     .toggle-btn.active {
       background: var(--surface-card);
       color: var(--text-main);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
     }
 
     .discount-pill {
-      background: rgba(16, 185, 129, 0.15);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      color: #34d399;
+      background: rgba(255, 149, 0, 0.15);
+      border: 1px solid rgba(255, 149, 0, 0.35);
+      color: #FFB340;
       font-size: 12px;
       padding: 2px 8px;
       border-radius: 999px;
@@ -170,10 +173,10 @@
     .card:hover {
       transform: translateY(-4px);
       border-color: var(--border-strong);
-      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4);
     }
 
-    /* Pro / Featured Card */
+    /* Pro / Featured Card — Modern Ember glow */
     .card.featured {
       background: var(--pro-card-bg);
       border: 1.5px solid var(--pro-card-border);
@@ -181,8 +184,8 @@
     }
 
     .card.featured:hover {
-      border-color: rgba(168, 85, 247, 0.8);
-      box-shadow: 0 20px 48px rgba(139, 92, 246, 0.35);
+      border-color: #FFAA33;
+      box-shadow: 0 20px 48px rgba(255, 149, 0, 0.35);
     }
 
     .popular-pill {
@@ -191,14 +194,14 @@
       left: 50%;
       transform: translateX(-50%);
       background: var(--accent-gradient);
-      color: white;
+      color: #17130C;
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 800;
       letter-spacing: 0.05em;
       text-transform: uppercase;
       padding: 4px 14px;
       border-radius: 999px;
-      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+      box-shadow: 0 4px 14px rgba(255, 149, 0, 0.45);
     }
 
     /* Card Details */
@@ -276,14 +279,15 @@
 
     .btn-primary {
       background: var(--accent-gradient);
-      color: #ffffff;
-      box-shadow: 0 4px 16px rgba(99, 102, 241, 0.35);
+      color: #17130C;
+      font-weight: 700;
+      box-shadow: 0 4px 16px rgba(255, 149, 0, 0.35);
     }
 
     .btn-primary:hover {
       opacity: 0.95;
       transform: scale(1.01);
-      box-shadow: 0 6px 20px rgba(139, 92, 246, 0.45);
+      box-shadow: 0 6px 20px rgba(255, 149, 0, 0.45);
     }
 
     /* Feature Lists */
@@ -300,7 +304,7 @@
       display: flex;
       align-items: flex-start;
       gap: 11px;
-      color: #c9d2e3;
+      color: #C5C6CD;
     }
 
     .feature-item strong {
@@ -315,11 +319,11 @@
     }
 
     .icon-check {
-      color: #10b981;
+      color: #46A758;
     }
 
     .icon-star {
-      color: #a855f7;
+      color: #FF9500;
     }
 
     .divider {
@@ -341,17 +345,17 @@
     .proposal-notes-wrap {
       margin-top: 56px;
       width: 100%;
-      background: rgba(23, 28, 43, 0.7);
-      border: 1px dashed rgba(139, 92, 246, 0.4);
+      background: #191A1D;
+      border: 1px dashed rgba(255, 149, 0, 0.4);
       border-radius: 20px;
       padding: 36px 40px;
     }
 
     .proposal-badge {
       display: inline-block;
-      background: rgba(139, 92, 246, 0.2);
-      border: 1px solid rgba(139, 92, 246, 0.5);
-      color: #c4b5fd;
+      background: rgba(255, 149, 0, 0.15);
+      border: 1px solid rgba(255, 149, 0, 0.4);
+      color: #FFB340;
       font-size: 11px;
       font-weight: 700;
       letter-spacing: 0.08em;
@@ -364,7 +368,7 @@
     .proposal-notes-wrap h3 {
       font-size: 22px;
       font-weight: 700;
-      color: #fff;
+      color: var(--text-main);
       margin-bottom: 8px;
     }
 
@@ -383,7 +387,7 @@
     }
 
     .proposal-box {
-      background: rgba(12, 14, 20, 0.6);
+      background: #141416;
       border: 1px solid var(--border);
       border-radius: 14px;
       padding: 22px 24px;
@@ -392,7 +396,7 @@
     .proposal-box h5 {
       font-size: 15px;
       font-weight: 700;
-      color: #9aa5ff;
+      color: #FFB340;
       margin-bottom: 10px;
       display: flex;
       align-items: center;
@@ -401,20 +405,20 @@
 
     .proposal-box p {
       font-size: 13.5px;
-      color: #a0aec0;
+      color: #A3A4AC;
       line-height: 1.6;
     }
 
     .qa-banner {
-      background: rgba(16, 185, 129, 0.08);
-      border: 1px solid rgba(16, 185, 129, 0.25);
+      background: rgba(70, 167, 88, 0.08);
+      border: 1px solid rgba(70, 167, 88, 0.3);
       border-radius: 14px;
       padding: 22px 26px;
       margin-top: 20px;
     }
 
     .qa-banner h5 {
-      color: #34d399;
+      color: #46A758;
       font-size: 15px;
       font-weight: 700;
       margin-bottom: 8px;
@@ -422,7 +426,7 @@
 
     .qa-banner p {
       font-size: 14px;
-      color: #cbd5e1;
+      color: #D3D5DC;
       line-height: 1.6;
     }
 
@@ -430,7 +434,7 @@
     .tunnel-callout {
       margin-top: 24px;
       width: 100%;
-      background: rgba(20, 24, 36, 0.85);
+      background: #191A1D;
       border: 1px solid var(--border);
       border-radius: 20px;
       padding: 28px 36px;
@@ -443,12 +447,12 @@
       width: 52px;
       height: 52px;
       border-radius: 12px;
-      background: rgba(94, 106, 210, 0.15);
-      border: 1px solid rgba(94, 106, 210, 0.3);
+      background: rgba(255, 149, 0, 0.12);
+      border: 1px solid rgba(255, 149, 0, 0.35);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #8b95ff;
+      color: #FF9500;
       flex-shrink: 0;
     }
 
