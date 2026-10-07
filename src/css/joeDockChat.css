@@ -249,7 +249,6 @@
     border-radius: var(--jd-radius);
     background: var(--jd-surface);
     box-shadow: var(--elev-floating);
-    animation: joe-dock-rise 0.2s var(--jd-ease);
   }
 
   .joe-dock-menu[hidden] {
@@ -329,6 +328,13 @@
   #ai-spell-check-modal.joe-docked .joe-dock-menu button:focus-visible {
     background: var(--jd-hover);
     outline: none;
+  }
+
+  /* Outranks the menu's own :hover fill below on its own; the inline fills the menu controllers set
+     are held back by menuMotion.js's row-fill hold, so no !important is needed. */
+  #ai-spell-check-modal.joe-docked .joe-dock-menu.fj-glide button:hover,
+  #ai-spell-check-modal.joe-docked .joe-dock-menu.fj-glide button:focus-visible {
+    background: transparent;
   }
 
   #ai-spell-check-modal.joe-docked .joe-dock-menu #ai-font-size-increase.is-active {
@@ -1127,7 +1133,7 @@
   }
 
   #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message.user .ai-chat-message-state {
-    right: var(--chat-bubble-pad-x);
+    right: calc(-1 * var(--chat-bubble-pad-x));
   }
 
   #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-welcome {
@@ -1193,7 +1199,8 @@
     flex: 0 0 100%;
     max-width: 100%;
     justify-content: flex-end;
-    padding-right: var(--chat-bubble-pad-x);
+    /* stylelint-disable-next-line declaration-no-important -- The base .ai-chat-message.user .ai-chat-actions rule pins margin: 0 !important; the wrapped-actions row can only reach the bubble edge with an equally important margin. */
+    margin-right: calc(-1 * var(--chat-bubble-pad-x)) !important;
     box-sizing: border-box;
   }
 

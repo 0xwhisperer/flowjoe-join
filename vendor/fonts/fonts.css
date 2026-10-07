@@ -1,4 +1,6 @@
-/* Self-hosted Google Fonts, latin subset only (see ../THIRD_PARTY_NOTICES.md). */
+/* Self-hosted Google Fonts, latin subset only. Licence texts: licenses/OFL-*.txt next to this file;
+   the site's third-party notices ship at ../../THIRD_PARTY_NOTICES.md. (Paths are as shipped to the
+   join site, where this file lives at vendor/fonts/fonts.css.) */
 /* Fira Mono 400 latin */
 @font-face {
   font-family: "Fira Mono";

@@ -62,7 +62,7 @@
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    gap: var(--rail-menu-row-gap);
+    gap: var(--app-rail-row-gap);
     padding: var(--rail-menu-pad);
     /* Rail-specific bottom clearance (does not reuse --rail-menu-pad-bottom, which is shared with
        .settings-tabs — bumping that shared token would move both menus). Storage/Settings are

@@ -1,5 +1,6 @@
 /**
- * Calendar Workbench island controller (Phase 0 spike — FullCalendar Standard MIT proof).
+ * Calendar Workbench island controller (FullCalendar Standard MIT proof; shipped — the app
+ * opens this page in the preview modal/fullscreen host).
  *
  * Runs INSIDE the workbench iframe. Owns the FullCalendar lifecycle and speaks to the parent
  * exclusively via postMessage, mirroring the spreadsheet/rich-document islands:
@@ -129,11 +130,15 @@
   }
 
   function syncEmptyState() {
+    // The empty-state hint is styled on #fj-calendar-root (workbench.css): the class must land
+    // there, not on <body>, or the hint never renders.
+    const root = document.getElementById("fj-calendar-root");
+    if (!root) return;
     try {
       const count = calendar && typeof calendar.getEvents === "function" ? calendar.getEvents().length : 0;
-      document.body.classList.toggle("fj-calendar-empty", count === 0);
+      root.classList.toggle("fj-calendar-empty", count === 0);
     } catch (_) {
-      document.body.classList.remove("fj-calendar-empty");
+      root.classList.remove("fj-calendar-empty");
     }
   }
 

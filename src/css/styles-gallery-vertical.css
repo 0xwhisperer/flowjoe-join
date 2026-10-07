@@ -2511,11 +2511,14 @@
     border-top: 1px solid color-mix(in srgb, var(--border-color) 60%, transparent);
   }
 
-  /* Calendar import-shape picker (Phase 3b). Shown on .ics import via the Add-item path. */
+  /* Calendar import-shape picker (Phase 3b). Shown on .ics import via the Add-item path.
+     Uses the app-modal token (100020: above the topbar 100000 and the image modal 100010),
+     like every other modal — it is a fullscreen modal overlay (it was a literal 100000, the
+     topbar rung). */
   .calendar-shape-prompt-overlay {
     position: fixed;
     inset: 0;
-    z-index: 100000;
+    z-index: var(--flowjoe-z-app-modal);
     display: flex;
     align-items: center;
     justify-content: center;

@@ -49,12 +49,27 @@ body.glass-effects-disabled {
   .node-context-menu,
   .tree-panel-context-menu,
   .header-context-menu,
+  #file-menu-dropdown,
+  .joe-dock-menu,
   .header-audio-playlist-context-menu,
   #stack-preview-thumbnail-context-menu
 ) {
   isolation: isolate;
   background-clip: padding-box;
   backface-visibility: hidden;
+}
+
+/* Keep the shared travelling menu highlight above each menu surface and suppress row hover fills while it moves.
+   The selectors outrank the menus' own :hover fills (buttons.css / joeDockChat.css) on their own; the inline
+   fills the menu controllers set are held back by menuMotion.js's row-fill hold, so no !important is needed. */
+#file-menu-dropdown.fj-glide .file-menu-item:hover,
+#file-menu-dropdown.fj-glide .file-menu-item:focus-visible {
+  background: transparent;
+}
+
+.joe-dock-menu.fj-glide button:hover,
+.joe-dock-menu.fj-glide button:focus-visible {
+  background: transparent;
 }
 
 :is(

@@ -4,7 +4,8 @@
     <meta charset="UTF-8" />
     <script src="../workbench-frameguard.1333444aee016d0b.js"></script>
     <!--
-      Rich Document Workbench island (Phase 0.5 spike).
+      Rich Document Workbench island (shipped — the app opens this page in the preview
+      modal/fullscreen host).
 
       Direct mirror of src/spreadsheet-workbench/workbench.html, but for Univer DOCS.
       This is an ISOLATED same-origin document hosted inside an <iframe> by the main app.
@@ -16,8 +17,9 @@
           engine may need is CONTAINED here and the main app CSP stays hardened.
 
       The parent talks to this island via postMessage only — see
-      src/js/richDocuments/richDocumentWorkbench.js. No gallery/modal wiring exists yet;
-      this island is exercised by scripts/rich-document-workbench-smoke.js.
+      src/js/richDocuments/richDocumentWorkbench.js. The gallery/modal wiring is shipped (the app
+      opens this page in the preview modal/fullscreen host); scripts/rich-document-workbench-smoke.js
+      exercises it in tests.
     -->
     <meta
       http-equiv="Content-Security-Policy"

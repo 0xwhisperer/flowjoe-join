@@ -122,13 +122,10 @@ body.density-dense #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-m
 
 /* --chat-bubble-pad-x, restated for docked mode (13px 17px / 8px 12px / 6px 10px above -> 17px /
    12px / 10px), the same way every OTHER --chat-bubble-pad override in dropin/ already does.
-   Declared on .ai-chat-message.user itself, NOT .ai-chat-bubble — .ai-chat-message-state is a
-   SIBLING of the bubble under that same row (both direct children of .ai-chat-message), so a custom
-   property scoped only to .ai-chat-bubble never reaches it; the row is the nearest common ancestor.
-   Without this, AIAssistModal.css's .ai-chat-message.user .ai-chat-message-state inherited the
-   FLOATING tiers' pad-x (16/11/9) instead, 1px short of this docked bubble's own inset at every one
-   of these 3 tiers, so the Omit/Pin/Delete strip on a docked user message drifted 1px outward from
-   the text (external audit, 2026-09-26). */
+   Declared on .ai-chat-message.user so both the bubble and its message controls inherit the same
+   horizontal inset; the controls use it to align with the bubble's outer right edge.
+   Without this, the user's Omit/Pin/Delete strip and docked tool row would use the floating tier's
+   inset instead of the current docked bubble's padding when aligning to its outer right edge. */
 #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message.user {
   --chat-bubble-pad-x: 17px;
 }

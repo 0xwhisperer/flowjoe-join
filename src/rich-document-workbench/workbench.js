@@ -1,5 +1,6 @@
 /**
- * Rich Document Workbench island controller (Phase 0.5 spike).
+ * Rich Document Workbench island controller (shipped — the app opens this page in the preview
+ * modal/fullscreen host).
  *
  * Runs INSIDE the workbench iframe. Owns the Univer DOCS lifecycle and speaks to the parent
  * (src/js/richDocuments/richDocumentWorkbench.js) exclusively via postMessage:
@@ -209,6 +210,8 @@ function _recentPasteText() {
 let _clipboardReqSeq = 0;
 const _clipboardWaiters = new Map();
 window.addEventListener("message", (event) => {
+  // Only trust messages from our parent window (same check as the main handler below).
+  if (event.source !== window.parent) return;
   const data = event && event.data;
   if (!data || data.type !== "flowjoe:rich-document-clipboard-data") return;
   const waiter = _clipboardWaiters.get(data.id);

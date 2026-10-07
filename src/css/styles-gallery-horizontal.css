@@ -2040,6 +2040,13 @@ button.orphan-media-modal-close.context-menu-corner-close {
   letter-spacing: inherit;
 }
 
+#modal-button-container .duplicate-node-confirm-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--control-icon-gap);
+}
+
 /* Special styling for add-item modal buttons with icons */
 .modal-panel-add-item #modal-button-container .add-item-btn {
   display: flex;

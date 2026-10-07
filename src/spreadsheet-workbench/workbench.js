@@ -1,5 +1,6 @@
 /**
- * Spreadsheet Workbench island controller (Phase 0/0.5 spike).
+ * Spreadsheet Workbench island controller (shipped — the app opens this page in the preview
+ * modal/fullscreen host).
  *
  * Runs INSIDE the workbench iframe. Owns the Univer lifecycle and speaks to the parent
  * (src/js/spreadsheets/spreadsheetWorkbench.js) exclusively via postMessage:

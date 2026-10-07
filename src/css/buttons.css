@@ -403,7 +403,7 @@ body:not(.tree-collapsed) .header-bg-left,
   height: var(--control-height-sm);
   min-height: var(--control-height-sm);
   top: 0;
-  left: 2px;
+  left: 0;
   padding: 0;
   border-radius: var(--radius-full, 999px);
   border: 1px solid color-mix(in srgb, var(--accent-color) 42%, var(--border-color));
@@ -2721,7 +2721,6 @@ body.tree-branch-toggle-flat .header-audio-saved-playlist-expand-btn.collapse-bt
     animation: none;
   }
 }
-
 /* Animate header right section when settings panel opens */
 .topbar > div[style*="margin-left: auto"] {
   transition: transform var(--transition-speed-slow) ease-in-out;
@@ -3369,7 +3368,7 @@ button:focus-visible,
   position: relative;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--header-gap);
 }
 .cx-presence[hidden] {
   display: none;
@@ -3486,6 +3485,12 @@ button:focus-visible,
     border-color 0.15s,
     color 0.15s,
     background 0.15s;
+}
+#owner-seat[hidden] {
+  display: none;
+}
+#share-btn > .cx-share-invite-plus {
+  color: var(--text-secondary);
 }
 .cx-seat:hover,
 .cx-seat:focus-visible {

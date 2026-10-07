@@ -4,7 +4,8 @@
     <meta charset="UTF-8" />
     <script src="../workbench-frameguard.1333444aee016d0b.js"></script>
     <!--
-      Calendar Workbench island (Phase 0 spike — FullCalendar Standard MIT proof).
+      Calendar Workbench island (FullCalendar Standard MIT proof; shipped — the app opens this
+      page in the preview modal/fullscreen host).
 
       This is an ISOLATED same-origin document hosted inside an <iframe> by the main app,
       following the src/spreadsheet-workbench/ and src/rich-document-workbench/ precedent.
@@ -16,12 +17,13 @@
           DOM / listeners / injected styles in the main app).
 
       The parent talks to this island via postMessage only — mirroring the spreadsheet/
-      rich-document islands. The eventual parent adapter is src/js/calendar/calendarWorkbench.js
-      (Phase 4); this spike stands alone and is driven by scripts/calendar-workbench-smoke.js.
+      rich-document islands. The parent adapter is src/js/calendar/calendarWorkbench.js: the app
+      opens this page in the preview modal/fullscreen host, and scripts/calendar-workbench-smoke.js
+      exercises it in tests.
 
-      Phase 0 uses FullCalendar Standard plugins ONLY (core/daygrid/timegrid/list/interaction).
-      No Premium/Scheduler package, CSS, or code is loaded here. See THIRD_PARTY_NOTICES.md and
-      docs/ROADMAP/CALENDAR_IMPORTS_PHASE0.md for the license attribution path.
+      The island uses FullCalendar Standard plugins ONLY (core/daygrid/timegrid/list/interaction).
+      No Premium/Scheduler package, CSS, or code is loaded here. See ../../THIRD_PARTY_NOTICES.md and
+      docs/REFERENCE/CALENDAR_IMPORTS.md for the license attribution path.
     -->
     <meta
       http-equiv="Content-Security-Policy"

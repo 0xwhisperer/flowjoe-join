@@ -33,6 +33,33 @@ body:has(.container.tree-collapsed) {
   overflow: hidden;
 }
 
+/* Match Joe's dock slide: animate the existing tree track itself, without changing who calculates
+   its destination width or how autosize/resizing choose that width. */
+.container.tree-panel-sliding {
+  transition: grid-template-columns 180ms cubic-bezier(0.33, 1, 0.67, 1);
+}
+
+.container.tree-panel-sliding .tree-section {
+  /* No !important needed: nothing else sets a width on the tree section (its size comes from the
+     grid track), so these declarations apply as written and the slide animates the track. */
+  width: var(--tree-panel-slide-content-width);
+  min-width: var(--tree-panel-slide-content-width);
+  max-width: var(--tree-panel-slide-content-width);
+  justify-self: start;
+  clip-path: inset(0 0 0 0);
+  transition: clip-path 180ms cubic-bezier(0.33, 1, 0.67, 1);
+}
+
+.container.tree-panel-sliding .tree-section.tree-panel-closing {
+  clip-path: inset(0 100% 0 0);
+}
+
+.container.tree-panel-sliding .tree-section::before {
+  transition:
+    background var(--transition-speed) ease-in-out,
+    width 180ms cubic-bezier(0.33, 1, 0.67, 1);
+}
+
 /* Synchronous FOUC guard: preBootstrap stamps this class from the persisted tree state before
    the body exists. Keep the tree and its navigation hidden until the runtime restores the same
    state, so a collapsed tree never flashes open during reload. */

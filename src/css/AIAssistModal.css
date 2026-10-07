@@ -356,6 +356,35 @@
   flex: 0 1 auto;
 }
 
+.ai-chat-author {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--text-secondary);
+  font-size: 0.76em;
+  line-height: 1.2;
+  opacity: 0.8;
+}
+
+.ai-chat-shared-typing {
+  min-height: 1.1em;
+  padding: 0 10px 4px;
+  color: var(--text-secondary);
+  font-size: 0.78em;
+  line-height: 1.1;
+}
+
+.ai-chat-shared-typing[hidden] {
+  display: none;
+}
+
+.ai-chat-message.user .ai-chat-author {
+  flex: 0 0 100%;
+  order: 0;
+  justify-content: flex-end;
+  text-align: right;
+}
+
 .ai-chat-message.user .ai-chat-message-attachments {
   order: 3;
   margin-left: 0;
@@ -390,19 +419,15 @@
   opacity: 1;
   z-index: 3;
 }
-/* Anchor to the bubble edge that keeps the strip on-screen: Joe's bubbles are left-aligned, so the
-   controls hug the bubble's left/top and extend right into open space; user bubbles are right-aligned,
-   so they hug the right edge and extend left. (Right-anchoring a wide strip to a short left bubble would
-   run it off-screen.) Offset by --chat-bubble-pad-x (the bubble's own horizontal inset, restated as its
-   own token since CSS can't pull one value out of a shorthand custom property) so the strip's text aligns
-   with the bubble's text, not with the bubble's outer edge — at every density/shape tier, not just the
-   default (every --chat-bubble-pad override in dropin/ restates --chat-bubble-pad-x alongside it). */
+/* Anchor each strip to the bubble edge that keeps it on-screen: Joe's bubbles are left-aligned, so the
+   controls start at the text inset and extend right into open space; user bubbles are right-aligned, so
+   their controls sit flush with the bubble's outer right edge and extend left. */
 .ai-chat-message.assistant .ai-chat-message-state {
   left: var(--chat-bubble-pad-x);
   justify-content: flex-start;
 }
 .ai-chat-message.user .ai-chat-message-state {
-  right: var(--chat-bubble-pad-x);
+  right: calc(-1 * var(--chat-bubble-pad-x));
   justify-content: flex-end;
 }
 /* Provider mark (which brain wrote this reply) — sits left of the Omit button, dim until hovered. */
@@ -447,7 +472,7 @@
   display: flex;
   order: -2;
   flex: 0 0 auto;
-  margin: 0 6px 0 0;
+  margin: 0;
   opacity: 1;
   max-width: none;
   justify-content: flex-end;
@@ -455,6 +480,8 @@
 
 #ai-spell-check-panel #ai-chat-messages .ai-chat-message.user.is-actions-wrapped .ai-chat-actions {
   flex-wrap: nowrap;
+  /* stylelint-disable-next-line declaration-no-important -- The base .ai-chat-message.user .ai-chat-actions rule pins margin: 0 !important; the wrapped-actions row can only reach the bubble edge with an equally important margin. */
+  margin-right: calc(-1 * var(--chat-bubble-pad-x)) !important;
 }
 
 /* Per-message token chip (quiet, state-aware) */
