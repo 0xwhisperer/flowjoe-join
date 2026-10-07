@@ -561,7 +561,7 @@
         </div>
         <div class="price-box">
           <span class="currency">$</span>
-          <span class="amount" id="proPrice">12</span>
+          <span class="amount" id="proPrice">8</span>
           <span class="period" id="proPeriod">/ month, billed annually</span>
         </div>
         <a href="#subscribe" class="btn btn-primary">Start Pro Trial</a>
@@ -599,7 +599,7 @@
         </div>
         <div class="price-box">
           <span class="currency">$</span>
-          <span class="amount" id="teamPrice">24</span>
+          <span class="amount" id="teamPrice">16</span>
           <span class="period" id="teamPeriod">/ seat / month, billed annually</span>
         </div>
         <a href="#contact" class="btn btn-secondary">Get Team Access</a>
@@ -648,14 +648,14 @@
         </div>
 
         <div class="proposal-box">
-          <h5>2. FlowJoe Pro ($12/mo)</h5>
+          <h5>2. FlowJoe Pro ($8/mo)</h5>
           <p>
             <strong>The Conversion Trigger:</strong> The host pays when they want to share or present. Includes automated outbound relay tunnels (no router configuration) and <strong>free browser guest access</strong> (both View and Edit).
           </p>
         </div>
 
         <div class="proposal-box">
-          <h5>3. Team & Studio ($24/seat)</h5>
+          <h5>3. Team & Studio ($16/seat)</h5>
           <p>
             <strong>Organizational Seats:</strong> Multiple permanent hosts who can each spin up tunnels, centralized company license billing, edge relay bandwidth, and shared studio AI quotas.
           </p>
@@ -677,7 +677,7 @@
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="10"></circle>
           <line x1="2" y1="12" x2="22" y2="12"></line>
-          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
         </svg>
       </div>
       <div class="tunnel-content">
@@ -703,16 +703,16 @@
       if (interval === 'annual') {
         annualBtn.classList.add('active');
         monthlyBtn.classList.remove('active');
-        proPrice.textContent = '12';
+        proPrice.textContent = '8';
         proPeriod.textContent = '/ month, billed annually';
-        teamPrice.textContent = '24';
+        teamPrice.textContent = '16';
         teamPeriod.textContent = '/ seat / month, billed annually';
       } else {
         monthlyBtn.classList.add('active');
         annualBtn.classList.remove('active');
-        proPrice.textContent = '15';
+        proPrice.textContent = '10';
         proPeriod.textContent = '/ month';
-        teamPrice.textContent = '29';
+        teamPrice.textContent = '20';
         teamPeriod.textContent = '/ seat / month';
       }
     }
