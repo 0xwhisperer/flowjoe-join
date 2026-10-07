@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FlowJoe Pricing — Structure, Freedom & Real-Time Collaboration</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0c0e14;
+      --surface: #141824;
+      --surface-card: #171c2b;
+      --surface-hover: #1e2438;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.16);
+      --text-main: #f0f3fa;
+      --text-muted: #8b95aa;
+      --text-faint: #5a6478;
+      --accent: #5e6ad2;
+      --accent-glow: rgba(94, 106, 210, 0.25);
+      --accent-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%);
+      --pro-card-border: rgba(139, 92, 246, 0.5);
+      --pro-card-bg: radial-gradient(circle at top right, rgba(99, 102, 241, 0.12), transparent 50%), #161b2e;
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 60px 24px 80px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Ambient background glow */
+    .glow-backdrop {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 1000px;
+      height: 480px;
+      background: radial-gradient(circle, rgba(94, 106, 210, 0.15) 0%, rgba(13, 15, 24, 0) 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 1180px;
+      width: 100%;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      max-width: 720px;
+      margin-bottom: 56px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 14px;
+      border-radius: 9999px;
+      background: rgba(94, 106, 210, 0.12);
+      border: 1px solid rgba(94, 106, 210, 0.3);
+      color: #9aa5ff;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      margin-bottom: 18px;
+    }
+
+    .header h1 {
+      font-size: 46px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 18px;
+      background: linear-gradient(180deg, #ffffff 0%, #cbd2e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .header p {
+      font-size: 18px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* Billing toggle */
+    .billing-toggle-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 48px;
+      background: rgba(255, 255, 255, 0.04);
+      padding: 4px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    .toggle-btn {
+      padding: 8px 18px;
+      border-radius: 8px;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      background: transparent;
+      color: var(--text-muted);
+      transition: all 0.2s ease;
+    }
+
+    .toggle-btn.active {
+      background: var(--surface-card);
+      color: var(--text-main);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    }
+
+    .discount-pill {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
+      font-size: 12px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-weight: 700;
+    }
+
+    /* Cards Grid */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      width: 100%;
+      align-items: stretch;
+    }
+
+    .card {
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 36px 30px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: var(--border-strong);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
+    }
+
+    /* Pro / Featured Card */
+    .card.featured {
+      background: var(--pro-card-bg);
+      border: 1.5px solid var(--pro-card-border);
+      box-shadow: 0 12px 32px var(--accent-glow);
+    }
+
+    .card.featured:hover {
+      border-color: rgba(168, 85, 247, 0.8);
+      box-shadow: 0 20px 48px rgba(139, 92, 246, 0.35);
+    }
+
+    .popular-pill {
+      position: absolute;
+      top: -13px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent-gradient);
+      color: white;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 999px;
+      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+    }
+
+    /* Card Details */
+    .card-header {
+      margin-bottom: 24px;
+    }
+
+    .card-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 8px;
+    }
+
+    .card-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+      min-height: 42px;
+      line-height: 1.5;
+    }
+
+    /* Price Box */
+    .price-box {
+      margin-bottom: 28px;
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .currency {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .amount {
+      font-size: 48px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--text-main);
+    }
+
+    .period {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* Action Buttons */
+    .btn {
+      width: 100%;
+      padding: 13px 20px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      border: 1px solid transparent;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      display: inline-block;
+      margin-bottom: 32px;
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: var(--border);
+      color: var(--text-main);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--border-strong);
+    }
+
+    .btn-primary {
+      background: var(--accent-gradient);
+      color: #ffffff;
+      box-shadow: 0 4px 16px rgba(99, 102, 241, 0.35);
+    }
+
+    .btn-primary:hover {
+      opacity: 0.95;
+      transform: scale(1.01);
+      box-shadow: 0 6px 20px rgba(139, 92, 246, 0.45);
+    }
+
+    /* Feature Lists */
+    .features-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      font-size: 14px;
+      flex-grow: 1;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 11px;
+      color: #c9d2e3;
+    }
+
+    .feature-item strong {
+      color: var(--text-main);
+    }
+
+    .icon {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .icon-check {
+      color: #10b981;
+    }
+
+    .icon-star {
+      color: #a855f7;
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 20px 0;
+    }
+
+    .feature-group-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--text-faint);
+      margin-bottom: 4px;
+    }
+
+    /* Tunnel Explanation Banner */
+    .tunnel-callout {
+      margin-top: 56px;
+      max-width: 960px;
+      width: 100%;
+      background: rgba(20, 24, 36, 0.85);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px 30px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .tunnel-icon-box {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      background: rgba(94, 106, 210, 0.15);
+      border: 1px solid rgba(94, 106, 210, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #8b95ff;
+      flex-shrink: 0;
+    }
+
+    .tunnel-content h4 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+
+    .tunnel-content p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .tunnel-content code {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      background: rgba(0, 0, 0, 0.35);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #a5b4fc;
+    }
+
+    /* Responsive */
+    @media (max-width: 980px) {
+      .pricing-grid {
+        grid-template-columns: 1fr;
+        max-width: 480px;
+      }
+      .tunnel-callout {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="glow-backdrop"></div>
+
+  <div class="container">
+    
+    <!-- Header -->
+    <header class="header">
+      <div class="badge">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        Simple, Transparent Ownership
+      </div>
+      <h1>Work free forever alone.<br>Collaborate instantly in real time.</h1>
+      <p>
+        FlowJoe is 100% local-first. Keep your thoughts, research, and tree models private on your machine at no cost. Upgrade when you need team presence and zero-setup browser sharing.
+      </p>
+    </header>
+
+    <!-- Billing Interval Toggle -->
+    <div class="billing-toggle-wrap">
+      <button class="toggle-btn" id="monthlyBtn" onclick="setBilling('monthly')">Monthly</button>
+      <button class="toggle-btn active" id="annualBtn" onclick="setBilling('annual')">Annual <span class="discount-pill">2 Months Free</span></button>
+    </div>
+
+    <!-- Pricing Grid -->
+    <div class="pricing-grid">
+
+      <!-- 1. FREE (Solo Creator) -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Solo Creator</h3>
+          <p class="card-desc">The complete desktop workspace for deep thinking, creative worldbuilding, and personal projects.</p>
+        </div>
+        <div class="price-box">
+          <span class="currency">$</span>
+          <span class="amount">0</span>
+          <span class="period">forever</span>
+        </div>
+        <a href="#download" class="btn btn-secondary">Download Free App</a>
+
+        <div class="feature-group-label">Everything Local & Private</div>
+        <ul class="features-list">
+          <li class="feature-item">
+            <svg class="icon icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span><strong>No account required:</strong> 100% offline-ready & private</span>
+          </li>
+          <li class="feature-item">
+            <svg class="icon icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span><strong>Full tree & media canvas:</strong> Infinite nodes, stacks, lines, audio player</span>
+          </li>
+          <li class="feature-item">
+            <svg class="icon icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span><strong>All 3 Workbenches:</strong> Spreadsheets, Rich Docs, & Calendars</span>
+          </li>
+          <li class="feature-item">
+            <svg class="icon icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span><strong>Joe AI & Agent Bridge:</strong> Bring your own API keys or CLI brains</span>
+          </li>
+          <li class="feature-item">
+            <svg class="icon icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span><strong>Workspace Folders:</strong> Git-ready <code>flow.json</code> & local restore points</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- 2. PRO (Live Collaboration) - FEATURED -->
+      <div class="card featured">
+        <div class="popular-pill">Most Popular</div>
+        <div class="card-header">
+          <h3 class="card-title">FlowJoe Pro</h3>
+          <p class="card-desc">For professionals, consultants, and creators who review, present, and collaborate with clients.</p>
+        </div>
+        <div class="price-box">
+          <span class="currency">$</span>
+          <span class="amount" id="proPrice">12</span>
+          <span class="period" id="proPeriod">/ month, billed annually</span>
+        </div>
+        <a href="#subscribe" class="btn btn-primary">Start Pro Trial</a>
+
+        <div class="feature-group-label">Everything in Solo, plus:</div>
+        <ul class="features-list">
+          <li class="feature-item">
+            <svg class="icon icon-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <span><strong>Zero-config Tunnel & Custom Domain:</strong> Instant <code>name.flowjoe.link</code> with no port forwarding</span>
+          </li>
+          <li class="feature-item">
+            <svg class="icon icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span><strong>Frictionless Browser Guests:</strong> Anyone joins via web browser — no app or signup needed</span>
+          </li>
+          <li class="feature-item">
+            <svg class="icon icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span><strong>Live Real-time Editing:</strong> Full presence, guest cursors, typing indicators, node permissions</span>
+          </li>
+          <li class="feature-item">
+            <svg class="icon icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span><strong>Presenting & Locked Follow:</strong> Lead pitch sessions with camera sync and locked viewports</span>
+          </li>
+          <li class="feature-item">
+            <svg class="icon icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span><strong>Multiplayer Joe:</strong> Guests drop attachments & chat with Joe on shared nodes</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- 3. TEAM / STUDIO -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Team & Studio</h3>
+          <p class="card-desc">For game studios, production teams, and research groups needing shared access and administration.</p>
+        </div>
+        <div class="price-box">
+          <span class="currency">$</span>
+          <span class="amount" id="teamPrice">24</span>
+          <span class="period" id="teamPeriod">/ seat / month, billed annually</span>
+        </div>
+        <a href="#contact" class="btn btn-secondary">Get Team Access</a>
+
+        <div class="feature-group-label">Everything in Pro, plus:</div>
+        <ul class="features-list">
+          <li class="feature-item">
+            <svg class="icon icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span><strong>Multiple Licensed Hosts:</strong> Anyone on the team can spin up collaboration tunnels</span>
+          </li>
+          <li class="feature-item">
+            <svg class="icon icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span><strong>Centralized Billing & Seats:</strong> Add and reassign team licenses easily</span>
+          </li>
+          <li class="feature-item">
+            <svg class="icon icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span><strong>High-Bandwidth Relay:</strong> Dedicated global edge relay nodes for ultra-low latency worldwide</span>
+          </li>
+          <li class="feature-item">
+            <svg class="icon icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span><strong>Shared Joe Brain Pooled Keys:</strong> Studio-wide API rate management & compliance audit log</span>
+          </li>
+          <li class="feature-item">
+            <svg class="icon icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span><strong>Priority Support:</strong> Direct Slack channel with the FlowJoe engineering team</span>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- The Tunnel Technology Callout -->
+    <div class="tunnel-callout">
+      <div class="tunnel-icon-box">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="2" y1="12" x2="22" y2="12"></line>
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+        </svg>
+      </div>
+      <div class="tunnel-content">
+        <h4>How FlowJoe Collaboration Works Behind the Scenes</h4>
+        <p>
+          Signing up for FlowJoe Pro automatically provisions a secure outbound encrypted tunnel and your personal DNS address (e.g. <code>dan.flowjoe.link</code>). 
+          <strong>Zero router fussing, zero port forwarding, and no complex firewall rules.</strong> Your flow data stays on your machine, streamed securely to your guests' browsers only when you open a session.
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function setBilling(interval) {
+      const monthlyBtn = document.getElementById('monthlyBtn');
+      const annualBtn = document.getElementById('annualBtn');
+      const proPrice = document.getElementById('proPrice');
+      const proPeriod = document.getElementById('proPeriod');
+      const teamPrice = document.getElementById('teamPrice');
+      const teamPeriod = document.getElementById('teamPeriod');
+
+      if (interval === 'annual') {
+        annualBtn.classList.add('active');
+        monthlyBtn.classList.remove('active');
+        proPrice.textContent = '12';
+        proPeriod.textContent = '/ month, billed annually';
+        teamPrice.textContent = '24';
+        teamPeriod.textContent = '/ seat / month, billed annually';
+      } else {
+        monthlyBtn.classList.add('active');
+        annualBtn.classList.remove('active');
+        proPrice.textContent = '15';
+        proPeriod.textContent = '/ month';
+        teamPrice.textContent = '29';
+        teamPeriod.textContent = '/ seat / month';
+      }
+    }
+  </script>
+</body>
+</html>
