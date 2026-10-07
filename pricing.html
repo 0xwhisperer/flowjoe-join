@@ -571,7 +571,7 @@
         <div class="price-box">
           <span class="currency">$</span>
           <span class="amount" id="proPrice">8</span>
-          <span class="period" id="proPeriod">/ month, billed annually</span>
+          <span class="period" id="proPeriod">/ mo <span style="display: block; font-size: 12px; color: #FFB340; font-weight: 600; margin-top: 2px;">($96 billed annually)</span></span>
         </div>
         <a href="#subscribe" class="btn btn-primary">Start 7-Day Free Trial</a>
 
@@ -613,7 +613,7 @@
         <div class="price-box">
           <span class="currency">$</span>
           <span class="amount" id="teamPrice">16</span>
-          <span class="period" id="teamPeriod">/ seat / month, billed annually</span>
+          <span class="period" id="teamPeriod">/ seat / mo <span style="display: block; font-size: 12px; color: #A3A4AC; font-weight: 500; margin-top: 2px;">($192/seat billed annually)</span></span>
         </div>
         <a href="#contact" class="btn btn-secondary">Get Team Access</a>
 
@@ -633,7 +633,7 @@
           </li>
           <li class="feature-item">
             <svg class="icon icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            <span><strong>Fast Global Relays:</strong> Smooth real-time media and canvas sync for remote teams across the globe</span>
+            <span><strong>Direct Peer Streaming & Private Relays:</strong> End-to-end encrypted sessions that stream straight from the host machine without touching central cloud drives</span>
           </li>
           <li class="feature-item">
             <svg class="icon icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
@@ -821,6 +821,26 @@
           <li><strong>Option B (Formal 4-tier model):</strong> Expand to Solo ($0), Pro ($8/mo), Team ($16/seat), and Studio/Enterprise ($32+/seat or custom contract) as enterprise sales demand matures.</li>
         </ul>
       </div>
+
+      <div class="qa-banner" style="background: rgba(14, 165, 233, 0.08); border-color: rgba(14, 165, 233, 0.35); margin-top: 20px;">
+        <h5 style="color: #38BDF8;">🎟️ Key Question 6: Should We Offer a $15 Project Pass for Irregular Review Sprints?</h5>
+        <ul style="margin: 10px 0 0 20px; color: #D8D8DF; font-size: 15.5px; line-height: 1.75;">
+          <li><strong>The creator pattern:</strong> Indie game developers and fiction writers work alone for months, needing collaboration only during client review or pitching sprints.</li>
+          <li><strong>Overcoming subscription resistance:</strong> Solo makers who resent recurring monthly commitments will gladly pay a one-time $15 or $19 pass for 30 days of active sharing.</li>
+          <li><strong>Eliminating trial abuse:</strong> Creators who might otherwise create burner accounts to share a single pitch can simply buy a clean, temporary project window.</li>
+          <li><strong>Zero commitment lock-in:</strong> The pass expires automatically without renewal traps, leaving all local files untouched on the host's drive.</li>
+        </ul>
+      </div>
+
+      <div class="qa-banner" style="background: rgba(234, 179, 8, 0.08); border-color: rgba(234, 179, 8, 0.35); margin-top: 20px;">
+        <h5 style="color: #FACC15;">🌉 Key Question 7: How Do We Bridge the Pricing Cliff Between Pro ($96/yr) and Team ($960/yr)?</h5>
+        <ul style="margin: 10px 0 0 20px; color: #D8D8DF; font-size: 15.5px; line-height: 1.75;">
+          <li><strong>The pricing cliff:</strong> A solo Pro license includes 3 free live guest editors for $96/year, while a 5-person team plan costs nearly $1,000/year.</li>
+          <li><strong>The sharing risk:</strong> Without an intermediate step, small creative duos and pods will share a single Pro login instead of upgrading.</li>
+          <li><strong>The add-on bridge:</strong> Our development roadmap can support an "Extra Host Slot" add-on (+ $6/month) for small co-creator partnerships.</li>
+          <li><strong>Clear team boundary:</strong> Full $16/seat pricing is reserved for organizations that require centralized license reassignment, host ownership handoff, and pooled company AI keys.</li>
+        </ul>
+      </div>
     </div>
 
   </div>
@@ -838,16 +858,16 @@
         annualBtn.classList.add('active');
         monthlyBtn.classList.remove('active');
         proPrice.textContent = '8';
-        proPeriod.textContent = '/ month, billed annually';
+        proPeriod.innerHTML = '/ mo <span style="display: block; font-size: 12px; color: #FFB340; font-weight: 600; margin-top: 2px;">($96 billed annually)</span>';
         teamPrice.textContent = '16';
-        teamPeriod.textContent = '/ seat / month, billed annually';
+        teamPeriod.innerHTML = '/ seat / mo <span style="display: block; font-size: 12px; color: #A3A4AC; font-weight: 500; margin-top: 2px;">($192/seat billed annually)</span>';
       } else {
         monthlyBtn.classList.add('active');
         annualBtn.classList.remove('active');
         proPrice.textContent = '10';
-        proPeriod.textContent = '/ month';
+        proPeriod.innerHTML = '/ month';
         teamPrice.textContent = '20';
-        teamPeriod.textContent = '/ seat / month';
+        teamPeriod.innerHTML = '/ seat / month';
       }
     }
   </script>
