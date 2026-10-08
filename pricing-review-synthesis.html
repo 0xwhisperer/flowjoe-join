@@ -3,11 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>FlowJoe Pricing Strategy: Synthesis of Shalom's Feedback</title>
+  <title>FlowJoe Pricing Strategy: Comprehensive Synthesis of Shalom's Feedback</title>
   <style>
     :root {
       --bg: #0E0F12;
       --card-bg: #16181D;
+      --card-inner: rgba(0, 0, 0, 0.3);
       --border: #262930;
       --text-main: #EDEDF0;
       --text-muted: #9BA1B0;
@@ -15,6 +16,7 @@
       --accent-glow: rgba(255, 149, 0, 0.15);
       --green: #34D399;
       --blue: #60A5FA;
+      --purple: #A78BFA;
     }
     * { box-sizing: border-box; }
     body {
@@ -26,11 +28,11 @@
       line-height: 1.6;
     }
     .container {
-      max-width: 860px;
+      max-width: 940px;
       margin: 0 auto;
     }
     header {
-      margin-bottom: 36px;
+      margin-bottom: 32px;
       border-bottom: 1px solid var(--border);
       padding-bottom: 24px;
     }
@@ -73,10 +75,10 @@
       border: 1px solid var(--border);
       border-radius: 14px;
       padding: 24px;
-      margin-bottom: 24px;
+      margin-bottom: 28px;
     }
     .section-card h2 {
-      font-size: 20px;
+      font-size: 21px;
       margin: 0 0 16px;
       display: flex;
       align-items: center;
@@ -93,34 +95,54 @@
     }
     .comparison-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
+      grid-template-columns: 1fr 1.35fr;
+      gap: 18px;
       margin-top: 14px;
     }
-    @media (max-width: 680px) {
+    @media (max-width: 780px) {
       .comparison-grid { grid-template-columns: 1fr; }
     }
     .col {
-      background: rgba(0, 0, 0, 0.25);
+      background: var(--card-inner);
       border: 1px solid rgba(255, 255, 255, 0.06);
       border-radius: 10px;
-      padding: 16px;
+      padding: 18px;
     }
     .col-title {
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.04em;
-      margin-bottom: 8px;
+      letter-spacing: 0.05em;
+      margin-bottom: 10px;
     }
     .col-shalom .col-title { color: #FBBF24; }
     .col-synth .col-title { color: var(--blue); }
+    .quote-box {
+      font-style: italic;
+      color: #D6D7DC;
+      border-left: 3px solid #FBBF24;
+      padding-left: 12px;
+      margin: 0 0 12px;
+      font-size: 14.5px;
+    }
+    .detail-para {
+      margin-bottom: 12px;
+      font-size: 14.5px;
+    }
+    .code-chip {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 13px;
+      color: #F3F4F6;
+    }
     ul {
       margin: 8px 0 0;
       padding-left: 20px;
       font-size: 14.5px;
     }
-    li { margin-bottom: 6px; }
+    li { margin-bottom: 8px; }
     .takeaways {
       background: linear-gradient(135deg, rgba(255, 149, 0, 0.08), rgba(96, 165, 250, 0.08));
       border: 1px solid rgba(255, 149, 0, 0.25);
@@ -138,134 +160,188 @@
 <body>
   <div class="container">
     <header>
-      <div class="badge">Product Strategy & Pricing</div>
-      <h1>FlowJoe Pricing: Synthesis of Shalom's Review</h1>
-      <p class="subtitle">A collaborative volley of ideas exploring user instincts, architectural solutions, and launch tactics.</p>
+      <div class="badge">Product Strategy & Pricing Dialogue</div>
+      <h1>FlowJoe Pricing: Comprehensive Synthesis of Shalom's Review</h1>
+      <p class="subtitle">A detailed exploration of user instincts, real codebase capabilities, and launch strategy.</p>
     </header>
 
     <div class="intro-box">
-      This document reviews Shalom's feedback in the spirit of a collaborative exchange. It highlights where her product instincts uncover valuable marketing and user insights, connects them with the latest architectural breakthroughs (like Peer Nodes and salted machine tokens), and outlines actionable takeaways for launch.
+      This document provides a thorough, item-by-item exploration of the feedback provided by Shalom in her structured review. It pairs her sharp practical instincts—such as subscription resistance, viral exit prompts, and conversion friction—with the engineering realities of FlowJoe's current codebase and the commercial structure established for launch.
     </div>
 
-    <!-- Idea 1: Launch Tiers -->
+    <!-- 1. Tiers & The 90% Built Peer Node -->
     <div class="section-card">
       <h2>1. Tiers: Launch with Solo + Pro First vs. Showing Team <span class="tag">Tier Structure</span></h2>
       <div class="comparison-grid">
         <div class="col col-shalom">
           <div class="col-title">Shalom's Perspective</div>
-          <p>From an MVP perspective, launching with just Solo ($0) and Pro ($8 or $5) keeps things simple. If a host needs more than 3 editors, offer an "add a seat" option and save the full Team tier for later when customer demand proves itself. Avoid building heavy team overhead too early.</p>
+          <div class="quote-box">
+            "All these features require more overhead and development to build and maintain... At minimum, we could start with the Pro plan, and put Team on a feature roadmap. I don't see a need to launch with it."
+          </div>
+          <p class="detail-para">She suggests that solo and small businesses might not buy full team tiers, and that corporate administrative features (member management, pooled keys, license transfers) could push a 2–4 person pod away prematurely. Her alternative is a two-tier model: Solo ($0) and Pro ($8 or $5), with an "add an editor seat" fee for anyone needing more than 3 editors.</p>
         </div>
         <div class="col col-synth">
-          <div class="col-title">Exploration & Synthesis</div>
-          <p>Her instinct to avoid premature development overhead is spot on—except <strong>Peer Nodes are already ~90% built in our codebase today</strong>:</p>
+          <div class="col-title">Deep Dive & Codebase Reality</div>
+          <p class="detail-para">Her instinct to avoid premature development overhead is sound advice for typical SaaS companies. However, in FlowJoe's specific case, the flagship capability of Team—<strong>Peer Nodes</strong>—is already <strong>~90% built in our codebase today</strong>:</p>
           <ul>
-            <li><strong>Branch sharing:</strong> Subtree-scoped sharing is already implemented and tested in <code>guestRequestPath.js</code>.</li>
-            <li><strong>Offline queueing & replay:</strong> <code>guestOpsSync.js</code> already buffers guest edits locally when disconnected and flushes them back on reconnect.</li>
-            <li><strong>The remaining 10%:</strong> Simply surfacing teammate addresses inside the desktop app's tree as a Peer Node type.</li>
+            <li><strong>Branch Sharing is built:</strong> <span class="code-chip">src/electron/collaboration/guestRequestPath.js</span> already implements and verifies subtree-scoped sharing, so an owner can share any branch of their tree while keeping the rest private.</li>
+            <li><strong>Offline Queuing & Replay is built:</strong> <span class="code-chip">src/js/guest/guestOpsSync.js</span> and <span class="code-chip">guestLiveSync.js</span> already buffer edits in IndexedDB when disconnected from the host, and automatically replay/flush them when reconnecting via <span class="code-chip">POST /flow/ops</span>.</li>
+            <li><strong>The remaining 10%:</strong> Simply surfacing teammate addresses inside the desktop app as a Peer Node type so one user can mount another's live branch directly in their local tree.</li>
           </ul>
-          <p style="margin-top: 10px;">Because the technical foundation is already running, offering Team doesn't require months of heavy engineering. Showing it on the pricing page anchors the product's full potential and makes $8 Pro look extraordinarily affordable.</p>
+          <p class="detail-para" style="margin-top: 10px;"><strong>Strategic Value of Keeping Team Visible:</strong> Team is not just an administrative bundle; it represents true decentralized desktop-to-desktop meshing. Keeping Team on the pricing page ($15/seat/mo, 2-seat minimum = $30/mo) frames the full product ladder. It signals that FlowJoe is built for serious creative teams, while immediately making the $8/mo Pro plan look remarkably affordable by comparison.</p>
         </div>
       </div>
     </div>
 
-    <!-- Idea 2: Price Point Defense -->
+    <!-- 2. Price Defense ($8 vs $5) -->
     <div class="section-card">
-      <h2>2. Price Point Defense ($8 vs. $5 or Launch Promo) <span class="tag">Pricing</span></h2>
+      <h2>2. Price Point Defense ($8 vs. $5 or Launch Promo) <span class="tag">Pricing Strategy</span></h2>
       <div class="comparison-grid">
         <div class="col col-shalom">
           <div class="col-title">Shalom's Perspective</div>
-          <p>As a startup, is $8/month defensible right out of the gate? Would starting at $5 or running an early-adopter promotional price give us more early traction?</p>
+          <div class="quote-box">
+            "I agree with the general model, I just don't know if our price point is defensible yet (as a startup). We might start lower, say $5 for pro, or offer an early adopter promo."
+          </div>
+          <p class="detail-para">She questions whether a brand-new startup can command $8/month from creators and freelancers before proving massive market fit, suggesting either a $5 introductory tier or a special early adopter promo.</p>
         </div>
         <div class="col col-synth">
-          <div class="col-title">Exploration & Synthesis</div>
-          <p>At $8/month ($96/year), FlowJoe is already significantly cheaper than Figma ($15/mo), Miro ($8–$10/mo), or Loom ($12.50/mo). A $5 base price might unintentionally lower perceived value. However, <strong>her launch promo idea is fantastic</strong>: keeping the published sticker price at $8 while offering a limited-time "Founding Member" or launch discount gives early adopters an incentive without permanently devaluing the product.</p>
+          <div class="col-title">Deep Dive & Market Positioning</div>
+          <p class="detail-para"><strong>Why $8/mo is Already Exceptionally Defensible:</strong></p>
+          <ul>
+            <li>FlowJoe Pro ($8/mo annual, $96/yr | $10 monthly) provisions a dedicated, zero-config outbound tunnel (<span class="code-chip">name.flowjoe.app</span>) with permanent address routing and live WebSockets.</li>
+            <li>In the creative tool market, $8/month sits well below established benchmarks: <strong>Figma is $15/seat</strong>, <strong>Miro is $8–$10/seat</strong>, and <strong>Loom is $12.50/user</strong>.</li>
+            <li>Dropping the baseline price to $5 anchors the perceived value of the product too low, attracts high-churn hobbyists, and makes later price adjustments difficult without creating meaningful additional conversion volume.</li>
+          </ul>
+          <p class="detail-para" style="margin-top: 10px;"><strong>The Winning Move (Her Promo Idea):</strong> Rather than lowering the official sticker price to $5, we can use her suggestion of an <strong>Early Adopter / Founding Member Promo</strong>. For example: "Launch Special: $72 for your first year ($6/mo)" or a locked-in founder discount. This creates launch urgency and drives early cash flow without devaluing the permanent $8/$10 tier.</p>
         </div>
       </div>
     </div>
 
-    <!-- Idea 3: Zoom / Screen Share Alternative -->
+    <!-- 3. The Zoom / Screen-Share Alternative -->
     <div class="section-card">
       <h2>3. The Zoom / Screen-Share Alternative <span class="tag">User Behavior</span></h2>
       <div class="comparison-grid">
         <div class="col col-shalom">
           <div class="col-title">Shalom's Perspective</div>
-          <p>What prevents someone from just jumping on Zoom or Google Meet and sharing their screen with a client instead of purchasing a sharing tunnel?</p>
+          <div class="quote-box">
+            "What stops someone from just relying on zoom and screen-sharing, rather than using our paid tunnel? We may need to extra-insentivize someone to go through the process of setting up an account in order to receive the trial."
+          </div>
+          <p class="detail-para">She raises a very real user-behavior hurdle: if a freelance creator can just hop on a Zoom, Google Meet, or Discord call and share their monitor for free, why would they bother setting up a FlowJoe account and paying for live tunnels?</p>
         </div>
         <div class="col col-synth">
-          <div class="col-title">Exploration & Synthesis</div>
-          <p>This is a sharp user-behavior question. Screen sharing is passive and one-way: clients cannot inspect high-resolution media, click into spreadsheets, or leave organized notes. FlowJoe turns passive presentations into active workshops where clients arrange cards, type notes, and brainstorm with Joe AI live. Highlighting this interactive difference in our copy directly defuses the objection.</p>
+          <div class="col-title">Deep Dive & Value Proposition</div>
+          <p class="detail-para">This is one of the sharpest questions in her review because it pinpoints the difference between <em>passive broadcasting</em> and <em>active collaboration</em>:</p>
+          <ul>
+            <li><strong>Passive Screen Sharing (The Zoom Trap):</strong> A screen share is completely one-way. The client cannot navigate at their own pace, cannot zoom into high-res artwork, cannot click between tabs or spreadsheet cells, and cannot leave organized notes. They are forced to watch the host’s mouse cursor and say "can you scroll down a little?"</li>
+            <li><strong>FlowJoe Live Sharing (The Interactive Workshop):</strong> When a client opens a FlowJoe link in their browser, they are inside the live canvas. They can explore the tree independently, arrange cards, drop reference files, and type directly into shared notes. Presenter Follow Mode allows the host to guide them when needed, while still letting the client participate.</li>
+          </ul>
+          <p class="detail-para" style="margin-top: 10px;"><strong>Actionable Copy Tweak:</strong> Our marketing and onboarding copy must explicitly hit this contrast: <em>"Stop asking clients 'can you see my screen?'. Give them an interactive board where they can explore, arrange cards, and leave feedback directly on your work."</em></p>
         </div>
       </div>
     </div>
 
-    <!-- Idea 4: Plugin Safety -->
+    <!-- 4. Plugin Safety & Governance -->
     <div class="section-card">
-      <h2>4. Plugin Safety & Governance <span class="tag">Architecture</span></h2>
+      <h2>4. Plugin Safety & Governance <span class="tag">Architecture & Trust</span></h2>
       <div class="comparison-grid">
         <div class="col col-shalom">
           <div class="col-title">Shalom's Perspective</div>
-          <p>Community plugins could introduce security risks or require significant operational oversight, and might make sense as a paid or vetted upgrade.</p>
+          <div class="quote-box">
+            "Community plugins could introduce security risks so we should tread carefully, particularly if it requires significant oversight on our end. This feature could be a paid upgrade opportunity or add-on."
+          </div>
+          <p class="detail-para">She expresses valid caution that community-contributed plugins could open security holes, require costly engineering oversight, or potentially leak user data, suggesting plugins could be gated behind a paid tier.</p>
         </div>
         <div class="col col-synth">
-          <div class="col-title">Exploration & Synthesis</div>
-          <p>Her caution is well-founded given how script-heavy plugins can leak data in other ecosystems. In FlowJoe, plugins are strictly <strong>declarative templates, custom fields, and layout grammars</strong>. They execute zero arbitrary code and have <strong>zero outbound network access</strong>. Because they cannot make external network calls, private project files can never be transmitted externally.</p>
+          <div class="col-title">Deep Dive & Architectural Proof</div>
+          <p class="detail-para">Her concern is completely natural when thinking about script-heavy extension ecosystems (like Obsidian or VS Code), where plugins can execute arbitrary Node.js scripts or make rogue background HTTP requests.</p>
+          <p class="detail-para">However, FlowJoe solves this at the structural root: <strong>FlowJoe plugins are purely declarative</strong>.</p>
+          <ul>
+            <li><strong>Zero Outbound Network Access:</strong> Plugins have no network access, no fetch APIs, and no ability to open sockets or communicate externally.</li>
+            <li><strong>Declarative Grammars Only:</strong> A plugin in FlowJoe defines custom metadata fields, layout templates (e.g. tabletop RPG character sheets or screenplay beats), Joe prompt assistants, and export formatters.</li>
+            <li><strong>Zero Server Oversight Required:</strong> Because plugins cannot run arbitrary background code or exfiltrate projects, they cannot leak confidential creative decks, scripts, or client files. Keeping them free in the Solo tier maintains user trust and drives organic community adoption.</li>
+          </ul>
         </div>
       </div>
     </div>
 
-    <!-- Idea 5: Machine Verification -->
+    <!-- 5. Trial Abuse & Machine Privacy -->
     <div class="section-card">
-      <h2>5. Machine Privacy & Trial Verification <span class="tag">Trust</span></h2>
+      <h2>5. Trial Abuse & Machine Privacy <span class="tag">Anti-Abuse</span></h2>
       <div class="comparison-grid">
         <div class="col col-shalom">
           <div class="col-title">Shalom's Perspective</div>
-          <p>Hardware-level locking raises privacy concerns for a privacy-first brand and can be circumvented via virtual machines or reinstalls.</p>
+          <div class="quote-box">
+            "Hardware ID locks are easy to get around (reinstalls, VMs, new machines) and raise privacy questions for a 'zero-telemetry' brand."
+          </div>
+          <p class="detail-para">She warns that inspecting hardware serials conflicts with FlowJoe’s privacy-first brand promise, while being easily bypassed by technical users spinning up virtual machines or fresh installations.</p>
         </div>
         <div class="col col-synth">
-          <div class="col-title">Exploration & Synthesis</div>
-          <p>Shalom identified the exact privacy and reliability pitfall of raw hardware IDs. We have resolved this by using an irreversible salted hash of the OS installation identity paired with email account verification. It never inspects swappable hardware parts (like RAM or disks), protecting user privacy while preventing rapid burner script abuse.</p>
+          <div class="col-title">Deep Dive & The Salted Token Solution</div>
+          <p class="detail-para">Shalom nailed the exact friction point of raw hardware tracking. We reached the same conclusion in our latest architectural audit and explicitly redesigned the verification flow:</p>
+          <ul>
+            <li><strong>No Raw Hardware Serials:</strong> The app never reads or transmits hardware serial numbers, MAC addresses, RAM module serials, or disk UUIDs. Swapping out computer parts will never penalize or lock a user out.</li>
+            <li><strong>Salted OS Installation Token:</strong> The desktop app creates a local, irreversible hash using the OS installation identity combined with an application salt (<span class="code-chip">crypto.createHmac('sha256', salt).update(osInstallId)</span>). No raw machine identifiers ever leave the computer.</li>
+            <li><strong>Subdomain Friction:</strong> Creating burner accounts breaks the user's permanent personal tunnel handle (<span class="code-chip">dan.flowjoe.app</span>). Professional creators presenting to real clients will not constantly change their public address just to save $8/month.</li>
+          </ul>
         </div>
       </div>
     </div>
 
-    <!-- Idea 6: The Project Pass -->
+    <!-- 6. The $15 Project Pass -->
     <div class="section-card">
-      <h2>6. The $15 Project Pass <span class="tag">Billing Flexibility</span></h2>
+      <h2>6. The $15 Project Pass (30 vs. 45 Days) <span class="tag">Billing Flexibility</span></h2>
       <div class="comparison-grid">
         <div class="col col-shalom">
           <div class="col-title">Shalom's Perspective</div>
-          <p>As a subscription avoider herself, she strongly supports the non-recurring pass concept, suggesting $15 for 45 days.</p>
+          <div class="quote-box">
+            "I like the proposal of an alternate option to a subscription, as a subscription avoider myself. xD If we simplify the payment plan to just a Pro tier with this as an alternative, that could be compelling. I would suggest $15 for 45 days."
+          </div>
+          <p class="detail-para">She validates the non-recurring pass as a compelling option for subscription-resistant creators, suggesting extending the duration from 30 days to 45 days.</p>
         </div>
         <div class="col col-synth">
-          <div class="col-title">Exploration & Synthesis</div>
-          <p>Her enthusiasm validates the Project Pass for creators who work in bursts. Keeping the duration at <strong>30 days</strong> matches a standard monthly sprint or client review cycle, whereas 45 days begins to overlap with two full months and could inadvertently discourage ongoing monthly adoption.</p>
+          <div class="col-title">Deep Dive & Economic Balance</div>
+          <p class="detail-para">It is huge validation to see a self-described "subscription avoider" get excited about the Project Pass. Many independent makers, consultants, and contractors experience feast-or-famine cycles and dread recurring monthly charges.</p>
+          <p class="detail-para"><strong>Why 30 Days is the Ideal Window:</strong></p>
+          <ul>
+            <li><strong>The Sprint Horizon:</strong> 30 days perfectly encompasses a standard creative gig, client pitch cycle, or festival submission window.</li>
+            <li><strong>Subscription Economics:</strong> If $15 gives 45 days, that equals $10/month without any recurring commitment. That would severely undercut the monthly Pro plan ($10/mo) and cannibalize annual subscriptions ($8/mo).</li>
+            <li>At $15 for 30 days, the user pays a fair premium for zero commitment, while FlowJoe earns higher gross revenue per active project day.</li>
+          </ul>
         </div>
       </div>
     </div>
 
-    <!-- Idea 7: Viral Growth & Guest Conversion -->
+    <!-- 7. Viral Growth & Guest Conversion -->
     <div class="section-card">
       <h2>7. Viral Growth & Guest Conversion <span class="tag">Growth Engine</span></h2>
       <div class="comparison-grid">
         <div class="col col-shalom">
           <div class="col-title">Shalom's Perspective</div>
-          <p>If guests join in their browser without an account, when and how do we encourage them to get the app? She suggests a session-ended screen and exploring a Dropbox-style referral system.</p>
+          <div class="quote-box">
+            "If guests join without the need for an account, where/when do we promote or suggest they download our product? How do we market to them? Do we create an affiliate/rewards/discount program?"
+          </div>
+          <p class="detail-para">She suggests placing a download prompt on the exit or "session ended" screen after a guest has experienced the product, and exploring Dropbox-style referral rewards (e.g., earn a free month when an invited guest becomes a paid user).</p>
         </div>
         <div class="col col-synth">
-          <div class="col-title">Exploration & Synthesis</div>
-          <p><strong>This is exceptional, actionable marketing advice.</strong> When a guest finishes a live review and leaves, a clean, elegant "Session Ended" screen can present a simple invitation: <em>"Presented with FlowJoe. Download the free desktop app for your own workspace."</em> Adding a referral perk—such as granting a host a free month when an invited client becomes a paid host—is virtually cost-free for FlowJoe due to our zero-cloud architecture.</p>
+          <div class="col-title">Deep Dive & Viral Loops</div>
+          <p class="detail-para"><strong>This is the single most actionable marketing recommendation in her review:</strong></p>
+          <ul>
+            <li><strong>The "Session Ended" Moment:</strong> Interrupting a client while they are actively reviewing a board feels tacky and unprofessional. But the moment the host ends the call and the guest closes the board, an elegant exit screen appears: <em>"Presented with FlowJoe. Want an infinite local workspace for your own notes and projects? Download the free desktop app."</em> They have just seen the app work live with zero lag—this is the highest-converting possible moment.</li>
+            <li><strong>Dropbox-Style Host Referral:</strong> Because FlowJoe’s zero-cloud architecture means marginal hosting costs are near zero, granting a paid Pro host <strong>1 Free Month</strong> when an invited client subscribes is practically cost-free for us. It incentivizes design studios, freelancers, and agencies to mandate FlowJoe with all their clients.</li>
+          </ul>
         </div>
       </div>
     </div>
 
-    <!-- Key Takeaways -->
+    <!-- Actionable Takeaways -->
     <div class="takeaways">
-      <h3>Actionable Takeaways</h3>
+      <h3>Strategic Synthesis & Key Action Items</h3>
       <ul>
-        <li><strong>Adopt Her Guest Exit Screen:</strong> Build a dedicated, elegant download prompt on the guest "Session Ended" page.</li>
-        <li><strong>Consider a Launch Promo:</strong> Keep the anchor price at $8/mo ($96/yr), but consider offering an early-adopter or founding-member rate during launch week.</li>
-        <li><strong>Emphasize Active vs. Passive Sharing:</strong> Clearly differentiate FlowJoe's interactive canvas from passive Zoom screen sharing in our marketing copy.</li>
-        <li><strong>The Existing Roadmap Holds Firm:</strong> Our refined architecture already addresses her technical concerns regarding plugins, machine privacy, and the distinct purpose of team peer nodes.</li>
+        <li><strong>Implement the Guest Exit Screen:</strong> Design a polished, non-intrusive download prompt on the guest "Session Ended" screen.</li>
+        <li><strong>Prepare a Launch Promo:</strong> Keep the published sticker price at $8/mo ($96/yr), but offer a limited-time "Early Adopter / Founding Member" annual deal during launch week.</li>
+        <li><strong>Position Active Canvas vs. Passive Zoom:</strong> Emphasize that FlowJoe turns one-way screen shares into live, interactive workshops where clients can click, arrange, and brainstorm.</li>
+        <li><strong>Highlight Peer Nodes in Team:</strong> Explain that Team provides decentralized peer-to-peer tree meshing (which is ~90% built already), clarifying that it’s not just an administrative seat bundle.</li>
+        <li><strong>Maintain Current Architecture:</strong> Our existing decisions around declarative plugins, salted OS verification tokens, and 30-day Project Passes successfully resolve all technical risks Shalom raised.</li>
       </ul>
     </div>
   </div>
