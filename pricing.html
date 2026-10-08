@@ -649,11 +649,15 @@
           </li>
           <li class="feature-item">
             <svg class="icon icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            <span><strong>Simple Web Administration:</strong> Add, invite, and reassign team licenses in one place as contractors rotate</span>
+            <span><strong>Branch & Project Ownership Handoff:</strong> Merge peer branches or transfer master project ownership to teammates when contractors rotate off</span>
           </li>
           <li class="feature-item">
             <svg class="icon icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            <span><strong>Shared AI Keys Vault:</strong> Pool company OpenAI/Anthropic keys securely across the team with clear usage visibility</span>
+            <span><strong>Simple Web Administration:</strong> Add, invite, and reassign team licenses in one place as team rosters evolve</span>
+          </li>
+          <li class="feature-item">
+            <svg class="icon icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span><strong>Shared AI Keys:</strong> Pool company OpenAI/Anthropic keys via host session proxy with clear team usage visibility</span>
           </li>
           <li class="feature-item">
             <svg class="icon icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
@@ -681,7 +685,7 @@
       
       <!-- Explanatory Footnotes for IT / Enterprise Terms -->
       <div style="margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(255, 255, 255, 0.06); display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: #8E909B; line-height: 1.55;">
-        <div><strong style="color: #A5B4FC;">* On-Premise Relays:</strong> FlowJoe synchronization software runs inside the studio's own private network or office servers, so project traffic never touches public internet relay routers.</div>
+        <div><strong style="color: #A5B4FC;">* On-Premise Relays:</strong> FlowJoe's peer session router runs as a lightweight container inside the studio's own local network or private VPN. It routes real-time encrypted packets directly between machines without touching public relays, and never stores project files or data.</div>
         <div><strong style="color: #A5B4FC;">** SAML SSO (Single Sign-On):</strong> IT connects FlowJoe to the company's central login system (such as Okta, Google Workspace, or Microsoft Azure AD). Employees log in with their work credentials, and IT can grant or revoke workspace access instantly when team members join or leave.</div>
       </div>
     </div>
@@ -792,9 +796,9 @@
         <ul style="margin: 10px 0 0 20px; color: #D8D8DF; font-size: 15.5px; line-height: 1.75;">
           <li>Pro guests should edit for free, capped at 3 live editors per session.</li>
           <li>Charging per guest creates high friction for simple client reviews.</li>
-          <li>Three editors covers the classic freelance team: Host, Client, and Reviewer.</li>
-          <li>Guests join free in their browser without creating an account.</li>
-          <li>The 3-editor cap prevents entire studios from sharing a single host license.</li>
+          <li>Three editors covers the classic creative trio: Host (or Co-Host), Client, and Lead Reviewer.</li>
+          <li>If a host designates a Co-Host, that Co-Host occupies 1 of the 3 active editor seats (leaving 2 for clients). All other joiners participate as viewers.</li>
+          <li>The 3-editor cap prevents entire studios from sharing a single host license without upgrading to Team.</li>
         </ul>
       </div>
 
@@ -803,8 +807,7 @@
         <ul style="margin: 10px 0 0 20px; color: #D8D8DF; font-size: 15.5px; line-height: 1.75;">
           <li><strong>Why not 14 days:</strong> A two-week trial lets users finish an entire client project for free and abandon the app without paying.</li>
           <li><strong>Why 7 days works better:</strong> One week covers a standard Monday-to-Friday work sprint, creating prompt decision urgency while cutting server relay costs in half.</li>
-          <li><strong>Hardware device locking:</strong> The desktop app logs the machine's hardware UUID to grant only one free trial per device per year, stopping burner Gmail signups.</li>
-          <li><strong>Custom address friction:</strong> Cycling burner accounts changes the host's link every week, which discourages professionals from breaking live links shared with clients.</li>
+          <li><strong>Account & subdomain friction (No invasive hardware tracking):</strong> We do not fingerprint user hardware. Instead, one 7-day trial is granted per verified email. Constantly cycling burner emails breaks the host's permanent personal address (<code>dan.flowjoe.app</code>), which professionals will not do with live clients.</li>
           <li><strong>No hostage data:</strong> When a trial expires, all local flows and notes stay completely accessible, pausing only the live web sharing.</li>
         </ul>
       </div>
@@ -830,20 +833,19 @@
       </div>
 
       <div class="qa-banner" style="background: rgba(168, 85, 247, 0.08); border-color: rgba(168, 85, 247, 0.35); margin-top: 20px;">
-        <h5 style="color: #C084FC;">🏢 Key Question 5: What Is the Distinction Between Team and Studio, and How Do We Future-Proof It?</h5>
+        <h5 style="color: #C084FC;">🏢 Key Question 5: What Is the Distinction Between Team ($15/seat) and Studio (20+ Seats)?</h5>
         <ul style="margin: 10px 0 0 20px; color: #D8D8DF; font-size: 15.5px; line-height: 1.75;">
-          <li><strong>What a Team needs ($12/seat):</strong> Fluid daily coordination among 5–20 creators, unlimited concurrent editors, pooled company AI keys, and fast project handoff.</li>
-          <li><strong>What a Studio needs (Enterprise):</strong> Stringent IT governance for 20–100+ seats, SAML SSO, self-hosted private relay containers behind company firewalls, and zero-telemetry local LLMs.</li>
-          <li><strong>Option A (Lean 3-card model):</strong> Keep three primary cards with Team at $12/seat, paired with a dedicated enterprise banner routing large organizations to Studio Sales.</li>
-          <li><strong>Option B (Formal 4-tier model):</strong> Expand to Solo ($0), Pro ($8/mo), Team ($12/seat), and Studio/Enterprise ($32+/seat or custom contract) as enterprise sales demand matures.</li>
+          <li><strong>What a Team gets ($15/seat, $30/mo min):</strong> Fluid daily coordination for 2–20 creators, independent host addresses, decentralized peer-to-peer tree meshing, pooled host AI keys, and branch ownership handoff.</li>
+          <li><strong>What a Studio gets (20+ Seats):</strong> Volume discounts ($10–$12/seat in bulk), annual invoicing/ACH, SAML SSO, self-hosted private in-network packet relay containers, and zero-telemetry local LLM compliance.</li>
+          <li><strong>Architectural consistency:</strong> Both tiers use the exact same local-first peer protocol. A Studio relay routes encrypted packets inside the company's network, never storing project files or databases.</li>
         </ul>
       </div>
 
       <div class="qa-banner" style="background: rgba(14, 165, 233, 0.08); border-color: rgba(14, 165, 233, 0.35); margin-top: 20px;">
-        <h5 style="color: #38BDF8;">🎟️ Key Question 6: Should We Offer a $15 Project Pass for Irregular Review Sprints?</h5>
+        <h5 style="color: #38BDF8;">🎟️ Key Question 6: Why the $15 Project Pass is an Essential Part of the Product</h5>
         <ul style="margin: 10px 0 0 20px; color: #D8D8DF; font-size: 15.5px; line-height: 1.75;">
           <li><strong>The creator pattern:</strong> Indie game developers and fiction writers work alone for months, needing collaboration only during client review or pitching sprints.</li>
-          <li><strong>Overcoming subscription resistance:</strong> Solo makers who resent recurring monthly commitments will gladly pay a one-time $15 or $19 pass for 30 days of active sharing.</li>
+          <li><strong>Overcoming subscription resistance:</strong> Solo makers who resent recurring monthly commitments will gladly pay a one-time $15 pass for 30 days of active sharing.</li>
           <li><strong>Eliminating trial abuse:</strong> Creators who might otherwise create burner accounts to share a single pitch can simply buy a clean, temporary project window.</li>
           <li><strong>Zero commitment lock-in:</strong> The pass expires automatically without renewal traps, leaving all local files untouched on the host's drive.</li>
         </ul>
