@@ -237,6 +237,29 @@
       color: var(--text-main);
     }
 
+    .original-price {
+      text-decoration: line-through;
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 26px;
+      font-weight: 700;
+      margin-right: 2px;
+    }
+
+    .founder-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 149, 0, 0.14);
+      border: 1px solid rgba(255, 149, 0, 0.4);
+      color: #FFB340;
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+      letter-spacing: 0.02em;
+    }
+
     .amount {
       font-size: 48px;
       font-weight: 800;
@@ -573,18 +596,24 @@
       <div class="card featured">
         <div class="popular-pill">Most Popular</div>
         <div class="card-header">
+          <div class="founder-badge">⚡ First 30 Days or 1,000 Members: Founder Forever*</div>
           <h3 class="card-title">FlowJoe Pro</h3>
           <p class="card-desc">For professionals, consultants, and creators who review, present, and collaborate with clients.</p>
         </div>
         <div class="price-box">
           <span class="currency">$</span>
-          <span class="amount" id="proPrice">8</span>
-          <span class="period" id="proPeriod">/ mo <span style="display: block; font-size: 12px; color: #FFB340; font-weight: 600; margin-top: 2px;">($96 billed annually)</span></span>
+          <span class="original-price" id="proOriginalPrice">8</span>
+          <span class="amount" id="proPrice" style="color: #FFB340;">6</span>
+          <span class="period" id="proPeriod">/ mo <span style="display: block; font-size: 12px; color: #FFB340; font-weight: 600; margin-top: 2px;">($72 billed annually &bull; lock-in forever*)</span></span>
         </div>
         <a href="#subscribe" class="btn btn-primary">Start 7-Day Free Trial</a>
 
         <div class="feature-group-label">Everything in Solo, plus:</div>
         <ul class="features-list">
+          <li class="feature-item" style="background: rgba(255, 149, 0, 0.08); padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(255, 149, 0, 0.35);">
+            <svg class="icon icon-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <span><strong style="color: #FFB340;">* Founder Forever Lock-in:</strong> Available for the first 30 days of launch or first 1,000 subscribers (whichever comes first). Keeps your rate at $6/mo ($72/yr) for the entire lifetime of your account. Standard $8/mo ($96/yr) applies thereafter.</span>
+          </li>
           <li class="feature-item">
             <svg class="icon icon-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
             <span><strong>7-Day Free Trial:</strong> Full Pro features unlocked with no credit card required</span>
@@ -676,7 +705,7 @@
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           </div>
           <div>
-            <h4 style="font-size: 15.5px; font-weight: 700; color: var(--text-main); margin-bottom: 2px;">Running a 20+ person studio, or need on-premise relays* and SAML SSO**?</h4>
+            <h4 style="font-size: 15.5px; font-weight: 700; color: var(--text-main); margin-bottom: 2px;">Running a 20+ person studio, or need on-premise relays* and SAML SSO**? <span style="font-size: 12px; font-weight: 600; color: #9AA5FF; background: rgba(94, 106, 210, 0.18); padding: 2px 8px; border-radius: 6px; margin-left: 6px; vertical-align: middle;">(Contemplated for Post-Launch Rollout &bull; Early Inquiries Welcome)</span></h4>
             <p style="font-size: 13.5px; color: var(--text-muted); line-height: 1.5;">Self-hosted relay containers, zero-telemetry air-gapped compliance, local LLM clusters, and invoice billing.</p>
           </div>
         </div>
@@ -847,7 +876,8 @@
         <ul style="margin: 10px 0 0 20px; color: #D8D8DF; font-size: 15.5px; line-height: 1.75;">
           <li><strong>The creator pattern:</strong> Indie game developers and fiction writers work alone for months, needing collaboration only during client review or pitching sprints.</li>
           <li><strong>Overcoming subscription resistance:</strong> Solo makers who resent recurring monthly commitments will gladly pay a one-time $15 pass for 30 days of active sharing.</li>
-          <li><strong>Eliminating trial abuse:</strong> Creators who might otherwise create burner accounts to share a single pitch can simply buy a clean, temporary project window.</li>
+          <li><strong>Zero purchase limit & stacking:</strong> Users can buy as many Project Passes as they wish throughout the year. If a user buys another pass before the current one expires, the remaining days stack seamlessly (+30 days). The math works heavily in FlowJoe's favor ($15 for 30 days = $0.50/day vs $0.26/day on Pro Annual).</li>
+          <li><strong>Natural upgrade gravity:</strong> Once a creator buys 3 or 4 passes in a year ($45–$60), they naturally realize that upgrading to Pro Annual ($72 founder or $96 regular) keeps their tunnel open year-round for less friction.</li>
           <li><strong>Zero commitment lock-in:</strong> The pass expires automatically without renewal traps, leaving all local files untouched on the host's drive.</li>
         </ul>
       </div>
@@ -888,6 +918,7 @@
     function setBilling(interval) {
       const monthlyBtn = document.getElementById('monthlyBtn');
       const annualBtn = document.getElementById('annualBtn');
+      const proOriginalPrice = document.getElementById('proOriginalPrice');
       const proPrice = document.getElementById('proPrice');
       const proPeriod = document.getElementById('proPeriod');
       const teamPrice = document.getElementById('teamPrice');
@@ -896,13 +927,15 @@
       if (interval === 'annual') {
         annualBtn.classList.add('active');
         monthlyBtn.classList.remove('active');
-        proPrice.textContent = '8';
-        proPeriod.innerHTML = '/ mo <span style="display: block; font-size: 12px; color: #FFB340; font-weight: 600; margin-top: 2px;">($96 billed annually)</span>';
+        if (proOriginalPrice) proOriginalPrice.style.display = 'inline';
+        proPrice.textContent = '6';
+        proPeriod.innerHTML = '/ mo <span style="display: block; font-size: 12px; color: #FFB340; font-weight: 600; margin-top: 2px;">($72 billed annually &bull; lock-in forever)</span>';
         teamPrice.textContent = '15';
         teamPeriod.innerHTML = '/ seat / mo <span style="display: block; font-size: 12px; color: #A3A4AC; font-weight: 500; margin-top: 2px;">($180/seat billed annually &bull; 2-seat min)</span>';
       } else {
         monthlyBtn.classList.add('active');
         annualBtn.classList.remove('active');
+        if (proOriginalPrice) proOriginalPrice.style.display = 'none';
         proPrice.textContent = '10';
         proPeriod.innerHTML = '/ month';
         teamPrice.textContent = '18';
