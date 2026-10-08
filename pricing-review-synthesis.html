@@ -153,11 +153,17 @@
       <div class="comparison-grid">
         <div class="col col-shalom">
           <div class="col-title">Shalom's Perspective</div>
-          <p>From an MVP perspective, launching with just Solo ($0) and Pro ($8 or $5) keeps things simple. If a host needs more than 3 editors, offer an "add a seat" option and save the full Team tier for later when customer demand proves itself.</p>
+          <p>From an MVP perspective, launching with just Solo ($0) and Pro ($8 or $5) keeps things simple. If a host needs more than 3 editors, offer an "add a seat" option and save the full Team tier for later when customer demand proves itself. Avoid building heavy team overhead too early.</p>
         </div>
         <div class="col col-synth">
           <div class="col-title">Exploration & Synthesis</div>
-          <p>Her instinct to keep the initial offering focused is very sound. What makes Team special in our current architecture is that it isn't just an "admin seat bundle"—it unlocks <strong>Peer Nodes in the desktop app</strong>, letting colleagues mount each other's branches locally with offline syncing. Showing Team on the pricing page frames the product ladder clearly and makes $8 Pro look very approachable.</p>
+          <p>Her instinct to avoid premature development overhead is spot on—except <strong>Peer Nodes are already ~90% built in our codebase today</strong>:</p>
+          <ul>
+            <li><strong>Branch sharing:</strong> Subtree-scoped sharing is already implemented and tested in <code>guestRequestPath.js</code>.</li>
+            <li><strong>Offline queueing & replay:</strong> <code>guestOpsSync.js</code> already buffers guest edits locally when disconnected and flushes them back on reconnect.</li>
+            <li><strong>The remaining 10%:</strong> Simply surfacing teammate addresses inside the desktop app's tree as a Peer Node type.</li>
+          </ul>
+          <p style="margin-top: 10px;">Because the technical foundation is already running, offering Team doesn't require months of heavy engineering. Showing it on the pricing page anchors the product's full potential and makes $8 Pro look extraordinarily affordable.</p>
         </div>
       </div>
     </div>
