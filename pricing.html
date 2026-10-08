@@ -807,7 +807,8 @@
         <ul style="margin: 10px 0 0 20px; color: #D8D8DF; font-size: 15.5px; line-height: 1.75;">
           <li><strong>Why not 14 days:</strong> A two-week trial lets users finish an entire client project for free and abandon the app without paying.</li>
           <li><strong>Why 7 days works better:</strong> One week covers a standard Monday-to-Friday work sprint, creating prompt decision urgency while cutting server relay costs in half.</li>
-          <li><strong>Account & subdomain friction (No invasive hardware tracking):</strong> We do not fingerprint user hardware. Instead, one 7-day trial is granted per verified email. Constantly cycling burner emails breaks the host's permanent personal address (<code>dan.flowjoe.app</code>), which professionals will not do with live clients.</li>
+          <li><strong>Salted, privacy-preserving machine token:</strong> To allow completely credit-card-free trials without serial burner abuse, the app hashes the stable OS installation ID with an irreversible salt (never reading volatile swappable parts like RAM or drives). No raw serials are transmitted or stored, protecting user privacy while enforcing 1 trial per machine per year.</li>
+          <li><strong>Subdomain friction:</strong> Cycling burner accounts breaks the host's permanent personal address (<code>dan.flowjoe.app</code>), creating natural friction against abuse with live clients.</li>
           <li><strong>No hostage data:</strong> When a trial expires, all local flows and notes stay completely accessible, pausing only the live web sharing.</li>
         </ul>
       </div>
