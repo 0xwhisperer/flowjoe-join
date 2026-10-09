@@ -12,6 +12,10 @@
   background: rgba(0, 0, 0, 0.55);
 }
 
+.repo-merge-conflict-overlay.is-above-modal {
+  z-index: calc(var(--flowjoe-z-app-modal) + 1);
+}
+
 .repo-merge-conflict-modal {
   display: flex;
   flex-direction: column;
