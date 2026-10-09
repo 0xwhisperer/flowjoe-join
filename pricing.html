@@ -567,7 +567,7 @@
         <ul class="features-list">
           <li class="feature-item">
             <svg class="icon icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            <span><strong>No account required:</strong> 100% offline-ready, zero telemetry, and complete privacy</span>
+            <span><strong>No account required:</strong> 100% offline-ready and complete privacy. Zero telemetry by default. Optional anonymous usage stats, off unless you want to help improve FlowJoe.<br><span style="font-size: 12px; color: var(--text-faint);">FlowJoe also checks for new versions; that check carries no personal data.</span></span>
           </li>
           <li class="feature-item">
             <svg class="icon icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
@@ -632,7 +632,7 @@
           </li>
           <li class="feature-item">
             <svg class="icon icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            <span><strong>Zero-config Tunnel & Custom Domain:</strong> Instant <code>name.flowjoe.app</code> with no port forwarding</span>
+            <span><strong>Zero-config Tunnel & Custom Domain:</strong> Instant <code>name.flowjoe.live</code> with no port forwarding</span>
           </li>
           <li class="feature-item">
             <svg class="icon icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
@@ -678,7 +678,7 @@
           </li>
           <li class="feature-item">
             <svg class="icon icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            <span><strong>Independent Host Addresses:</strong> Every licensed seat gets their own permanent tunnel address (<code>member.team.flowjoe.app</code>) to host reviews simultaneously</span>
+            <span><strong>Independent Host Addresses:</strong> Every licensed seat gets their own permanent personal address (<code>name.flowjoe.live</code>) to host reviews simultaneously</span>
           </li>
           <li class="feature-item">
             <svg class="icon icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
@@ -743,7 +743,7 @@
       <div class="tunnel-content">
         <h4>How FlowJoe Collaboration Works Behind the Scenes</h4>
         <p>
-          Signing up for FlowJoe Pro automatically provisions a secure outbound encrypted tunnel and your personal address (e.g. <code>dan.flowjoe.app</code> or <code>join.flowjoe.app/dan</code>). 
+          Signing up for FlowJoe Pro automatically provisions a secure outbound encrypted tunnel and your personal address (e.g. <code>dan.flowjoe.live</code>). 
           <strong>Zero router fussing, zero port forwarding, and no complex firewall rules.</strong> Your flow data stays on your machine, streamed securely to your guests' browsers only when you open a session.
         </p>
       </div>
@@ -780,7 +780,7 @@
           <ul style="margin: 6px 0 0 18px; color: #C5C6CD; font-size: 15px; line-height: 1.75;">
             <li>The natural upgrade point when sharing with clients.</li>
             <li>Provisions an automated outbound tunnel with no router setup.</li>
-            <li>Includes a custom personal address (e.g. <code>dan.flowjoe.app</code>).</li>
+            <li>Includes a custom personal address (e.g. <code>dan.flowjoe.live</code>).</li>
             <li>Guests join free in their browser without an account.</li>
             <li>Includes a risk-free 7-day trial with no credit card required.</li>
           </ul>
@@ -803,7 +803,7 @@
           <ul style="margin: 6px 0 0 18px; color: #C5C6CD; font-size: 15px; line-height: 1.75;">
             <li>FlowJoe hosts zero databases or user media storage.</li>
             <li>All files, videos, and notes stay on the host's hard drive.</li>
-            <li>Relay servers only route encrypted packets during active sessions.</li>
+            <li>Cloudflare's network only carries live sessions while they are open, and stores nothing.</li>
             <li>Near-zero server costs yield massive gross margins on $8/month.</li>
             <li>Enables sustainable pricing without aggressive price hikes.</li>
           </ul>
@@ -847,9 +847,9 @@
         <h5 style="color: #FFB340;">🔒 Key Question 2: Why Choose a 7-Day Trial Over 14 Days, and How Do We Stop Burner Accounts?</h5>
         <ul style="margin: 10px 0 0 20px; color: #D8D8DF; font-size: 15.5px; line-height: 1.75;">
           <li><strong>Why not 14 days:</strong> A two-week trial lets users finish an entire client project for free and abandon the app without paying.</li>
-          <li><strong>Why 7 days works better:</strong> One week covers a standard Monday-to-Friday work sprint, creating prompt decision urgency while cutting server relay costs in half.</li>
+          <li><strong>Why 7 days works better:</strong> One week covers a standard Monday-to-Friday work sprint, creating prompt decision urgency.</li>
           <li><strong>Salted, privacy-preserving machine token:</strong> To allow completely credit-card-free trials without serial burner abuse, the app hashes the stable OS installation ID with an irreversible salt (never reading volatile swappable parts like RAM or drives). No raw serials are transmitted or stored, protecting user privacy while enforcing 1 trial per machine per year.</li>
-          <li><strong>Subdomain friction:</strong> Cycling burner accounts breaks the host's permanent personal address (<code>dan.flowjoe.app</code>), creating natural friction against abuse with live clients.</li>
+          <li><strong>Subdomain friction:</strong> Cycling burner accounts breaks the host's permanent personal address (<code>dan.flowjoe.live</code>), creating natural friction against abuse with live clients.</li>
           <li><strong>No hostage data:</strong> When a trial expires, all local flows and notes stay completely accessible, pausing only the live web sharing.</li>
         </ul>
       </div>
@@ -918,7 +918,7 @@
         <h5 style="color: #34D399;">⚖️ Key Question 9: Why Don't Teams Just Use Pro with Free Browser Edit Guests?</h5>
         <ul style="margin: 10px 0 0 20px; color: #D8D8DF; font-size: 15.5px; line-height: 1.75;">
           <li><strong>The asymmetry barrier:</strong> On Pro ($8/mo), the host is the sole master. A browser guest is an ephemeral visitor on someone else's machine. The guest owns no master files, has no desktop app workspace, and cannot host their own sessions.</li>
-          <li><strong>The native desktop difference:</strong> Team members are equal creators who build every day. On Team, they work inside their native desktop app, mount colleagues' branches as live Peer Nodes, work offline with local queued ops (which auto-flush on reconnect via <code>guestOpsSync.js</code>), and host their own simultaneous reviews.</li>
+          <li><strong>The native desktop difference:</strong> Team members are equal creators who build every day. On Team, they work inside their native desktop app, mount colleagues' branches as live Peer Nodes, work offline with local queued changes (which send automatically on reconnect), and host their own simultaneous reviews.</li>
           <li><strong>Bulk pricing for large studios (20+ seats):</strong> For studios and agencies needing 20+ to 100+ seats, FlowJoe offers tiered bulk volume pricing (e.g. $10–$12/seat), annual invoicing/ACH, custom SAML SSO, and on-premise private relay deployment.</li>
         </ul>
       </div>
