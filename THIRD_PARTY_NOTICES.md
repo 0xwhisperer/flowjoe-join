@@ -1,13 +1,13 @@
 # Third-Party Notices
 
-Updated: 2026-09-26
-Status: Draft release artifact
+Updated: 2026-10-09
+Status: Draft release artifact; release legal checks remain open
 
 This file is intended to ship with FlowJoe releases. It tracks third-party software and bundled assets that FlowJoe uses, plus the upstream license files that must remain available to users.
 
-This file is not yet a final legal/compliance artifact. Before public release, the release process must generate or verify a complete transitive dependency notice set from `package-lock.json`, confirm what the packaged app actually includes, and expose this file or equivalent notices from the app UI.
+The generated license list is available in FlowJoe at **Settings › Data › Open-source licenses**. Release builds generate `bundle/third-party-licenses.json` from the shipped components and stop when a shipped component has no license text. This inventory and screen do not close the release legal checks listed below.
 
-**Picking this up later:** "Required Before Public Release" below is the actionable list. Its first item, the license-text bundle generator, is fully spec'd but intentionally not built yet — see its "Status 2026-09-10" note for why and what to re-check before building it.
+**Picking this up later:** "Required Before Public Release" below is the remaining legal and release-check list.
 
 ## Current Notice Inventory
 
@@ -59,26 +59,19 @@ This file is not yet a final legal/compliance artifact. Before public release, t
 
 ## Required Before Public Release
 
-- **Generate a complete dependency license-text bundle.** The table above covers all direct runtime dependencies by name, and the transitive set is fully counted in "Transitive Dependency Scan" below — but neither collects the actual license *text* for the transitive packages. Exact spec for the generator, decided but not yet built:
-  - **Input:** `package-lock.json` `packages` entries where `dev`/`devOptional` is not true (the same filter used for the 386-package scan).
-  - **Per package:** resolve its installed directory, read the first file matching `LICENSE*`/`LICENCE*`/`license*` (case-insensitive) at that package's root, and use the `license` field from that package's own installed `package.json` as the declared type — not the lockfile's `license` field, which is absent for 17 packages that do declare it in their installed manifest (see "Transitive Dependency Scan").
-  - **Missing license file:** flag it in the output rather than silently skipping. Measured 2026-09-10: **27 of 386** packages ship with no `LICENSE*`/`LICENCE*`/`license*` file, but the real exception list is much shorter than that number suggests —
-    - **11** are `@napi-rs/canvas-*` per-platform native binaries. These are already excluded from packaged builds by the existing `build.files` rule (`"!node_modules/@napi-rs/**"` in `package.json`), so the generator can skip anything under `@napi-rs/` entirely rather than resolve a license for code that never ships.
-    - **10** are one `@radix-ui/react-*` / `@radix-ui/rect` family — worth a two-minute check for whether they share one license text before writing per-package handling for each.
-    - **6** are genuinely distinct and need a real look: `@univerjs/protocol` (already resolved — Apache-2.0, by cross-referencing the npm registry and upstream repo, which a generator cannot do automatically; seed its result by hand or carry an exceptions list), `franc-min`, `ot-json1`, `ot-text-unicode`, `react-remove-scroll-bar`, `unicount`.
-  - **Vendored (non-npm) code:** the generator will never see JSZip, pako, ConPTY, or winpty, because none are npm packages in this tree — it must separately copy in everything already collected under `licenses/` (`jszip-MIT.txt`, `pako-MIT.txt`, `conpty-MIT.txt`, `winpty-MIT.txt`).
-  - **Output:** one concatenated `THIRD_PARTY_LICENSES.txt` (or per-package files under a generated directory), grouped by license type, each entry naming the package, version, and copyright line. Where this lands — a build step's output under `.gitignore`, versus a committed artifact refreshed by CI — is an open call; either way it must land inside `build.files`' `**/*` so it packages (nothing currently excludes a plausible output path).
-  - **When it runs:** decide whether it's a manual `npm run` task invoked before a release, or wired into `npm run build` itself.
-  - **Status 2026-09-10: deliberately on hold, not stalled.** The spec above is complete enough to hand to a fresh session with no re-discovery needed — sizing was done (small, ~150-200 lines, no new dependencies, roughly half a day including the 6 hand-checked exceptions) and the user chose to spec rather than build. Reason: the dependency set isn't final — more building is expected before this ships, and generating a bundle now would mean re-running it (and re-reviewing the 6 exceptions) after every future dependency change until then. **Re-open this when the dependency set is believed final**, i.e. shortly before an actual release build. At that point the two remaining decisions (output location, manual-vs-wired-into-build) still need an answer, and the "27 missing license file" / "@radix-ui family" / "6 distinct" counts above should be re-measured rather than trusted, since new dependencies may have shifted them.
+- ~~Generate and show a complete dependency license-text bundle.~~ **Done 2026-10-09:** release builds generate `bundle/third-party-licenses.json` from bundled modules, shipped runtime dependencies, vendored libraries and listed bundled programs; the strict release-build gate stops when a shipped component has no license text. The same generated list is shown at **Settings › Data › Open-source licenses**. The join site publishes the list beside its hashed app bundle.
+- **Confirm source delivery for Git and the LGPL image-conversion components.** The screen links to `https://flowjoe.app/open-source`, but the exact source for the shipped versions still needs to be delivered there before release.
+- **Review the Windows MinGit bundle's mixed licenses** and include the required component notices before release.
+- **Finish the remaining release checks:** verify Univer and other shipped components' notices and obligations, and close the other unresolved items below.
 - ~~Confirm the Apache-2.0 obligations for Univer and RxJS: reproduce any upstream `NOTICE` file.~~ **Resolved 2026-09-10:** no Apache-2.0 package in the production tree ships a `NOTICE` file (checked across the whole non-dev tree; the only `NOTICE` files present belong to Playwright and `bare-path`, all dev-only). The remaining Apache-2.0 obligation is therefore just shipping the license text itself, which the generated bundle must do.
 - ~~`node-pty` ships third-party Windows binaries with no license file present.~~ **Resolved 2026-09-10:** both are MIT. **ConPTY/OpenConsole** (`third_party/conpty/.../OpenConsole.exe`, `conpty.dll`) traces to Microsoft's own Windows Terminal project (`microsoft/terminal`), MIT-licensed, Copyright (c) Microsoft Corporation — text fetched from upstream and checked into `licenses/conpty-MIT.txt`. **winpty** (`prebuilds/win32-*/winpty-agent.exe`, `winpty.node`, `conpty_console_list.node` — the legacy Windows PTY backend node-pty falls back to) is Ryan Prichard's independent `winpty` project, MIT, Copyright (c) 2011-2016 Ryan Prichard — `licenses/winpty-MIT.txt`. Neither ships its own license file inside `node_modules/`, which is why both needed an upstream fetch rather than a `node_modules` copy. The macOS build is unaffected either way: it uses `bin/darwin-arm64-*/node-pty.node` and `build/Release/pty.node` only. Also present: `.pdb` debug-symbol files under `prebuilds/win32-*/` — not a licensing concern, but worth excluding from a release build as dead weight.
 - Re-check `@tiptap/extension-details-content` / `-details-summary`, which are pinned to a `3.0.0-beta.11` prerelease.
 - Confirm which dependencies are actually shipped in macOS and Windows builds.
-- Copy or generate full third-party license text into this root file or a paired root artifact.
+- ~~Copy or generate full third-party license text into this root file or a paired root artifact.~~ **Done 2026-10-09:** the generated list is `bundle/third-party-licenses.json`.
 - ~~Include JSZip and pako upstream MIT license text, not only the minified file header.~~ **Done 2026-09-10:** `licenses/jszip-MIT.txt` and `licenses/pako-MIT.txt`. FlowJoe elects JSZip's MIT option; the GPLv3 alternative is deliberately not reproduced.
 - ~~Include PDF.js nested cMap and standard-font license text if those directories ship.~~ **Measured 2026-09-10:** no source file references `cmaps`, `standard_fonts`, `cMapUrl`, or `standardFontDataUrl`, so FlowJoe does not configure PDF.js to load them. They are still present inside `node_modules/pdfjs-dist/` and the broad `build.files` rule copies `node_modules`, so the directories may ship as dead weight even though nothing reads them. Keep their license rows (harmless, and correct if a future change enables them), and consider excluding the directories from packaged builds.
 - Preserve Electron-generated `LICENSE.electron.txt` and `LICENSES.chromium.html`.
-- Add an app UI path, such as `About FlowJoe -> Open Source Licenses`, that opens this file or a rendered equivalent.
+- ~~Add an app UI path for the license notices.~~ **Done 2026-10-09:** Settings › Data › Open-source licenses.
 - Review non-code assets: icons, favicons, placeholder images, bundled PDFs, marketing assets, and any embedded fonts.
 
 ## Bundled License Texts
@@ -95,13 +88,13 @@ licenses/heic-to-LGPL-3.0.txt
 licenses/GPL-3.0.txt
 ```
 
-`jszip-MIT.txt` and `pako-MIT.txt` exist because JSZip is **vendored** as a minified file (`src/js/jszip.min.js`) rather than installed from npm, so there is no `node_modules/jszip/LICENSE` for a generator to find; pako is bundled inside that same vendored build.
+`jszip-MIT.txt` and `pako-MIT.txt` exist because JSZip is **vendored** as a minified file (`src/js/jszip.min.js`) rather than installed from npm, so there is no `node_modules/jszip/LICENSE`; pako is bundled inside that same vendored build. Their texts are included in the generated list.
 
 `conpty-MIT.txt` and `winpty-MIT.txt` exist because node-pty bundles compiled third-party Windows binaries (ConPTY/OpenConsole from Microsoft's Windows Terminal project, and Ryan Prichard's winpty) without including either project's license file in the npm package.
 
 `heic-to-LGPL-3.0.txt` accompanies the separately loaded CSP build in `src/vendor/heic-to-csp.js`; the LGPL text refers to the GPL, whose full text is `GPL-3.0.txt`. The decoder is intentionally kept out of the main application bundle so it can be replaced independently; the upstream projects and exact versions are listed above.
 
-Every other dependency's license text is available in its own installed package and should be collected from there by the release generator.
+The generated list collects license text from installed packages, vendored libraries and the manually listed bundled programs.
 
 `licenses/` is not excluded by the `build.files` rules in `package.json`, so it is included in packaged builds.
 
@@ -123,7 +116,7 @@ Measured 2026-09-10 from `package-lock.json`, counting non-dev packages only (38
 
 The npm production-dependency scan found no copyleft (GPL/AGPL/LGPL), source-available (BUSL/SSPL/Polyform), non-commercial, or Commons Clause terms. This scan covers packages in `package-lock.json`; it does not cover separately bundled software such as the Git distribution inventoried above.
 
-**On the 19 "not declared" packages:** 17 are lockfile metadata gaps only — the installed package's own `package.json` declares MIT or ISC (`ansi-regex`, `ansi-styles`, `cliui`, `color-convert`, `color-name`, `emoji-regex`, `escalade`, `get-caller-file`, `is-fullwidth-code-point`, `prettier`, `require-directory`, `string-width`, `strip-ansi`, `wrap-ansi`, `y18n`, `yargs`, `yargs-parser`). These need no research, only a generator that reads the installed manifest rather than the lockfile field.
+**On the 19 "not declared" packages:** 17 are lockfile metadata gaps only — the installed package's own `package.json` declares MIT or ISC (`ansi-regex`, `ansi-styles`, `cliui`, `color-convert`, `color-name`, `emoji-regex`, `escalade`, `get-caller-file`, `is-fullwidth-code-point`, `prettier`, `require-directory`, `string-width`, `strip-ansi`, `wrap-ansi`, `y18n`, `yargs`, `yargs-parser`). The generated list reads installed package metadata and license files rather than relying on the lockfile's license field.
 
 **Two genuinely need upstream resolution before release:**
 

@@ -125,6 +125,10 @@ body.settings-panel-open .status-footer-right {
   overflow: hidden;
 }
 
+.status-footer-segment[hidden] {
+  display: none;
+}
+
 .status-footer-segment .status-footer-text {
   overflow: hidden;
   text-overflow: ellipsis;
