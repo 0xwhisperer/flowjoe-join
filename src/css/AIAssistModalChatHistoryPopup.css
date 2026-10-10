@@ -119,6 +119,44 @@
   overflow-y: auto;
 }
 
+/* Footer link to the Chats tab of the History window (mockup popup-slot / popup-node). */
+.ai-chat-history-all {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 6px 0 0;
+  padding: 10px 4px 2px;
+  border: 0;
+  border-top: 1px solid var(--border-color);
+  background: transparent;
+  color: var(--accent-color);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: start;
+  cursor: pointer;
+}
+
+.ai-chat-history-all[hidden] {
+  display: none;
+}
+
+.ai-chat-history-all .ai-chat-history-all-count {
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+.ai-chat-history-all i {
+  margin-inline-start: auto;
+}
+
+.ai-chat-history-all:dir(rtl) i {
+  transform: scaleX(-1);
+}
+
 .ai-chat-history-popup.is-manual-size .ai-chat-history-list {
   max-height: none;
 }

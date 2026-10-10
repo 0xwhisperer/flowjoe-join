@@ -413,22 +413,38 @@
   display: flex;
   gap: var(--chat-msg-state-gap);
   width: max-content; /* hug the buttons so they cluster tightly and never spread */
-  max-width: 100%;
+  max-width: none; /* the box is the pills' real width, so the fit pass (joeMessageRenderingController.js) can measure it and a size change re-fits it */
   align-items: center;
   white-space: nowrap;
   opacity: 1;
   z-index: 3;
 }
-/* Anchor each strip to the bubble edge that keeps it on-screen: Joe's bubbles are left-aligned, so the
-   controls start at the text inset and extend right into open space; user bubbles are right-aligned, so
-   their controls sit flush with the bubble's outer right edge and extend left. */
+/* Each strip sits flush with its sender's bubble edge: Joe's bubbles are left-aligned, so his strip lines
+   up with the bubble's outer left edge and extends right into open space; user bubbles are right-aligned,
+   so theirs lines up with the bubble's outer right edge and extends left. The bubble is the positioning
+   context, and an absolutely positioned child is measured from the bubble's PADDING edge, i.e. inside its
+   border — so the strip steps outward by exactly the width of the border on that edge
+   (--chat-bubble-edge-border, which every bubble rule that draws a border there declares and draws its
+   border with). Same rule in the floating window, docked Joe and the guest view; no per-layout offsets. */
 .ai-chat-message.assistant .ai-chat-message-state {
-  left: var(--chat-bubble-pad-x);
+  left: calc(-1 * var(--chat-bubble-edge-border));
   justify-content: flex-start;
 }
 .ai-chat-message.user .ai-chat-message-state {
-  right: calc(-1 * var(--chat-bubble-pad-x));
+  right: calc(-1 * var(--chat-bubble-edge-border));
   justify-content: flex-end;
+}
+/* buttons.css's global `button { margin: 5px; }` would hold the outermost pill 5px in from the bubble edge even
+   though the strip itself is flush. The strip's two ends carry no side margin, so the pill's own outline meets the
+   bubble edge; the spacing between pills is unchanged. */
+.ai-chat-bubble > .ai-chat-message-state > .tooltip-wrapper:first-child > .ai-chat-msg-state-btn,
+.ai-chat-bubble > .ai-chat-message-state.is-icon-only > .ai-chat-message-state-badge:first-child + .tooltip-wrapper > .ai-chat-msg-state-btn {
+  /* The second selector: an older reply has no provider mark, so an omitted/pinned badge leads the strip — and icon
+     mode hides that badge, which makes the Omit pill the first thing showing. */
+  margin-inline-start: 0;
+}
+.ai-chat-bubble > .ai-chat-message-state > .tooltip-wrapper:last-child > .ai-chat-msg-state-btn {
+  margin-inline-end: 0;
 }
 /* Provider mark (which brain wrote this reply) — sits left of the Omit button, dim until hovered. */
 .ai-chat-msg-provider {
@@ -466,6 +482,20 @@
   background: color-mix(in srgb, var(--danger-color) 14%, transparent);
   color: var(--danger-color);
 }
+/* Labelled pills by default; icon-only when the strip would otherwise run past the transcript's far side
+   (.is-icon-only is set by the measured fit pass, never by a breakpoint). The words stay in each pill's
+   aria-label and lead its tooltip. The omitted/pinned badge steps aside in icon mode: the active pill
+   (accent outline, and its "Restore to Joe" / "Unpin" label) already says the same. */
+/* Font Awesome's own (unlayered) sheet sets the icon's display through --fa-display, so that is the switch. */
+.ai-chat-msg-state-btn > i {
+  --fa-display: none;
+}
+.ai-chat-message-state.is-icon-only .ai-chat-msg-state-btn > i {
+  --fa-display: inline-block;
+}
+.ai-chat-message-state.is-icon-only :is(.ai-chat-msg-state-label, .ai-chat-message-state-badge) {
+  display: none;
+}
 
 #ai-spell-check-panel #ai-chat-messages .ai-chat-message.user.is-actions-wrapped .ai-chat-actions .ai-chat-message-state {
   position: static;
@@ -480,8 +510,6 @@
 
 #ai-spell-check-panel #ai-chat-messages .ai-chat-message.user.is-actions-wrapped .ai-chat-actions {
   flex-wrap: nowrap;
-  /* stylelint-disable-next-line declaration-no-important -- The base .ai-chat-message.user .ai-chat-actions rule pins margin: 0 !important; the wrapped-actions row can only reach the bubble edge with an equally important margin. */
-  margin-right: calc(-1 * var(--chat-bubble-pad-x)) !important;
 }
 
 /* Per-message token chip (quiet, state-aware) */
@@ -1353,17 +1381,19 @@
 }
 
 #ai-spell-check-panel #ai-chat-messages .ai-chat-message.user .ai-chat-bubble {
+  --chat-bubble-edge-border: 3px; /* the accent rail on the user bubble's right edge; the Omit/Pin/Delete strip offsets by it */
   background: var(--bg-secondary);
   color: var(--text-primary) !important;
   border: 1px solid var(--border-color);
-  border-right: 3px solid var(--accent-color);
+  border-right: var(--chat-bubble-edge-border) solid var(--accent-color);
 }
 
 #ai-spell-check-panel #ai-chat-messages .ai-chat-message.assistant .ai-chat-bubble {
+  --chat-bubble-edge-border: 3px; /* the accent rail on Joe's bubble's left edge; the Omit/Pin/Delete strip offsets by it */
   background: var(--bg-secondary);
   color: var(--text-primary) !important;
   border: 1px solid var(--border-color);
-  border-left: 3px solid var(--accent-color);
+  border-left: var(--chat-bubble-edge-border) solid var(--accent-color);
 }
 
 #ai-spell-check-panel #ai-chat-messages .ai-chat-message.assistant {

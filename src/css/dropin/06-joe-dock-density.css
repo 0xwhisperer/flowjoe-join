@@ -88,19 +88,29 @@ body.density-dense #ai-spell-check-modal.joe-docked #ai-chat-messages {
    inset tracks the floating delta; left/right/bottom stay 0 at every tier by design. Dense floors at 0
    (the -2px delta would go negative). --chat-bubble-measure: the design is uncapped (100%, no real
    measure) at every tier — the assistant bubble never had a floating-measure counterpart to derive a
-   Comfy/Dense delta from, so all three tiers stay 100%. */
+   Comfy/Dense delta from, so all three tiers stay 100%.
+   The top inset is its own token, --jd-reply-pad-top, declared on the reply's ROW so the avatar beside the reply
+   (the row's ::before, joeDockChat.css) can start exactly where the reply's first line starts at every tier. */
+#ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message.assistant {
+  --jd-reply-pad-top: 6px;
+}
+body.density-compact #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message.assistant {
+  --jd-reply-pad-top: 1px; /* design tier — unchanged from the removed pins */
+}
+body.density-dense #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message.assistant {
+  --jd-reply-pad-top: 0px; /* floored — the floating delta (-2px) would go negative */
+}
 #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message.assistant .ai-chat-bubble {
-  --chat-bubble-measure: 100%;
-  --chat-bubble-pad: 6px 0 0;
+  --chat-bubble-measure: 100%; /* uncapped at every tier, see above */
+  --chat-bubble-pad: var(--jd-reply-pad-top) 0 0;
 }
 body.density-compact #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message.assistant .ai-chat-bubble {
-  /* design tier — unchanged from the removed pins */
   --chat-bubble-measure: 100%;
-  --chat-bubble-pad: 1px 0 0;
+  --chat-bubble-pad: var(--jd-reply-pad-top) 0 0; /* the tier value lives in --jd-reply-pad-top on the row */
 }
 body.density-dense #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message.assistant .ai-chat-bubble {
-  --chat-bubble-measure: 100%; /* uncapped at every tier, see above */
-  --chat-bubble-pad: 0 0 0; /* floored — the floating delta (-2px) would go negative */
+  --chat-bubble-measure: 100%;
+  --chat-bubble-pad: var(--jd-reply-pad-top) 0 0; /* the tier value lives in --jd-reply-pad-top on the row */
 }
 
 /* ── user bubble — --chat-bubble-pad / --chat-bubble-measure ──────────────────────────────────────
@@ -118,22 +128,6 @@ body.density-compact #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat
 body.density-dense #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message.user .ai-chat-bubble {
   --chat-bubble-measure: 90%;
   --chat-bubble-pad: 6px 10px;
-}
-
-/* --chat-bubble-pad-x, restated for docked mode (13px 17px / 8px 12px / 6px 10px above -> 17px /
-   12px / 10px), the same way every OTHER --chat-bubble-pad override in dropin/ already does.
-   Declared on .ai-chat-message.user so both the bubble and its message controls inherit the same
-   horizontal inset; the controls use it to align with the bubble's outer right edge.
-   Without this, the user's Omit/Pin/Delete strip and docked tool row would use the floating tier's
-   inset instead of the current docked bubble's padding when aligning to its outer right edge. */
-#ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message.user {
-  --chat-bubble-pad-x: 17px;
-}
-body.density-compact #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message.user {
-  --chat-bubble-pad-x: 12px;
-}
-body.density-dense #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message.user {
-  --chat-bubble-pad-x: 10px;
 }
 
 /* ── #ai-chat-input — --chat-input-pad ──────────────────────────────────────────────────────────

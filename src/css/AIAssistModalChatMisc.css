@@ -200,3 +200,13 @@
   background-clip: padding-box;
 }
 }
+
+/* Chat History > Read: the note under a past conversation whose place is gone (joeReadOnlyConversation.js). */
+.ai-chat-read-only-note {
+  margin: 8px 0;
+  padding: 8px 10px;
+  border: 1px solid var(--danger-color);
+  border-radius: var(--radius-md, 6px);
+  color: var(--text-secondary);
+  font-size: 12px;
+}

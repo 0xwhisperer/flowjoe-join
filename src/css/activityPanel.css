@@ -379,3 +379,247 @@ body:has(.activity-host) #gallery-side-scrubber {
 .activity-timeline.fj-glide .activity-entry:hover {
   background: transparent;
 }
+
+/* ---- History's tabs and the Chats tab (Chat History; JOE_CHAT_HISTORY_PLAN.md Slice B) ----
+   The tabs sit in the title row beside the title; the Chats tab reuses the rows above and adds only these. */
+.activity-tabs {
+  display: inline-flex;
+  gap: 2px;
+  margin-left: 14px;
+  padding: 2px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md, 6px);
+  vertical-align: middle;
+}
+
+.activity-tab {
+  margin: 0;
+  padding: 3px 10px;
+  font-size: 12px;
+  font-weight: 400;
+  border: 0;
+  border-radius: var(--radius-sm, 4px);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.activity-tab:hover {
+  color: var(--text-primary);
+  background: var(--hover-bg);
+}
+
+.activity-tab[aria-selected="true"] {
+  color: var(--text-primary);
+  background: var(--hover-bg);
+  font-weight: 600;
+}
+
+.activity-tab:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+.activity-chat-search {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 240px;
+  flex: 0 1 320px;
+  padding: 3px 8px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm, 4px);
+  color: var(--text-secondary);
+}
+
+.activity-chat-search input {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  padding: 2px 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 12px;
+}
+
+.activity-chat-search:focus-within {
+  border-color: var(--accent-color);
+}
+
+.activity-toolbar-btn[aria-pressed="true"] {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+
+.activity-chat-row {
+  cursor: pointer;
+}
+
+.activity-chat-row.is-picked {
+  background: var(--hover-bg);
+}
+
+.activity-chat-kind {
+  display: inline-flex;
+  width: 16px;
+  justify-content: center;
+  margin-right: 6px;
+  color: var(--text-secondary);
+  font-size: 11px;
+}
+
+.activity-chat-snippet {
+  max-width: 70ch;
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.activity-chat-gone .activity-day-label {
+  color: var(--danger-color);
+}
+
+.activity-chat-gone-note {
+  margin: 0 12px 6px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* ---- Icon actions in Chat History and Image History (JOE_CHAT_HISTORY_PLAN.md Slice E) ----
+   Every action that is not the row's main Open / Read is an icon with a tooltip (data-tooltip), boxed like .activity-row-btn so a row's buttons line up. */
+.activity-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-width: 28px;
+  margin: 0;
+  padding: 4px 7px;
+  font-size: 12px;
+  line-height: 1.2;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm, 4px);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition:
+    color var(--transition-speed, 0.15s),
+    background var(--transition-speed, 0.15s),
+    border-color var(--transition-speed, 0.15s);
+}
+
+.activity-icon-btn:hover {
+  color: var(--text-primary);
+  background: var(--hover-bg);
+  border-color: var(--accent-color);
+}
+
+.activity-icon-btn.is-danger:hover {
+  color: var(--danger-color);
+  border-color: var(--danger-color);
+}
+
+.activity-icon-btn:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+.activity-icon-btn:disabled {
+  cursor: default;
+  opacity: 0.45;
+  color: var(--text-secondary);
+  background: transparent;
+  border-color: var(--border-color);
+}
+
+/* "Delete all shown": at the right end of the toolbar (where Version History keeps its settings link), with the count of what is shown. */
+.activity-delete-shown {
+  margin-left: auto;
+}
+
+.activity-delete-shown-count {
+  font-variant-numeric: tabular-nums;
+}
+
+.activity-delete-shown-count:empty {
+  display: none;
+}
+
+/* ---- The Images tab (Image History): Joe's own picture cards (ai-image-history-*, AIAssistModalImageHistory.css) in a grid ---- */
+.activity-image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 12px;
+  padding: 4px 12px 12px;
+}
+
+.activity-image-grid .ai-image-history-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 8px;
+  min-width: 0;
+  background: transparent;
+  transition:
+    background var(--transition-speed, 0.15s),
+    border-color var(--transition-speed, 0.15s);
+}
+
+.activity-image-grid .ai-image-history-item:hover {
+  background: var(--hover-bg);
+  border-color: var(--accent-color);
+}
+
+.activity-image-grid .ai-image-history-thumb-wrap {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius-md, 6px);
+}
+
+.activity-image-grid .ai-image-history-thumb {
+  object-fit: cover;
+}
+
+.activity-image-grid .ai-image-history-thumb:not([src]) {
+  visibility: hidden; /* no broken-picture icon while it is still being read */
+}
+
+.activity-image-grid .ai-image-history-item-body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.activity-image-grid .ai-image-history-item-meta {
+  justify-content: space-between;
+  min-height: 20px; /* the same height with or without the "Saved" badge */
+  font-size: 11px;
+}
+
+.activity-image-place {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.activity-image-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: auto; /* the actions line up along a row of cards, whatever each card says above them */
+  padding-top: 2px;
+}
+
+.activity-image-actions .activity-row-btn {
+  margin-right: auto;
+}

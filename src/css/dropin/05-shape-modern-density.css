@@ -48,7 +48,6 @@ body.shape-soft.density-compact {
   --ai-chat-messages-pad-inline: 14px; /* 01 sets 12px — 1b runs a wider side gutter */
   --ai-chat-messages-gap:  10px;       /* 01 sets 8px */
   --chat-bubble-pad:       8px 12px;   /* 01 sets 7px 11px */
-  --chat-bubble-pad-x:     12px;       /* --chat-bubble-pad's horizontal value, restated (see styles-variables.css) */
   --settings-card-gap:     6px;        /* 01 sets 8px */
 }
 
@@ -62,7 +61,6 @@ body.shape-soft.density-dense {
   --ai-chat-messages-pad-inline: 11px; /* 01 sets 9px — same wider side gutter, dense tier */
   --ai-chat-messages-gap:  8px;        /* 01 sets 6px */
   --chat-bubble-pad:       6px 10px;   /* 01 sets 5px 9px */
-  --chat-bubble-pad-x:     10px;       /* --chat-bubble-pad's horizontal value, restated (see styles-variables.css) */
   --settings-card-gap:     5px;        /* 01 sets 6px */
 }
 

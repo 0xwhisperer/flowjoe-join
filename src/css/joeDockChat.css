@@ -663,7 +663,8 @@
   }
 
   .ai-assist-follow-state[hidden],
-  .ai-assist-follow-back[hidden],
+  .ai-assist-follow-back-row[hidden],
+  .ai-assist-follow-back-meta[hidden],
   .ai-assist-follow-switch[hidden] {
     display: none;
   }
@@ -888,29 +889,70 @@
     outline: none;
   }
 
-  /* "Back to <name>": quieter than the Switch-to offer (no fill), shown for a few seconds after Joe moves to another target. */
+  /* "← Back to “<conversation>” · N messages ✕": its own row under the target. It stays until it is used, dismissed, or replaced (no timer). */
+  #ai-spell-check-modal.joe-docked .ai-assist-follow-back-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 0 0 auto;
+    box-sizing: border-box;
+    margin: var(--jd-row-margin-top);
+    padding: 6px 10px;
+    border: 1px solid var(--accent-color);
+    border-radius: var(--radius-md, 6px);
+    color: var(--jd-text-2);
+    font-size: 12px;
+    animation: joe-dock-rise 0.25s var(--jd-ease);
+  }
+
+  #ai-spell-check-modal.joe-docked .ai-assist-follow-back-row[hidden] {
+    display: none;
+  }
+
+  #ai-spell-check-modal.joe-docked .ai-assist-follow-back-arrow {
+    flex: 0 0 auto;
+  }
+
   #ai-spell-check-modal.joe-docked .ai-assist-follow-back {
     flex: 0 1 auto;
     min-width: 0;
-    max-width: 62%;
-    height: 24px;
-    padding: 0 8px;
+    margin: 0;
+    padding: 0;
     border: 0;
-    border-radius: var(--radius-full, 999px);
     background: transparent;
     color: var(--accent-color);
     font: inherit;
-    font-size: 11.5px;
     font-weight: 600;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     cursor: pointer;
-    animation: joe-dock-rise 0.25s var(--jd-ease);
   }
 
   #ai-spell-check-modal.joe-docked .ai-assist-follow-back:hover,
   #ai-spell-check-modal.joe-docked .ai-assist-follow-back:focus-visible {
+    text-decoration: underline;
+    outline: none;
+  }
+
+  #ai-spell-check-modal.joe-docked .ai-assist-follow-back-meta {
+    flex: none;
+    white-space: nowrap;
+  }
+
+  #ai-spell-check-modal.joe-docked .ai-assist-follow-back-dismiss {
+    flex: none;
+    margin: 0 0 0 auto;
+    padding: 2px 6px;
+    border: 0;
+    border-radius: var(--radius-sm, 4px);
+    background: transparent;
+    color: var(--jd-text-2);
+    cursor: pointer;
+  }
+
+  #ai-spell-check-modal.joe-docked .ai-assist-follow-back-dismiss:hover,
+  #ai-spell-check-modal.joe-docked .ai-assist-follow-back-dismiss:focus-visible {
     background: var(--jd-accent-soft);
     outline: none;
   }
@@ -1097,21 +1139,20 @@
     visibility: hidden;
   }
 
+  /* A reply with an Omit/Pin/Delete row above it: the avatar skips that row's reserved space and starts level with
+     the reply's first line (the reply's own top inset, --jd-reply-pad-top, at every Density). */
   #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message.assistant.has-message-state-controls::before {
-    top: calc(var(--chat-msg-state-reserve, 0px) + 1px);
+    top: calc(var(--chat-msg-state-reserve, 0px) + var(--jd-reply-pad-top, 1px));
   }
 
   #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message.assistant .ai-chat-bubble {
+    --chat-bubble-edge-border: 0px; /* no border here, so Joe's Omit/Pin/Delete strip starts right at the bubble's left edge */
     max-width: var(--chat-bubble-measure);
     padding: var(--chat-bubble-pad);
     border: 0;
     border-radius: 0;
     background: transparent;
     box-shadow: none;
-  }
-
-  #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message.assistant .ai-chat-message-state {
-    left: 0;
   }
 
   #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message.assistant .ai-chat-actions {
@@ -1130,10 +1171,6 @@
     padding: 3px 10px;
     font-size: 10px;
     line-height: 1;
-  }
-
-  #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message.user .ai-chat-message-state {
-    right: calc(-1 * var(--chat-bubble-pad-x));
   }
 
   #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-welcome {
@@ -1159,9 +1196,10 @@
 
   /* The user's messages: right-aligned quiet bubbles. */
   #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message.user .ai-chat-bubble {
+    --chat-bubble-edge-border: 1px; /* the bubble's hairline border; the user's Omit/Pin/Delete strip steps out by it to sit flush with the bubble's right edge */
     max-width: var(--chat-bubble-measure);
     padding: var(--chat-bubble-pad);
-    border: 1px solid var(--jd-line-soft);
+    border: var(--chat-bubble-edge-border) solid var(--jd-line-soft);
     border-radius: 12px 12px 4px 12px;
     background: var(--jd-well);
     box-shadow: none;
@@ -1199,8 +1237,6 @@
     flex: 0 0 100%;
     max-width: 100%;
     justify-content: flex-end;
-    /* stylelint-disable-next-line declaration-no-important -- The base .ai-chat-message.user .ai-chat-actions rule pins margin: 0 !important; the wrapped-actions row can only reach the bubble edge with an equally important margin. */
-    margin-right: calc(-1 * var(--chat-bubble-pad-x)) !important;
     box-sizing: border-box;
   }
 
@@ -2107,7 +2143,7 @@
     .joe-dock-menu,
     .joe-dock-token-popover,
     #ai-spell-check-modal.joe-docked .ai-assist-follow-switch,
-    #ai-spell-check-modal.joe-docked .ai-assist-follow-back,
+    #ai-spell-check-modal.joe-docked .ai-assist-follow-back-row,
     .joe-dock-live-state[data-state="working"] .joe-dock-live-dot {
       animation: none;
     }
