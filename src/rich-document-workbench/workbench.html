@@ -32,10 +32,9 @@
       worker-src 'self' blob:;" />
     <title>FlowJoe Rich Document Workbench</title>
 
-    <!-- Univer docs-core stylesheet (vendored into src/vendor via scripts/vendor-workbench-deps.js). -->
-    <link rel="stylesheet" href="../vendor/univer-preset-docs-core.css" />
-    <!-- Docs drawing preset stylesheet (inline image rendering). -->
-    <link rel="stylesheet" href="../vendor/univer-preset-docs-drawing.css" />
+    <!-- Univer docs stylesheet: docs-core + the docs drawing preset (inline images), built into src/vendor by
+         scripts/build-univer-islands.js via vendor-workbench-deps.js. -->
+    <link rel="stylesheet" href="../vendor/univer-docs.bundle.css" />
     <link rel="stylesheet" href="./workbench.css" />
   </head>
   <body>
@@ -50,22 +49,14 @@
     </button>
 
     <!--
-      Load order is load-bearing. External peers (React/ReactDOM/RxJS) FIRST, then FlowJoe's
-      vendored Univer presets bridge (core/facade/design/render + createUniver only), then
-      preset-docs-core, then the locale, then our island controller.
+      One self-contained bundle (React, ReactDOM, RxJS, Univer core/facade/design/render, preset-docs-core, the docs
+      drawing preset for inline images, and their en-US locales) that publishes the UniverPresets / UniverCore /
+      UniverPresetDocsCore[EnUS] / UniverPresetDocsDrawing[EnUS] globals and UniverEngineVersion. Built by
+      scripts/build-univer-islands.js.
     -->
-    <script src="../vendor/react.production.min.js"></script>
-    <script src="../vendor/react-dom.production.min.js"></script>
-    <script src="../vendor/rxjs.umd.min.js"></script>
-    <script src="../univer-shared/vendor/univer-presets-core-bridge.js"></script>
-    <script src="../vendor/univer-preset-docs-core.umd.js"></script>
-    <script src="../vendor/univer-preset-docs-core-locale-en-US.js"></script>
-    <!-- Docs drawing preset (inline images): self-contained UMD bundle + its locale. Defines
-         UniverPresetDocsDrawing (UniverDocsDrawingPreset) + UniverPresetDocsDrawingEnUS. -->
-    <script src="../vendor/univer-preset-docs-drawing.umd.js"></script>
-    <script src="../vendor/univer-preset-docs-drawing-locale-en-US.js"></script>
+    <script src="../vendor/univer-docs.bundle.js"></script>
     <!-- Dictation + workbench controller: loaded as ES modules (the source files use export/import).
-         The UMD libs above attach to window, which is accessible from module scope. -->
+         The bundle above attaches its globals to window, which is accessible from module scope. -->
     <script type="module" src="./workbench.js"></script>
   </body>
 </html>

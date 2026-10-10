@@ -4,8 +4,10 @@ This guest build publishes only components delivered to the browser. The complet
 
 | Component | Version | License |
 | --- | --- | --- |
+| @flatten-js/interval-tree | 1.1.3 | MIT |
 | @floating-ui/core | 1.8.0 | MIT |
 | @floating-ui/dom | 1.8.0 | MIT |
+| @floating-ui/react-dom | 2.1.9 | MIT |
 | @floating-ui/utils | 0.2.12 | MIT |
 | @fullcalendar/core | 6.1.20 | MIT |
 | @fullcalendar/daygrid | 6.1.20 | MIT |
@@ -13,6 +15,34 @@ This guest build publishes only components delivered to the browser. The complet
 | @fullcalendar/list | 6.1.20 | MIT |
 | @fullcalendar/timegrid | 6.1.20 | MIT |
 | @popperjs/core | 2.11.8 | MIT |
+| @radix-ui/primitive | 1.1.7 | MIT |
+| @radix-ui/react-arrow | 1.1.16 | MIT |
+| @radix-ui/react-collection | 1.1.16 | MIT |
+| @radix-ui/react-compose-refs | 1.1.5 | MIT |
+| @radix-ui/react-context | 1.2.2 | MIT |
+| @radix-ui/react-dialog | 1.2.0 | MIT |
+| @radix-ui/react-direction | 1.1.5 | MIT |
+| @radix-ui/react-dismissable-layer | 1.1.20 | MIT |
+| @radix-ui/react-dropdown-menu | 2.1.25 | MIT |
+| @radix-ui/react-focus-guards | 1.1.6 | MIT |
+| @radix-ui/react-focus-scope | 1.2.0 | MIT |
+| @radix-ui/react-hover-card | 1.1.24 | MIT |
+| @radix-ui/react-id | 1.1.4 | MIT |
+| @radix-ui/react-menu | 2.1.25 | MIT |
+| @radix-ui/react-popover | 1.2.0 | MIT |
+| @radix-ui/react-popper | 1.3.8 | MIT |
+| @radix-ui/react-portal | 1.1.18 | MIT |
+| @radix-ui/react-presence | 1.1.11 | MIT |
+| @radix-ui/react-primitive | 2.1.11 | MIT |
+| @radix-ui/react-roving-focus | 1.1.20 | MIT |
+| @radix-ui/react-separator | 1.1.16 | MIT |
+| @radix-ui/react-slot | 1.4.0 | MIT |
+| @radix-ui/react-use-callback-ref | 1.1.4 | MIT |
+| @radix-ui/react-use-controllable-state | 1.2.6 | MIT |
+| @radix-ui/react-use-effect-event | 0.0.5 | MIT |
+| @radix-ui/react-use-is-hydrated | 0.1.3 | MIT |
+| @radix-ui/react-use-layout-effect | 1.1.4 | MIT |
+| @radix-ui/react-use-size | 1.1.5 | MIT |
 | @tiptap/core | 3.30.5 | MIT |
 | @tiptap/extension-blockquote | 3.30.5 | MIT |
 | @tiptap/extension-bold | 3.30.5 | MIT |
@@ -50,43 +80,55 @@ This guest build publishes only components delivered to the browser. The complet
 | @tiptap/pm | 3.30.5 | MIT |
 | @tiptap/starter-kit | 3.30.5 | MIT |
 | @tiptap/suggestion | 3.30.5 | MIT |
-| @univerjs/preset-docs-core | 0.10.10 | Apache-2.0 |
-| @univerjs/preset-docs-drawing | 0.10.10 | Apache-2.0 |
-| @univerjs/preset-sheets-core | 0.10.10 | Apache-2.0 |
+| @univerjs/icons | 1.43.1 | MIT |
+| @univerjs/preset-docs-core | 1.0.3 | Apache-2.0 |
+| @univerjs/preset-docs-drawing | 1.0.3 | Apache-2.0 |
+| @univerjs/preset-sheets-core | 1.0.3 | Apache-2.0 |
+| @univerjs/presets | 1.0.3 | Apache-2.0 |
+| @wendellhu/redi | 1.1.3 | MIT |
+| aria-hidden | 1.2.6 | MIT |
+| async-lock | 1.4.1 | MIT |
 | canvas-confetti | 1.6.0 | ISC |
-| classnames | 2.5.1 | MIT |
+| class-variance-authority | 0.7.1 | Apache-2.0 |
 | clsx | 2.1.1 | MIT |
-| dayjs | 1.11.21 | MIT |
+| cmdk | 1.1.1 | MIT |
+| collapse-white-space | 2.1.0 | MIT |
 | decimal.js | 10.6.0 | MIT |
+| detect-node-es | 1.1.0 | MIT |
 | devlop | 1.1.0 | MIT |
 | dompurify | 3.4.16 | (MPL-2.0 OR Apache-2.0) |
 | entities | 4.5.0 | BSD-2-Clause |
+| fast-diff | 1.3.0 | Apache-2.0 |
 | fflate | 0.8.3 | MIT |
 | Fira Mono | bundled | OFL-1.1 |
 | Font Awesome Free | 6.5.0 | Multiple |
 | Foxit/PDFium notices | 4.10.38 | BSD-3-Clause |
+| franc-min | 6.2.0 | MIT |
+| get-nonce | 1.0.1 | MIT |
 | heic-to | 1.6.5 | LGPL-3.0 |
 | highlight.js | 11.11.2 | BSD-3-Clause |
 | highlight.js | 11.12.0 | BSD-3-Clause |
 | i18next | 26.3.6 | MIT |
 | IBM Plex Serif | bundled | OFL-1.1 |
-| immediate | 3.0.6 | MIT |
 | iobuffer | 6.0.1 | MIT |
 | JetBrains Mono | bundled | OFL-1.1 |
 | JSZip | 3.10.1 | MIT |
+| kdbush | 4.1.0 | ISC |
 | libde265 | 1.0.16 | LGPL-3.0 |
 | Liberation fonts | 4.10.38 | OFL-1.1 |
 | libheif | 1.23.5 | LGPL-3.0 |
-| lie | 3.1.1 | MIT |
 | linkify-it | 5.0.2 | MIT |
 | linkifyjs | 4.3.3 | MIT |
-| lodash | 4.18.1 | MIT |
+| lodash-es | 4.18.1 | MIT |
 | lowlight | 3.3.0 | MIT |
 | markdown-it | 14.3.2 | MIT |
 | markdown-it-task-lists | 2.1.1 | ISC |
 | mdurl | 2.0.0 | MIT |
+| n-gram | 2.0.2 | MIT |
 | Newsreader | bundled | OFL-1.1 |
 | orderedmap | 2.1.1 | MIT |
+| ot-json1 | 1.0.2 | ISC |
+| ot-text-unicode | 4.0.0 | ISC |
 | pako | 1.0.11 | MIT |
 | pdfjs-dist | 4.10.38 | Apache-2.0 |
 | Playfair Display | bundled | OFL-1.1 |
@@ -105,13 +147,25 @@ This guest build publishes only components delivered to the browser. The complet
 | prosemirror-transform | 1.12.0 | MIT |
 | prosemirror-view | 1.42.3 | MIT |
 | punycode.js | 2.3.1 | MIT |
+| quickselect | 3.0.0 | ISC |
+| rbush | 4.0.1 | MIT |
 | react | 18.3.1 | MIT |
 | react-dom | 18.3.1 | MIT |
+| react-remove-scroll | 2.7.2 | MIT |
+| react-remove-scroll-bar | 2.3.8 | MIT |
+| react-style-singleton | 2.2.3 | MIT |
 | rope-sequence | 1.3.4 | MIT |
 | rxjs | 7.8.1 | Apache-2.0 |
+| scheduler | 0.23.2 | MIT |
+| sonner | 2.0.8 | MIT |
 | Spectral | bundled | OFL-1.1 |
 | tiff | 7.1.3 | MIT |
 | tippy.js | 6.3.7 | MIT |
 | tiptap-markdown | 0.9.0 | MIT |
+| trigram-utils | 2.0.1 | MIT |
+| tslib | 2.8.1 | 0BSD |
 | uc.micro | 2.1.0 | MIT |
+| unicount | 1.1.0 | ISC |
+| use-callback-ref | 1.3.3 | MIT |
+| use-sidecar | 1.1.3 | MIT |
 | w3c-keyname | 2.2.8 | MIT |

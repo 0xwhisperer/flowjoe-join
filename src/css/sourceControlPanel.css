@@ -1471,13 +1471,6 @@ button.scm-pill:hover {
   min-width: 0;
 }
 
-.scm-branch-row-branched-from {
-  padding: 2px 12px 4px 28px;
-  font-size: var(--font-meta);
-  color: var(--text-secondary);
-  font-style: italic;
-}
-
 /* Source Control polish: the panel replaces the tree's rows, so the tree's own toolbar and title are hidden while it is open and #tree becomes a flex column
    that the panel fills. #tree's generic rules (styles-search.css) force a bottom padding for scrolling, a max-height and overflow as forced-priority
    declarations, which a selector cannot beat, so the panel does not fight them: it takes the padded strip back with its own height (the padding is the --tree-scroll-end-padding

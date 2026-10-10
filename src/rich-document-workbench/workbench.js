@@ -69,7 +69,7 @@ let dictationListening = false;
 // document was loaded or last emitted. This is the authoritative save/no-save signal — the
 // parent's neutral document.blocks fingerprint cannot see format-only edits (they live in
 // document.engineData), so the parent must NOT gate persistence on blocks alone. Reset on
-// each emit; never set during load because onCommandExecuted is registered AFTER createUniverDoc.
+// each emit; never set during load because the CommandExecuted listener is registered AFTER createDocument.
 let mutatedSinceEmit = false;
 
 // ---- clipboard fallback for browser iframes --------------------------------
@@ -86,12 +86,12 @@ document.addEventListener(
     _pasteCache.text = e.clipboardData?.getData("text/plain") || "";
     _pasteCache.html = e.clipboardData?.getData("text/html") || "";
     _pasteCache.ts = Date.now();
-    // IMAGE paste: Univer 0.10.x docs has NO clipboard-image integration — its text-paste path
+    // IMAGE paste: Univer docs has NO clipboard-image integration — its text-paste path
     // half-inserts a bare custom-block char with no drawing (image neither renders nor saves).
     // Intercept image-bearing pastes here (document capture runs before Univer's handler) and
     // route them through Univer's REAL insert command instead (doc.command.insert-doc-image),
     // which writes body customBlocks + drawings + drawingsOrder into the document model — so the
-    // pasted image renders, counts as a mutation, and rides getSnapshot() into the saved snapshot.
+    // pasted image renders, counts as a mutation, and rides save() into the saved snapshot.
     const imageFiles = collectClipboardImageFiles(e.clipboardData);
     if (imageFiles.length && univerAPI) {
       e.preventDefault();
@@ -189,7 +189,10 @@ async function insertPastedImages(files) {
       });
     }
     if (!drawings.length || !univerAPI) return;
-    await univerAPI.executeCommand("doc.command.insert-doc-image", {drawings});
+    // Univer 1.x requires the target unitId on the command (0.10 resolved the active doc itself).
+    const activeDoc = typeof univerAPI.getActiveDocument === "function" ? univerAPI.getActiveDocument() : null;
+    const unitId = (activeDoc && typeof activeDoc.getId === "function" && activeDoc.getId()) || DOC_UNIT_ID;
+    await univerAPI.executeCommand("doc.command.insert-doc-image", {unitId, drawings});
   } catch (error) {
     reportError("paste-image", error);
   }
@@ -237,7 +240,7 @@ function requestParentClipboard(timeoutMs = 1200) {
   });
 }
 
-// Items containing an image type are routed to OUR insert path (Univer 0.10.x docs cannot
+// Items containing an image type are routed to OUR insert path (Univer docs cannot
 // paste images — its converter half-inserts a bare custom-block char). Pass everything else
 // through to Univer untouched.
 async function routeClipboardItemsForUniver(items) {
@@ -430,10 +433,10 @@ function tsForRun(run) {
 }
 
 // Block-kind predicates. TABLES are not durably round-trippable in the non-Pro Univer build
-// (the capability spike proved getSnapshot drops body.tables/tableSource), so they are kept OUT
+// (the capability spike proved save drops body.tables/tableSource), so they are kept OUT
 // of the editable body and re-merged on save. IMAGES, by contrast, ARE first-class now: with the
 // docs-drawing preset an image block with a base64 source renders as a real inline Univer drawing
-// and round-trips through getSnapshot (drawings + customBlocks). An image WITHOUT a renderable
+// and round-trips through save (drawings + customBlocks). An image WITHOUT a renderable
 // (base64) source — e.g. when the parent has not hydrated the sidecar bytes — falls back to the
 // preserve-and-re-merge path so it is never lost.
 const CUSTOM_BLOCK_CHAR = "\b"; // Univer DataStreamTreeTokenType.CUSTOM_BLOCK (0x08) — image placeholder
@@ -682,6 +685,11 @@ function applyNeutralHeaderFooters(docData, neutralDoc) {
 // headers typed in the editor reach the stored snapshot's neutral fields (fingerprint + export).
 function neutralHeaderFootersFromEngine(docData) {
   const ds = isPlainObject(docData.documentStyle) ? docData.documentStyle : {};
+  // Univer 1.x records header/footer references per section (body.sectionBreaks[n].defaultHeaderId …)
+  // and leaves documentStyle.*HeaderId empty for headers created in the editor; 0.10-era data and our
+  // own imported sets use documentStyle. The first section's reference wins, then documentStyle.
+  const firstSection = Array.isArray(docData.body && docData.body.sectionBreaks) && isPlainObject(docData.body.sectionBreaks[0]) ? docData.body.sectionBreaks[0] : {};
+  const refId = (key) => (typeof firstSection[key] === "string" && firstSection[key]) || ds[key];
   const pick = (mapObj, id) => {
     if (!id || !isPlainObject(mapObj) || !isPlainObject(mapObj[id]) || !isPlainObject(mapObj[id].body)) return null;
     const blocks = bodyToFlowBlocks(mapObj[id].body, docData.drawings);
@@ -691,7 +699,7 @@ function neutralHeaderFootersFromEngine(docData) {
   const build = (mapObj, kind) => {
     const out = {};
     ["default", "first", "even"].forEach((variant) => {
-      const blocks = pick(mapObj, ds[HF_STYLE_KEYS[kind][variant]]);
+      const blocks = pick(mapObj, refId(HF_STYLE_KEYS[kind][variant]));
       if (blocks) out[variant] = blocks;
     });
     return Object.keys(out).length ? out : null;
@@ -702,7 +710,7 @@ function neutralHeaderFootersFromEngine(docData) {
 // Univer renders mounted inline images ONLY via the resource-manager channel: the docs-drawing
 // plugin registers a "DOC_DRAWING_PLUGIN" plugin resource whose onLoad feeds the drawing
 // manager (registerDrawingData → render). A bare `drawings` field on IDocumentData populates
-// the document MODEL (getSnapshot echoes it, insert ops apply) but the RENDERER never hears
+// the document MODEL (save echoes it, insert ops apply) but the RENDERER never hears
 // about it — which is exactly the "image saves but doesn't display after reload" bug. Always
 // mirror drawings/drawingsOrder into that plugin resource on the mounted data.
 function withDocDrawingResource(docData) {
@@ -820,11 +828,26 @@ function remergeStructuralBlocks(editedBlocks) {
   return result;
 }
 
+// Univer 1.x keeps editor-typed header/footer references on the first section only; the 0.10 island
+// reads documentStyle alone, so after a roll-back its next save would drop document.headers/footers.
+// Mirror the first section's ids into documentStyle (the section copies stay) when it lacks them.
+const SECTION_HF_KEYS = ["defaultHeaderId", "firstPageHeaderId", "evenPageHeaderId", "defaultFooterId", "firstPageFooterId", "evenPageFooterId"];
+function mirrorSectionHeaderFooterIds(docData) {
+  const section = docData && docData.body && Array.isArray(docData.body.sectionBreaks) ? docData.body.sectionBreaks[0] : null;
+  if (!isPlainObject(section)) return;
+  SECTION_HF_KEYS.forEach((key) => {
+    if (typeof section[key] !== "string" || !section[key]) return;
+    if (!isPlainObject(docData.documentStyle)) docData.documentStyle = {};
+    if (!docData.documentStyle[key]) docData.documentStyle[key] = section[key];
+  });
+}
+
 function currentSnapshot() {
   if (!univerAPI) return null;
   const doc = typeof univerAPI.getActiveDocument === "function" ? univerAPI.getActiveDocument() : null;
-  if (!doc || typeof doc.getSnapshot !== "function") return null;
-  const docData = doc.getSnapshot(); // Univer IDocumentData
+  if (!doc || typeof doc.save !== "function") return null;
+  const docData = doc.save(); // Univer IDocumentData
+  mirrorSectionHeaderFooterIds(docData);
   const envelope = isPlainObject(loadedEnvelope) ? loadedEnvelope : {};
   const editedBlocks = remergeStructuralBlocks(bodyToFlowBlocks(docData && docData.body, docData && docData.drawings));
   // Guard: if the live editor body is effectively empty but the loaded snapshot had real
@@ -862,7 +885,8 @@ function currentSnapshot() {
     schema: envelope.schema,
     version: envelope.version,
     engine: envelope.engine || ENGINE,
-    engineVersion: envelope.engineVersion || "",
+    // Stamp the engine that wrote this save (bundle global from docs-entry.js); fingerprints exclude it.
+    engineVersion: (typeof window.UniverEngineVersion === "string" && window.UniverEngineVersion) || envelope.engineVersion || "",
     document
   };
 }
@@ -1068,13 +1092,14 @@ function commandId(commandInfo) {
 // align-*; cut/paste/delete ARE mutations and are intentionally NOT denied. Only selection,
 // cursor/caret, scroll/zoom/viewport, focus/pointer, navigation, render/skeleton/resize,
 // recalc, copy (read-only), select-all, theme/locale, and panel-open/close are denied.
-// Note: this only ever runs for commands fired AFTER load (onCommandExecuted is registered
-// after createUniverDoc), so document-initialization commands never reach it.
+// Note: this only ever runs for commands fired AFTER load (the CommandExecuted listener is registered
+// after createDocument), so document-initialization commands never reach it.
 // The docs-drawing/drawing-ui preset (inline images) fires UI/render init operations on load
 // that are NOT content edits — observed: `sheet.operation.close-image-crop` (shared drawing-ui
 // infra). `image-crop` and drawing select/arrange/refresh UI ops are denied so merely rendering
 // an imported image does not falsely dirty the flow. Real image edits (insert/remove/update a
-// drawing) are not in this list and still count as mutations.
+// drawing — Univer 1.x: insert-doc-image, move-inline-drawing, update-doc-drawing-wrap-text, edit-doc-image) are
+// not in this list and still count as mutations.
 const READ_ONLY_COMMAND = /(selection|cursor|caret|scroll|zoom|viewport|focus|blur|hover|pointer|mouse|navigat|render|skeleton|rebuild|resize|recalc|calculate|select-all|switch-mode|theme|locale|tooltip|context-menu|header-footer-panel|close-header-footer|image-crop|drawing-visible|set-drawing-selected|drawing-arrange|refresh-drawing|\bcopy\b)/;
 
 function isDocumentMutationCommand(commandInfo) {
@@ -1091,7 +1116,7 @@ function mountAndLoad(snapshot) {
   const docsCore = window.UniverPresetDocsCore;
   const enUS = window.UniverPresetDocsCoreEnUS;
   if (!presets || !core || !docsCore) {
-    reportError("init", new Error("Univer UMD globals missing (presets/core/preset-docs-core)"));
+    reportError("init", new Error("Univer bundle globals missing (presets/core/preset-docs-core)"));
     return;
   }
 
@@ -1112,6 +1137,8 @@ function mountAndLoad(snapshot) {
     const created = createUniver({
       locale: LocaleType.EN_US,
       locales: {[LocaleType.EN_US]: mergeLocales(enUS || {}, drawingEnUS || {})},
+      // Univer 1.x supports a dark theme (opt-in); the island stays light until a dark design is approved.
+      darkMode: false,
       presets: [UniverDocsCorePreset({container: "fj-doc-root"}), ...extraPresets]
     });
     univer = created.univer;
@@ -1143,19 +1170,25 @@ function mountAndLoad(snapshot) {
       footers: isPlainObject(doc.footers) ? cloneStructure(doc.footers) : null
     };
 
-    univerAPI.createUniverDoc(toUniverDocumentData(snapshot));
+    univerAPI.createDocument(toUniverDocumentData(snapshot));
 
     // Auto-persist on edits (debounced). Pragmatic "snapshot the whole document on change"
     // model; deep per-keystroke undo integration is deferred.
-    if (typeof univerAPI.onCommandExecuted === "function") {
-      univerAPI.onCommandExecuted((commandInfo) => {
-        // Mark formatting/style mutations dirty too — they only change document.engineData,
-        // not the neutral blocks, so this flag is the only thing that can save them.
-        if (isDocumentMutationCommand(commandInfo)) {
-          mutatedSinceEmit = true;
-          scheduleSave();
-        }
-      });
+    // Univer 1.x removed FUniver.onCommandExecuted; the documented seam is the CommandExecuted event.
+    const onCommand = (commandInfo) => {
+      // Mark formatting/style mutations dirty too — they only change document.engineData,
+      // not the neutral blocks, so this flag is the only thing that can save them.
+      if (isDocumentMutationCommand(commandInfo)) {
+        mutatedSinceEmit = true;
+        scheduleSave();
+      }
+    };
+    if (typeof univerAPI.addEvent === "function" && univerAPI.Event && univerAPI.Event.CommandExecuted) {
+      univerAPI.addEvent(univerAPI.Event.CommandExecuted, onCommand);
+    } else if (typeof univerAPI.onCommandExecuted === "function") {
+      univerAPI.onCommandExecuted(onCommand);
+    } else {
+      throw new Error("Univer facade has no command-executed event; edits would never be saved");
     }
 
     postToParent({type: "flowjoe:rich-document-loaded"});

@@ -624,6 +624,78 @@ body:has(> .export-edit-hold) #notification-container {
   font-size: 0.9em;
 }
 
+/* Closing FlowJoe reuses the blocking export cover and panel; only its reason rows are new. */
+.fj-closing-cover {
+  z-index: calc(var(--flowjoe-z-app-modal) + 1);
+  touch-action: none;
+  user-select: none;
+}
+
+.fj-closing-panel .export-edit-hold-title {
+  margin-bottom: 14px;
+}
+
+.fj-closing-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fj-closing-step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  color: var(--text-primary);
+  font-size: var(--font-control);
+  line-height: 1.4;
+}
+
+.fj-closing-step-icon {
+  display: inline-flex;
+  flex: none;
+  width: 16px;
+  height: 16px;
+  align-items: center;
+  justify-content: center;
+}
+
+.fj-closing-step-icon .url-import-progress-spinner {
+  width: 14px;
+  height: 14px;
+  min-width: 14px;
+}
+
+.fj-closing-step-icon .fa-check {
+  color: var(--success-color);
+  font-size: var(--font-control);
+}
+
+.fj-closing-step.is-done {
+  color: var(--text-secondary);
+}
+
+.fj-closing-step-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fj-closing-panel .export-edit-hold-detail {
+  margin-top: 14px;
+  line-height: 1.45;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fj-closing-cover .url-import-progress-spinner {
+    animation: none;
+  }
+}
+
 .notification.show {
   opacity: 1;
   transform: translateY(0);

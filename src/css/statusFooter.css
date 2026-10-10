@@ -366,12 +366,14 @@ body.settings-panel-open .status-footer-right {
   color: var(--success-color, #2f9e44);
 }
 
-.status-footer-save.is-dirty .status-footer-dot {
+.status-footer-save.is-dirty .status-footer-dot,
+.status-footer-other-device .status-footer-dot {
   background: var(--warning-color, #e0a046);
   box-shadow: 0 0 7px color-mix(in srgb, var(--warning-color, #e0a046) 45%, transparent);
 }
 
-.status-footer-save.is-dirty .status-footer-text {
+.status-footer-save.is-dirty .status-footer-text,
+.status-footer-other-device .status-footer-text {
   color: var(--warning-color, #e0a046);
 }
 

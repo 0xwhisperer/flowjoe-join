@@ -28,25 +28,20 @@
       worker-src 'self' blob:;" />
     <title>FlowJoe Spreadsheet Workbench</title>
 
-    <!-- Univer core stylesheet (vendored into src/vendor via scripts/vendor-workbench-deps.js). -->
-    <link rel="stylesheet" href="../vendor/univer-preset-sheets-core.css" />
+    <!-- Univer stylesheet (built into src/vendor by scripts/build-univer-islands.js via vendor-workbench-deps.js). -->
+    <link rel="stylesheet" href="../vendor/univer-sheets.bundle.css" />
     <link rel="stylesheet" href="./workbench.css" />
   </head>
   <body>
     <div id="fj-sheet-root"></div>
 
     <!--
-      Load order is load-bearing. External peers (React/ReactDOM/RxJS) FIRST, then FlowJoe's
-      vendored Univer presets bridge (core/facade/design/render + createUniver only), then
-      preset-sheets-core, then the locale, then our island controller.
+      One self-contained bundle (React, ReactDOM, RxJS, Univer core/facade/design/render, preset-sheets-core and
+      its en-US locale) that publishes the UniverPresets / UniverCore / UniverPresetSheetsCore[EnUS] globals and
+      UniverEngineVersion, then our island controller. Built by scripts/build-univer-islands.js.
       echarts is intentionally omitted — preset-sheets-core (non-Pro core) does not use it.
     -->
-    <script src="../vendor/react.production.min.js"></script>
-    <script src="../vendor/react-dom.production.min.js"></script>
-    <script src="../vendor/rxjs.umd.min.js"></script>
-    <script src="../univer-shared/vendor/univer-presets-core-bridge.js"></script>
-    <script src="../vendor/univer-preset-sheets-core.umd.js"></script>
-    <script src="../vendor/univer-preset-sheets-core-locale-en-US.js"></script>
+    <script src="../vendor/univer-sheets.bundle.js"></script>
     <script src="./workbench.js"></script>
   </body>
 </html>

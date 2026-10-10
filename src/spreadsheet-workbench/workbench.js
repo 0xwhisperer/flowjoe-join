@@ -117,7 +117,10 @@
     if (!workbook) return null;
     const body = workbook.save(); // Univer IWorkbookData
     const envelope = loadedEnvelope && typeof loadedEnvelope === "object" ? loadedEnvelope : {};
-    return Object.assign({}, envelope, {workbook: body});
+    // Stamp the engine that wrote this save (bundle global from sheets-entry.js). Both content
+    // fingerprints exclude engineVersion, so this never makes an unedited sheet look changed.
+    const engineVersion = typeof window.UniverEngineVersion === "string" && window.UniverEngineVersion ? window.UniverEngineVersion : envelope.engineVersion;
+    return Object.assign({}, envelope, engineVersion ? {engineVersion} : {}, {workbook: body});
   }
 
   function emitSave() {
@@ -166,7 +169,7 @@
     const sheetsCore = window.UniverPresetSheetsCore;
     const enUS = window.UniverPresetSheetsCoreEnUS;
     if (!presets || !core || !sheetsCore) {
-      reportError("init", new Error("Univer UMD globals missing (presets/core/preset-sheets-core)"));
+      reportError("init", new Error("Univer bundle globals missing (presets/core/preset-sheets-core)"));
       return;
     }
 
@@ -178,6 +181,8 @@
       const created = createUniver({
         locale: LocaleType.EN_US,
         locales: {[LocaleType.EN_US]: mergeLocales(enUS || {})},
+        // Univer 1.x supports a dark theme (opt-in); the island stays light until a dark design is approved.
+        darkMode: false,
         presets: [UniverSheetsCorePreset({container: "fj-sheet-root"})]
       });
       univer = created.univer;
@@ -196,13 +201,19 @@
 
       // Auto-persist on edits (debounced). The pragmatic "snapshot the whole workbook on
       // change" model from the roadmap — deep per-cell undo integration is deferred.
-      if (typeof univerAPI.onCommandExecuted === "function") {
-        univerAPI.onCommandExecuted((commandInfo) => {
-          if (isWorkbookMutationCommand(commandInfo)) {
-            mutatedSinceEmit = true;
-            scheduleSave();
-          }
-        });
+      // Univer 1.x removed FUniver.onCommandExecuted; the documented seam is the CommandExecuted event.
+      const onCommand = (commandInfo) => {
+        if (isWorkbookMutationCommand(commandInfo)) {
+          mutatedSinceEmit = true;
+          scheduleSave();
+        }
+      };
+      if (typeof univerAPI.addEvent === "function" && univerAPI.Event && univerAPI.Event.CommandExecuted) {
+        univerAPI.addEvent(univerAPI.Event.CommandExecuted, onCommand);
+      } else if (typeof univerAPI.onCommandExecuted === "function") {
+        univerAPI.onCommandExecuted(onCommand);
+      } else {
+        throw new Error("Univer facade has no command-executed event; edits would never be saved");
       }
 
       postToParent({type: "flowjoe:spreadsheet-loaded"});
