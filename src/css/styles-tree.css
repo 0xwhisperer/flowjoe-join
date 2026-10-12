@@ -1499,7 +1499,7 @@ body.hide-child-counts .child-count {
 /* Move parent row content only; keep hover card/background itself stationary. */
 #tree li:not(.selected):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>.flex-container>.status-indicator,
 #tree li:not(.selected):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>.flex-container>.tree-node-lock-indicator,
-#tree li:not(.selected):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>.flex-container>.tree-node-readonly-indicator,
+#tree li:not(.selected):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>.flex-container>.tree-node-frozen-indicator,
 #tree li:not(.selected):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>.flex-container>.tree-node-schedule-indicator,
 #tree li:not(.selected):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>.flex-container>.tree-node-hidden-from-joe-indicator,
 #tree li:not(.selected):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>.flex-container>.tree-node-repo-indicator,

@@ -4,7 +4,7 @@
 // fired before the app started. See the generator for why (Firefox/WebKit double download,
 // DOMContentLoaded registrations at evaluation time).
 (function () {
-  var url = "bundle.18f62a4bd84804bf.js", total = 28540424;
+  var url = "bundle.c4f5135ac0013e0c.js", total = 28919578;
   var started = false, watchdog = null, lastChunkAt = Date.now();
   var controller = typeof AbortController === "function" ? new AbortController() : null;
   var fired = {dcl: false, load: false, pageshow: false};

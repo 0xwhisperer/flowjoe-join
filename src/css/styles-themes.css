@@ -1435,7 +1435,7 @@ body.fj-bg-idle:not(.fj-window-hidden) .notification-undo-timer-progress.fj-in-v
    The live breadcrumb markup renders these badges directly (not inside tooltip
    wrappers), so this targets the actual final badge while the row uses the
    established CTA-row control spacing. */
-.breadcrumbs-left > :is(.node-locked-badge, .node-private-badge, .node-hidden-from-joe-badge):last-child {
+.breadcrumbs-left > :is(.node-state-badge, .node-private-badge, .node-hidden-from-joe-badge):last-child {
   margin-right: var(--cta-row-gap);
 }
 
@@ -1738,8 +1738,10 @@ input[type="text"].breadcrumb-node-edit-input {
   flex-shrink: 0;
 }
 
-/* Locked (read-only) node badge in the gallery breadcrumb header — see NODE_PROTECTION_STATES.md */
-.node-locked-badge {
+/* Node state badge in the gallery breadcrumb header — the shared compact pill. `.node-frozen-badge`
+   (Frozen, read-only) and `.node-private-badge` (Private, password) add their own colours below.
+   See NODE_PROTECTION_STATES.md */
+.node-state-badge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -1749,10 +1751,10 @@ input[type="text"].breadcrumb-node-edit-input {
   flex: 0 0 auto;
   padding: 3px 10px;
   border-radius: var(--radius-full, 999px);
-  border: 1px solid color-mix(in srgb, var(--badge-locked-gold) 56%, var(--border-color));
-  background: color-mix(in srgb, var(--badge-locked-gold) 16%, color-mix(in srgb, var(--bg-secondary) 88%, transparent));
+  border: 1px solid var(--border-color);
+  background: color-mix(in srgb, var(--bg-secondary) 88%, transparent);
   color: var(--text-primary);
-  font-size: 11px; /* NOT --font-meta: this is a clickable <button> badge (unlock action), not passive meta text — PM caught this miscategorization */
+  font-size: 11px; /* NOT --font-meta: this is a clickable <button> badge (unfreeze action), not passive meta text — PM caught this miscategorization */
   font-weight: 600;
   letter-spacing: 0.02em;
   text-transform: uppercase;
@@ -1762,46 +1764,57 @@ input[type="text"].breadcrumb-node-edit-input {
   transition: filter var(--transition-speed) ease, transform var(--transition-speed) ease;
 }
 
-.node-locked-badge:hover {
+.node-state-badge:hover {
   filter: brightness(1.08);
 }
 
-.node-locked-badge:active {
+.node-state-badge:active {
   transform: translateY(1px);
 }
 
-.node-locked-badge i {
+.node-state-badge i {
   font-size: var(--icon-glyph-sm);
+}
+
+/* Frozen (read-only) modifier — the gold the Locked badge always had. Deliberately a single class (not
+   compounded with .node-state-badge): it must stay BELOW buttons.css `button:hover`, so on hover the
+   badge shows the accent hover look exactly as before. It sits after the base so it still wins at rest. */
+.node-frozen-badge {
+  border-color: color-mix(in srgb, var(--badge-locked-gold) 56%, var(--border-color));
+  background: color-mix(in srgb, var(--badge-locked-gold) 16%, color-mix(in srgb, var(--bg-secondary) 88%, transparent));
+}
+
+.node-frozen-badge i {
   color: color-mix(in srgb, var(--badge-locked-gold) 78%, var(--text-primary));
 }
 
-.node-locked-badge.is-ancestor-locked {
+.node-state-badge.node-frozen-badge.is-ancestor-frozen {
   cursor: default;
   opacity: 0.82;
 }
 
-.node-locked-badge.is-ancestor-locked:hover {
+.node-state-badge.node-frozen-badge.is-ancestor-frozen:hover {
   filter: none;
 }
 
 /* Private (password) modifier for the same compact header status tag. */
-.node-locked-badge.node-private-badge {
+.node-state-badge.node-private-badge {
   cursor: default;
   border-color: color-mix(in srgb, var(--accent-color) 50%, var(--border-color));
   background: color-mix(in srgb, var(--accent-color) 14%, color-mix(in srgb, var(--bg-secondary) 88%, transparent));
 }
 
-.node-locked-badge.node-private-badge i {
+.node-state-badge.node-private-badge i {
   color: color-mix(in srgb, var(--accent-color) 80%, var(--text-primary));
 }
 
-.node-locked-badge.node-private-badge.is-session-unlocked {
+.node-state-badge.node-private-badge.is-session-unlocked {
   border-style: dashed;
   opacity: 0.95;
 }
 
-/* Static "Locked" pill shown in modal title bars (preview / summary / AI assist) — informational. */
-.node-locked-badge.modal-locked-pill {
+/* Static "Frozen" pill shown in modal title bars (preview / summary / AI assist) — informational. */
+.node-state-badge.modal-frozen-pill {
   cursor: default;
   margin-left: 12px;
   margin-right: 0;
@@ -1809,22 +1822,22 @@ input[type="text"].breadcrumb-node-edit-input {
   vertical-align: middle;
 }
 
-.node-locked-badge.modal-locked-pill:hover {
+.node-state-badge.modal-frozen-pill:hover {
   filter: none;
 }
 
-.node-locked-badge.modal-locked-pill:active {
+.node-state-badge.modal-frozen-pill:active {
   transform: none;
 }
 
 /* Hidden-from-Joe node badge in modal title bars — see NODE_PROTECTION_STATES.md. Orange accent,
-   deliberately distinct from the gold Locked pill so both can show at once without visual confusion. */
+   deliberately distinct from the gold Frozen pill so both can show at once without visual confusion. */
 .node-hidden-from-joe-badge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   /* Trailing margin (breadcrumb row only) is handled by the shared :last-child rule above,
-     next to .node-locked-badge — see that comment. */
+     next to .node-state-badge — see that comment. */
   flex: 0 0 auto;
   padding: 3px 10px;
   border-radius: var(--radius-full, 999px);

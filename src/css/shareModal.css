@@ -674,12 +674,12 @@
   #modal-message .cx-note-top {
     margin-top: 8px;
   }
-  #modal-message .cx-node .node-locked-badge {
+  #modal-message .cx-node .node-state-badge {
     padding: 2px 8px;
     font-size: 10px;
     gap: 5px;
   }
-  #modal-message .cx-node .node-locked-badge i {
+  #modal-message .cx-node .node-state-badge i {
     font-size: 9px;
   }
 
@@ -727,7 +727,7 @@
   #modal-message .cx-ptree li.is-root > span::before {
     background: var(--accent-color);
   }
-  #modal-message .cx-ptree .cx-lockmini {
+  #modal-message .cx-ptree .cx-frozenmini {
     color: var(--text-secondary);
     font-size: 10px;
   }

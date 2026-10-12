@@ -403,6 +403,15 @@
     min-width: 0;
   }
 
+  /* The chat text-selection menu is placed inside the docked column with an 8px inset on each side
+     (joeChatSelectionController positionChatSelectionMenu); at the narrow column widths its one row
+     of buttons is wider than that, so it is capped to the column and its buttons wrap to a second row. */
+  body.joe-docked-open .ai-chat-selection-menu {
+    box-sizing: border-box;
+    max-width: calc(var(--joe-dock-column-width, 280px) - 16px);
+    flex-wrap: wrap;
+  }
+
   body.joe-docked-open .ai-image-history-drawer {
     top: calc(var(--topbar-height, 56px) + 8px);
     width: min(520px, calc(var(--joe-dock-column-width, 280px) - 24px));

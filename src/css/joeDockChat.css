@@ -169,7 +169,7 @@
     flex: 1 0 100%;
   }
 
-  .joe-dock-brand-text > :is(.modal-locked-pill, .modal-hidden-from-joe-pill) {
+  .joe-dock-brand-text > :is(.modal-frozen-pill, .modal-hidden-from-joe-pill) {
     font-size: 10px;
   }
 
