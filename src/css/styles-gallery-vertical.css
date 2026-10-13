@@ -3808,6 +3808,17 @@
     transition: opacity var(--transition-speed) ease;
   }
 
+  /* Like the canvas stack scrubber, audio overlays must not sample a live
+     backdrop under the transformed board. Keep this stable for the canvas
+     session so Joe's divider and floating-window drags do not rebuild the
+     blur layers, including on paused audio. */
+  body.canvas-reposition-active .image-gallery .gallery-inline-audio-idle-glyph,
+  body.canvas-reposition-active .image-gallery .stack-audio-playback-controls button,
+  body.canvas-reposition-active .image-gallery .stack-audio-mode-btn::after {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
   .image-frame .cropped-image-badge {
     z-index: 50 !important;
   }

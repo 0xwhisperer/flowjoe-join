@@ -515,11 +515,42 @@
   }
 
   #ai-spell-check-modal.joe-docked #ai-spell-check-target::before {
-    content: "\f05b" / "";
-    font: var(--fa-font-solid);
+    content: none;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-assist-target-flow-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: transparent;
     font-size: 11px;
     color: var(--jd-text-3);
     flex: 0 0 auto;
+    cursor: pointer;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-assist-target-flow-button[hidden],
+  #ai-spell-check-modal:not(.joe-docked) #ai-assist-target-flow-button {
+    display: none;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-assist-target-flow-button:is(:hover, [aria-pressed="true"]) {
+    color: var(--accent-color);
+    background: var(--jd-hover);
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-assist-target-flow-button:focus-visible {
+    outline: 1px solid var(--accent-color);
+    outline-offset: 2px;
+  }
+
+  #ai-spell-check-modal.joe-docked #ai-spell-check-target[data-flow-target="true"] #ai-assist-target-static {
+    color: var(--jd-accent);
+    font-size: 12.5px;
+    font-weight: 600;
   }
 
   #ai-spell-check-modal.joe-docked #ai-assist-target-static {

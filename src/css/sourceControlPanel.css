@@ -325,6 +325,15 @@
   display: contents;
 }
 
+/* Keep the hover fill inside the repository outline without shrinking the 24 px click target.
+   A full-height fill otherwise covers the selected row's top and bottom edges. */
+.source-control-panel .scm-repo-row .scm-icon-button {
+  box-sizing: border-box;
+  border: 2px solid transparent;
+  padding: 0 2px;
+  background-clip: padding-box;
+}
+
 .scm-repo-options-button {
   opacity: 0.78;
 }

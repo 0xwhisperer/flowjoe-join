@@ -31,6 +31,24 @@
   line-height: 1.1;
 }
 
+/* The picker is clamped to the docked Joe column, which can be as narrow as ~264px, while this
+   header's four children have a larger min-content than that — so the row overflowed the popover
+   and the × button was clipped outside its right edge. Let the title take the squeeze (ellipsized)
+   and hold the count and the two buttons at their own size, so the close button stays inside. */
+.ai-chat-multi-attach-popover-header > span:first-child {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ai-chat-multi-attach-popover-count,
+.ai-chat-multi-attach-popover-clear,
+.ai-chat-multi-attach-popover-close {
+  flex: 0 0 auto;
+}
+
 .ai-chat-multi-attach-popover-count {
   margin-left: auto;
   font-weight: 500;

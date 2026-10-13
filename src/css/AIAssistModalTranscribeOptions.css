@@ -126,3 +126,32 @@
 }
 
 }
+
+@layer app {
+/* Local transcription adds compact choices; setup is a separate page in the existing dock. */
+#transcribe-panel .ai-local-method-row { margin-bottom: 12px; }
+#transcribe-panel .ai-local-model-field { margin-top: 12px; }
+#transcribe-panel .ai-local-method-title { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+#transcribe-panel .ai-local-setup-link { padding: 0; background: none; border: 0; color: var(--accent-color); font-size: inherit; text-align: right; }
+#transcribe-panel .ai-local-select { appearance: none; -webkit-appearance: none; background-image: var(--dropdown-chevron); background-repeat: no-repeat; background-position: right 9px center; background-size: 10px; padding-right: 26px; padding-left: 10px; width: 100%; min-width: 0; }
+#transcribe-panel .ai-local-settings { min-height: 0; overflow-y: auto; padding: 12px; color: var(--text-color); display: flex; flex-direction: column; align-items: stretch; gap: 12px; }
+#transcribe-panel .ai-local-settings p { margin: 0; line-height: 1.5; color: var(--text-secondary); }
+#transcribe-panel .ai-local-settings h3 { margin: 0; font-size: 1.15em; }
+#transcribe-panel .ai-local-download-progress { width: 100%; accent-color: var(--accent-color); }
+#ai-spell-check-modal.joe-docked #transcribe-panel .ai-local-select { min-height: 32px; border: 1px solid var(--jd-line); border-radius: 9px; background-color: var(--jd-bg); color: var(--jd-text-1); font: inherit; padding-block: 0; flex-shrink: 0; }
+#transcribe-panel .ai-local-back, #transcribe-panel .ai-local-text-action { align-self: flex-start; padding: 0; border: 0; background: none; color: var(--accent-color); font: inherit; text-align: left; }
+#transcribe-panel .ai-local-back::before { content: "← "; }
+#transcribe-panel .ai-local-model-card { flex: 0 0 auto; padding: 16px; gap: 8px; }
+#transcribe-panel .ai-local-selection-detail { display: grid; gap: 8px; }
+#transcribe-panel .ai-local-model-card p { margin: 0; }
+#transcribe-panel .ai-local-file-size, #transcribe-panel .ai-local-languages { font-size: 0.86em; }
+#transcribe-panel .ai-local-availability.is-ready { color: var(--success-color); }
+#transcribe-panel .ai-local-primary-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+#transcribe-panel .ai-local-primary-row .btn { padding-inline: 18px; }
+#transcribe-panel .ai-local-message:empty { display: none; }
+#transcribe-panel .ai-local-more { flex: 0 0 auto; margin-top: 6px; color: var(--text-secondary); }
+#transcribe-panel .ai-local-more summary { cursor: pointer; }
+#transcribe-panel .ai-local-more-body { display: grid; gap: 10px; padding-block: 10px; }
+#transcribe-panel .ai-local-settings [hidden] { display: none; }
+
+}
