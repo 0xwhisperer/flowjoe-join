@@ -141,9 +141,14 @@ body.canvas-reposition-active .repo-file-explorer-toggle-button {
   font-size: var(--icon-glyph);
 }
 
-.repo-file-explorer-action:hover {
+.repo-file-explorer-action:hover:not(:disabled) {
   background: var(--hover-bg);
   color: var(--text-primary);
+}
+
+.repo-file-explorer-action:disabled {
+  opacity: 0.45;
+  cursor: default;
 }
 
 .repo-file-explorer-create-modal #modal-extra-controls {
