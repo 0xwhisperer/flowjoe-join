@@ -1262,4 +1262,24 @@
       transition: none;
     }
   }
+  /* Approved recovery layout: one scroll owner keeps controls and Save reachable. */
+  @container joe-dock-tab (max-width: 619px) {
+    #ai-spell-check-modal.joe-docked #transcribe-panel .ai-transcribe-grid {
+      flex: 1 1 auto;
+      overflow-y: auto;
+      overflow-x: hidden;
+      overscroll-behavior: contain;
+    }
+    #ai-spell-check-modal.joe-docked #transcribe-panel :is(.ai-transcribe-controls, .ai-transcribe-result-panel) {
+      flex: 0 0 auto;
+      overflow: visible;
+    }
+    #ai-spell-check-modal.joe-docked #transcribe-panel .ai-transcribe-result-card {
+      flex: 0 0 auto;
+      min-height: 220px;
+    }
+    #ai-spell-check-modal.joe-docked #transcribe-panel #ai-transcribe-result {
+      min-height: 220px;
+    }
+  }
 }

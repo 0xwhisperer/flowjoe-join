@@ -635,7 +635,15 @@ body.repo-editor-active #selected-node-name .breadcrumbs-actions {
   font-size: 11px;
 }
 
-.repo-editor-workbench input.repo-file-explorer-rename-input {
+.repo-editor-workbench input[type="text"].repo-file-explorer-rename-input,
+.repo-editor-workbench input[type="text"].repo-file-explorer-rename-input:focus {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  outline: none;
+  box-shadow: none;
+  margin: 0;
+  font-family: inherit;
   box-sizing: border-box;
   width: 100%;
   min-width: 0;
@@ -695,4 +703,48 @@ body.repo-editor-active #selected-node-name .breadcrumbs-actions {
 .repo-editor-workbench .repo-binary-comparison > * {
   min-width: 0;
   max-width: 100%;
+}
+
+/* Approved Explorer actions retain Timeline, theme fields, and tab close controls. */
+.repo-file-explorer-list .is-cut {
+  opacity: 0.5;
+}
+.repo-folder-search .repo-search-box {
+  padding: 8px 12px;
+}
+.repo-folder-search .repo-search-box input {
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--icon-btn-radius);
+  padding: 6px 8px;
+  font: inherit;
+}
+.repo-folder-search .repo-search-box input:focus {
+  border-color: var(--accent-color);
+  outline: none;
+}
+.repo-folder-search .search-snippet {
+  display: block;
+  color: var(--text-secondary);
+  font-size: 11px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.repo-editor-workbench .file-tab-select[hidden] {
+  display: none;
+}
+.repo-editor-workbench .file-tab-rename {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0 10px 0 12px;
+  min-width: 130px;
+  max-width: 260px;
+}
+.repo-editor-workbench .file-tab-rename input.node-edit-input {
+  width: 145px;
 }

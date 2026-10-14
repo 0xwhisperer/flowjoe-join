@@ -571,11 +571,7 @@ body.surface-effects-disabled .tree-section.external-import-root-hover {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transform: translateY(-4px);
-  transition:
-    opacity var(--transition-speed) ease,
-    visibility var(--transition-speed) ease,
-    transform var(--transition-speed) ease;
+  transition: none;
   z-index: var(--flowjoe-z-tooltip);
   box-sizing: border-box;
 }
@@ -610,7 +606,6 @@ body.surface-effects-disabled .tree-section.external-import-root-hover {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
-  transform: translateY(0);
 }
 
 .gallery-search-options {

@@ -72,6 +72,31 @@ body.glass-effects-disabled {
   background: transparent;
 }
 
+/* Menu-shaped surfaces share the slot menu's single travelling hover fill. Persistent selected
+   choices and coloured swatches keep their own meaning; only transient hover backgrounds yield. */
+.fj-menu-surface {
+  isolation: isolate;
+}
+
+.licenses-list.fj-glide .licenses-list-row:hover,
+.file-menu-dropdown.fj-glide .file-menu-item:hover,
+.file-menu-dropdown.fj-glide .file-menu-item:focus-visible,
+.tiptap-dropdown-menu.fj-glide .tiptap-dropdown-item:hover,
+.tiptap-suggestion-menu.fj-glide .tiptap-slash-item:hover,
+.select-options.fj-glide .select-option:not(.selected):hover,
+.status-footer-brain-menu.fj-glide .status-footer-brain-item:not(.is-active):hover,
+#joe-pet-context-menu.fj-glide button:hover,
+#joe-pet-context-menu.fj-glide button:focus-visible,
+.image-modal-pdf-more-menu.fj-glide button:hover {
+  background: transparent;
+  transition: none;
+}
+
+.joe-dock-token-popover.fj-menu-surface,
+#ai-spell-check-modal.joe-docked .joe-dock-token-popover.fj-menu-surface {
+  animation: none;
+}
+
 :is(
   #modal > div,
   #image-modal-content,

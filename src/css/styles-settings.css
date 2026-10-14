@@ -503,6 +503,8 @@
   }
 
   .licenses-list {
+    position: relative;
+    isolation: isolate;
     flex: 1;
     min-height: 0;
     overflow: auto;
@@ -2036,7 +2038,7 @@
   max-height: 0;
   overflow: hidden;
   opacity: 0;
-  transition: all var(--transition-speed) ease;
+  transition: none;
   box-shadow: var(--elev-floating);
   width: 100%;
   box-sizing: border-box;

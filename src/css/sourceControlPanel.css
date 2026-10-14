@@ -624,11 +624,12 @@ button.scm-pill:hover {
 .scm-menu .scm-menu-item {
   position: relative;
   width: 100%;
-  padding: 4px 8px;
+  margin: 0;
+  padding: var(--pad-menu-item);
   border: 0;
   background: none;
   box-sizing: border-box;
-  font: inherit;
+  font-family: inherit;
   font-size: var(--font-control);
   text-align: left;
 }
@@ -650,7 +651,10 @@ button.scm-pill:hover {
   outline: none;
 }
 
-.scm-menu.fj-glide .scm-menu-item:hover {
+.scm-menu.fj-glide .scm-menu-item:hover,
+.scm-menu.fj-glide .scm-menu-item:focus-visible,
+.scm-menu.fj-glide .scm-menu-row:hover,
+.scm-menu.fj-glide .scm-menu-row:focus-within {
   background: none;
 }
 

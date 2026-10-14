@@ -521,6 +521,7 @@ body.fj-ambient-freeze *::after {
 /* stylelint-disable declaration-no-important -- these counter the universal `animation-play-state: paused !important` freeze above */
 body.fj-bg-idle:not(.fj-window-hidden) #ai-chat-send.ai-chat-send-stop-mode .ai-chat-stop-ring.fj-in-view,
 body.fj-bg-idle:not(.fj-window-hidden) #ai-generate-submit.ai-chat-send-stop-mode .ai-chat-stop-ring.fj-in-view,
+body.fj-bg-idle:not(.fj-window-hidden) #ai-transcribe-run.ai-chat-send-stop-mode .ai-chat-stop-ring.fj-in-view,
 body.fj-bg-idle:not(.fj-window-hidden) .ai-spell-check-spinner.fj-in-view,
 body.fj-bg-idle:not(.fj-window-hidden) .ai-spell-check-spinner.fj-in-view::before,
 body.fj-bg-idle:not(.fj-window-hidden) .ai-spell-check-spinner.fj-in-view::after,
@@ -560,6 +561,7 @@ body.fj-bg-idle:not(.fj-window-hidden) #app-rail-joe-btn .app-rail-icon.fj-in-vi
 
 #ai-chat-send.ai-chat-send-stop-mode .ai-chat-stop-ring:not(.fj-in-view),
 #ai-generate-submit.ai-chat-send-stop-mode .ai-chat-stop-ring:not(.fj-in-view),
+#ai-transcribe-run.ai-chat-send-stop-mode .ai-chat-stop-ring:not(.fj-in-view),
 .ai-spell-check-spinner:not(.fj-in-view),
 .ai-spell-check-spinner:not(.fj-in-view)::before,
 .ai-spell-check-spinner:not(.fj-in-view)::after,

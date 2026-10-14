@@ -67,4 +67,19 @@ body.glass-effects-disabled #ai-transcribe-result {
   background: var(--bg-primary);
 }
 
+.ai-transcribe-history-page {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 8px;
+  color: var(--text-primary);
+}
+.ai-transcribe-history-page[hidden] {display: none;}
+.ai-transcribe-history-heading {display: flex; align-items: center; gap: 12px; justify-content: space-between; flex-wrap: wrap;}
+.ai-transcribe-history-list {display: grid; gap: var(--modal-row-gap);}
+.ai-transcribe-history-list article {overflow-wrap: anywhere;}
+.ai-transcribe-history-list p {white-space: pre-wrap; margin: 0;}
+#ai-transcribe-retention {flex: 0 0 auto;}
+
 }

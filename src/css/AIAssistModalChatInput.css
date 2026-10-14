@@ -138,7 +138,8 @@
    morphing back to Send (on click or completion) is what stops it. One moded control = no layout
    shift in the prompt row and the standard chat-UI pattern. */
 #ai-chat-send.ai-chat-send-stop-mode,
-#ai-generate-submit.ai-chat-send-stop-mode {
+#ai-generate-submit.ai-chat-send-stop-mode,
+#ai-transcribe-run.ai-chat-send-stop-mode {
   background: color-mix(in srgb, var(--danger-color) 22%, var(--bg-tertiary) 78%);
   border-color: var(--danger-color);
   color: var(--danger-color);
@@ -147,7 +148,9 @@
 #ai-chat-send.ai-chat-send-stop-mode:hover,
 #ai-chat-send.ai-chat-send-stop-mode:focus-visible,
 #ai-generate-submit.ai-chat-send-stop-mode:hover,
-#ai-generate-submit.ai-chat-send-stop-mode:focus-visible {
+#ai-generate-submit.ai-chat-send-stop-mode:focus-visible,
+#ai-transcribe-run.ai-chat-send-stop-mode:hover,
+#ai-transcribe-run.ai-chat-send-stop-mode:focus-visible {
   background: color-mix(in srgb, var(--danger-color) 34%, var(--bg-tertiary) 66%);
 }
 
