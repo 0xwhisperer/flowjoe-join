@@ -17,7 +17,7 @@
   border-radius: var(--radius-lg, 8px);
 }
 
-/* History's title row reuses the gallery breadcrumb row's structure (activityPanel.js buildHistoryTitle); this is only its icon slot (the close button is a standard .icon-btn in .breadcrumbs-actions). */
+/* History's title row reuses the gallery breadcrumb row's structure (activityPanel.js buildHistoryTitle); the close button uses the same quiet chrome as Joe, inset from the right edge. */
 #selected-node-name:has(.activity-title-icon) {
   padding-bottom: 10px; /* a node's breadcrumb row is 46px tall; History's row has no filter line below it, so it takes the same height */
 }
@@ -37,10 +37,38 @@
   line-height: 1;
 }
 
+#selected-node-name:has(.activity-title-icon) .breadcrumbs-wrapper {
+  gap: 16px;
+  padding-inline-end: 12px;
+}
+
+#selected-node-name:has(.activity-title-icon) .breadcrumbs-actions {
+  flex: 0 0 auto;
+}
+
+/* Same quiet close control as Joe's docked windows, with space from tabs and the edge. */
+.activity-close-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  min-width: 28px;
+  height: 28px;
+  min-height: 28px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1;
+  box-shadow: none;
+}
+
 .activity-close-btn:hover,
 .activity-close-btn:focus-visible {
   color: var(--text-primary);
-  border-color: var(--accent-color);
+  background: var(--hover-bg);
 }
 
 .activity-close-btn:focus-visible {
@@ -322,9 +350,10 @@ body:has(.activity-host) #gallery-side-scrubber {
 
 .activity-current-badge,
 .activity-point-badge {
-  padding: 2px 8px;
+  padding: var(--compact-pill-pad-block) var(--compact-pill-pad-inline);
   border-radius: var(--radius-xl, 10px);
-  font-size: 11px;
+  font-size: var(--compact-pill-font-size);
+  line-height: var(--compact-pill-line-height);
   font-weight: 600;
   white-space: nowrap;
 }

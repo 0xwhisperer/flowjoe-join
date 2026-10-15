@@ -971,6 +971,18 @@
     line-height: 1.3;
   }
 
+  /* Match History's compact pills without resizing the separate reference checkbox. */
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-action-option {
+    padding: var(--compact-pill-pad-block) var(--compact-pill-pad-inline);
+    font-size: var(--compact-pill-font-size);
+    line-height: var(--compact-pill-line-height);
+  }
+
+  #ai-spell-check-modal.joe-docked #generate-panel .ai-generate-action-option span {
+    font-size: var(--compact-pill-font-size);
+    line-height: var(--compact-pill-line-height);
+  }
+
   #ai-spell-check-modal.joe-docked #generate-panel :is(.ai-generate-checkbox-row, .ai-generate-action-option)::before {
     content: "\f00c" / "";
     font: var(--fa-font-solid);

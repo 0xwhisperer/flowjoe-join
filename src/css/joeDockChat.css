@@ -489,7 +489,7 @@
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
-    gap: var(--jd-target-gap);
+    gap: 6px;
     flex: 0 0 auto;
     min-height: 0;
     margin: var(--jd-row-margin-top);
@@ -519,6 +519,7 @@
   }
 
   #ai-spell-check-modal.joe-docked #ai-assist-target-flow-button {
+    margin: 0;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -569,7 +570,7 @@
   #ai-spell-check-modal.joe-docked #ai-assist-target-controls {
     display: flex;
     align-items: center;
-    gap: 0;
+    gap: 6px;
     flex: 1 1 auto;
     min-width: 0;
     max-width: none;
@@ -584,6 +585,9 @@
      text, matching the current target's own weight -- only the separator itself is muted. Hidden
      (via [hidden], set in JS) for a root node, which has no parent segment to show. */
   #ai-spell-check-modal.joe-docked #ai-assist-target-breadcrumb {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     flex: 0 1 auto;
     min-width: 0;
     overflow: hidden;
@@ -614,10 +618,11 @@
 
   /* The pickers read as a path, not as two dropdowns: click opens today's node/slot pickers. */
   #ai-spell-check-modal.joe-docked #ai-assist-target-controls .ai-assist-target-select {
+    margin: 0;
     width: auto;
     max-width: 100%;
     height: 24px;
-    padding: 2px 6px;
+    padding: 2px 0;
     border: 0;
     border-radius: 6px;
     background: transparent;
@@ -1611,6 +1616,12 @@
   /* ── Composer box: input on top; attachments · tools/context · spell-check · dictate … tokens · send beneath ── */
   /* --jd-inset-margin's per-tier docked values live in dropin/06-joe-dock-density.css (Step 4a) —
      shared with .joe-context-tray above (both were the identical `0 12px`). */
+  #ai-spell-check-modal.joe-docked .ai-chat-shared-typing {
+    margin: var(--jd-inset-margin);
+    margin-bottom: 7px;
+    padding: 0;
+  }
+
   .joe-dock-composer-box {
     position: relative;
     flex: 0 0 auto;

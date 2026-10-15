@@ -297,6 +297,12 @@
   --toggle-switch-travel: calc(var(--toggle-switch-width) - var(--toggle-switch-knob-size) - (var(--toggle-switch-inset) * 2)); /* distance the knob slides when checked */
   --panel-card-radius: var(--radius-md, 6px); /* corner radius for chrome/notice/preview cards inside panels: settings warning cards, the settings custom-placeholder preview card, the node-theme notice, and the gallery's locked-node privacy card — own variable, not shared with --dropdown-radius even though the value currently matches */
   /* Container padding categories (exploration doc §6 — padding consolidation batch). */
+  --chat-person-avatar-size: 16px; /* Shared Joe sender and typing identities. */
+  --chat-person-avatar-gap: 10px;
+  --compact-pill-pad-block: 2px;
+  --compact-pill-pad-inline: 8px;
+  --compact-pill-font-size: 11px;
+  --compact-pill-line-height: 1.2;
   --pad-compact: 3px 8px; /* compact controls: chips, pills, badges */
   --pad-menu-item: 8px 12px; /* clickable menu row */
   --pad-menu: 8px; /* menu/popover container gutter */
