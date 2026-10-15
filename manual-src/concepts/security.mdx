@@ -1,0 +1,68 @@
+---
+title: "Security & Privacy"
+description: "Data ownership, local OS keychain isolation, AI context gating, and encrypted backups."
+---
+
+FlowJoe is built on a **trust-nothing architecture**. Because you bring your own AI keys and run the application locally, you have total control over where your data lives, how it is stored, and what is shared with external model providers.
+
+---
+
+## 1. Data Sovereignty (Local-First Safety)
+
+FlowJoe is not a SaaS platform. It has no centralized servers, no cloud databases, and collects **zero telemetry** on the content of your outlines, workflows, or media logs.
+
+- **Desktop App:** Your data stays on your computer. Workspace Folders keep the Flow and its media in the folder you choose.
+- **Media Assets:** Image, PDF, audio, and spreadsheet references are stored locally in the workspace subfolders. No third-party servers act as intermediaries.
+
+---
+
+## 2. API Key Isolation
+
+We believe your API credentials should be treated with the highest security standards. FlowJoe never writes your keys to plaintext config files, local storage databases, or git directories without your knowledge.
+
+| Desktop Platform | Storage Location | Security Layer |
+| :--- | :--- | :--- |
+| **macOS Desktop** | Keychain Services | OS-level encryption (Keychain Access) |
+| **Windows Desktop** | Credential Manager | DPAPI-encrypted credential store |
+| **Linux Desktop** | Secret Service API | `libsecret` keyring manager |
+
+### Key Protection Rules:
+1. **Settings Reveal:** You can view, reveal, or copy your API keys directly out of the Settings panel by toggling the **Eye button**. Keys are kept masked (`••••••••`) by default in the UI to prevent shoulder surfing.
+
+---
+
+## 3. AI Privacy & Context Gating (Private Nodes)
+
+When collaborating with Joe, you might have outline branches that contain sensitive credentials, personal details, or protected intellectual property. FlowJoe lets you isolate this data from LLM APIs.
+
+### Private Nodes:
+- You can mark any node in the tree as **Private** (using the node context menu or keyboard shortcuts).
+- Private nodes are visually highlighted with a diagonal stripe pattern in the tree.
+- **Context Exclusion:** When you ask Joe a question or trigger an automation, the engine **completely filters out** the contents, summaries, and gallery files of any Private node (and all of its child sub-branches) before sending the prompt payload to external LLM providers (like OpenAI, Anthropic, or Gemini).
+- This ensures you can mix public/private outlines in the same project without risk of data leaks.
+
+---
+
+## 4. The Propose-Approve Safe-Loop
+
+Joe is a *proposer*, not an *executor*. The system isolates mutation privileges to prevent runaway code or unauthorized files.
+
+- **No Raw Execution:** Joe cannot directly write files, delete nodes, or run commands on your machine.
+- **Patch Proposals:** When Joe suggests changes, they are generated as **proposals** in your chat panel or the automation logs.
+- **Safety Seatbelt:** You review the visual diff side-by-side. The action is only executed once you click **Approve**.
+
+---
+
+## 5. Encrypted Backups (`.fj` Packages)
+
+When exporting or saving backups, you can encrypt your entire project folder.
+
+- **AES-256 Encryption:** Exporting a workspace as a `.fj` package allows you to enable password protection. The outline structure and media assets are zipped and encrypted using standard AES-256.
+- **Portability:** Encrypted packages can be shared securely over email, Slack, or git, and can only be decrypted by entering the workspace password upon import.
+
+---
+
+## Related Guides
+- [Bring Your Own Brain (BYOB)](/joe/byob)
+- [Workspace Folders & Storage](/workspaces/folders)
+- [Recovering Data](/workspaces/recovery)

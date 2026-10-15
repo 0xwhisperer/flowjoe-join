@@ -1,0 +1,41 @@
+---
+title: "Adding Media & Local Files"
+description: "Drag-and-drop, copy-paste, and referencing files on disk."
+---
+
+Populating your gallery is designed to be frictionless. FlowJoe lets you ingest files from your local system, grab clips from your clipboard, or link directly to files on disk.
+
+---
+
+## Adding Files
+
+### 1. Drag & Drop
+You can drag multiple files directly from your system finder/explorer and drop them onto:
+- **The Gallery Gaps:** Adds them as new slots at the end of the gallery.
+- **An Existing Slot:** Adds the dropped item as a new layer in a [Stack](/gallery/stacks).
+- **A Tree Node:** Adds them directly to that node's gallery, even if the node is not currently selected.
+- **Supported Drops:** Individual files, folders (imported recursively), zip archives, and `.fj` packages.
+
+### 2. File Pickers & Paste
+- **Add Item button:** Click the grid addition card to choose files manually.
+- **Clipboard Paste (`Cmd/Ctrl+V`):** Press paste while the gallery has focus to insert images, text snippets, or file paths currently in your clipboard.
+
+---
+
+## Referencing vs. Importing
+
+When adding local files, FlowJoe offers two modes:
+
+| Mode | Storage Location | Performance | Portability |
+| :--- | :--- | :--- | :--- |
+| **Import Copy** | Stored inside IndexedDB | High (copies cached locally) | Portable (packages into `.fj`) |
+| **Linked Local File** | Kept in origin folder on disk | Dependent on disk paths | High disk risk (broken paths on other machines) |
+
+### Linked Local Files
+A **Linked Local File** reference points directly to an absolute path on your hard drive (e.g. `/Users/name/Projects/report.pdf`).
+- **No Duplication:** FlowJoe doesn't duplicate large video or audio files, saving disk space.
+- **Live Updates:** Editing the file in external software reflects instantly in FlowJoe's preview.
+- **Path Warnings:** If you move the project to another computer, links will break unless the file exists at the exact same absolute path.
+
+> [!WARNING]
+> **Frozen Node Restrictions:** Drag-drops and file additions are disabled inside Frozen nodes and Virtual Galleries to protect structure and search results.

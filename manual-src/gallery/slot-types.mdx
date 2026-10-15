@@ -1,0 +1,54 @@
+---
+title: "Supported Media & Slots"
+description: "An overview of supported file formats, previews, and URL cards."
+---
+
+FlowJoe displays many media types in a full-size preview. Click a slot to open it; see [Slot Preview](/gallery/preview) for the view and its rich-text notes editor. Repository files have a separate Explorer and editor workbench; **Edit** depends on the item type.
+
+---
+
+## Media Category Previews
+
+### 1. Images
+- **Formats:** JPG/JPEG, PNG, GIF, WebP, SVG, and TIFF. HEIC/HEIF photos are accepted and converted to JPEG when you import them, so they can be previewed in FlowJoe and in a guest's browser.
+- **HEIC note:** FlowJoe stores the converted JPEG rather than the original HEIC file. The conversion does not carry over embedded HEIC metadata.
+- HEIC/HEIF sequence files import their first image only.
+- **AI generation:** Directly generated graphics from Joe write back as native image slots.
+
+### 2. Audio & Video
+- **Video Formats:** MP4, WebM, OGG, and MOV.
+- **Audio Formats:** MP3, WAV, M4A, FLAC.
+- **Global Player:** Audio slots include album-art extraction. Playing audio loads it into a global header music player that continues playing even if you navigate to different tree nodes.
+- **Send to Global Player:** Right-click an audio slot to play it in the global player (or add it to the queue) without dragging.
+- **Queues & Playlists:** Drag audio slots together to create temporary playback queues, or save named playlists.
+
+### 3. Documents
+- **PDFs:** Rendered using a scrollable inline PDF frame with text search.
+- **Ordinary gallery Markdown, text & code:** Open the slot and choose **Edit** in its preview to open the gallery code editor (see below). For a repository-owned file, the repository Explorer opens the repository workbench; **Edit** on its gallery slot hands off to that workbench for the exact selected file.
+- **Office Previews:** Read-only previews for DOCX, PPTX, XLSX, RTF, EPUB, and open formats (ODT, ODP, ODS) when they are not opened as interactive workbenches.
+- *Note:* Legacy `.doc`, `.xls`, and `.ppt` files extract text natively if LibreOffice is installed and configured in your settings.
+
+### Editing text and code
+For an ordinary gallery item—not a repository-owned file—open a Markdown, plain text, JSON, HTML, JavaScript/TypeScript, Python, YAML, shell, log, or similar native text/code slot, then choose **Edit** in the preview.
+
+- **Editor:** Full **code editor** with syntax highlighting for common languages (the same editor engine VS Code uses).
+- **Toolbar:** Theme, word wrap, undo/redo, format, find, compare against your last saved version, and a more-tools menu (line numbers, minimap, show whitespace, font size, go to line, select all, copy all, download, **Save to disk…** on desktop, discard changes).
+- **Save / Preview / Save to disk:** **Save** writes back to the gallery item inside FlowJoe. **Save to disk…** (under more tools) opens the system save dialog to export a copy; it does **not** re-link the gallery slot to that path. **Preview** returns to the readable view.
+
+This **code editor** is for ordinary gallery document and code items. It has no project tree, terminal, or external language-server service. Repository-owned files use the separate [Repo nodes and Git](/tree/repositories) workbench; word-processor, spreadsheet, or calendar editing uses the [interactive workbenches](/workbenches/spreadsheets).
+
+### 4. URLs & Embeds
+- **Link Cards:** Dropping a URL extracts page titles, descriptions, and thumbnails to render a preview card.
+- **Interactive Embeds:** Inline rendering of YouTube, Vimeo, PDF URLs, or Spotify frames.
+- **In-App Browser:** Click a URL slot to load the web page in a secure in-app window, allowing you to browse and extract content directly into your gallery.
+
+---
+
+## Repository files use a separate editor
+
+In a repo node, choose **Switch to File Explorer** and select a file to open it in the repository workbench. If you open a repo-backed slot from the gallery preview and choose **Edit**, FlowJoe takes you to the repository workbench for that exact stack item. If the slot has unsaved notes, choose **Save**, **Discard**, or **Cancel** before the handoff. **Save** there updates the repository working file; use **Source Control → Changes** to stage it and create a Git commit. A regular gallery item’s **Edit** stays in the gallery code editor above.
+
+The repository workbench can preview text/code, Markdown, HTML, images, audio/video, PDFs, extracted Office text, and ZIP listings. HTML and Markdown previews are sandboxed and static: no scripts, app access, network requests, Node, or project server. Relative CSS/images can load from the same repository within limits. Custom fonts may not render. See [Repo nodes and Git](/tree/repositories) for Explorer, tabs, Save versus Commit, Timeline, menus, and comparisons.
+
+## Interactive Workbenches (Editable Slots)
+Calendars, spreadsheets, and rich documents can also run as **editable islands** directly within your gallery. See [Spreadsheets](/workbenches/spreadsheets) and related pages for details.

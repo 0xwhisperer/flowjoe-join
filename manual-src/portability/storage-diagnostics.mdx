@@ -1,0 +1,31 @@
+---
+title: "Storage & Preferences"
+description: "Monitor database size, manage keys, and clean up orphaned files."
+---
+
+Manage local database allocations, configure backup schedules, and migrate application-level settings.
+
+---
+
+## Storage Transparency Panel
+
+Open **Settings → Storage** to view disk allocations:
+- **IndexedDB usage:** Shows the total size of all imported media blobs stored in your local application database.
+- **LocalStorage usage:** Shows the size of tree structures and text nodes.
+- **Orphaned Media Cleanup:** If you delete nodes or remove gallery slots, their underlying files can sometimes remain cached. Click **Cleanup** to search and delete unreferenced media blobs, freeing disk space.
+- **Database Compression:** Compresses text indices to reduce storage footprints.
+
+---
+
+## Autosaving & Dirty States
+
+- **Autosave:** FlowJoe saves edits to LocalStorage and IndexedDB automatically as you type. There is no manual "Save" button for everyday work.
+- **Export-Impact Dirty State:** If you make edits, the app tracks changes that have not yet been exported to your project folders or backups. A yellow indicator on the app title bar reminds you to run a backup before closing if pending changes are high.
+
+---
+
+## Preferences Import/Export
+
+You can back up your application-level configuration:
+- **Preferences bundle:** Contains settings maps, global theme selections, audio player configurations, and saved playlists.
+- **API Keys Export:** You can opt to exclude API keys from export bundles to prevent accidentally sharing credentials in public files.

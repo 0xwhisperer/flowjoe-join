@@ -1,0 +1,63 @@
+---
+title: "Status, Themes & Protection"
+description: "Visual status indicators, branch theming, and the four orthogonal node protection states."
+---
+
+FlowJoe provides native visual indicators and safety features to help you categorize work, organize outlines, and secure sensitive information.
+
+---
+
+## Node Status
+
+Every node in FlowJoe can display a status badge. This is useful for project tracking:
+- **Status Options:** Node status can be toggled (e.g., Todo, In Progress, Done, Flagged, Paused).
+- **Tree Filtering:** You can filter your tree search specifically by status (e.g., searching `status:progress` displays only items currently being worked on).
+- **Joe Awareness:** Joe is aware of node statuses and will use them to prioritize suggestions.
+
+---
+
+## Branch Theming & Inheritance
+
+To help organize different zones of a large workspace (e.g. distinguishing personal logs from client tasks), FlowJoe supports custom branch themes:
+- **Color Coding:** Right-click a node, select **Theme**, and choose a color profile.
+- **Inheritance:** By default, children nodes inherit their parent's color theme. This lets you color-code an entire branch (and its gallery slots) in one click.
+- **Theme Profiles:** Global styling themes (Dark, Light, Cozy, Sepia) are managed in Settings.
+- **Joe:** You can ask Joe to set a node's Theme-menu look by its menu name, such as Clay Roast, or ask for a calming, earthy, light, or dark look. He is shown each look's colors and uses those, not the name alone. A name that is not on the list is refused.
+- **Clear or app theme:** Clearing that look lets the node inherit from its parent again. Asking for the app theme uses the app-wide look on that node and stops inheritance. A frozen or private node refuses the change.
+
+---
+
+## The Four Node Protection States
+
+FlowJoe supports four independent (orthogonal) node states that can be toggled via the **Set Visibility / Privacy…** context-menu flyout. These states inherit down the tree, meaning freezing or privatizing a parent applies to the entire subtree.
+
+| State | Purpose | Visible? | Editable? | Secret? | Mechanism |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Hidden** | Declutter the tree sidebar | No (filtered out) | n/a until shown | No | `node.hidden` boolean toggle |
+| **Private (password)** | Access control / privacy | **No** until unlocked | No until unlocked | **No** (Verifier-only; not encrypted at rest) | Durable `lockKey` verifier + temporary memory unlock session |
+| **Frozen** | Prevent accidental edits | **Yes** (fully readable) | **No** (read-only) | No | `node.frozen` boolean toggle |
+| **Hidden from Joe** | Seal content from AI assistant | **Yes** to the human | **Yes** to the human | No | `node.hiddenFromJoe` boolean toggle |
+
+### 1. Hidden Nodes
+Hiding a node filters it out of the tree view sidebar without deleting it. 
+* To view or edit hidden nodes, toggle **Show Hidden Nodes** from the tree panel menu.
+* Hidden nodes remain fully editable and unprotected once revealed.
+
+### 2. Frozen (Read-Only) Nodes
+Marking a node as Frozen (padlock icon) keeps its gallery content from being changed by accident. Flows saved earlier with a node "locked" now show that node as frozen, and it works the same way:
+* **What is Allowed:** You can still reorder/move the node on the tree, copy/export content, and duplicate the branch (the duplicate is created as a new, fully editable, unfrozen sibling).
+* **What is Blocked:** You cannot rename the node (unfreeze it first), edit slot notes or titles, crop/delete images, reorder or navigate stacks, attach new media, set statuses, or delete the node itself.
+* **Unfreeze Toggle:** Clicking the padlock badge in the gallery header opens a confirmation modal before unfreezing.
+
+### 3. Private (Password-Protected) Nodes
+Private nodes hide sensitive content behind a password verifier.
+* **Temporary Unlock:** Right-click and enter your password. This starts an in-memory session. Leaving the node, reloading the app, or disconnecting the workspace immediately re-locks it.
+* **Workspace Folder privacy:** Workspace files show a redacted **Private node (not shared)** placeholder. When an older Flow is opened, FlowJoe preserves the private content in owner-only storage and verifies the redacted folder file before saving resumes. Copies made before migration cannot be recalled. If a retained backup still contains private text, FlowJoe replaces that text with a placeholder (your private notes stay on this computer) and removes any backup too damaged to check; see [Workspace Folders](/workspaces/folders).
+* **Stays on this computer:** A private node's content stays on the computer where it lives. It does not follow you to your own second computer, even through the same Workspace folder; there it shows only as the placeholder.
+* **Removal:** To share the node again, choose *Remove Password Protection* (this requires your password, permanently clears private status, and republishes the node).
+
+### 4. Hidden from Joe Nodes
+Marking a node as Hidden from Joe seals the entire node and its children from the AI assistant:
+* **Human View:** The node remains fully visible and editable to you.
+* **AI Block:** Joe cannot read the summary, gallery media, slot notes, or tags of the node.
+* **Tool Exclusions:** Joe is barred from running mutations, auto-titling, spelling checks, or image generation tools on the node, and the snapshot API emits it as redacted.

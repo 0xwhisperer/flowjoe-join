@@ -1,0 +1,100 @@
+---
+title: "Transcribe audio"
+description: "Turn a recording into text for free on your computer, or use your paid OpenAI API account."
+---
+
+Turn interviews, voice notes and other recordings into editable text in Joe's **Transcribe** tab. You can use free transcription on your computer or keep using the paid online service. Local transcription is separate from Joe chat and does not need an API key.
+
+## Choose a transcription method
+
+| Method                              | Cost                                                 | Where the recording is processed | Internet                                                |
+| ----------------------------------- | ---------------------------------------------------- | -------------------------------- | ------------------------------------------------------- |
+| **Whisper · Free on this computer** | No usage fees; uses your computer's processing power | On your computer                 | Needed for the first model download, then works offline |
+| **OpenAI · Paid online**            | Charged to your OpenAI API account                   | Audio is uploaded to OpenAI      | Required                                                |
+
+Free local transcription is available in the desktop app. Browser and shared guest sessions keep their existing online transcription route. A ChatGPT subscription does not supply OpenAI API credit.
+
+Your method, local model and local output format are remembered on this computer. Switching methods keeps your paid model choice. FlowJoe does not switch to a paid service if a local run fails.
+
+## Set up free local transcription
+
+1. Open Joe and choose **Transcribe**. Keep your audio recording in a gallery slot or stack in the selected node.
+2. Choose **Set up Whisper**, or **Manage local models** if models are already available.
+3. FlowJoe checks for compatible models already on your computer. **Ready on this computer** means no download is needed. Choose a model, read its size and description, then click **Use**.
+4. If you need a model, choose one under **Download once** and click its Download button. A model is the file that recognizes speech. FlowJoe handles downloading and checking it; you do not need a terminal or a separate software installer.
+5. Wait for the model to become ready, then click **Use**. Downloading alone does not change your transcription method or saved model.
+
+You can cancel a download and try again. Back returns to Transcribe without changing your saved method/model. Your selected recording and existing transcript stay in place.
+
+### Which model should I choose?
+
+**Small** is a balanced starting point. Choose Base for a smaller download; consider Medium, Large v3 or Turbo for difficult speech if your computer has enough memory. Speed varies with your computer and recording.
+
+| Download           | Approximate file size | What to consider                                                  |
+| ------------------ | --------------------- | ----------------------------------------------------------------- |
+| Base               | 148 MB                | Smaller download and faster processing for clear recordings       |
+| Small              | 488 MB                | Balanced speed and accuracy                                       |
+| Medium             | 1.53 GB               | More memory; can help with difficult recordings                   |
+| Large v3           | 3.10 GB               | Highest download size and memory use among these choices          |
+| Turbo · Compressed | 575 MB                | Compact version of a larger model; speed depends on your computer |
+
+All these download choices support multiple languages. An installed model labeled **English only** is for English recordings. Existing compatible models can include Tiny or other English-only variants. Their actual file sizes appear in the chooser and may differ from the download table because their file format differs.
+
+The size is disk space for the model file, not the amount of memory needed while it runs. Models are downloaded separately; choosing a large model does not make everyone else's FlowJoe installer larger.
+
+## Make a transcript
+
+1. Choose a node or slot in Joe’s target bar, then select the recording in **Source**. A node shows recordings grouped by slot, including the audio items in each stack. Choosing a recording targets its slot. A slot target shows only recordings in that slot; selecting the node again returns to all its slots.
+2. Choose your **Transcription method**.
+3. For local transcription, choose an installed **Local model**. Under **Options**, choose **Plain text** or **Whisper - Timestamps**. For online transcription, the original **Model** menu offers the paid choices.
+4. Leave **Language** on **Auto**, or choose **English** when appropriate.
+5. Click **Transcribe**. The button changes to **Stop**, with a working indicator. The status shows the current stage and elapsed time; a percentage appears only when the engine supplies one. Click Stop to cancel. While stopping, wait for the recording to be released. Your previous transcript and edits return after cancellation.
+6. Review or edit the result. **Copy** copies the text. **Save** opens the destination chooser so you can put the transcript in gallery notes or a summary. The history marks it saved only after the destination is saved successfully.
+
+Changing Options affects your next transcription. It does not rewrite text already in the transcript box.
+
+## Return to a transcript
+
+Completed transcripts and your edits are kept automatically for the current Flow, even before you save a gallery copy. Returning to Transcribe after a reload restores the latest transcript. Open **Recent transcripts** to reopen an earlier result, remove one, or clear the history. Removing history does not delete the recording or a copy you saved in the gallery.
+
+The transcription method controls where speech recognition runs. Storage follows the Flow’s storage mode:
+
+- **Local mode, including the browser:** transcript history is kept in this browser or app’s local data, separately for each Flow. Clearing browser/app data removes that local copy; use an export for a backup.
+- **Workspace folder:** eligible history is also kept in the Workspace’s `.flowjoe/transcript-history.json` file and restored when that Workspace opens. Private-source transcripts and transcripts marked **Keep on this computer only** stay in local data instead.
+
+Transcript history is registered app data and is excluded from orphaned-media cleanup. Private transcripts become unavailable when their source is locked. A transcript whose source was removed remains available in history for copying or saving, subject to its privacy restrictions.
+
+Exports have an **Include transcript history** option, enabled by default. Private-source and computer-only transcripts are excluded even when the option is enabled. See [Export & Import](/portability/export-import). Shared guest sessions do not retain the owner’s local transcript history.
+
+### Plain text, timestamps and speaker labels
+
+- **Plain text:** readable recognized text without added time markers.
+- **Whisper - Timestamps:** each segment includes a start time such as `[01:24]`.
+- **Speaker Labels + Timestamps:** an online OpenAI option. The local Whisper models currently offered do not identify different speakers. A bigger local model does not add that feature.
+
+Local plain text and timestamps use the same recognition model. Choose the model for speed and accuracy, and choose Options for how the transcript should look. All local model sizes have no per-use API fee.
+
+## Change, add or remove a model
+
+Use **Manage local models** any time. Selecting a model to inspect it does not change your saved method/model; click **Use** to adopt it.
+
+Under **More options**, **Locate an existing model…** lets you select a compatible model file that FlowJoe did not find automatically. FlowJoe checks the file before offering it. An unrelated or modified model file may be refused.
+
+A model downloaded by FlowJoe can be removed from this screen after confirmation to free disk space. FlowJoe does not delete model files it found elsewhere on your computer. If a selected model is removed or moved, choose another ready model or download it again.
+
+New model choices may arrive with FlowJoe updates. You choose whether to download a bigger or different model; FlowJoe does not replace your selected model automatically.
+
+## Privacy, limits and troubleshooting
+
+Local transcription keeps the audio on your computer and works offline after setup. If you later attach or paste the transcript into an online Joe conversation, that text follows the chat provider's normal processing rules.
+
+Local recordings are limited to **30 minutes and 100 MB** per run. Split longer recordings into smaller files. The recording must be in an audio format your computer can decode. Your audio output device’s sample rate does not affect local transcription. Quitting FlowJoe stops pending model detection as well as active transcription.
+
+- **No compatible model found:** choose a download, or use More options to locate a supported file.
+- **Download did not finish:** check your connection and available disk space, then retry. Your saved method/model stays unchanged.
+- **Model unavailable:** it may have moved or been removed. Open management and choose a ready model.
+- **Local engine unavailable:** use a supported desktop build with the transcription engine included. Compatible existing models may still be available. FlowJoe will not automatically upload your recording.
+- **Slow transcription:** try a smaller model or close other memory-heavy apps. Free transcription uses this computer's resources.
+- **Wrong words:** try a clearer recording or a more capable model, and review the transcript before relying on it.
+
+For online transcription, the app shows the selected model and its published cost estimate. OpenAI bills API usage separately from any ChatGPT subscription. See [Token usage with Joe](/joe/token-usage) for other paid AI activity.

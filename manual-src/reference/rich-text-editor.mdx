@@ -1,0 +1,228 @@
+---
+title: "Rich-Text Editor"
+description: "The shared writing surface behind Node Summary, Flow Summary, slot Preview notes, and gallery slot notes — slash commands, emoji, the bubble menu, AI actions, and markdown shortcuts."
+---
+
+FlowJoe uses one rich-text editor everywhere you write more than a title. It stores what you write as Markdown, so nothing is locked into a proprietary format, and it behaves the same way on every surface that uses it.
+
+---
+
+## Where you'll find it
+
+| Surface | How you open it | Persistent toolbar |
+| :--- | :--- | :--- |
+| [Node Summary](/tree/summaries) | Top-bar Summary button (or `S` with a node selected) | Yes |
+| [Flow Summary](/tree/flow-summary) | Top-bar Flow Summary button | Yes |
+| [Slot Preview notes](/gallery/preview) | Click a gallery slot to open it full-size | Yes |
+| [Gallery slot & stack notes](/gallery/anatomy) | Click into the note on the card itself | No — bubble menu only |
+
+The three modal surfaces (Node Summary, Flow Summary, Preview) get the full toolbar. Gallery notes on the board are deliberately chrome-free: you get the same slash commands, emoji picker, markdown shortcuts, and floating bubble menu, just without a toolbar taking up room on the card.
+
+> [!TIP]
+> Every modal surface has a **Keyboard Shortcuts & Formatting Guide** button in its toolbar. It's the same list as this page, available without leaving the app.
+
+---
+
+## Slash commands
+
+Type `/` and a menu of blocks opens. Keep typing to filter, `↑`/`↓` to move, `Enter` to insert, `Escape` to dismiss.
+
+<Note>
+`/` only opens the menu at a **word boundary** — the start of a line, or right after a space. Typing `and/or` mid-word does nothing, which is intentional.
+</Note>
+
+On the modal surfaces the full list is:
+
+- Heading 1, Heading 2, Heading 3
+- Task List
+- Bullet List
+- Numbered List
+- Blockquote
+- Code Block
+- Table of Contents
+- Insert Table
+- Divider
+- Collapsible Details
+- Insert Image
+- Image Upload Box
+- Embed YouTube
+- Reset Formatting
+- Ask Joe AI
+
+Gallery slot notes carry a deliberate subset — Heading 1–3, Task List, Bullet List, Numbered List, Blockquote, and Text (reset formatting). Images, tables, code blocks, and the AI item aren't on the card-level menu.
+
+---
+
+## Emoji picker
+
+Type `:` followed by a few letters — `:smi`, `:fire`, `:rocket` — and a searchable emoji menu appears. Pick one and it replaces what you typed.
+
+<Warning>
+`:` follows the same **word-boundary** rule as `/`. It has to be at the start of a line or directly after a space. Typing a colon mid-word (`ratio:2`, `10:30`) will not open the menu — this is the single most common source of "the emoji thing isn't working".
+</Warning>
+
+The picker matches on emoji name and keywords, and shows up to eight results at a time.
+
+---
+
+## The bubble menu
+
+Select any text and a small floating toolbar appears next to it. **The same set of buttons appears on every surface**, including gallery notes on the board:
+
+| Button | What it does |
+| :--- | :--- |
+| **B** | Bold |
+| *I* | Italic |
+| **U** | Underline |
+| ~~S~~ | Strikethrough |
+| Highlighter | Highlight the selection |
+| Lists ▸ | Bullet list, Numbered list, Checklist |
+| Link ▸ | Add Link, Remove link |
+| `</>` | Inline code |
+| ✨ | AI actions (Joe) |
+
+When you select an **image** in one of the modal surfaces, the bubble menu swaps in image controls instead: align left / center / right, float left or right so text wraps around it, add a caption, add alt text, and reset to original size.
+
+---
+
+## AI actions (Joe)
+
+Click ✨ in the bubble menu (or the toolbar's ✨, or `/` → **Ask Joe AI**) to hand the selected text to Joe.
+
+<Steps>
+<Step title="Select some text, or just place your cursor in a paragraph" />
+<Step title="Pick an action">
+- **Improve writing**
+- **Fix grammar & spelling**
+- **Simplify**
+- **Shorten**
+- **Expand**
+- **Change tone ▸** — Professional, Casual, Confident, Friendly
+- **Translate to ▸** — any of FlowJoe's supported languages, or **Other…** to name one yourself
+- **Turn into bullet points**
+- **Summarize**
+- **Continue writing**
+- **Ask Joe…** — type any instruction you like
+</Step>
+<Step title="Watch it stream in">
+Joe's answer appears in a card below your text, filling in as he writes. **Stop** cancels a request in progress.
+</Step>
+<Step title="Decide what to do with it">
+Once it's finished, the card shows the result with changes highlighted, plus an editable box — **you can tweak Joe's answer before you use it**. Then choose:
+
+- **Replace** — swap your selection for the result
+- **Insert below** — keep both
+- **Copy** — put it on the clipboard
+- **Retry** — ask again
+- **Discard** — throw it away
+</Step>
+</Steps>
+
+For Summarize, Continue writing, and Ask Joe…, **Insert below** is offered first, since those usually add to your text rather than rewrite it. `Cmd/Ctrl+Z` undoes an accepted change.
+
+<Note>
+AI actions need an API key configured — see [Bring Your Own Brain](/joe/byob).
+</Note>
+
+---
+
+## Markdown shortcuts as you type
+
+These convert as soon as you type the trigger:
+
+<Note>
+**Block triggers**, typed at the start of a line: `# `, `## `, `### ` for headings 1–3; `- ` or `* ` for a bullet list; `1. ` for a numbered list; `[ ] ` for a checklist item; `> ` for a blockquote; ` ``` ` then Enter for a code block; `--- ` then Enter for a horizontal divider.
+
+**Inline triggers**, anywhere: `**bold**`, `*italic*`, `~~strike~~`, `` `code` ``, and `==highlight==`.
+</Note>
+
+`==text==` is FlowJoe's own addition — it round-trips both ways, so a highlight you apply with the toolbar button saves back out as `==text==` in the underlying Markdown.
+
+---
+
+## The toolbar
+
+Modal surfaces (Node Summary, Flow Summary, Preview) carry a persistent toolbar. Left to right, it holds:
+
+- **Heading Sizes ▸** — Normal Text, Heading 1, Heading 2, Heading 3
+- **Bold**, **Italic**, **Underline**, **Strikethrough**
+- **Text & Highlight Color ▸** — a twelve-swatch palette (red, orange, yellow, green, cyan, blue, purple, crimson, white, gray, dark gray, black) applied as either text colour or highlight colour
+- **More Formatting ▸** — Inline Code, Subscript, Superscript, Clear Text Formatting, Reset All Formatting
+- **Hyperlink**
+- **Text Alignment ▸** — Left, Center, Right, Justify
+- **Checklist / Tasks**
+- **Bullet List**
+- **Numbered List Formats ▸** — decimal, lowercase/uppercase alpha, lowercase/uppercase roman
+- **Table Tools ▸** — insert a 3×3 table, add/delete rows and columns, delete the table
+- **Insert Blocks ▸** — Blockquote, Code Block, Horizontal Rule, Collapsible Details, Insert Image, Embed YouTube Video, Table of Contents
+- **AI actions (✨)**
+- **Find and Replace**
+- **Undo** / **Redo**
+- **Save**, **Print**, and the **Keyboard Shortcuts & Formatting Guide**
+
+Dictation and spell-check also live on this toolbar — see [Node Summaries](/tree/summaries).
+
+---
+
+## Keyboard shortcuts
+
+| Hotkey | Action |
+| :--- | :--- |
+| `Cmd/Ctrl+B` | Bold |
+| `Cmd/Ctrl+I` | Italic |
+| `Cmd/Ctrl+U` | Underline |
+| `Cmd/Ctrl+Shift+X` | Strikethrough |
+| `Cmd/Ctrl+Shift+H` | Highlight |
+| `Cmd/Ctrl+K` | Add / edit hyperlink |
+| `Cmd/Ctrl+Alt+1` / `2` / `3` | Heading levels |
+| `Tab` / `Shift+Tab` | Indent / outdent a list item |
+| `Cmd/Ctrl+Z` | Undo |
+| `Cmd/Ctrl+Shift+Z` | Redo |
+| `Cmd/Ctrl+F` | Find and replace (Summary and Preview only, not gallery notes) |
+| `Escape` | Finish editing a gallery note (closes an open `/` or `:` menu first) |
+| `Cmd/Ctrl+Enter` | Finish editing a gallery note; Save on the Summary surfaces |
+
+Undo and redo run on FlowJoe's own **50-level, persistent** history — the same one the rest of the app uses — so your edits are still there to step back through after a reload.
+
+<Note>
+There are **no** text-alignment keyboard shortcuts. `Cmd+Shift+R` collided with the browser's hard-reload, so the whole `Cmd+Shift+L/E/R/J` set was removed rather than leaving an inconsistent three. Use the toolbar's **Text Alignment** dropdown instead.
+</Note>
+
+---
+
+## Links
+
+Select some text, open the bubble menu's **Link ▸** dropdown, and choose **Add Link** — or press `Cmd/Ctrl+K`. **Remove link** in the same dropdown takes it off again.
+
+<Note>
+A link in a note **at rest** (not being edited) is clickable. On the desktop app it opens in the in-app [browser panel](/gallery/browser) in a new tab, so following a reference doesn't pull you out of FlowJoe.
+</Note>
+
+---
+
+## Highlighting
+
+<Note>
+Three ways to highlight, all producing the same result: the **highlighter** button in the bubble menu, typing `==your text==`, or `Cmd/Ctrl+Shift+H`.
+</Note>
+
+For **coloured** highlights, use the toolbar's **Text & Highlight Color** dropdown on a modal surface — it offers twelve swatches applied as highlight colour. Multicolour highlights are stored with the colour attached, so they survive a save and reload.
+
+---
+
+## See also
+
+<CardGroup cols={2}>
+<Card title="Node Summaries" icon="file-text" href="/tree/summaries">
+Per-node context, written in this editor.
+</Card>
+<Card title="Flow Summary" icon="list-tree" href="/tree/flow-summary">
+One summary for the whole tree.
+</Card>
+<Card title="Slot Preview" icon="image" href="/gallery/preview">
+Full-size media plus its notes.
+</Card>
+<Card title="Keyboard Shortcuts" icon="keyboard" href="/reference/keyboard-shortcuts">
+The app-wide hotkey reference.
+</Card>
+</CardGroup>

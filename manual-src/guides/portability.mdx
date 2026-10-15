@@ -1,0 +1,31 @@
+---
+title: "Data Portability & Backups"
+description: "How to move a project to a new computer without losing files."
+---
+
+Follow this guide to safely transfer your visual workspaces and assets to a new machine or backup drive.
+
+---
+
+## Workflow Steps
+
+### Step 1: Prepare the Export
+1. Right-click the root node of the project you want to move.
+2. Select **Export Subtree**.
+3. Choose the **Full-Package Media Bundle (`.fj`)** format.
+4. Save the file to your disk. FlowJoe compiles your tree database and packages all IndexedDB media files into the archive.
+
+### Step 2: Transfer the Package
+Copy the `.fj` package onto an external drive or send it to your target machine using local transfer tools.
+
+### Step 3: Set up Preferences (Optional)
+If you want your settings and playlists to match:
+1. Open Settings on your original machine.
+2. Click **Export Preferences**.
+3. Transfer and import the preference file on the new machine.
+
+### Step 4: Ingest on the New Computer
+1. Open FlowJoe on the new machine.
+2. Click **Import** from the top app menu.
+3. Choose your `.fj` package.
+4. Select **Merge at Root** or **Overwrite** to restore the project.

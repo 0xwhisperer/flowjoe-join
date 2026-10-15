@@ -1,0 +1,31 @@
+---
+title: "Rich Document Workbench"
+description: "Real word-processing islands for drafting documents."
+---
+
+The **Rich Document Workbench** utilizes Univer Docs to provide a real word-processing engine inside individual gallery slots.
+
+---
+
+## Workflows
+
+- **Create Blank Document:** Click **Add Slot**, choose **New Document...**, then pick **Rich Text Document**.
+- **Importing Text:** Drag and drop `.docx`, `.odt`, or `.rtf` files to import them. They open as editable document slots with styled text, lists, and embedded images; your untouched original stays hidden behind the slot so you can download it again.
+
+---
+
+## Editor Features
+
+- **Typography styling:** Change headers, font weights, colors, text alignment, and spacing.
+- **Image Integration:** Paste images directly from your clipboard into the body of the document.
+- **Headers & Footers:** Double-click the top or bottom margin of a page to edit its header or footer. Tables from imported files are kept when you save, but they cannot be edited in the editor yet.
+- **Exporting:** Download your edited copy from the slot's menu. It always saves as a `.docx` file (`.odt` and `.rtf` files are imported but not written back).
+- **Appearance:** The editor always uses a light look, even when the app is in a dark theme.
+
+---
+
+## Collaborative AI Writing
+
+Joe can work with your rich documents:
+- **Content Retrieval:** Joe reads document text using the `get_island_content` tool.
+- **Drafting and Editing:** Joe can read your document and suggest rewrites, spelling fixes, or expansions in chat, but he cannot write changes directly into a rich document yet. Copy the text you want into the editor.

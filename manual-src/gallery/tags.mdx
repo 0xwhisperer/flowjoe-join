@@ -1,0 +1,45 @@
+---
+title: "Tags & Virtual Galleries"
+description: "Flow-wide tags and dynamic cross-cutting search results."
+---
+
+FlowJoe uses **Tags** and **Virtual Galleries** to provide dynamic, cross-cutting discovery views across your entire project hierarchy.
+
+---
+
+## Tag Registry
+
+Manage your tag vocabulary in the Flow-level registry:
+- **Registry Location:** Stored at the root of the Flow file.
+- **Customization:** Add, rename, recolor (assign category colors), merge, or delete tags.
+- **Usage Counts:** The registry displays how many slots are tagged with each label.
+
+---
+
+## Assigning Tags to Slots
+
+- **Tag Editor:** Click the tag badge on any gallery slot to open the tag picker.
+- **Multi-Slot Tagging:** Select multiple slots, right-click, and select **Add Tags** or **Remove Tags** to apply metadata in bulk.
+- **Stack Tagging:** Stacks can be tagged as a single unit, or individual items within a stack can hold separate tags.
+
+---
+
+## Virtual Galleries
+
+A **Virtual Gallery** is a dynamically generated gallery view. 
+When you search for a tag (e.g. searching `tag:Important`) or type a text query across all nodes, FlowJoe gathers matching slots and presents them in a single view.
+
+### The Rules of Virtual Galleries
+
+To protect your folder hierarchy and avoid accidental data mutations, Virtual Galleries are **structurally read-only**:
+
+| Action | Allowed in Virtual Gallery? | Notes |
+| :--- | :--- | :--- |
+| **Preview Media** | Yes | Open PDFs, play audio, maximize images |
+| **Edit Slot Notes** | Yes | Edits save directly to the origin slot |
+| **Origin Jump-Back** | Yes | Click the origin card badge to jump to the real node in the tree |
+| **Drag & Drop Reorder** | **No** | Order is determined by search relevance |
+| **Merge Stacks / Delete** | **No** | Must perform structural edits on the origin node |
+
+> [!TIP]
+> **Virtual Gallery Safety:** Joe is restricted from executing tree mutations while focused on a Virtual Gallery, preventing AI processes from corrupting original outline paths during searches.

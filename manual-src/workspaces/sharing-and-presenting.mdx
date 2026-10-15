@@ -1,0 +1,118 @@
+---
+title: "Sharing, Guests and Presenting"
+description: "Invite people to view or edit a Flow in their browser, see who is where, and walk them through your Flow live."
+---
+
+You can share a Flow with someone who has nothing installed. They open a link in their browser and see the same FlowJoe you do. Your computer stays the home of the Flow: guests work on it live through your computer. A guest's browser keeps only what it needs while the link works (their own settings and the pictures, audio and video it has downloaded) and wipes all of it when the link is revoked, expires or ends, or when they choose Forget or Leave this Flow. Leaving also stops downloads and prevents late background work from saving shared content back into that browser. Choosing **Leave** also cancels uploads and changes still waiting to send.
+
+<Note>
+Sharing needs FlowJoe open on your computer. If you quit, guests see that you are offline and reconnect by themselves when you are back. Sharing also pauses on purpose in a few cases, listed under **When something is wrong**; guests are told why and their unsent edits wait for you. Sharing switches itself back on when you restart FlowJoe if it was on when you quit.
+</Note>
+
+## Share a Flow
+
+1. Open **Share** in the header and turn **Sharing on**.
+2. Choose **Invite someone**, type their name and choose **Can view** or **Can edit**.
+3. Choose what they see: the whole Flow or only the nodes you tick.
+4. Copy the link and send it. Each link is for one person and you can end it at any time.
+
+A guest sees only what you shared with them. Their theme, their language and their other settings are their own and never change your Flow. Where a card sits and how wide it is belong to the Flow, so they are the same for you and for everyone you shared with. (While you present, guests who follow see your screen, so show only what you are happy for them to see.)
+
+| | Can view | Can edit |
+|---|---|---|
+| Read everything shared with them, including History (read-only) | Yes | Yes |
+| Change nodes, slots and notes; tag slots with tags they can see | No | Yes |
+| Create, rename, recolour and delete tags | No | Yes |
+| Move, resize and copy slots, make or take apart a stack, add a link, set a slot's colour, draw lines between slots | No | Yes |
+| Freeze or unfreeze a node, change a node's own theme | No | Yes |
+| Add a node at the top level, and delete one they made themselves | No | Yes |
+| Read the shared Joe conversation for a node or slot (if Joe is enabled for their invitation) | Yes | Yes |
+| Ask Joe read-only questions about shared content (if Joe is enabled) | Yes | Yes |
+| Ask Joe for changes, use spell check or transcription, or attach pictures and documents (if Joe is enabled; Edit guests must not be following a presentation) | No | Yes |
+| Ask Joe to set up a schedule | No | Yes |
+| Make pictures in the Images tab (if you turned on **Let guests generate images**) | Sees the tab, cannot generate | Yes |
+| Export, download, copy, print | No | Only when the owner enables **Let guests export** (off by default) |
+| Their own theme, layout, canvas view and Settings for how FlowJoe looks | Yes | Yes |
+| Make a slot private or password-protect a node, delete a top-level node they did not create, delete a shared top-level node | No | No |
+
+FlowJoe puts no limit of its own on what a guest writes or uploads: you decide who you invite and what you share.
+
+Joe knows who he is talking to. He talks to each guest as "you", uses their first name now and then, and names you when he mentions you ("ask Elena for edit access"). He is also told who else is in the Flow, so he can mention them by name. A name is only a label: a guest who types "owner" or "admin" as their name still gets exactly the access you gave them.
+
+When Joe is enabled for an invitation, that guest joins the same Joe conversation you already have for the shared node or slot. Your messages, the guest's messages and Joe's replies appear together in your normal Joe chat, labeled with who said each message. Guests with Joe enabled who can see that same node or slot can read the thread; an Edit guest who is not following your presentation can add messages. A View guest can ask Joe questions about what is shared with them and read his answers, but cannot ask him to change anything — the tabs that write to your Flow stay dimmed for them. Only one guest request runs at a time across the share. If Joe is still busy after ten seconds, the guest sees that he is busy and the app retries the same request automatically.
+
+The conversation is saved with your ordinary Joe chat on your computer, so it remains there after the guest leaves, sharing stops or FlowJoe restarts. The **Joe conversations with guests** screen is a separate, read-only way to browse the guest turns grouped by guest; it does not hold a separate live conversation. Joe access is set per invitation. There is no additional all-participants chat switch in the current Share window. If you remove a node or slot from a guest's access, retrying an earlier Joe request cannot retrieve a saved answer about content they can no longer see.
+
+Things that need your computer, such as Browser, Terminal, Source Control and Data, are visible to guests but inactive.
+
+A slot whose file stays on your computer (a linked file) shows guests a note that the file is not available in the shared view, with the slot's title and notes still in place.
+
+### Top-level nodes, tags and schedules
+
+- **Top-level nodes.** If you shared the whole Flow, an Edit guest's new top-level node is a real top-level node in your Flow. If you shared only some nodes, it sits beside the shared top node, where it belongs in your tree, and it is added to that guest's share. An Edit guest can also drop files into empty tree space to make a top-level node, including when an existing whole-Flow share has become empty. A guest can delete a top-level node only if they made it, so they can never remove one you created.
+- **Tags.** An Edit guest can create tags, and rename, recolour or delete a tag they can see when nothing outside what they can see uses it. A tag lives in your whole Flow, so one that also sits on a node you did not share, or on a hidden or private slot, cannot be changed or deleted by a guest. Tags a guest cannot see stay hidden from them.
+- **Schedules.** An Edit guest can ask Joe to set up a scheduled task. It runs on your computer with your key, but it can only read and change what is shared with that guest, and you see who made each task. A task does not start while you present, while sharing is deliberately paused, or after the guest's access ends. Disconnecting the Workspace pauses these tasks before they use AI credits; reconnecting lifts that pause.
+- **Flow summary.** A guest who was shared the whole Flow sees your written Flow summary, and an Edit guest can edit it. A guest who sees only some nodes gets a read-only summary of what is shared.
+
+### Pictures made by guests
+
+Turn on **Let guests generate images** in the Share window and an Edit guest sees Joe's **Images** tab. The picture is made on your computer with your AI key and credits, kept in your image history credited to the guest, and shown in the guest's own preview. **Send to Gallery** adds it to the node like any picture they add. A guest who can only view sees the tab with the prompt and Generate switched off.
+
+Image history and its pictures follow the guest’s current access. If you remove access to a node, make it private, or end the invitation while a picture or history request is waiting, that request cannot deliver the content afterwards.
+
+### Settings
+
+Guests have FlowJoe's real Settings. Appearance, Tree, Gallery and Audio work and affect only their own screen. AI, APIs, Data, Browser and Automation are shown but locked, with one exception: **Settings → Data → Open-source licenses** works for guests and lists the open-source software their browser receives, with each license text.
+
+## Browse guest turns
+
+In the Share window the **People with access** heading has a **Joe conversations** button, and each guest's row (ended ones too) has a speech-bubble button. Either opens **Joe conversations with guests**: a read-only record of guest turns grouped by guest, with the guest who spoke to Joe most recently first. It is a browsing view of contributions to your ordinary chat, not a separate conversation. Choose **Everyone** or one guest's name to narrow the list. When a guest applied one of Joe's suggestions, it shows "Applied by" followed by the guest's name. This record stays on your computer after a share ends. Clearing ended invitations never removes it: the **Joe conversations** button stays, and on the first-time screen (no invitations left) it appears whenever saved conversations exist.
+
+## See who is here
+
+When people are in your Flow you see them as avatars in the header: you first, then everyone else. Choose the **+** button to open **Everyone here**, grouped as Owner, Can edit and Can view, with what each person is doing.
+
+- The breadcrumb row shows who is on the node you are looking at.
+- Tree rows show who is on which node.
+- A slot someone is typing in, moving or resizing is outlined in their colour and says so ("Leon is moving this card").
+- Under a slot's notes you see who last added or changed it and how long ago, whether a guest or you. It is saved with the Flow, so it is still there after FlowJoe restarts or sharing ends. If you change something while sharing is off, the old guest credit is dropped rather than put on your new text.
+- If your computer goes offline, every slot says editing is paused until you are back, and everyone else's avatar gets a slowly turning dashed ring until you return.
+- If a guest chooses **Discard changes** while your computer is unreachable, a message names the changes that were dropped so nothing is lost silently.
+- A guest who opens an invitation sees the app blurred behind the join dialog. Your Flow itself only appears after they join.
+
+## Present your Flow
+
+Use **Present** in the header (next to the Sharing pill) to walk guests through your Flow live. It starts off. It ends when you press **Stop presenting** or stop sharing; presenting stays off after a restart until you choose Present again.
+
+While you present, guests are invited to follow. A guest who follows sees what you see, live: the node you have open, your canvas camera and zoom, your layout, the cards you have selected (and the selection rectangle while you drag it), your open windows, menus, Joe's column and your Joe chat, and your Settings and History. They watch; they do not act.
+
+- **Nobody edits while you present.** Every guest's screen turns read-only and your computer refuses guest changes until you stop.
+- **Guests choose to follow**, and a guest can stop following at any time. Their first click, key press or scroll asks "Stop following?" first, so nothing throws them out by accident.
+- **Show my Joe chat while presenting** is yours to switch off.
+- The **Presenting** panel on the pill lists who follows and who is looking around on their own.
+- Guests who cannot see the node you are on see a short note that you are somewhere they cannot follow.
+
+### Locked follow links
+
+When you invite someone you can choose how they join:
+
+- **Normal:** they open the Flow and can follow when you present.
+- **Start in follow mode:** they open straight into following you, and can stop.
+- **Keep them following until I release them:** they follow without a Stop button, and their own clicks do nothing, until you release them. Before you present they see a waiting screen.
+
+You can also set **Presenting starts** to a date, time and time zone. A guest who opens the link early sees when to expect you in **their own time zone**, in yours and in UTC, with a countdown. FlowJoe only shows the time; you still press **Present**.
+
+Open the **Presenting** panel to **Lock all**, **Unlock all** or lock and release one guest. Releasing never removes anyone from the Flow. If you stop presenting, stop sharing or go offline, the lock ends by itself.
+
+## When something is wrong
+
+- **"Editing is paused while the owner presents"**: the owner is presenting; try again when they stop.
+- **A guest sees "owner offline"**: your FlowJoe is quit, your computer is unreachable, or you are not sharing. Turn **Sharing on** and they reconnect on their own.
+- **A guest sees "Paused" and a reason**: sharing is on hold on purpose, not broken.
+  - **"Paused · (your name) opened another Flow"**: you switched to a different Flow. Going back to the shared Flow lifts the pause.
+  - **"Paused · (your name) closed this Workspace"**: you chose **Delete Workspace** or **Disconnect**, or closed the Workspace. Reconnecting it (or continuing locally) resumes sharing.
+  - **"Paused · (your name)'s FlowJoe window is closed"**: on a Mac, closing the window keeps FlowJoe running but pauses sharing until you open a window again.
+
+  While paused, guests are not shown as present, but changes they made are kept and sent automatically when you are back. A guest who chooses **Discard changes** is told which changes were dropped.
+- **A guest sees "(Owner's name)'s FlowJoe needs an update"**: the guest page is newer than the FlowJoe on your computer. They can keep the page open and it connects as soon as you have updated; there is a **Try now** button, and the page checks again by itself every so often.
+- **You see "Update needed" when you try to share**: your FlowJoe is too old to work with your guests' browsers. **Update now** opens the FlowJoe download page; install the new version, then turn sharing on again. Everything else you do on your computer keeps working.

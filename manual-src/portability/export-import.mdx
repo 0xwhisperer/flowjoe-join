@@ -1,0 +1,59 @@
+---
+title: "Export & Import"
+description: "Transfer workspaces, copy subtree JSON, and save password-protected archives."
+---
+
+FlowJoe ensures your data is completely portable. You can move individual branches or entire workspaces between devices, and protect sensitive exports with whole-package encryption.
+
+---
+
+## Export Formats
+
+FlowJoe supports two primary export shapes:
+
+### 1. Data-Only JSON (`.json`)
+- **What it contains:** The complete tree structure, text notes, summaries, tag mappings, and slot metadata.
+- **What it omits:** The actual media binary files (images, audio, PDFs are referenced by name but not bundled).
+- **Best For:** Small backups, version-tracking text in Git, or sharing outlines.
+
+### 2. Full-Package Media Bundle (`.fj`)
+- **What it contains:** The tree JSON structure plus a compressed zip of all media assets stored in IndexedDB.
+- **Best For:** Archiving projects, backing up files, or moving your work to a different machine.
+
+---
+
+## Transcript history
+
+The export window’s **Include transcript history** option is enabled by default for JSON and full packages, including password-protected exports. It includes completed transcript text and retained edits, even if you have not saved a gallery copy. Turn it off to omit this history. Private-source transcripts and records marked **Keep on this computer only** are always excluded. A gallery copy is part of the gallery’s ordinary data and follows that data’s export rules.
+
+Whole-Flow imports restore included history under the imported Flow’s local identity. Merge imports remap its source links to the imported nodes and slots. **Import Node(s)** includes history only for the selected imported branches. History can still be opened, copied, and saved when its original recording is missing; a JSON export does not carry the recording’s media file.
+
+In Local mode the restored history lives in local app/browser data. In Workspace mode eligible history also goes into `.flowjoe/transcript-history.json`; that file is separate from the Workspace’s main Flow JSON. You can reopen, remove, or clear records from **Recent transcripts** in Joe’s Transcribe tab. Clearing history leaves original recordings and saved gallery copies in place.
+
+---
+
+## Password-Protected Packages
+
+When exporting a full package or data-only JSON, you can secure your backup by checking **Protect this `.fj` with a password** in the export prompt:
+
+* **Authenticated Encryption:** FlowJoe encrypts the entire snapshot—including Flow JSON, private nodes, media, metadata, and filenames—using **AES-GCM** authenticated encryption. Keys are derived using **PBKDF2** (SHA-256 with 250,000 iterations).
+* **Wire Format (v2):** Written as a compact binary file starting with the magic marker `FLOWJOEFP2`, followed by version flags, salt, initialization vectors, and the raw ciphertext (v1 JSON envelopes with base64 ciphertext are still supported for legacy imports).
+* **Fail-Closed Import:** Dragging or loading a protected package immediately prompts for the password before exposing any metadata. Entering an incorrect password fails closed cleanly, without writing partial data to IndexedDB or leaving decrypted temporary files on disk.
+
+---
+
+## Ingesting & Importing
+
+When you import a `.json` or `.fj` file, FlowJoe prompts you for a merge strategy:
+- **Overwrite:** Replaces the current Flow with the imported backup after protecting the outgoing Flow. The imported Flow receives a fresh local identity.
+- **Merge at Root:** Appends the imported nodes as new roots side-by-side with your existing workspace.
+- **Merge Under Selected:** Ingests the imported subtree as nested children under the currently selected node.
+
+*Protected nodes inside an imported package retain their individual password locks even after the package itself is unlocked and imported.*
+
+---
+
+## Clipboard Transfer (Copy JSON)
+
+- **Copy Node JSON:** Right-click a node and select **Copy Node JSON**. This places the subtree structure (namespaced with `_flowJoeMeta`) onto your operating system clipboard. You can paste this code block directly into a text editor or share it with Joe.
+- **Copy Slot JSON:** Right-click a gallery card to copy individual card styling, tags, and notes data.

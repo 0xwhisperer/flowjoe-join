@@ -1,0 +1,139 @@
+---
+title: "History & Recovery"
+description: "Restore points that let you jump back to an earlier version of your Flow, plus the safety nets that keep your work when something goes wrong."
+---
+
+FlowJoe keeps two different safety nets, and it helps to know which one you want:
+
+- **Restore points** let you deliberately jump back to how your Flow looked at an earlier moment. Use it after a change you regret.
+- The **Local Recovery Copy** is an automatic backup that exists only in Workspace Folder mode, for when the folder itself becomes unreachable.
+
+## Restore points
+
+A restore point keeps a copy of your whole Flow (tree, notes, tags, summaries) as it was at one moment.
+
+### Opening History
+
+Click **History** in the app rail. History lists your saved versions from the last 30 days, newest first and grouped by day (**Today**, **Yesterday**, then the date). Each row shows the time (hover it for the exact date and time), what happened, and who did it — **You**, **Joe**, a **Scheduled task**, a **Connected app**, or **Automatic**. Several quick changes by the same person are shown as one row, with the number of changes.
+
+Rows with a stored summary or a retained older copy say what changed in plain words — for example _"Renamed 'Research' → 'Notes' · Added 2 images to 'Moodboard'"_. Click **Show what changed** on a row to see the full list. Older rows whose copies were compacted away keep their general saved label. A change inside a password-protected private node is never named — it only ever counts as _"1 private node changed"_.
+
+The newest row is marked **Current version**. Restore points appear inline, on the version they belong to, with their name. Restore points from more than 30 days ago are listed at the bottom under **Older restore points**.
+
+History updates by itself while it is open.
+
+### Chat History and Image History
+
+The History window has three tabs, **Versions**, **Chats** and **Images**, and its title changes to match: **Version History**, **Chat History** or **Image History**. Only the owner sees the tabs; a guest sees Version History only.
+
+**Chats** lists every Joe conversation in your Flow, newest first, each with the place it belongs to. Use the search box, or the filters **All**, **Slots**, **Nodes** and **Summaries**, to narrow the list.
+
+- **Open** takes you to that place and opens the conversation in docked Joe.
+- Conversations whose node or slot was deleted are kept under **No longer in your flow**. They open read-only: you can read and copy from them, and start a new conversation somewhere else to keep talking. One whose node was private, or whose old place FlowJoe can't tell, shows without its words and can't be read.
+- Ordinary conversations travel with your Workspace folder, including the picture backups needed to reopen pictures in a chat. Anyone who opens that folder can read those conversations.
+- Use the desktop icon on a conversation row to toggle **Keep on this computer only**. The current conversation and each older conversation have their own setting. A conversation with this setting, and its chat-only picture backups, stay on that computer and are excluded from the Workspace folder, history exports and browser sharing.
+- Conversations about password-protected (Private) nodes also stay on their original computer, including their chat-only picture backups. Moving a slot into a private node applies the same restriction to its conversation immediately; you do not need to reopen the chat. Unlocking the node lets you read it locally; it does not make it travel or share it.
+- Each Flow has its own conversations and Flow-summary chat. When upgrading older history, the former computer-wide summary is assigned once to the Flow open when that migration runs. Later Flows get their own summary conversations.
+- Conversations on a password-protected (Private) node are not listed until you unlock that node.
+- The trash icon on a row deletes that one conversation. **Delete all shown** deletes only the conversations currently shown, after any search or filter. Every delete asks first and tells you how many will be removed. Deleting cannot be undone.
+- Conversations that only hold Joe's greeting are not listed, and neither are the review chats from Source Control's **Review current branch**.
+- If FlowJoe cannot establish that an older conversation belongs to this Flow, it does not include it in bulk deletion. Switching Flows while a deletion confirmation is open cancels that deletion.
+- If a conversation cannot be read, FlowJoe protects its saved messages from being replaced by an empty conversation. Reopen it after storage is available again before continuing.
+
+**Images** lists the pictures Joe made for nodes that are still in your Flow, grouped by day. Pictures from deleted nodes, and from locked private nodes, are not listed. Search, or filter by **All**, **In a slot** and **Not placed**. Each picture has **Open**, **Send to slot**, **Copy prompt** and a trash icon. Deleting a picture asks first. After deletion succeeds, its card goes; the stored picture is kept for as long as a slot or a chat message still uses it. If deletion cannot be saved, the card and picture are kept so you can retry. **Delete all shown** works the same way as in Chats, and only removes the rows that have a trash icon.
+
+The **Saved** label follows the picture’s current destinations. It hides the names and slot titles of locked private destinations.
+
+Standalone Image History stays on this computer when you copy a Workspace folder. A generated picture saved into an ordinary gallery slot can travel with the Workspace folder as gallery media; its separate Image History record does not.
+
+A `.fj` export with **Include AI chat and image history** selected includes only eligible conversations from the Flow you are exporting. It excludes private-node and computer-only conversations. A selected-node export includes only conversations in that branch. Import keeps conversations anchored in the imported Flow. Conversation sharing also respects private-node and computer-only exclusions, even when ordinary Joe conversations are enabled for an invitation.
+
+### Making one
+
+Three kinds of restore point exist, and you control each independently.
+
+| Kind                       | When it happens                                                                                                   |
+| :------------------------- | :---------------------------------------------------------------------------------------------------------------- |
+| **Timed**                  | Automatically as you work, on a schedule you choose                                                               |
+| **Before a restore**       | Automatically, just before you restore — so you can undo the undo                                                 |
+| **Ones you save yourself** | When you click **Create restore point** at the top of History, or **Mark as restore point** on any recent version |
+
+Automatic ones are named _Automatic restore point_, and ones you create or mark are named _Restore point_ — each shows beside its time. Click **Rename** on a restore point to give it your own name: **a restore point with a name is kept until you remove it**, however many new ones are made. **Remove restore point** stops keeping it (the version itself stays in History while it is recent).
+
+**Restore point settings** at the top of History opens **Settings → Data → Restore Points**. There, **Save restore points automatically** turns automatic ones on or off, and **Save one automatically** sets how often — from **Every 15 minutes** to **Once a day**.
+
+Timed restore points are taken when your Flow is saved, not by a clock running in the background — if you are not editing, nothing accumulates. Switching Flows while a restore point is being made can cancel it. Return to the original Flow and try again.
+
+### How many are kept
+
+In **Settings → Data → Restore Points**, each kind has its own limit:
+
+- **How many timed ones to keep**
+- **How many to keep from before a restore**
+- **How many you saved yourself to keep**
+
+Set any of these to `0` to keep none of that kind. The card shows the running total — _"Keeping up to 25 in total, plus any restore points you have renamed."_ When a limit is reached, the oldest of that kind drops off; when that happens because you created or marked one, History tells you. Restore points you have renamed don't count toward these limits and are never removed automatically.
+
+A restore point keeps the images and files it contains on disk until the restore point itself is removed, even if you delete them from the gallery — lowering the restore-point limits in Settings frees those sooner. Recently deleted images and files that aren't in a restore point are also kept for a while (roughly your last 20 saves, a fixed window the restore-point limits don't change) so Undo can bring them back. Once nothing can bring a file back, its space is freed the next time FlowJoe starts.
+
+**Delete all restore points** clears them for the current Flow. Your Flow itself is not changed.
+
+### Going back
+
+Click **Restore** on any row to go back to that version — a restore point, or any of your recent saves. Older versions that are not restore points are greyed and say **Too old to restore**: FlowJoe keeps a full copy of roughly your last 20 saves, plus every restore point. FlowJoe asks you to confirm, then replaces your Flow with that version. Before it does, it saves your current version as a restore point — including any edit you made a moment ago — so nothing is lost.
+
+<Note>
+A restore point includes your **whole Flow, galleries too**, so restoring puts images, files, links and slot notes back as they were — including one you mark on an older version. A restore point made before this update, still sitting in a Flow you haven't touched since, is the one exception and holds only the tree and text.
+</Note>
+
+After a restore, a message appears with **Go back to where I was**, and History shows the same button at the top for as long as your Flow is still at the restored version. Click it to return to the version you had just before restoring. Going back is itself saved as a restore point, so you can change your mind again. That earlier version is also in History as a restore point named _Before restoring "…"_ (if you set **How many to keep from before a restore** to `0`, it is kept only until the next restore point is made — **Go back to where I was** still works right after a restore).
+
+**Undo last change** at the top of History goes back to the version before your most recent change, with the same confirmation and the same safety restore point. It reaches back through your recent saves, galleries included: a change to images, files, links or slot notes — or deleting a slot or a whole node — is undone like any other, with its images. Moving or zooming the canvas, clicking through a stack, or moving a card is never counted as a change. Now and then a gallery change can't be undone this way (for example one made with an older version of FlowJoe); Undo tells you so rather than undoing something older, and a restore point is the way back.
+
+A restore is saved like any other change: closing FlowJoe or reloading afterwards keeps the restored version. If a restore cannot complete, FlowJoe tells you what state your Flow is in.
+
+### What restore points do not cover
+
+<Warning>
+**Importing a Flow over the current one, and starting a New Flow, do not take a restore point.** Both replace your Flow completely, so a restore point taken then would not survive. Both offer to save or export your current Flow first — **that export is your safety net, so take it.** Both also start with an empty Chat History and Image History, so tick **Include AI chat and image history** in the export if you want to keep your Joe conversations and pictures. Merge-import is different: it keeps your Flow's identity, and your restore points stay valid.
+</Warning>
+
+Restore points also:
+
+- Live **on this device**, with the app. They do not travel inside a `.fj` export or a workspace folder, and they do not sync to another machine.
+- Belong to **one Flow**. Switching Flows does not carry them across.
+- Reference your media rather than copying it. If a file was already gone, restoring brings back the slot but not the missing file.
+
+---
+
+## The Local Recovery Copy (Workspace mode)
+
+When your Flow is connected to a [Workspace Folder](/workspaces/folders), FlowJoe also keeps one automatic copy of it inside the app.
+
+It is for when the folder becomes unreachable (a drive unplugged, permission lost, the folder moved). FlowJoe then **pauses saving instead of losing your work**, and **Use Local Copy** restores from this copy.
+
+Your options, on the **Settings → Data → Workspace Folder** card:
+
+- **Reconnect Workspace** — once the drive is back.
+- **Use Local Copy** — continue from FlowJoe's copy, in the app's own storage.
+- **Rebuild Workspace** — write everything out to a new folder.
+- **Switch to Local Storage** — stop using the folder.
+- **Start New Local Project** — leave the folder behind and begin a fresh, empty Flow in the app's own storage.
+
+**Disconnect Workspace** leaves a folder without taking a copy of your Flow, and FlowJoe clears its local copy, so **Use Local Copy** is not offered afterwards. Reconnect, start a new local project or open another folder; to keep working with your Flow here, choose **Switch to Local Storage** instead.
+
+If the copy has fallen behind, the card says so plainly rather than implying it is current.
+
+---
+
+## When a workspace file was changed elsewhere
+
+If your workspace's `flow.json` changes on disk while FlowJoe is running, you are asked what to do (**Use External Changes**, **Keep My Changes**, **Open External as New Flow** or **Decide Later**), and an unreadable file gets its own dialog; the full steps are in [Workspace Folders](/workspaces/folders#when-something-changes-outside-flowjoe). FlowJoe does not pick silently. Any copy it sets aside is kept rather than deleted (your own side is kept complete, including unlocked private nodes, and stays on this computer): open it as its own Flow, export it to `.fj`, or discard it.
+
+---
+
+## Related
+
+- [Workspace Folders](/workspaces/folders) — saving a Flow as a folder on disk
+- [Export & Import](/portability/export-import) — `.fj` packages and JSON, the portable backup
+- [Storage & Diagnostics](/portability/storage-diagnostics) — what is taking up room

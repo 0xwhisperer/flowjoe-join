@@ -1,0 +1,34 @@
+---
+title: "Spreadsheet Workbench"
+description: "Live, formulas-ready spreadsheets running inside your gallery slots."
+---
+
+The **Spreadsheet Workbench** is an interactive, editable island powered by Univer Sheets. It lets you manage tabular data directly alongside your outlines and research notes.
+
+---
+
+## Creating & Importing Spreadsheets
+
+- **New Spreadsheet:** Click **Add Slot** (or **Add First Slot** on an empty node) in the gallery and select **New Spreadsheet**. This initializes an empty slot running the Univer Sheets engine.
+- **Importing Files:** Drag and drop `.csv`, `.xlsx`, `.ods`, or `.xls` files directly onto the gallery. FlowJoe turns each one into an editable spreadsheet slot automatically (there is no prompt), and keeps your untouched original file hidden behind it so you can download it again.
+
+---
+
+## Workbench Features
+
+- **Formulas & Math:** Supports standard spreadsheet formulas (SUM, IF, etc.).
+- **Multi-Tab Sheets:** Add, rename, and delete multiple tabs inside a single spreadsheet slot.
+- **Formatting:** Edit font styling, backgrounds, borders, alignment, and column widths.
+- **Exporting:** Download the sheet from the slot's menu. It saves in the same format you imported (`.csv`, `.tsv`, `.xlsx` or `.ods`); a new spreadsheet, or an imported `.xls`, downloads as `.xlsx`.
+- **Appearance:** The spreadsheet always uses a light look, even when the app is in a dark theme.
+
+---
+
+## AI Access & Interactions
+
+Joe and external terminal agents can read spreadsheet content using the `get_island_content` tool.
+- **Analysis:** Ask Joe questions like *"Summarize the total budget in the budget spreadsheet"* or *"Find the outliers in this CSV slot."*
+- **Write-back:** Joe can set the value of a single cell at a time (for example *"Put 1200 in B3"*). He does not write formulas, change formatting, or add rows and columns.
+
+> [!NOTE]
+> **Resource Isolation:** The spreadsheet workbench only loads its UI dependencies when you double-click to open it, keeping the rest of the gallery fast and lightweight.

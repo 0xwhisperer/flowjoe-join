@@ -2246,6 +2246,8 @@ button.orphan-media-modal-close.context-menu-corner-close {
   box-sizing: border-box;
   margin: calc(-1 * var(--pad-modal)) calc(-1 * var(--pad-modal)) 14px;
   padding: var(--modal-header-padding, 12px 16px);
+  /* Approved title-height comparison: 2px more above and below, without changing other chrome. */
+  padding-block: calc(var(--modal-header-padding-block, 8px) + 2px);
   border-bottom: 1px solid color-mix(in srgb, var(--border-light) 76%, transparent);
   border-radius: var(--modal-panel-radius) var(--modal-panel-radius) 0 0;
   background: color-mix(in srgb, var(--bg-primary) 38%, transparent);

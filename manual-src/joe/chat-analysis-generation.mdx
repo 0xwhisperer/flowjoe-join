@@ -1,0 +1,81 @@
+---
+title: "Chat, Analysis & Dictation"
+description: "Ask questions, analyze spreadsheets, generate graphics, and dictate notes."
+---
+
+Joe is capable of complex research, text reviews, and creative drafting. Here is how you use his core capabilities.
+
+Each send includes more than the prompt you typed. To see the cost and to shrink the tree outline Joe is given, use the token bar and the **Limit map to my location** / **Omit entire flow map** checkboxes above the message box. See [Token usage with Joe](/joe/token-usage).
+
+Chat, Spelling, Transcribe and Images share the target controls below their tabs. Use the crosshair for Flow Chat, or right-click a node inside Joe's target tree to choose Flow, Node or Slot. Choosing a slot in a tool keeps that tab and carries the choice into Chat. See [Choosing Joe's target](/joe/opening-joe#choosing-joes-target) for the slot list, Last used badge and draft behavior.
+
+---
+
+## Document & Asset Analysis
+
+Joe can read files attached to your gallery slots:
+- **PDF & Office Analysis:** Ask Joe to summarize text, translate pages, or look up terms.
+- **Spreadsheets:** Joe evaluates sheet rows and columns to compile budgets or highlight averages.
+- **Images:** Joe inspects images (JPG, PNG) to describe layouts, extract text, or check designs.
+
+---
+
+## Image Generation
+
+You can generate graphics directly in your workspace:
+- **Prompting:** Ask Joe *"Generate a logo for my coffee shop in sepia style."*
+- **Reference Images:** Attach an existing gallery image as a reference to steer Joe's generation style or layout.
+- **Write-back Options:** Generated images render inside a chat card. You can click **Send to Gallery** to save it as a new slot, insert it into a stack, or replace an existing image.
+- **If generation fails:** Your previous generated picture and its prompt remain available. A failed replacement request does not clear that draft. The new request stays in the prompt box so you can retry it.
+- **Survives a restart:** A generated image you haven't sent to the gallery yet still shows, and can still be sent or reused, after you close and reopen FlowJoe. If a generated image genuinely can't be recovered, the card says so with a plain note instead of showing a blank frame.
+
+---
+
+## A node's look, and changes in the gallery
+
+You can ask Joe to change the workspace itself. Each of these still waits on an approval card:
+
+- Give a node one of the Theme-menu looks by its menu name. He is shown the real list. A made-up name is refused. Clearing the look lets the node inherit again.
+- Copy a slot, or one item out of a stack, and leave the original where it is.
+- Crop a picture in its slot. The picture stays in that slot, so any lines on the canvas board stay with it.
+- Turn a picture or a note into a PDF and place that PDF beside the original.
+- Set, replace, or remove the album art on an audio item, using a picture already saved in FlowJoe. On a linked audio file the cover stays on this machine and does not change the file.
+- Color a slot on the canvas board red, green, blue, violet, pink, or cyan, or clear that color.
+- Draw or remove a line between two slots on the same board.
+
+You can ask Joe to control the header player right away, with no approval card. For example:
+
+- “Play some music” starts the current queue, or the first accessible saved playlist if the queue is empty.
+- “Shuffle the queue” or “loop this track” changes playback mode. Sequential mode plays in order and repeats the queue; repeat-one loops the current track.
+- “Play the audio in the *Opening* node once” plays one chosen gallery audio file and stops when it ends. If there is more than one file in the slot or stack, tell Joe which one.
+- “Play something tagged *calm*” works when audio slots have a matching user tag. Joe can use visible tag names and descriptions to match a vibe; he does not infer moods from filenames or node names.
+- “Save this queue as *Focus Mix*” creates a named playlist. To save audio carrying a tag without starting playback or changing the current queue, ask “Make a playlist called *Quiet Work* from audio tagged *calm*.” Joe will not overwrite an existing playlist.
+
+Joe can load a saved playlist by its exact name, pause playback, show the player, or hide it (which stops playback). A locked private or hidden-from-Joe node is not available to him.
+
+---
+
+## Spellcheck & Grammar Diff Mode
+
+For text drafts:
+- **Diff Presentation:** Selecting a text box and running Spell & Grammar opens a review modal showing a side-by-side green/red diff of corrections.
+- **My Tweaks:** You can write edits before applying.
+- **Accept/Cancel:** Click Accept to write corrections directly into the source note, document, or summary with full undo-history support.
+
+---
+
+## Audio transcription
+
+Turn recordings into text in Joe’s **Transcribe** tab. Choose free local Whisper for offline processing on your computer, or your paid OpenAI API account. FlowJoe discovers compatible installed models, walks you through optional downloads, and remembers your choices. Local output can be plain text or timestamped segments; speaker labels remain an online option. See [Transcribe audio](/joe/transcription) for setup, model sizes and the complete walkthrough.
+
+## Dictation Command Reference
+
+When voice dictation is active, you can use spoken commands to structure text:
+
+| Say | Output |
+| :--- | :--- |
+| *"comma"* | `,` |
+| *"period"* | `.` |
+| *"new line"* / *"line break"* | Inserts a line break |
+| *"delete last word"* | Deletes the preceding word |
+| *"clear all"* | Clears the entire text field |

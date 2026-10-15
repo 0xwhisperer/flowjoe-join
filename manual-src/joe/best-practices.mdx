@@ -1,0 +1,59 @@
+---
+title: "Prompting & Best Practices"
+description: "Guidelines for writing successful prompts, structuring complex tasks, and working safely with Joe."
+---
+
+Just like working with human team members, collaborating with Joe yields the highest quality results when tasks are clearly scoped, context is provided, and completion criteria are explicit. 
+
+Here are the best practices for prompt engineering and workflow automation in FlowJoe.
+
+---
+
+## 🎯 1. Define Explicit Completion Criteria
+
+Joe operates best when prompts have a concrete, checkable definition of success.
+- **Vague Prompt:** *"Help me organize my notes."* (This leaves the structure up to the model and can lead to unexpected changes).
+- **Effective Prompt:** *"Review my 'Research Notes' node. Create three child nodes under it named 'Timeline', 'Budget', and 'Logistics'. Write a two-sentence summary inside the note card of each new node based on the PDF attached to slot 2."*
+
+By giving Joe precise, executable instructions, you guarantee high success rates.
+
+---
+
+## 🧩 2. Break Down Complex Workflows
+
+For massive refactors or complex outliners:
+- **Scope Down:** Do not ask Joe to restructure a 100-node tree in a single prompt. Instead, break it down. Ask Joe to analyze a single branch, review the proposal, approve it, and then proceed to the next branch.
+- **Interactive Checkpoints:** Use Joe's chat modal to draft outlines before committing them to the tree. Once you are happy with the draft outline in chat, ask Joe: *"Write this draft outline to the tree under the 'Drafts' root node."*
+
+---
+
+## 🔎 3. Make Tasks Easy to Verify
+
+Ensure your prompts build structures that you can easily audit:
+- Ask Joe to create status nodes (e.g. setting node tags like `#ToReview` or `#Draft`) so you can visually isolate the branches he edited.
+- For automation scripts and timers, ask Joe to print a log summary in the "Safety Seatbelt" review inbox describing exactly what files or nodes were processed.
+
+---
+
+## 📦 4. Provide Rich Context & Reference Material
+
+FlowJoe's superpower is the **References (Right Brain) Gallery**. Give Joe access to the files he needs:
+- **Gallery Slots:** Explicitly direct Joe to files inside your nodes (e.g., *"Read the spreadsheet on slot 3"* or *"Compare the image stack in slot 1"*).
+- **Stay on the branch you mean:** Select that node before you send. **Limit map to my location** (on by default) then gives Joe this branch instead of the whole tree, which keeps the send smaller. Uncheck it only when the question needs the rest of the outline. Check **Omit entire flow map** for turns that do not need the tree at all. See [Token usage with Joe](/joe/token-usage).
+- **Avoid Ambiguity:** Reference nodes by their exact names so Joe can match them on the map he was given.
+
+---
+
+## 🔒 5. Isolate Sensitive Data with Private Nodes
+
+Before triggering bulk automations or asking broad questions:
+- Mark branches containing proprietary code, private credentials, or personal details as **Private** in the tree context menu.
+- Joe's prompt engine automatically strips Private branches and their attachments from external API calls, protecting your privacy.
+
+---
+
+## Related Guides
+- [Token usage with Joe](/joe/token-usage)
+- [Chat, Analysis & Dictation](/joe/chat-analysis-generation)
+- [Propose-Approve Loop](/joe/propose-approve)
+- [Security & Privacy](/concepts/security)

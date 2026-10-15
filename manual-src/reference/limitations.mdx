@@ -1,0 +1,38 @@
+---
+title: "Honest Limitations"
+description: "A transparent list of boundaries and unsupported behaviors in FlowJoe."
+---
+
+We believe in stating product limits clearly. Here are the boundaries and intentional limitations of FlowJoe.
+
+---
+
+## 1. Hierarchical Tree Only
+FlowJoe's **structure** is a tree: every node has exactly one parent.
+- You cannot draw connections between **nodes** in the tree, or give a node two parents. The tree is a hierarchy, not a graph.
+- Slots **inside** a node's gallery are a different matter: the Canvas layout lets you place them freely on an infinite 2D board and draw relationship lines between them. Those connections live within that one gallery and cannot cross into another node. See [Canvas Connections](/gallery/connections).
+
+---
+
+## 2. Document Previews
+FlowJoe renders document previews locally:
+- Previews for DOCX, PPTX, and XLSX display inline text and formatting.
+- Previews for **legacy formats (`.doc`, `.xls`, `.ppt`)** require LibreOffice to be installed on your machine and configured in your path setting; otherwise, the app can only display raw text extractions.
+
+---
+
+## 4. Mobile Layout (In Development)
+
+The mobile version of FlowJoe is currently in design and layout development, focusing on high-density outlines and quick media inputs:
+
+![FlowJoe Mobile Shell Preview](/images/06-mobile-shell.png)
+
+---
+
+## 3. Virtual Gallery Read-Only State
+Virtual galleries compile dynamic search results:
+- To prevent accidental structural corruption, **virtual galleries are read-mostly**. You can edit slot notes and view files, but you cannot drag cards, merge stacks, or delete files directly in a Virtual Gallery. You must click the jump-back badge to edit the file at its original node.
+
+## Local audio transcription
+
+Free local Whisper transcription is a desktop feature. Recordings are limited to 30 minutes and 100 MB per run, and need a compatible installed/downloaded model. Local output supports plain text or segment timestamps; speaker labels are currently an online option. Download size is separate from working memory, and speed depends on your computer. See [Transcribe audio](/joe/transcription).

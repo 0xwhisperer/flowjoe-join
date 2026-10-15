@@ -1,0 +1,206 @@
+---
+title: "Workspace Folders"
+description: "Save a Flow as a normal folder on your drive, so your work sits in plain files you can back up, version, and see."
+---
+
+Normally FlowJoe keeps your Flow in its own storage inside the app. **Workspace Folder** mode writes it to a folder you choose instead, as ordinary files you can open, copy, and back up.
+
+<Note>
+Workspace Folders are available in the desktop app.
+</Note>
+
+<Warning>
+**Older backups are protected automatically.** When a Flow already contains private
+nodes, FlowJoe preserves their full content in owner-only storage, replaces it in the Workspace with
+redacted placeholders, and verifies the saved file before resuming saves. A copy shared or backed up
+before migration cannot be recalled. If an older Workspace backup still contains private text,
+FlowJoe does the same to that backup: your private notes stay safe on this computer and the backup keeps
+a placeholder. A backup that is damaged and cannot be checked is removed. Saving then resumes and a
+notice tells you what was done.
+</Warning>
+
+---
+
+## Where to find it
+
+Open **Settings → Data** and look for the **Workspace Folder** card. Everything below happens there; there is no File menu entry or context-menu item for this.
+
+On first launch, the desktop app offers **Keep FlowJoe local**, **Workspace Folder**, and **Decide later**. Choosing Workspace Folder takes you to this card to select or create the folder. If you skip onboarding, the card remains available in Settings.
+
+---
+
+## Setting one up
+
+The card shows different buttons depending on whether a folder is connected.
+
+| Button | When you see it | What it does |
+| :--- | :--- | :--- |
+| **New Workspace** | No folder connected | Pick an empty folder. FlowJoe copies the current Flow and all its media there, then starts saving there. |
+| **Connect Workspace** | No folder connected | Open a folder that is already a FlowJoe workspace. |
+| **Reconnect Workspace** | FlowJoe remembers your last folder | Reconnects to it without picking again. |
+| **Change Workspace** | A folder is connected | Switch to a different workspace folder. |
+| **Switch to Local Storage** | A folder is connected | Copies the workspace back into the app's own storage and keeps editing there. The folder is left untouched. |
+| **Disconnect Workspace** | A folder is connected | Detaches from the folder without taking a copy of your Flow. Editing stays paused until you reconnect the folder or start a new Local Project. To keep working with your Flow, use **Switch to Local Storage** instead. |
+| **Delete Workspace** | A folder is connected | Removes only the files FlowJoe manages in that folder. This cannot be undone. |
+| **Reveal Workspace Folder** | A folder is remembered | Opens the folder in Finder or Explorer. |
+
+When you create a workspace, FlowJoe shows its progress — *"Preparing workspace…"*, then *"Copying media 3 of 12…"* — and you can **Cancel** partway through.
+
+One Flow lives in one folder. **New Workspace** is hidden while you are already connected.
+
+**Delete Workspace** needs free space on the drive of about the size of the workspace, because FlowJoe first makes a temporary safety copy inside the folder. If cleanup fails afterwards, a leftover folder whose name starts with `.flowjoe-delete-` may remain. Once FlowJoe has reported the delete as finished, or has put the Workspace back, that folder is safe to delete. Otherwise it may hold the only copy of your Workspace, so leave it alone and open the folder in FlowJoe first; FlowJoe tidies it up when you do. If FlowJoe is closed or crashes in the middle of a delete, the next time you open that folder FlowJoe puts the Workspace back exactly as it was and tells you; delete it again if you still want to. Any `flow.unreadable-` files (see below) are not removed.
+
+The card shows the current Flow name, the selected or last-known folder path, and whether that folder is connected. Before connecting to an existing folder, FlowJoe summarizes both versions and calls out missing media references separately from files not used by the current Flow. The review makes no changes; Workspace media is not deleted automatically.
+
+---
+
+## What lands on disk
+
+```
+My Project Folder/
+├── flow.json        Your whole Flow — tree, notes, tags, summaries — as readable JSON
+├── media/           One file per image, audio file, video, and document
+└── .flowjoe/        FlowJoe's own bookkeeping
+```
+
+**`.flowjoe/`** holds backups (FlowJoe keeps the newest 20), a change journal and version history, and small per-computer notes. Each note contains that computer's name and a timestamp, refreshed about once a minute while the workspace is open, so other computers can tell it is in use. If the folder is synced or shared, those notes travel with it.
+
+**`flow.json`** is plain, indented JSON, so a version-control tool like Git can diff and merge it as text.
+
+**`media/`** holds your files one per item. They are named by FlowJoe's internal id and carry no file extension, so treat this folder as storage rather than a gallery to browse.
+
+Ordinary Joe conversations and their picture backups travel with the folder. A conversation marked **Keep on this computer only**, and conversations belonging to private nodes, stay on this computer. Joe Memories, standalone Image History prompts, your preferences, and browser data also stay local. Scheduled tasks (automations) and your custom placeholder picture travel with the Flow.
+
+<Note>
+Implemented in source; no packaged release implied.
+</Note>
+
+Edit `flow.json` outside FlowJoe only if you know the format. If a Git merge leaves conflict markers in it, FlowJoe cannot open the workspace until you clean them out. If it becomes unreadable while the workspace is already open, see the next section.
+
+---
+
+## Backups, Git, and syncing
+
+Back up a Workspace Folder like any other directory: Time Machine, an external drive, or a sync client. Git can track the folder too, but that tracks the Flow's storage files together; it is not how FlowJoe's project repositories work.
+
+<Note>
+A **Workspace Folder** chooses where the Flow's data is stored. A **repo node** gives one node its own Git repository for project files. Those are separate choices: repo-node files appear in the node tree and galleries and are saved through FlowJoe's normal storage, while Git history is kept as FlowJoe-managed hidden data.
+
+To bring a project into Git in FlowJoe, create or clone a repo node from the New Node window. Do not make the whole Flow's Workspace Folder the project repository.
+Each repo node has its own hidden Git history; its files remain in the Flow's tree and galleries. See [Repo nodes and Git](/tree/repositories) for HTTPS and SSH remotes.
+</Note>
+
+<Warning>
+**Network and shared drives are not supported yet.** FlowJoe checks before connecting and refuses a folder on a network or shared drive: *"That folder is on a network or shared drive. FlowJoe can only use a folder on this computer's own disk for now. Choose a folder on your local drive instead."* Keep your workspace on the computer's own disk. If a sync service (Dropbox, iCloud Drive, Google Drive, OneDrive) leaves a conflict copy of `flow.json` in the folder while FlowJoe is running, FlowJoe notices it and tells you.
+</Warning>
+
+Replacing files inside `media/` by hand is not a supported way to swap media — FlowJoe watches `flow.json`, not the media folder.
+
+---
+
+## When something changes outside FlowJoe
+
+If `flow.json` changes on disk while FlowJoe is running — a sync client pulling a newer copy, or you editing it directly — FlowJoe tells you rather than silently picking a side.
+
+If the change does not collide with your work, it refreshes on its own (and tells you when the change turns up while you are saving), and any unsaved edits to your unlocked private nodes are kept. If it does, you get **Someone changed this Workspace file outside FlowJoe** and choose:
+
+- **Use External Changes** — take the version on disk. Your own version, including any private nodes you have unlocked, is kept as a complete copy on this computer only. If the file changes again while FlowJoe is taking it, you are asked again instead of the newer file being accepted unseen.
+- **Keep My Changes** — keep what is in FlowJoe and overwrite the file.
+- **Open External as New Flow** — open the disk version separately and decide later.
+- **Decide Later** — close the dialog without choosing. Folder saving stays paused, the status bar shows **Outside change waiting · saving paused**, and clicking it reopens the dialog. Edits you make meanwhile are kept on this computer and saved to the folder once you decide.
+
+### When the workspace file can't be read
+
+If `flow.json` becomes unreadable while the workspace is open (a Git merge left markers in it, a hand edit broke it, or it is too large), FlowJoe shows **FlowJoe can't read the workspace file**. Your work stays safe in FlowJoe. You can:
+
+- **Check Again** — after you fix the file.
+- **Keep My Changes** — FlowJoe first saves the unreadable file next to it as `flow.unreadable-<date>.json`, then saves your version.
+- **Decide Later** — leave saving paused for now.
+
+### Open on another computer
+
+If the workspace was used on another computer within the last 5 minutes, FlowJoe warns **This Workspace is open on another computer** before you open or reconnect it, and when it reconnects automatically at launch. Choose **Open here anyway** or **Cancel**. Cancelling at launch leaves saving paused until you reconnect from Settings. While both computers have it open, the status bar shows **Also open on (computer name)**. Editing on two computers at once can leave two different versions of your Flow.
+
+### Missing, retained, and changed media
+
+- A missing media reference is listed separately; FlowJoe does not replace it with a different file.
+- Files present in the folder but unused by the current Flow are counted and retained; Workspace media is not deleted automatically.
+- **Settings → Data → Inspect Stale References** shows missing targets and any safely repairable metadata. Safe repairs remove only the stale metadata link; they do not delete media files.
+- If FlowJoe detects that a media file changed after it was read, it stops the write and opens the existing review path. The outside copy is preserved until you resolve the review.
+
+---
+
+## Using one Workspace on two computers
+
+If two computers, or two FlowJoe windows, save the same Workspace at the same moment, FlowJoe lets one finish first and the other waits a few seconds, then saves. Nothing you type meanwhile is lost.
+
+If a sync service delivers a version that was made without your latest save, FlowJoe asks which version to keep and keeps a copy of the other one.
+
+If the Workspace was changed on another computer while FlowJoe was closed, FlowJoe keeps your last version as a copy when you open it again and tells you. Copies kept this way are listed in Settings.
+
+The **Open on another computer** note is only information. It never stops you from opening or saving.
+
+---
+
+## When saving pauses
+
+If FlowJoe cannot reach the folder — the drive is unplugged, permission was lost, or the folder moved — it **stops saving rather than losing your work**. The status bar shows *Saving is paused*, and edits are refused until you sort it out. Joe is told too, and will say he cannot make changes until the workspace is reconnected.
+
+Your ways out, all on the same card:
+
+- **Reconnect Workspace** — reconnect once the drive is back.
+- **Use Local Copy** — continue from FlowJoe's own recent copy of your work.
+- **Rebuild Workspace** — write the workspace out to a new folder.
+- **Switch to Local Storage** — go back to the app's own storage.
+- **Start New Local Project** — begin a fresh Flow.
+
+FlowJoe keeps a **Local Recovery Copy** inside the app while you work in a workspace, which is what **Use Local Copy** restores from. See [History & Recovery](/workspaces/recovery).
+
+If a save was interrupted halfway, connecting reports it and offers **Clear Interrupted Save**. FlowJoe only clears saves it can prove never completed; anything else it leaves alone and tells you so.
+
+If a save from another computer never finished in this folder (for example it was switched off mid-save), Settings shows **A save from that computer never finished. It isn't part of your Flow.** FlowJoe waits a couple of minutes first, in case the other computer is still saving. This computer never applies another computer's unfinished save, so your Flow is never replaced by it. The card offers one action, **Clear**, which asks you to confirm and then deletes the leftover. Your Flow stays exactly as it is.
+
+If it was your own other computer, open FlowJoe there before clearing: it finishes its own interrupted save, as long as nobody has saved this Flow since. If someone has, that save is dropped there too.
+
+---
+
+## Private nodes
+
+Workspace files represent password-protected private nodes as *"Private node (not shared)"*
+placeholders. When you create one in a Workspace, FlowJoe keeps it out of the live Flow until
+protection and its device-only copy are confirmed; only then can it be saved to the Workspace. When
+opening an older Flow, FlowJoe first confirms a durable owner-only copy before running load-time
+migrations, then checks the Workspace file before normal saving resumes. If FlowJoe cannot confirm
+that local copy, the connection stops before hydration or saving. Copies made before migration may
+remain elsewhere and cannot be recalled. If a retained Workspace backup still contains private
+text, FlowJoe replaces that text with a placeholder (your private notes stay on this computer) and
+removes any backup too damaged to check, then lets saving resume.
+
+Pictures and files you add to a private node are kept on this computer — FlowJoe does not put them
+in the Workspace folder itself, and guests cannot load them. If the node stops being private (for example, you
+remove its password), FlowJoe copies its pictures into the folder the next time it saves.
+This also holds when you open a `.fj` file (File > Open, Recent imports or Import Node(s)) while a Workspace is connected: pictures and files that belong to its private nodes stay on this computer, and only the rest goes into the Workspace folder. A `.fj` file you drop onto the tree arrives as ordinary nodes, so its pictures and files go into the Workspace folder with them.
+
+Pictures and files that private nodes put in the Workspace folder before this protection existed are moved to this computer automatically the next time you open the Workspace, once an identical copy is safely on this computer. They keep working for you, and the folder no longer holds them. A spreadsheet, document or calendar of a private node that you have edited since may still have an older copy in the folder; FlowJoe leaves that copy in place so your newer version is never lost. Copies that other computers, sync services or backups already made cannot be recalled.
+
+A private node's content stays on the computer where it lives. It is not stored in the Workspace folder, so it does not follow you to your own second computer: there, the node appears only as the *"Private node (not shared)"* placeholder.
+
+---
+
+## Quitting FlowJoe
+
+When you quit or close the window, FlowJoe closes straight away if nothing needs to finish. If it has to wait, a **Closing FlowJoe…** cover shows while FlowJoe saves your work and stops any running terminals (it waits about 2 seconds, then force-stops them); the cover appears at once when terminals are running, or after a moment if a save is still going. If the last workspace save could not finish, FlowJoe keeps those changes on this computer and offers them back the next time it starts.
+
+---
+
+## Exports still work
+
+Workspace mode does not replace `.fj` export. You can still export a full `.fj` package or JSON at any time — see [Export & Import](/portability/export-import). Restore points are **not** included in a workspace folder or a `.fj` file; they live with the app on this device.
+
+---
+
+## Related
+
+- [History & Recovery](/workspaces/recovery) — restore points, the Local Recovery Copy, and getting unstuck
+- [Export & Import](/portability/export-import) — `.fj` packages and JSON
+- [Storage & Diagnostics](/portability/storage-diagnostics) — where data lives and how much room it takes

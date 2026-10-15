@@ -1,0 +1,44 @@
+---
+title: "Agent Bridge (MCP)"
+description: "Connect terminal-based AI agents and developer scripts directly to your local FlowJoe workspace."
+---
+
+FlowJoe is designed for both human and agentic collaboration. Through the **Agent Bridge**, FlowJoe hosts a local **Model Context Protocol (MCP)** server, exposing your outlines, workspaces, and media galleries to external terminal-driven agents.
+
+---
+
+## How It Works
+
+The Agent Bridge acts as a secure local loopback server. When active, it translates FlowJoe's complex visual structure and files into a standard format that external LLM agents can read and write:
+
+```
+┌─────────────────┐             ┌──────────────────┐
+│  Claude Code /  │   (MCP)     │  FlowJoe App     │
+│  Terminal Agent │ ──────────> │  Loopback Server │
+└─────────────────┘             └──────────────────┘
+                                         │
+                                         ▼
+                                Exposes: Outlines,
+                                Galleries & Workbenches
+```
+
+* **Read Snippets:** External agents can read your active tree structure, notes, and task states.
+* **Propose Changes:** Agents can use the standard flow-mutation verb set to write new nodes, stage images, or edit checklists.
+* **User Consent:** The agent cannot change your project directly. Every command is sent as a proposal card to your FlowJoe review inbox.
+
+---
+
+## 🚀 Setting Up the Bridge
+
+1. Open **Settings → Agent Bridge (MCP)**.
+2. Toggle the **Bridge Server** to *On*. The server starts locally on your machine.
+3. **Bearer Token Security:** FlowJoe generates a secure bearer token to authorize local connections. You can rotate this token at any time.
+4. **Direct Connect Integration:** Click the **Direct Connect** button to automatically write connection files to your local tool config directories (e.g. `~/.config/claude/mcp.json`), making Joe immediately available to tools like **Claude Code** or custom Python runtimes.
+
+---
+
+## 🛡️ The Automation Seatbelt
+
+When an external terminal agent attempts to apply updates, FlowJoe passes the changes through the **Automation Seatbelt**:
+* **Non-Destructive Edits:** Adding cards, appending notes, or creating tags can be applied automatically if authorized.
+* **Destructive Intercepts:** If a script attempts to delete a node, delete task logs, or remove content it does not own, the seatbelt halts the run. The proposal is redirected to your manual review inbox, ensuring you stay in absolute control.

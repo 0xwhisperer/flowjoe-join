@@ -1,0 +1,35 @@
+---
+title: "Calendar Workbench"
+description: "Manage timelines, schedules, and ICS files in a unified view."
+---
+
+The **Calendar Workbench** integrates FullCalendar into a slot, letting you schedule, drag, and structure events side-by-side with research materials.
+
+---
+
+## Intakes & Imports
+
+You can import schedules in several shapes:
+- **Import ICS/iCal:** Drag-and-drop a `.ics` or `.ical` calendar file. FlowJoe displays a prompt letting you import it as:
+  1. A **Calendar Slot** (interactive FullCalendar workbench).
+  2. A **Stack** of event cards.
+  3. Individual **Event Nodes** created under the selected parent.
+- **New Blank Calendar:** Click **New Calendar** from the gallery menu.
+
+---
+
+## Interactive Timeline Editing
+
+Double-click a Calendar slot to open the FullCalendar workbench:
+- **Multiple Views:** Switch between Month, Week, Day, and Agenda List views.
+- **Manage Events:** Create new events, rename titles, or delete events.
+- **Drag & Resize:** Drag event cards to change dates, or drag block edges to resize duration. Changes write back to the underlying ICS format.
+- **Exporting:** Save calendars back to a standard `.ics` file.
+
+---
+
+## Joe Integration
+
+Joe receives calendar agendas as parsed, readable text:
+- **Planning:** Ask Joe *"Find conflicts in my schedule next week"* or *"Draft an itinerary for Tuesday."*
+- **ICS Preservation:** FlowJoe keeps the original source `.ics` file preserved in the slot metadata, allowing round-trips without data loss.

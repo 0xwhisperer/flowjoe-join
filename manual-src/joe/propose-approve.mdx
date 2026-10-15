@@ -1,0 +1,45 @@
+---
+title: "The Propose-Approve Loop"
+description: "How structural changes are applied, reviewed, and audited."
+---
+
+When Joe modifies your workspace structure, he utilizes a safety system called the **Propose-Approve Loop**.
+
+---
+
+## Proposal Cards
+
+Instead of writing edits directly to your local database, Joe outputs a **Proposal Card** inside the chat panel. 
+
+- **The Diff View:** The proposal card lists changes visually (e.g. green `+` for additions, yellow for modifications, red `-` for deletions).
+- **Atomic Execution:** Clicking **Approve** shows **Applying…** until the change has actually run, then the card reads **Applied** — or **Not applied**, with the plain-language reason (your flow changed after Joe proposed it, the same change was already applied earlier, or something went wrong). That outcome is saved with the conversation, so it reads the same after closing and reopening the chat, switching items, or starting a new chat mid-apply. Clicking **Reject** deletes the card, leaving your project untouched.
+- **System Undo:** If you approve a change and realize it wasn't what you wanted, press `Cmd/Ctrl+Z` to undo the entire proposal, or ask Joe to undo it. **Undo through chat only reverts Joe's own chat edits** — a file you picked for Joe to place, an Automation run, or a change from a connected agent has its own undo path and is never touched by "undo the last change" in chat.
+- **Undo never leaves you with a broken picture.** If Joe's change removed an image, video, or audio slot, the underlying file is kept on your device for as long as an undo could still bring it back — so reverting the change always restores a working slot, never a broken link.
+- **A waiting card never overwrites your newer edits.** If you rename a node, change its status, or edit its notes/summary while a card is still sitting unanswered, approving that card afterward is refused (with a plain reason) instead of silently overwriting what you just did — Joe re-checks the current state and proposes fresh.
+- **One proposal per turn takes effect.** If Joe's reply proposes more than one change in the same turn, only the first one you decide on (approve, reject, or ask Joe to revise) is offered — any later proposal in that same reply is automatically skipped so Joe can re-check your flow and propose it fresh, rather than acting on a plan that's already out of date.
+
+---
+
+## 🛠️ Flow-Mutation Verbs: What Joe Can Do
+
+Joe formats proposals using **56 distinct mutation verbs** categorized into seven scopes:
+* **Node Scopes:** `createNode`, `moveNode`, `deleteNode`, `renameNode`, `setNodeStatus`.
+* **Gallery Scopes:** `addSlot`, `removeSlot`, `setSlotFields` (editing titles/notes in place by Stable Slot IDs), `sortSlots`.
+* **Stack Scopes:** `consolidateSlotsIntoStack`, `setStackActiveItem`, `removeStackItem`, `flattenStackSlot`.
+* **Tag Scopes:** `createTag`, `deleteTag`, `assignTagToSlot`.
+* **Media Scopes:** `stageMedia` (loading generated AI images or attachments into temp folders).
+* **Looks and the gallery:** set a node's Theme-menu look by its menu name, copy a slot or one stack item and leave the original, crop a picture in its slot, turn a picture or a note into a PDF beside the original, set or clear album art, color a canvas slot, and draw or remove a line between two slots on the same board.
+
+---
+
+## 🚫 System Barriers: What Joe Cannot Do
+
+To guarantee the security and privacy of local-first data, FlowJoe's core storage engine enforces hard boundaries that Joe **cannot bypass**:
+
+1. **Locked Private Nodes:** Joe cannot read or search inside nodes marked *Private* unless you type your password to unlock the session vault. The encryption key remains in memory and is never shared with the AI endpoint.
+2. **Hidden From Joe:** If you toggle *Hidden from Joe* on a node, it is completely redacted from the context director. Joe will not even know the node exists, preventing accidental leaks.
+3. **Frozen Nodes:** Joe is blocked from applying any mutations (even if you click approve) to nodes marked *Frozen (Read-Only)*.
+4. **Silent Destruction:** Joe cannot silently delete branches, tasks, or unowned contents. Unattended background runs attempting these are halted by the **Safety Seatbelt** and held in the Review Inbox.
+5. **Data Exfiltration:** Joe operates entirely within the local sandboxed shell and can only communicate with the API endpoint you provide. He cannot write to the local filesystem outside your active Flow directory or send your data to external servers.
+6. **No auto-loading pictures from the web.** Joe, a scheduled task, or a connected agent can never add a picture, video, or audio slot that loads its content from a website automatically — only from your own device or from generated/staged media. He also can't write a web address into a note, summary, or link card that secretly carries your flow's own text (a node name, a memory, a summary) — that address is refused before it's saved. Link cards themselves still work normally; the address itself is what's checked, not whether a link exists at all. Your own additions are never checked.
+7. **Link previews wait when you choose to.** A link card Joe (or a scheduled task, or a connected agent) adds fetches its page preview immediately by default — Settings → Joe AI → **Link previews for cards Joe adds** can switch this to show the address only, with a **Load preview** button you click when you're ready. Cards you add yourself always load right away.

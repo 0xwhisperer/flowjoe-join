@@ -1,0 +1,53 @@
+---
+title: "Status Bar (Footer)"
+description: "What the bottom status bar shows and what you can change without opening Settings."
+---
+
+The **status bar** is the thin strip pinned to the **bottom of the FlowJoe window**. It is always available while visible, so you can **monitor** the flow and **change a few common choices** without digging through Settings.
+
+Show or hide it under **Settings → Appearance → Status Bar** (on by default).
+
+Layout (left cluster, then right cluster):
+
+**Left:** Stats · Save · Joe brain (plus short-lived notices such as "Outside change waiting" and "Also open on a computer" when they apply)  
+**Right:** Scheduled tasks · Theme · Language · Shortcuts · Version (desktop only)  
+
+---
+
+## What you can monitor
+
+| Segment | What it shows |
+| :--- | :--- |
+| **Stats** | Total **nodes** in the flow and total **gallery slots** (across the whole tree, not only the selected node). Read-only. |
+| **Save** | Save health: clean / unsaved changes (with pending count when available) / still loading storage / **blocked** when the workspace cannot save. |
+| **Joe brain** | Active Joe model or CLI brain name (and brand mark). |
+| **Tasks** | Always visible. Shows the count of **scheduled tasks**, or **No tasks** when empty (the segment stays on the bar either way). |
+| **Theme** | The **effective theme for the selected node** (node override when set; otherwise the global Appearance theme). With no node selected, shows the global theme. |
+| **Language** | Current interface language. |
+| **Shortcuts** | Keyboard shortcuts entry point. |
+| **Version** | The FlowJoe version you are running, such as "FlowJoe 0.9.65-alpha". Desktop only; guests in a browser do not see it. Read-only. |
+| **Outside change waiting · saving paused** | Appears only when something changed your Workspace folder from outside FlowJoe and you have not decided what to do yet. While it shows, saving to the folder is paused (your edits are kept on this computer). Click it to reopen the decision window. |
+| **Also open on &lt;computer&gt;** | Appears only while another computer has been working in the same Workspace in the last few minutes. Click it for an explanation. It goes away by itself. |
+
+---
+
+## What you can change quickly (click)
+
+| Click | What happens |
+| :--- | :--- |
+| **Joe brain** | Opens an in-bar menu of available brains — OpenAI models (GPT-6 Luna, Sol, Astra; GPT-5.6 Luna, Terra, Sol) and, on desktop, CLI brains (Fable 5.1, Opus 5, Sonnet 5, Haiku, Grok, Antigravity) when the matching CLI is installed and signed in. Unavailable options are dimmed with a short reason (e.g. no API key, not signed in). Choosing one updates the same preference the Joe chat window uses. |
+| **Save** | Saves / exports the flow when changes are pending (same family of action as **Ctrl/Cmd+S** / Export flow). |
+| **Tasks** (clock) | Opens **Settings → Tasks** so you can manage scheduled runs. |
+| **Theme** | Opens an in-bar theme picker for the **selected node** (same theme list as the node Theme Manager). You can pick a node theme or **restore the global theme** for that node. With no node selected, the control reflects / sets the global Appearance theme. |
+| **Language** | Opens an in-bar language picker (same 20 UI languages as **Settings → Appearance → Language**). Changes **interface** language only — not your notes or files. |
+| **Shortcuts** | Opens the **keyboard shortcuts** legend (**K** does the same). |
+
+---
+
+## Tips
+
+* The status bar is for **fast checks and frequent switches** (brain, node theme, language, dirty state). Full detail for each area still lives in the matching Settings tab or node tools.
+* On desktop, opening a footer popover ducks the native browser view so the menu stays visible.
+* If the bar is missing, turn **Status Bar** back on under **Settings → Appearance**.
+
+See also: [Settings Map](/reference/settings-map), [Keyboard Shortcuts](/reference/keyboard-shortcuts), [Bring Your Own Brain](/joe/byob).

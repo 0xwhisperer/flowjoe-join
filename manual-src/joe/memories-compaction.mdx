@@ -1,0 +1,53 @@
+---
+title: "Context & Memories"
+description: "Manage token budgets, compact chats, and store attachment summaries."
+---
+
+Large chat transcripts can quickly exhaust AI token budgets and slow down performance. FlowJoe manages this with automatic and manual chat compaction.
+
+The token bar at the bottom of the Joe panel also shows **Flow map**, **Location**, and **Slot data** as separate slices. To shrink the tree outline Joe is given each turn — **Limit map to my location** and **Omit entire flow map** — see [Token usage with Joe](/joe/token-usage).
+
+---
+
+## Token bar
+
+At the bottom of the Joe panel is a segmented **token bar**:
+- **Visualization:** Shows how this send is partitioned using the same labels as the legend: Joe system, Tools, Flow map, Location, Slot data, FlowJoe manual, Joe Memories, Compacted Memory, Chat messages, Attachments, Estimate buffer.
+- **Cost chips:** Every message displays its token footprint (e.g. `+150 tok/send`). Pinned, omitted, or deleted messages update the bar instantly.
+
+The **Flow map** slice is the tree outline plus your Flow Summary. That is the slice **Omit entire flow map** removes. Full detail: [Token usage with Joe](/joe/token-usage).
+
+---
+
+## Compaction Modes
+
+Compaction folds older messages in your chat transcript into a single consolidated text summary, saving token usage while preserving narrative memory.
+
+### 1. Automatic Compaction (Default)
+When your active chat approaches the model's token limit, FlowJoe compacts the oldest turns in the background, updating your context footprint automatically.
+
+### 2. Manual Compaction
+Click the **Compact Now** button in the chat options:
+- **Preservation Instructions:** You can write a short guidance prompt (e.g. *"Remember that we decided to write the draft in sepia style"*) to instruct the compaction engine on which details must be preserved in the summary.
+
+---
+
+## Transcript Control: Pin & Omit
+
+- **Pin for Joe:** Keeps a specific message verbatim forever. It will never be folded into a compaction summary.
+- **Omit from Joe:** Temporarily drops a message from AI uploads while leaving it visible in your user transcript.
+- **Attachment Memories:** When large images or documents are compacted out of verbatim history, Joe distills a permanent text summary (e.g. a layout description for a mockup). This summary carries forward so you don't need to re-upload massive image bytes on every follow-up question.
+
+---
+
+## When a chat gets too large to compact automatically
+
+If you've edited the saved summary yourself, automatic compaction never throws your edit away — it extends your summary with newer turns instead of silently rebuilding from scratch. If a conversation genuinely can't be compacted further and a send would be too large to go out, FlowJoe refuses that send with a plain message rather than shipping it and letting the provider reject it later — open **Compact Now** to review or regenerate the summary, or start a new conversation. If the model itself rejects a message as too long, FlowJoe offers a one-click **Compact now** right there in the error.
+
+---
+
+## Joe Memories: which ones are actually sent
+
+Joe Memories are sent up to a per-turn cap (a handful per flow, node, and slot). If you have more active memories than the cap for where you are, the Memories panel marks the ones that are past the limit with a **Not sent — over the limit** badge — pin one, or disable an older one, to make room. A memory whose node is currently private or hidden from Joe shows a separate **Not sent — Joe can't see this node** badge instead, since that one is never sent regardless of the cap. When you ask Joe to remember something very similar to an existing memory, he's told about the near-duplicate so he can mention it rather than silently creating a copy.
+
+Remembering and recalling memories works the same way in every language FlowJoe ships (see [Language settings](/reference/settings-map)) — asking Joe "what did we decide about the budget?" in Chinese, Arabic, Thai, or any of the other 16 languages finds the same relevant memory it would in English, instead of only working for space-separated Latin-script text.

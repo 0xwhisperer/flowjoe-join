@@ -1,0 +1,64 @@
+---
+title: "Canvas Connections"
+description: "Draw relationship lines between slots on the Canvas layout."
+---
+
+On the **Canvas** layout you can draw lines between slots to show how they relate — an idea feeding a task, a bug tied to a feature, a reference supporting a decision. The lines are part of your flow: they save automatically and travel with the flow when you export or share it.
+
+Connections are a Canvas feature — Theatre Mode is an immersive view rather than an arrangement, so there's no equivalent there.
+
+---
+
+## Making a connection
+
+Hover a slot and a small round handle appears on its right edge. Drag from that handle onto another slot and release.
+
+While you drag, a dashed line follows your cursor and the slot under the pointer is outlined, so you can see exactly where the connection will land. Release on empty canvas to cancel — nothing changes.
+
+Each line carries an arrowhead at the target end. Connections have a direction: A points at B, which is not the same as B pointing at A.
+
+## Removing a connection
+
+Three ways, whichever suits the moment:
+
+- **Click the line**, then press **Delete** or **Backspace**. Hold Shift, Cmd, or Ctrl while clicking to select several lines and remove them together.
+- **Lasso them**: drag a selection box (Shift/Cmd/Ctrl-drag on canvas) and it catches connections along with slots.
+- **Drag the same pair again**: repeating the exact drag that made a connection removes it.
+
+Removing a connection is undoable. A banner appears for five seconds with an **Undo** button, and using it restores exactly the connections you removed — connections you made in the meantime are left alone.
+
+Press **Escape** to clear a selection without deleting anything.
+
+## Colouring slots and their lines
+
+Right-click a slot on the canvas and choose **Slot Color** to pick from six colours, or **None** to clear it.
+
+The colour tints the slot's edge — not its whole surface, so your media stays readable — and **every line leaving that slot takes the same colour**. On a busy board this is what lets you follow one thread with your eye: colour the slot a group of connections starts from, and that whole branch becomes traceable.
+
+You can ask Joe to colour a slot red, green, blue, violet, pink, or cyan, or to clear that colour, and to draw or remove a line between two slots on the same board. Each change waits for your approval.
+
+## Hiding connections
+
+Right-click anywhere on the gallery background and toggle **Show Connections**. It sits with the other show/hide options (Tag Bin, Notes, and so on).
+
+Hiding removes the lines completely rather than fading them, so they cannot get in the way of clicking or dragging. Your connections are not deleted — toggle it back on and they return. The setting is remembered.
+
+## What happens when slots move between nodes
+
+Connections join two slots **inside the same node's gallery**. That means:
+
+- **Moving a slot to another node breaks its connections.** FlowJoe tells you how many were removed, counting both the connections leaving that slot and any pointing at it from slots staying behind. The move is undoable, and undoing restores the connections too.
+- **Copying a slot to another node does not carry its connections.** The copy is a new slot, so it starts unconnected. The original keeps everything. The same is true when you ask Joe to copy a slot onto another node.
+
+If a connection points at a slot that no longer exists — deleted, or moved away — the line simply isn't drawn. Nothing breaks, and the rest of that slot's connections are unaffected.
+
+## Saving, export, and import
+
+Connections are stored with each slot as part of your flow, alongside its canvas position. There is nothing to turn on and nothing to select:
+
+- **Exports include them** automatically, in the same file as everything else.
+- **Imports restore them**, including when an imported flow's slot IDs would otherwise collide with slots you already have.
+
+<Note>
+Canvas positions and connections are kept even when you switch to Theatre Mode and back, so a look around never disturbs your board.
+</Note>

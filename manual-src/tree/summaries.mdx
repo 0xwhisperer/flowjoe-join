@@ -1,0 +1,46 @@
+---
+title: "Node Summaries"
+description: "Durable, high-level context summaries for human clarity and AI grounding."
+---
+
+While gallery slot notes describe specific files, the **Node Summary** field represents the overall meaning of a node in your workspace. For a summary of the whole tree instead of one node, see [Flow Summary](/tree/flow-summary).
+
+---
+
+## Summary vs. Notes
+
+| Field | Purpose | Target Audience | Storage Location |
+| :--- | :--- | :--- | :--- |
+| **Node Notes** | Freeform markdown drafting | You (scratchpad, logs) | Attached to the Node |
+| **Node Summary** | High-level synthesis of status & assets | You & Joe (grounding context) | Stored as metadata |
+| **Flow Summary** | High-level synthesis of the whole tree | You & Joe (grounding context) | Stored as metadata |
+| **Slot Notes** | File annotations | You (capturing asset detail) | Attached to the Slot |
+
+---
+
+## Managing Summaries
+
+Every node has a dedicated summary view that you can open from the top-bar button. It uses FlowJoe's shared [rich-text editor](/reference/rich-text-editor) — that page is the full reference for slash commands, the emoji picker, the bubble menu, AI actions, markdown shortcuts, and keyboard shortcuts.
+- **Rich-Text Editor:** Write and format summaries using an embedded rich-text editor with Markdown storage.
+- **Rich Formatting & Dropdowns:** Includes quick dropdown toolbars for heading styles (H1–H3, paragraph), text alignments (Left, Center, Right, Justify), advanced marks (Underline, Highlight, Inline Code, Subscript, Superscript), task lists / checklists, tables, blockquotes, and dividers.
+- **Slash Commands & Bubble Menu:** Type `/` to insert structural blocks quickly or select text to format on the fly with the floating formatting menu.
+- **Undo/Redo:** Cmd+Z / Cmd+Shift+Z (and the toolbar's Undo/Redo icons) walk the same persistent history as the rest of FlowJoe, so your edits are still there to step back through after a reload.
+- **Native Right-Click:** Right-clicking in the editor opens your system's standard menu (cut/copy/paste, spelling suggestions, etc.) — dictation and spell-check live on the toolbar here instead. This is specific to summaries and the slot preview view below; gallery slot/stack notes keep their own custom right-click menu.
+- **AI actions:** Select some text (or just place your cursor in a paragraph) and click ✨ — on the toolbar, or in the floating menu that appears when you select text. Pick Improve, Fix grammar, Simplify, Shorten, Expand, Change tone, Translate, Turn into bullets, Summarize, or Continue writing, or choose Ask Joe… to give any other instruction. The suggestion streams in below your text as Joe writes it, then shows the changes highlighted once it's done — Stop cancels a request in progress. You can Replace it, Insert it below instead, copy it, tweak it in the box before accepting, or discard it, and Cmd+Z undoes an accepted change.
+- **Collapsible Sections & Block Actions:** Wrap any selection into a collapsible section to tuck away detail, then un-collapse it later while keeping the content. Hover any block for quick duplicate, copy-to-clipboard, and delete actions — plus drag its handle to reorder blocks.
+- **Images:** Drag an image file straight onto the editor (or paste one) to insert it where you dropped it, or type `/upload` for a drop box. Click an image to align it, float it so text wraps around it, add a caption or alt text, and drag its corner to resize. Images are stored inside the summary itself, so each file is limited to 4 MB — larger ones are skipped with a notice.
+- **Emoji Shortcodes:** Type `:` followed by a name — `:fire`, `:check`, `:rocket` — and pick from the popup.
+- **Live Voice Dictation:** Dictate summary notes hands-free using FlowJoe's speech engine, including automatic spoken punctuation and line-break conversion.
+- **Brainstorm with Joe:** The summary panel has a direct entry point to chat with Joe. You can highlight a draft summary and ask Joe to refine, format, or extract Action Items from it.
+- **Spellcheck Review:** Built-in review makes editing clean and fast.
+- **Open on New Node:** A setting toggles whether the summary view automatically pops open whenever you create a new node, encouraging good documentation habits.
+
+---
+
+## Why Summaries Matter for AI Context
+
+When you chat with Joe, he is given a context bundle. In order to avoid uploading megabytes of raw documents, Joe reads the **Node Summaries** of the selected node (and, with the default **Limit map to my location** setting, the outline of this branch rather than the whole tree).
+A concise summary acts as a directory card that tells the AI exactly what lives in this branch of your project without wasting token budgets. See [Token usage with Joe](/joe/token-usage).
+
+> [!TIP]
+> **Summary Compaction:** As chat histories grow, Joe will automatically summarize older conversations and append key facts to his memories. Writing clear node summaries helps anchor these memories.

@@ -1,0 +1,51 @@
+---
+title: "Media Stacks"
+description: "Combine multiple versions or reference takes into a single slot."
+---
+
+When researching or iterating, creating separate slots for every file version can clutter your gallery. FlowJoe resolves this with **Stacks**—allowing you to bundle multiple assets into a single card.
+
+---
+
+## How Stacks Work
+
+A **Stack** is a single gallery slot that contains multiple overlapping files. 
+
+```
+┌───────────────────────────────────────┐
+│ [Stack Icon]  Draft Versions (1 of 3) │
+├───────────────────────────────────────┤
+│                                        │
+│          ACTIVE ITEM PREVIEW          │
+│          (Latest Draft PNG)           │
+│                                        │
+├───────────────────────────────────────┤
+│ Notes: "Comparing taking edits..."   │
+├───────────────────────────────────────┤
+│  [< Previous]          [Next >]       │
+└───────────────────────────────────────┘
+```
+
+- **Active Item:** The top card of the stack is the active item. Its preview, title, and size dictate the slot display.
+- **Cycling:** Click the Left/Right arrow indicators to cycle through items.
+- **Slot notes stability:** The notes written on the slot card remain visible regardless of which stack item is active, keeping comparative analysis unified.
+
+---
+
+## Stack Operations
+
+Right-click a slot or select multiple slots to manage stacks:
+- **Create Stack:** Drag a file directly on top of an existing slot, or select multiple slots, right-click, and select **Merge into Stack**.
+- **Extract Item:** Right-click the active stack item and select **Extract from Stack** to split it out as an independent slot.
+- **Flatten Stack:** Splitting a stack expands all items into individual slots in the gallery.
+- **Consolidate:** Joe can automatically stack generated drafts or variants behind a primary card using the `consolidateSlotsIntoStack` verb.
+- **Copy one item:** Joe can copy one item out of a stack into its own slot beside the stack, leaving that item in the stack.
+
+---
+
+## Reordering Stack Contents
+
+Hovering over a stack slot displays thumbnail previews of the layers.
+- **Change Order:** Drag and drop thumbnails to reorder the stack hierarchy.
+- **Promote to Top:** Click any thumbnail to promote that item to the active top slot.
+- **Individual Deletion:** Click the delete icon on a thumbnail to remove it from the stack without deleting other elements.

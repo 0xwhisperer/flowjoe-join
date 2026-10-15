@@ -1,0 +1,114 @@
+---
+title: "Introduction"
+description: "FlowJoe is a local-first visual workspace for branching, reference-heavy work — structure on the left, media on the right, and an AI collaborator that never owns your tree."
+---
+
+# What is FlowJoe?
+
+FlowJoe is a **local-first, desktop-first** workspace built around hierarchical trees called **Flows**. Each node is a living container: notes, status, theming, and a rich media gallery of images, audio, video, documents, spreadsheets, calendars, URLs, and embeds — with an AI collaborator (**Joe**) who can see context you allow and propose changes you approve.
+
+It is for people doing serious creative, research, or professional work that is branching, relational, visual, and reference-heavy. In FlowJoe the tree is not just an organizer. It is the primary surface for thinking.
+
+<Note>
+  FlowJoe is not a public HTTP API product. These docs are shaped like modern product documentation — overview, concepts, surfaces, guides, and reference — so you can learn **how the app works**.
+</Note>
+
+## The three first-class ideas
+
+At its heart, FlowJoe is built around three first-class citizens:
+
+| Idea | What you work with |
+| --- | --- |
+| **Structure** | The tree — roots, nodes, hierarchy, status, themes |
+| **References** | The gallery inside each node — media, stacks, tags, workbenches |
+| **Meaning** | Notes, summaries, tags, and the context you give yourself and Joe |
+
+Structure and visual reference material are designed to coexist without one constantly trying to dominate the other.
+
+## The two hemispheres
+
+One useful way to think about the interface — and about these docs:
+
+<CardGroup cols={2}>
+  <Card title="Structure (left)" icon="git-branch" href="/tree/anatomy">
+    The **tree** is order, hierarchy, and place — where everything belongs. Roots, nodes, parents, children, siblings.
+  </Card>
+  <Card title="References (right)" icon="images" href="/gallery/anatomy">
+    The **gallery** is association and seeing many things side-by-side. Media, stacks, tags, workbenches.
+  </Card>
+</CardGroup>
+
+The **divider** between them is your control: more structure or more visual space, whenever you need it.
+
+![The Two Hemispheres of FlowJoe](/images/hemispheres_model.jpg)
+
+### The live application layout
+
+Here is how these hemispheres map to the actual FlowJoe application interface:
+
+![FlowJoe Horizontal Shell Layout](/images/01-current-shell-horizontal.png)
+
+Many tools force everything into one mode. FlowJoe gives you two strong hemispheres and a direct way to balance them.
+
+## Design principles (in plain terms)
+
+<AccordionGroup>
+  <Accordion title="Local-first with transparency" icon="hard-drive" defaultOpen>
+    Your data lives on your machine. Storage usage is visible and cleanable.
+  </Accordion>
+  <Accordion title="References are not second-class" icon="images">
+    Media, documents, and URLs are meant to be lived inside of, not just attached.
+  </Accordion>
+  <Accordion title="Discovery views stay honest" icon="search">
+    Tag queries and all-node search produce virtual galleries you can explore without accidentally rewriting structure.
+  </Accordion>
+  <Accordion title="AI is a collaborator, not the owner" icon="bot">
+    Joe proposes; you approve. He never silently rewrites your tree.
+  </Accordion>
+  <Accordion title="Scoped safety" icon="shield-check">
+    Undo and history stay local enough that deep work in one area does not create chaos everywhere else.
+  </Accordion>
+  <Accordion title="Honest limitations" icon="circle-alert">
+    When something is intentionally not supported, the product (and these docs) say so.
+  </Accordion>
+</AccordionGroup>
+
+## Who these docs are for
+
+- You opened FlowJoe (or are about to) and want a clear map of how the app works
+- You want task paths (“import a folder”, “hand Joe a branch”) without reading engineering contracts
+- You need lookup tables (shortcuts, file types, settings) later
+
+They are **not** a substitute for the engineering contracts under `docs/REFERENCE/` in the repo. Those remain the source of truth when behavior is ambiguous.
+
+## Where to go next
+
+<CardGroup cols={2}>
+  <Card title="Core mental model" icon="brain" href="/getting-started/mental-model">
+    Install the three ideas: structure, references, meaning.
+  </Card>
+  <Card title="Quick start" icon="play" href="/getting-started/quickstart">
+    First ten minutes: nodes, media, optional chat with Joe.
+  </Card>
+  <Card title="Global Audio Player" icon="music" href="/gallery/audio-player">
+    Persistent playback, tags, and saved playlists.
+  </Card>
+  <Card title="Plugins & Verticals" icon="puzzle-piece" href="/concepts/plugins-verticals">
+    Explore the plugin framework roadmap and target domains.
+  </Card>
+  <Card title="Plugin Architecture" icon="gears" href="/concepts/plugin-architecture">
+    Manifest contracts, schemas, extension fields, and templates.
+  </Card>
+  <Card title="Ways to Use FlowJoe" icon="rocket" href="/concepts/ways-to-use-flowjoe">
+    Practical creative and professional use cases.
+  </Card>
+  <Card title="Tree anatomy" icon="git-branch" href="/tree/anatomy">
+    Roots, nodes, parents, children, siblings.
+  </Card>
+  <Card title="Gallery anatomy" icon="images" href="/gallery/anatomy">
+    Slots, stacks, and how media lives on a node.
+  </Card>
+  <Card title="Joe" icon="bot" href="/joe/propose-approve">
+    The trust model: propose → you approve.
+  </Card>
+</CardGroup>

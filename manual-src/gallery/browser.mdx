@@ -1,0 +1,53 @@
+---
+title: "In-App Browser & Web Clipping"
+description: "Research, bookmark, and clip web references directly into outline slots without leaving your workspace."
+---
+
+FlowJoe includes a fully featured, sandboxed **In-App Browser**. Because research shouldn't force you to toggle between your workspace and external browsers, FlowJoe embeds web browsing directly into the visual shell, allowing you to clip content, capture screenshots, and save bookmarks in one click.
+
+---
+
+## 🌐 The Browser Interface
+
+The in-app browser is powered by a secure, sandboxed Electron runtime and features standard browser controls:
+* **Tab Management:** Open multiple tabs, reorder them, pin tabs to save space, and organize tabs into color-coded **Tab Groups**.
+* **The Start Page (`flowjoe://start`):** Your launchpad containing a Google/web search bar, lists of recent tabs, history logs, and your bookmarks.
+* **Persistent Session Restore:** If you close FlowJoe, reopening the app automatically restores all your open tabs, their tab groups, and their complete back/forward navigation stacks.
+
+---
+
+## ✂️ One-Click Web Clipping (Send-to-Gallery)
+
+The main superpower of the embedded browser is its tight integration with the gallery:
+* **Send to Gallery:** From any active web page, click the **Send to Gallery** button (or right-click and choose **Send Tab to Gallery**).
+* **Metadata Extraction:** FlowJoe automatically extracts the page title, description, favicon, and canonical URL.
+* **Full-Page screenshots:** Electron opens a background renderer to take a clean screenshot of the web page, saving it as a high-fidelity visual card directly in your active node's gallery.
+* **Branded Fallbacks:** If you save empty placeholders or documentation domains (e.g. `example.com`), FlowJoe automatically renders them as branded cards (using the signature coffee-mug logo), preventing clutter.
+
+---
+
+## 🔖 Bookmarks & Favorites
+
+Organize your web references with a powerful bookmarks system:
+- **Quick Bookmark:** Click the star icon in the address bar to add a page to your favorites.
+- **Bookmark Folders:** Save pages into custom folders. You can right-click a folder to open all links at once, turn a folder into a tab group, or send a folder's URLs directly to your outlines.
+- **Bookmark All Tabs:** Right-click the tab strip to bookmark all open tabs into a new folder instantly—perfect for packing up a research session.
+- **Import/Export:** Sync bookmarks, tab groups, and history between devices. You can choose to **merge** new imports or **replace** existing local databases.
+
+---
+
+## 🕰️ History & Retention Policies
+
+FlowJoe records a chronological log of all your visits, saved locally in IndexedDB:
+- **Retention Controls:** Configure history cleanup intervals in Settings (keep visits forever, or prune after 30, 90, or 365 days).
+- **Smart Pruning:** When old history visits are pruned, FlowJoe **preserves all metadata for bookmarked pages**, ensuring your saved sites never lose their titles or descriptions.
+- **History to Folder:** Turn any history time-bucket (e.g., "Yesterday's research") into a permanent folder or send it straight to an outline node.
+
+---
+
+## 🔒 Security & Privacy Gating
+
+FlowJoe treats web security as a priority:
+- **Sandbox Mode:** Web views run with `nodeIntegration: false`, `contextIsolation: true`, and `sandbox: true` to prevent malicious scripts from accessing local files.
+- **Permission Gating:** The browser prompts you before websites access your microphone, camera, location, or request file downloads.
+- **Clear Browsing Data:** Access the Settings panel to selectively clear cache, site cookies, history logs, or active tabs.

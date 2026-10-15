@@ -1,0 +1,135 @@
+---
+title: "Keyboard Shortcuts"
+description: "Hotkey reference aligned with the in-app Keyboard Shortcuts legend, plus a few extra app-wide keys."
+---
+
+This page follows the **Keyboard Shortcuts** legend in the app (tree toolbar **K**, status bar **Shortcuts**). A short **Also useful** section at the end lists a few extra keys that are real in the product but not every row in that legend.
+
+> [!IMPORTANT]
+> **Open Joe:** `Cmd+Shift+A` / `Ctrl+Shift+A` toggles the Joe chat panel (open / minimize to a floating pill / restore). `Ctrl+J` copies node JSON — it does **not** open Joe. **New node:** `N` / `Ctrl+N` (not Enter or Tab). On Mac, `Cmd+N` is **New Flow**, not add node.
+
+---
+
+## Tree
+
+| Hotkey | Action |
+| :--- | :--- |
+| `Ctrl+F` | Tree search |
+| `Q` | Query by tags |
+| `N` / `Ctrl+N` | Add node (child of the selected node, or a root if none is selected). |
+| `Ctrl+P` | Unlock private nodes |
+| `↑` / `↓` | Previous / next visible node |
+| `←` / `→` | Collapse / expand (or previous / next node when already collapsed/expanded as appropriate) |
+| `Space` | Toggle node collapse |
+| `+` / `-` | Expand / collapse selected node |
+| `Shift+=` | Expand all nodes |
+| `Shift+-` | Collapse all nodes |
+| `/` or `\` | Hide / show tree |
+
+There is **no** Enter / Tab / Insert shortcut for creating siblings or children. Creating a node is **`N`** (or **`Ctrl+N`**).
+
+---
+
+## Tree Nodes
+
+| Hotkey | Action |
+| :--- | :--- |
+| `F2` | Rename selected node |
+| `S` | Node summary |
+| `Ctrl+A` | Attach item |
+| `Ctrl+C` | Duplicate node |
+| `Ctrl+T` | Node Tag Manager |
+| `Ctrl+J` | Copy node JSON |
+| `Ctrl/Cmd+E` | Export node |
+| `H` | Hide node |
+| `J` | Hide / un-hide node from Joe |
+| `L` | Freeze / unfreeze node |
+| `P` | Make / unlock private node |
+| `1` / `2` / `3` / `4` | Set status: Not Started / In Progress / Completed / Neutral |
+| `D` | Remove node (with confirmation) |
+
+`Enter` can rename when a single node is selected and focus is not in a text field (same idea as `F2`).
+
+---
+
+## Gallery
+
+| Hotkey | Action |
+| :--- | :--- |
+| `Cmd+F` | Gallery search |
+| `Q` | Query by tags |
+| `Ctrl/Cmd+V` | Paste clipboard media (image or URL as a new slot) |
+| `M` | Toggle multi-select |
+| `Cmd+A` / `Ctrl+A` | Select all slots |
+| `T` | Gallery Tag Manager |
+| `Cmd+T` | Gallery Tag Manager (Electron only) |
+| `Cmd+Shift+A` | Chat with Joe (toggle) |
+| `Ctrl+Shift+A` | Chat with Joe (toggle) |
+
+---
+
+## Gallery slots
+
+| Hotkey | Action |
+| :--- | :--- |
+| `Escape` | Close context menu or clear multi-select |
+| `←` | Move selected slots left (multi-select) |
+| `→` | Move selected slots right (multi-select) |
+| **Stack mode** `←` / `→` | Previous or next stack item |
+| **Stack mode** `↑` / `↓` | Reorder current stack item |
+| **Stack mode** `T` | Auto-advance (~3.5s) |
+| **Stack mode** `R` | Remove |
+| **Stack mode** `F` | Flatten |
+| `Delete` / `Backspace` | Remove selected slots |
+| `D` | Remove context slot |
+
+---
+
+## Other shortcuts (legend)
+
+| Hotkey | Action |
+| :--- | :--- |
+| `K` | Open this keyboard shortcuts legend |
+| `Cmd+N` | New flow (Mac; not add node) |
+| `Ctrl/Cmd+I` | Import flow |
+| `Ctrl/Cmd+S` | Export flow (Save) |
+| `Ctrl/Cmd+;` | Toggle Settings |
+| `B` | Toggle browser panel (Electron) |
+
+---
+
+## Rich-text editor
+
+These apply inside the [rich-text editor](/reference/rich-text-editor) — Node Summary, Flow Summary, slot Preview notes, and gallery slot/stack notes. They mirror the in-app **Keyboard Shortcuts & Formatting Guide** on the editor toolbar.
+
+| Hotkey | Action |
+| :--- | :--- |
+| `Cmd/Ctrl+B` | Bold |
+| `Cmd/Ctrl+I` | Italic |
+| `Cmd/Ctrl+U` | Underline |
+| `Cmd/Ctrl+Shift+X` | Strikethrough |
+| `Cmd/Ctrl+Shift+H` | Highlight |
+| `Cmd/Ctrl+K` | Add / edit hyperlink |
+| `Cmd/Ctrl+Alt+1` / `2` / `3` | Heading levels |
+| `Tab` / `Shift+Tab` | Indent / outdent a list item |
+| `Cmd/Ctrl+Z` | Undo (50-level, persistent) |
+| `Cmd/Ctrl+Shift+Z` | Redo |
+| `Cmd/Ctrl+F` | Find & replace (Summary and Preview only) |
+| `/` | Slash command menu (at a word boundary) |
+| `:` | Emoji menu (at a word boundary) |
+| `Escape` | Finish editing a gallery note (closes an open `/` or `:` menu first) |
+| `Cmd/Ctrl+Enter` | Finish editing a gallery note; Save in the Summary views |
+
+There are **no** text-alignment shortcuts — `Cmd+Shift+R` collided with the browser's hard-reload, so that set was removed. Use the toolbar's alignment dropdown.
+
+---
+
+## Also useful (not every row is on the legend card)
+
+| Hotkey | Action |
+| :--- | :--- |
+| `Cmd/Ctrl+Z` | Undo |
+| `Cmd/Ctrl+Y` | Redo |
+| Hold `Alt` | Voice dictation (when focus is in a text field) |
+
+See also: [Settings Map](/reference/settings-map), [Status Bar (Footer)](/reference/status-bar).

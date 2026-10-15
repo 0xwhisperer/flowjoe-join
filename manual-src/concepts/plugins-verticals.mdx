@@ -1,0 +1,60 @@
+---
+title: "Plugins & Verticals"
+description: "Explore FlowJoe's plugin framework roadmap and the professional domains it targets."
+---
+
+FlowJoe is not designed to be a generic notepad. It is a domain-aware workspace that adapts to the specific language of your industry or creative medium. 
+
+Through the **FlowJoe Plugin Framework**, users can install or build custom plugins that teach the application the unique entity grammars of different professional verticals—all while retaining the speed and security of local-first storage.
+
+---
+
+## The Core Plugin Pattern
+
+Every plugin defines a set of **entity types**, **custom metadata fields**, **templates**, and **AI prompts** tailored to a specific field. 
+
+For example, a wargame designer works with units and weapon stats, while a research scientist works with hypotheses and lab samples. Plugins translate these concepts into FlowJoe's core interface elements:
+
+```text
+Plugin (Domain Grammar)
+└── Remaps into FlowJoe Core:
+    ├── Nodes (Custom Icons & Layouts)
+    ├── Media (ID3 / Exif / PDF data parsers)
+    ├── Metadata (Spreadsheet grids & settings)
+    └── Joe AI (Custom Prompt presets & Verbs)
+```
+
+---
+
+## The Plugin Roadmap
+
+The plugin framework is structured in three evolutionary milestones:
+
+### Milestone 1: Declarative Schemas (V1)
+Allows declaring entity types, metadata schemas, validation rules, search indexes, custom prompt presets, and **Flow Templates** (starter project configurations that create a fully structured outline tree on load).
+
+### Milestone 2: Dashboard Views (V1.5)
+Introduces user-customizable dashboard layouts, grouped status boards (Kanban lists driven by metadata status), and template-driven review packets that summarize branches into print-friendly formats.
+
+### Milestone 3: Sandboxed SDK (V2)
+Unlocks a sandboxed runtime environment for custom UI panels, specialized media processors (like local audio editors or graphic annotators), network sync channels, and custom 2D visualization canvases.
+
+---
+
+## Target Verticals (What FlowJoe Solves)
+
+FlowJoe is designed to address highly relational, reference-heavy industries. Instead of creating bespoke apps for every trade, the core visual shell supports custom plugin presets that adapt FlowJoe to the target domain:
+
+* **Professional & Technical Workflows:**
+  - **Product Management & Agentic Engineering:** Feature specifications, launch roadmaps, and terminal MCP loops.
+  - **Scientific & Academic Research:** Lab notebooks, literature maps, and dataset indexing.
+  - **Legal Case Management:** Court case folders, evidence tracking, and secure client vaults.
+* **Media & Content Production:**
+  - **Podcast & Audio Production:** Scripting, guest bio banks, and tag-filtered playlist queues.
+  - **Social Influencers & Content Creators:** Channel schedules, sponsor deliverables, and hook brainstorming.
+* **Artistic & Story Writing:**
+  - **Authors & Comic Book Publishers:** Graphic novels panel tracking, page spreads, and cover art stacks.
+  - **Tabletop Game Development:** Unit rosters, rules revisions, and playtest logs.
+  - **Worldbuilding & Lore Bibles:** Lore atlases, factions, and story continuity trackers.
+
+For a detailed breakdown of real workflows and creative use cases for each vertical, see **[Ways to Use FlowJoe](/concepts/ways-to-use-flowjoe)**.

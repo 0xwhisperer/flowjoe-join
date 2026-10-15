@@ -1,0 +1,43 @@
+---
+title: "Slot Preview"
+description: "The full-size view you get when you click a slot, and its rich-text notes editor."
+---
+
+Click a gallery slot to open its full-size preview. View the image, scroll a PDF, play audio or video, and write or format the slot’s notes with the same rich-text editor used by [Node Summary](/tree/summaries) and [Flow Summary](/tree/flow-summary). Text/code editing depends on whether the slot is an ordinary gallery item or a repository-owned file; see the note below.
+
+For what each file type looks like in this view, see [Supported Media & Slots](/gallery/slot-types).
+
+<Note>
+For an ordinary gallery text or code item, **Edit** opens the gallery code editor. For a repository-owned slot, **Edit** hands off to the repository workbench for that exact file or selected stack item. If the slot has unsaved notes, choose **Save** to keep them before switching, **Discard** to continue without them, or **Cancel** to stay in Preview. The selected stack item is the one opened in the repository workbench. In the repository workbench, **Save** updates the working file, while **Commit** is a separate Source Control action. To browse repository folders and history, open the repo node’s **File Explorer**.
+</Note>
+
+## Repository file preview
+
+From the repository Explorer, **Preview File** shows the repository file in the workbench. **Preview Slot Item** opens the standard gallery preview for the exact corresponding gallery item, with its slot preview and notes. The two actions show the same file through different views.
+
+The repository preview supports text/code, Markdown, HTML, images, audio/video, PDFs, extracted Office text, and ZIP entry listings. Office previews are read-only extracted content; ZIP previews list entries rather than opening a navigable folder.
+
+<Warning>
+Repository HTML and Markdown previews are static and sandboxed. They block scripts, app access, and network requests. Relative CSS and images may load from the same repository within preview limits. Previews do not run Node or start a development server. Custom fonts are not guaranteed to render under the app’s current content policy.
+</Warning>
+
+---
+
+## Editing Notes in Preview
+
+The notes field inside Preview uses the same rich-text editor as the summary views:
+
+- **Rich Formatting & Dropdowns:** Heading styles (H1–H3, paragraph), text alignments (Left, Center, Right, Justify), advanced marks (Underline, Highlight, Inline Code, Subscript, Superscript), task lists / checklists, tables, blockquotes, and dividers.
+- **Slash Commands & Bubble Menu:** Type `/` to insert structural blocks quickly or select text to format on the fly with the floating formatting menu.
+- **Undo/Redo:** Cmd+Z / Cmd+Shift+Z (and the toolbar's Undo/Redo icons) walk the same persistent history as the rest of FlowJoe, so your edits are still there to step back through after a reload.
+- **Native Right-Click:** Right-clicking in the editor opens your system's standard menu (cut/copy/paste, spelling suggestions, etc.) — dictation and spell-check live on the toolbar here instead.
+- **AI actions:** Select some text (or just place your cursor in a paragraph) and click ✨ — on the toolbar, or in the floating menu that appears when you select text. Pick Improve, Fix grammar, Simplify, Shorten, Expand, Change tone, Translate, Turn into bullets, Summarize, or Continue writing, or choose Ask Joe… to give any other instruction. The suggestion streams in below your text as Joe writes it, then shows the changes highlighted once it's done — Stop cancels a request in progress. You can Replace it, Insert it below instead, copy it, tweak it in the box before accepting, or discard it, and Cmd+Z undoes an accepted change.
+- **Collapsible Sections & Block Actions:** Wrap any selection into a collapsible section to tuck away detail, then un-collapse it later while keeping the content. Hover any block for quick duplicate, copy-to-clipboard, and delete actions — plus drag its handle to reorder blocks.
+- **Images:** Drag an image file straight onto the editor (or paste one) to insert it where you dropped it, or type `/upload` for a drop box. Click an image to align it, float it so text wraps around it, add a caption or alt text, and drag its corner to resize. Images are stored inside the note itself, so each file is limited to 4 MB — larger ones are skipped with a notice.
+- **Emoji Shortcodes:** Type `:` followed by a name — `:fire`, `:check`, `:rocket` — and pick from the popup.
+- **Live Voice Dictation:** Dictate hands-free using FlowJoe's speech engine, including automatic spoken punctuation and line-break conversion.
+- **Spellcheck Review:** Built-in review makes editing clean and fast.
+
+<Note>
+Gallery slot/stack notes on the card itself now use this **same** editor — same slash commands, emoji picker, markdown shortcuts, and floating bubble menu. The only difference is that the card-level note has no persistent toolbar (there's no room on a card), so find-and-replace and the toolbar dropdowns are Preview/Summary-only, and the card note keeps its own right-click menu with Dictate Notes and Spelling & Grammar Check. Full details: [Rich-Text Editor](/reference/rich-text-editor).
+</Note>

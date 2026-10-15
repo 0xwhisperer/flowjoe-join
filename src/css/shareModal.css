@@ -153,10 +153,33 @@
     overflow: hidden;
   }
   #modal > div.cx-share #modal-title {
+    position: relative;
     display: flex;
     align-items: center;
     gap: 12px;
     flex: none;
+  }
+  #modal > div.cx-share #modal-title .cx-title-close {
+    flex: none;
+    margin-inline-start: auto;
+  }
+  #modal > div.cx-share.modal-panel-alert #modal-title {
+    display: flex;
+  }
+  #modal > div.cx-share #modal-title .context-menu-drag-strip {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
+    margin: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+  #modal > div.cx-share #modal-title > .t,
+  #modal > div.cx-share #modal-title > .cx-pill,
+  #modal > div.cx-share #modal-title > .cx-title-close {
+    position: relative;
+    z-index: 1;
   }
   #modal > div.cx-share #modal-title .t {
     flex: 1;
@@ -1203,6 +1226,10 @@
 }
 #modal-message .cx-oc-who small {
   color: var(--text-secondary);
+}
+#modal-message .cx-oc-location small {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 #modal-message .cx-oc-turn p {
   margin: 4px 0 0;

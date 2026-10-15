@@ -346,7 +346,8 @@
      --icon-btn-size, --pad-modal, --header-gap). */
   --modal-panel-radius: var(--radius-2xl, 12px); /* shared modal/panel outer corner radius — AI Assist, Preview/Summary, thumbnail, crop, generic #modal, playlist */
   --modal-panel-border: 1px solid var(--border-color); /* shared modal/panel border — same shells as --modal-panel-radius */
-  --modal-header-padding: 8px 12px 8px 12px; /* shared modal titlebar padding (AI Assist / Preview / Summary / thumbnail / playlist) */
+  --modal-header-padding-block: 8px; /* vertical inset shared with simple modal titles */
+  --modal-header-padding: var(--modal-header-padding-block) 12px var(--modal-header-padding-block) 12px; /* shared modal titlebar padding (AI Assist / Preview / Summary / thumbnail / playlist) */
   --modal-header-min-height: var(--modal-section-header-height); /* shared modal titlebar min-height (aliases --modal-section-header-height, currently 36px) */
   --modal-title-font-size: 1.1rem; /* shared modal title font size */
   --modal-title-font-weight: 600; /* shared modal title font weight */

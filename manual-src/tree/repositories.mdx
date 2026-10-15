@@ -1,0 +1,124 @@
+---
+title: "Repo nodes and Git"
+description: "Keep a project in its own Git repository inside FlowJoe, review changes, create commits, and work with branches and Git remotes."
+---
+
+A **repo node** gives one project its own Git history inside a Flow. It is still part of your normal Flow tree: folders are child nodes, files are gallery items, and you edit them in FlowJoe.
+
+<Note>
+Explorer supports inline file/folder/tab Rename, folder Delete, Cut/Copy/Paste, and Move to Folder. Moves preserve drafts. Copy Saved Contents keeps source drafts; Save and Copy saves first. Folder Quick Open and Find in Folder stay inside that folder; search includes open drafts and opens results at their matching line. Historical tabs stay read-only.
+</Note>
+
+<Note>
+A repo node is the Git boundary for a project. A **Workspace Folder** chooses where the whole Flow is stored. They are separate features: do not make the whole Workspace Folder your project repository. See [Workspace Folders](/workspaces/folders).
+</Note>
+
+## Create or open a repo node
+
+Use the **New Node** window to create an empty repository or clone from a Git remote. To import an existing local Git folder, drag the folder onto the Flow tree and choose **Import as Repository**. (The other choice, **Import as Ordinary Folder**, brings it in as a normal folder.) A repo node is the Git boundary for that project: folders become child nodes and files become gallery items. FlowJoe keeps the bare Git history in its own hidden storage and saves the working files through the Flow's normal storage. It does not create a checkout folder elsewhere on your computer, and it does not put the whole Flow into Git.
+
+For a remote, use its HTTPS address or, on macOS and Linux, either SSH form shown by the Git host, such as `https://host/owner/project.git`, `ssh://git@host/owner/project.git`, or `git@host:owner/project.git`. FlowJoe uses one remote named `origin` for each repo node. A repository imported from a local Git folder can keep its existing SSH origin on macOS and Linux. On Windows, SSH addresses are not supported yet: use an `https://` address instead.
+
+When you open a repo node, choose **Source Control** in the app rail. The repository appears with its current branch and any changes waiting to pull or push. The panel is available in the desktop app; browser guests can see repository nodes but cannot run Git actions.
+
+<Note>
+Repo files use a separate Explorer/editor workbench. **Save** updates working files; **Commit** is separate in Source Control. **New File** and **New Folder** put an inline name field at the target folder: **Enter** creates, **Escape** or blur cancels. Rename uses a transparent, theme-underlined field. Double-click a file or folder name in Explorer, press **F2**, or choose **Rename…**. Working-file tab names can also be renamed by double-clicking the name, pressing **F2**, or choosing **Rename…** from the tab menu. Historical tabs stay read-only.
+
+**Diff** compares **Last commit** on the left with editable **Current file** on the right.
+
+For private GitHub HTTPS, use Git Credential Manager and choose **Sign in with GitHub**.
+
+Timeline **Open Changes** opens a separate read-only tab labeled with filename, **Diff**, and revision. Exact comparisons reuse their tab; another commit gets a separate one. The working tab, draft, undo, and dirty state stay available. Both historical sides are read-only; choose the working tab or **Edit** to return.
+</Note>
+
+## Browse and edit repository files
+
+Choose **Switch to File Explorer** in the repository gallery to show its folder tree and editor. Select a file row to open it in the workbench. Resize the Explorer divider by dragging it or using the keyboard, and use the file tabs to move between files. Each file keeps its own draft and undo history while you switch tabs.
+
+Choose **Switch to Canvas** to return to the repository’s normal gallery.
+
+Paths are relative to the repository root (`.`), such as `src/main.js`; FlowJoe does not create a checkout folder on your computer. From a folder or the Explorer background, use **New File…**, **New Folder…**, or **Quick Open…**. New File and New Folder place a name field in the Explorer at the target directory. Press **Enter** to create it; **Escape** or leaving the field cancels. Name or save errors stay beside the field so you can correct the name. A folder menu can copy that folder’s relative path; the root/background menu has no path to copy. New files need a supported text extension.
+
+The editor toolbar has **Save**, **Diff**, **Find**, **Format**, and word wrap; the active FlowJoe theme applies to the editor. Undo and redo are available through the editor’s standard commands. **Diff** compares **Last commit** on the left with the editable **Current file** on the right, including unsaved edits. **Save** writes the current file to repository working content and updates Source Control; it does not create a Git commit. To commit, go to **Source Control → Changes**, stage the files you want, enter a message, then choose **Commit**. A historical revision is read-only. **Restore This Version…** copies that revision into the current working file; it does not create a commit.
+
+For JavaScript and TypeScript, the workbench can use nearby repository files for limited editor assistance. It does not run a separate language server or a project-wide code service.
+
+## Review and commit files
+
+The **Changes** section lists files that differ from the last commit. Its menu offers **View as Folders** to group the list by folder and **Open Changed Files** to open every changed file. Stage the files you want to include, write a commit message, then choose **Commit**. **Generate** can draft a message from the changes. You can also review a changed file before committing, discard a change, or use the split button for commit-and-push or commit-and-sync actions.
+
+New files added through the repo node's gallery appear in **Changes** so you can stage them. A Git commit records repository files; slot notes stay with the Flow.
+
+When a merge leaves conflicts, the Changes menu offers **Mark All Resolved**, which becomes available once you have resolved every conflict yourself; FlowJoe never picks a side for you.
+
+Right-click an Explorer file for **Open**, **Preview File**, **Preview Slot Item**, comparison actions, **Open Timeline**, **Cut**, **Copy**, **Move to Folder…**, **Copy File Name**, **Copy Relative Path**, **Download File…**, **Rename…**, or **Delete…**. Rename edits the filename in its row with a transparent field and theme-colored underline; double-click the filename, press **F2**, or use **Rename…** to start. Press **Enter** or leave the field to confirm, or press **Escape** to cancel. Invalid names and save errors remain beside the field. Folder menus contain **New File…**, **New Folder…**, **Quick Open…**, **Find in Folder…**, **Cut**, **Copy**, **Paste**, **Move to Folder…**, **Copy Folder Name**, **Copy Relative Path**, **Rename…**, and **Delete…**. The repository background keeps creation, search, and paste actions; the repository root cannot be renamed, moved, or deleted through this menu. Tab menus contain **Close**, **Close Others**, **Close to the Right**, **Close Saved**, **Close All**, **Copy Relative Path**, **Reveal in Explorer**, **Preview File**, **Preview Slot Item**, **Open Timeline**, and **Rename…**. Rename is disabled for historical tabs.
+
+Renaming a folder updates the paths of all files and subfolders inside it. Renaming or moving a working file keeps its open draft and undo history. **Delete…** on a folder confirms the folder and its contents; any affected unsaved files must be saved or discarded before deletion can finish. Canceling or a failed save keeps the folder.
+
+**Cut** followed by **Paste** moves a file or folder within the same repository. **Copy** followed by **Paste** creates independent items. Pasting a copy into its original folder chooses a free name such as `README copy.md`; an existing destination elsewhere is never overwritten. **Move to Folder…** offers a destination picker. A folder cannot be moved into itself or one of its descendants. If a copy includes drafts, choose **Save and Copy**, **Copy Saved Contents**, or **Cancel**; copying saved contents leaves the source drafts untouched.
+
+A folder’s **Quick Open…** lists only files inside that folder and its descendants. **Find in Folder…** searches readable text there, including unsaved open drafts; selecting a result opens the file at the matching line. Binary files are skipped. Large searches show a limit notice so you can narrow the query. Closing the search, switching repositories, or locking protected content clears the results.
+
+Choose a tab close action to close the selected file or group. If any affected file has unsaved edits, FlowJoe asks whether to save, discard, or cancel; a canceled close or failed save leaves the file open.
+
+In **Changes**, a file menu offers **Open File**, **Open File at HEAD**, **Stage Changes** or **Unstage Changes**, **Review Changes with Joe…**, and **Discard Changes…**. A **Timeline** entry menu offers **Open Changes**, **Open File at This Revision**, **Compare with Current File**, **Review Change with Joe…**, **Open on GitHub**, **Copy Commit Hash**, **Copy Commit Message**, and **Restore This Version…**. **Open Changes** opens a separate read-only tab showing the selected change; the filename, **Diff**, and revision identify it. Reopening the same comparison selects its existing tab, while a different commit comparison gets a separate tab. Historical comparisons are read-only on both sides. Select the working-file tab or choose **Edit** to return to the editable current file. Graph commit menus offer **Open Changes**, **Open on GitHub**, **Review Commit with Joe…**, **Compare with Parent**, **Compare with Current Branch**, **Select for Compare**, **Compare with Selected Commit**, **Create Branch Here…**, **Create Tag Here…**, **Copy Commit Hash**, and **Copy Commit Message**. Some items are disabled when the selected file, commit, or remote makes them unavailable.
+
+## Keyboard controls
+
+With focus in the workbench, **Ctrl/Cmd+S** saves and **Ctrl/Cmd+F** finds text in the file. Focus a file row, folder row, or working-file tab and press **F2** to rename it inline; press **Enter** to accept or **Escape** to cancel. **Shift+F10** (or the Context Menu key) opens the menu for a focused Explorer row, tab, or Timeline entry.
+
+Use the divider’s arrow keys to resize the Explorer; hold **Shift** to move it farther, and use **Home** or **End** to move to a limit. **Quick Open…** is available from the Explorer folder/background menu. With focus on an Explorer row, **Ctrl/Cmd+X**, **Ctrl/Cmd+C**, and **Ctrl/Cmd+V** cut, copy, and paste repository items. These shortcuts keep their normal text-editing behavior inside name and search fields.
+
+## Work with branches
+
+The branch pill opens the repository's branch list. You can create a branch, rename or delete one, or merge it into another branch. **Delete Branch** asks you to confirm and warns you when the branch holds commits that exist only on this computer, when they are not on GitHub, or when FlowJoe could not check. A branch that a node is open on cannot be deleted until you close that node.
+
+Choose **Open Branch as Node** to put a branch in the Flow tree as its own node. Each open branch node shares the repository's history. To work on another branch, select its node in the tree; **Switch Branch** opens that same branch picker. To remove a branch node from the tree without touching the branch, choose **Close Branch Node…** and confirm; the branch and its commits stay in the repository. You get 5 seconds to **Undo**, which brings the node back with its automations and keeps its media safe.
+
+## Sync with a Git remote
+
+Use **Fetch** to check the remote for new commits. The repository row and Graph toolbar also provide **Pull**, **Push**, and sync actions. The row's counts show changes waiting to come in or go out. Link, change, or remove the remote from the repo node's **…** menu under **Remote**.
+
+### Sign in to GitHub over HTTPS
+
+For private GitHub repositories over HTTPS, choose **Sign in with GitHub** in Source Control. FlowJoe opens Git Credential Manager's sign-in flow. This signs in HTTPS GitHub access; SSH remotes use your SSH agent instead. Your GitHub account also lives in the Source Control **…** menu, which shows **Signed in as …** and offers **Sign Out of GitHub**.
+
+### Use an SSH remote (macOS and Linux)
+
+SSH remotes work on macOS and Linux. On Windows they are not supported yet; FlowJoe tells you so and asks you to use an `https://` address.
+
+Before using SSH, add or unlock your key in the SSH agent available to FlowJoe. FlowJoe does not copy private keys into the Flow, repo history, or workspace. If the agent starts after FlowJoe, restart FlowJoe so it can see the agent connection.
+
+FlowJoe uses the system OpenSSH client from a fixed location, not your `PATH`: `/usr/bin/ssh` or `/bin/ssh`. On Linux, install an OpenSSH client if neither path exists.
+
+SSH hosts must already have a trusted key in your standard OpenSSH `known_hosts` file (`~/.ssh/known_hosts`). Verify the host key fingerprint against information from your Git host before adding it. FlowJoe checks the host key strictly and stops if the host is unknown or has changed; it does not ask to trust a new host inside the app.
+
+<Warning>
+Unknown or changed host keys are rejected. FlowJoe never offers a prompt that trusts a new host automatically.
+</Warning>
+
+The **Graph** section shows commit history, branch and tag labels, and commit details; when GitHub has commits your branch does not, they appear on a separate purple lane that curves back to your branch where the two meet. Use **Show Git Output** in the Graph options or repository menu to inspect recent Git activity.
+
+## Preview repository files
+
+In the Explorer menu, **Preview File** displays the repository file itself. **Preview Slot Item** opens the corresponding gallery preview for that exact file item, including the selected child of a stack. The repository preview can show text and code, Markdown, HTML, images, audio and video, PDFs, extracted Office text, and ZIP file listings. Office previews show extracted content rather than a full-fidelity editable Office document; a ZIP preview lists its entries rather than opening them as a folder.
+
+
+<Warning>
+**Preview File** shows text/code, Markdown/HTML, images, audio/video, PDFs, Office text, and ZIP listings. HTML/Markdown block scripts, app access and network; same-repository resources are bounded. It runs no Node/server. Custom fonts may not render.
+</Warning>
+
+## Set changes aside (Stash)
+
+**Stash** puts your uncommitted work away and returns the gallery to the last commit, so you can switch tasks without committing half-finished work. Open the **Stash** menu in Source Control and choose **Stash…**. In the **Stash Changes** window you can add an optional message, see what will be stashed, and turn **Include new files** on or off (it is on by default). New files that sit inside a stack are left out and stay in the gallery. Files you had staged come back staged.
+
+Your stashes appear in a **Stashes** group in the panel. Stashes stay on this computer: they are never pushed, and Sync, Pull, Push, and Fetch ignore them.
+
+- **Pop** brings a stash back and removes it from the list. **Pop Latest Stash** takes the newest one, or choose **Pop Stash…** to pick.
+- **Apply** brings a stash back and keeps it in the list.
+- **View Stash…** shows the files in a stash.
+- **Drop Stash…** deletes one stash, and **Drop All Stashes…** deletes every stash in the repository. Both ask you to confirm first.
+
+If a file changed in the gallery since you stashed it, the **Restore** window asks which version to keep for each such file: **Keep Mine** or **Keep Stashed**, or **Compare…** to combine them by hand. Nothing changes until you confirm. If you kept your own version of a file, the stash stays in the list.
+
+After you stash or pop, a toast offers **Undo** for 5 seconds. You can also press <kbd>Delete</kbd> on a focused stash row to drop it.

@@ -1,0 +1,42 @@
+---
+title: "Integrated Terminal (Forge)"
+description: "Run local shell sessions, manage multiple tabs, and drag-and-drop terminals directly inside the visual client."
+---
+
+FlowJoe includes **FlowJoe Forge**—a floating, draggable, and tabbed integrated terminal panel. Built using `xterm.js` and backed by real native shells in the desktop main process, the Forge allows you to run terminal tasks, execute build scripts, and run agent loopbacks side-by-side with your outline structure.
+
+---
+
+## ⚡ Key Features
+
+- **Draggable & Floating Windows:** The terminal panel floats above the visual workspace, allowing you to position it anywhere or drag it to secondary displays.
+- **Fully Resizable:** Pull on any edge or corner to expand your command line view, or hit the Maximize button to go full-screen.
+- **Tabbed Sessions:** Keep multiple terminals active at the same time in a single window panel, each maintaining its own environment and history.
+- **Desktop Only:** The terminal panel opens local shell sessions inside the FlowJoe desktop app.
+
+---
+
+## 🎛️ Drag-and-Drop Tab Management
+
+The tab strip in the terminal panel supports advanced visual window operations:
+
+1. **Reordering Tabs:** Click and drag any terminal tab tab-header within the strip to change its order.
+2. **Moving Tabs:** Drag a tab from one terminal panel window and drop it onto another terminal window's tab strip to merge them.
+3. **Tearing Off Tabs:** Drag a tab header out of the panel window and drop it in empty space to automatically tear it off into a **brand new independent floating terminal window**.
+4. **Renaming Tabs:** Double-click any tab tab-header to write a custom label (e.g. `Dev Server`, `MCP Bridge`, `Git Logs`), making it easy to track active operations.
+
+---
+
+## 🕰️ Background Persistence & Shell Backend
+
+FlowJoe isolates your terminal states from the rendering UI to protect ongoing jobs:
+- **Pty Backend:** Terminal tabs are backed by native `node-pty` shell processes running in the Electron main process.
+- **Persistence:** Closing or minimizing a terminal panel window **does not kill the running process**. Your dev servers, tests, or compilations continue executing in the background. Reopening the panel restores the visual buffer instantly.
+- **Loopback Integration:** Run the Agent Bridge (MCP) loopback server inside a terminal session to let external CLI agents (like Claude Code or Gemini CLI) interact with your active workspaces.
+
+---
+
+## Related Guides
+- [Agent Bridge (MCP)](/joe/agent-bridge)
+- [Bring Your Own Brain (BYOB)](/joe/byob)
+- [Workspace Folders & Layout](/workspaces/folders)

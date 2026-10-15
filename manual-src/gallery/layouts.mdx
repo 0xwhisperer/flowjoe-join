@@ -1,0 +1,59 @@
+---
+title: "Gallery Layouts & Slot Notes"
+description: "Configure how you view your media and write slot annotations."
+---
+
+FlowJoe's gallery is a freeform board by default, with an immersive alternate view for presenting or reviewing. Switching layouts only changes how slots are arranged — your media, stacks, tags, and notes stay put.
+
+---
+
+## Gallery Layouts
+
+Use the layout control in the top bar of the Gallery panel to switch modes. The public toggle is:
+
+**Canvas ↔ Theatre Mode**
+
+### 1. Canvas Layout (Default)
+
+An infinite 2D board. Place slots freely, pan and zoom the surface, and draw relationship lines between slots. Positions and connections are kept when you leave the layout and return.
+
+- **Best for:** Mind maps, design boards, storyboards, and any arrangement that isn’t a single list or wall.
+- **Behavior:** Scroll to zoom, drag empty space to pan, drag a slot to move it. Plain drag pans the board, so lasso selection uses Shift/Cmd/Ctrl-drag — the two gestures never fight. Positions are stored with each slot, so leaving Canvas for Theatre Mode and coming back does not throw away your placement.
+- **View state travels with the flow:** Pan/zoom, the grid arrangement, Fit, snap-to-grid, and the colour filter are saved per node and export/import along with the rest of the flow — reopening an exported flow puts Canvas back the way you left it.
+- **Connections:** Drag the handle on a slot's edge onto another slot to link them, and colour a slot to colour its outgoing lines. See [Canvas Connections](/gallery/connections) for the full picture.
+- **Coordinate readout:** Move your mouse over the board (or drag a slot) and a small readout appears next to the zoom percentage in the top-right corner. It shows two different coordinates:
+  - **V** is the **viewport** position — where your mouse is on your screen, in plain pixels.
+  - **C** is the **canvas** position — where that same point sits in the board's own space, independent of how far you've zoomed or panned. This is the position a slot's placement is actually saved as, so it stays meaningful no matter your current zoom level.
+  - While you're dragging a slot, the readout switches to showing the slot's canvas position plus how far it has moved (**Δ**), and whether Snap to Grid is on. Dragging several slots at once shows the count instead, with a shared movement delta.
+  - This readout is a reference for anyone who wants precise placement or is describing a position to someone else — it's not required for everyday use of the canvas.
+
+### 2. Theatre Mode (Experimental)
+
+An immersive panoramic arrangement: slots sit around the camera on the inside of a sphere.
+
+- **Best for:** Visual presentations, spatial mood boards, review pass in a different “room.”
+- **Behavior:**
+  - Drag to look around with smooth easing.
+  - Tap a card to open the normal preview while Theatre Mode can remain active underneath.
+  - Built with CSS 3D transforms (not a heavy WebGL scene), so it stays light on startup.
+  - Treat it as a special view: leave Theatre Mode (for example with `Esc` or the layout control) to return to Canvas.
+
+---
+
+## Retired Layouts
+
+Earlier versions of FlowJoe also offered Horizontal (filmstrip row), Vertical Notes (media + notes columns), and Masonry (packed wall) layouts. These have been retired in favor of Canvas and are no longer reachable from the layout control. Any saved preference for one of these from before the change now opens in Canvas instead — nothing about your media, stacks, tags, or notes was affected by the switch.
+
+---
+
+## Slot Notes & Undo Lanes
+
+Every slot can carry optional notes:
+
+- **Markdown-friendly writing** for bullets, emphasis, and short research notes.
+- **Isolated undo/redo** per notes field — `Cmd/Ctrl+Z` in a note undoes that note, not the whole tree or gallery.
+- **Write-back from Joe** — Joe can drop analysis into a slot’s notes when you ask.
+- **Formatted display in Canvas:** A note with formatting (bold, lists, links, etc.) shows that formatting on the card at rest in Canvas, instead of showing the raw markdown text. Links in a note at rest are clickable and open in the in-app browser.
+- **The full [rich-text editor](/reference/rich-text-editor):** Clicking into a note to edit it gives you the same editor as Node Summary and Preview — type `/` for a block menu, `:` for emoji, use markdown shortcuts as you type, and select text for a floating toolbar with bold/italic/underline/strikethrough/highlight, lists, links, inline code, and Joe's AI actions. There's no persistent toolbar on the card, just the floating one. `Escape` or `Cmd/Ctrl+Enter` finishes editing.
+
+**Canvas** and **Theatre Mode** keep notes on the slot data even when the view emphasizes placement or immersion — open a slot to read or write them.

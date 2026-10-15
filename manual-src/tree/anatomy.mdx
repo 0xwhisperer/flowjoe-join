@@ -1,0 +1,87 @@
+---
+title: "Tree anatomy"
+description: "How a Flow is built: roots, nodes, parents, children, and siblings — the spine of every workspace."
+---
+
+The **tree** is the left side of FlowJoe. It is the spine of a Flow: where things live, how they nest, and how you move around large projects without losing the plot.
+
+![FlowJoe Tree & Outlines Panel](/images/02-current-shell-vertical-notes.png)
+
+---
+
+## The Flow (Your Project Document)
+
+A **Flow** is the entire workspace document. It is represented by a single tree outline (or a multi-root tree) and encapsulates all of your work:
+- **Top-Level Identity:** A Flow has its own name, visual theme profile, and executive summary.
+- **Dangling Project Nodes:** You can organize distinct projects, chapters, research boards, or ideas as separate outline branches dangling off the root.
+- **Independent Customization:** Each node is an independent "living container." You can customize every branch individually with its own title, task status (e.g. In Progress, Frozen, Private), visual themes, and local galleries without affecting the parent outline.
+
+Opening another Flow is like opening another project file. Your media and structure travel with it when you export (especially a full `.fj` package).
+
+---
+
+## Roots
+
+A **root** is a top-level node — nothing sits above it in the tree.
+- Many Flows start with a single root and grow downward.
+- FlowJoe also supports **multi-root** Flows: several top-level branches side by side (for example separate product lines, or “Work” and “Life” in one document).
+
+Roots are still nodes. They can have a gallery, notes, status, and theme like any other node.
+
+---
+
+## Nodes
+
+A **node** is a place in the tree. It is not just a label. Each node can hold:
+- A name (and place in the hierarchy)
+- **Meaning** — notes, a summary, status, theme
+- **References** — its own gallery of media, stacks, links, and workbenches
+
+Think of a node as a *living container*: “this chapter,” “this client,” “this research thread,” “this milestone.”
+
+---
+
+## Parents and children
+
+Hierarchy is parent → child:
+
+```text
+Root (or any parent)
+├── Child A
+│   ├── Grandchild A1
+│   └── Grandchild A2
+└── Child B
+```
+
+- A **parent** owns a list of **children**.
+- A **child** has exactly one parent in the tree (except roots, which have none).
+- Depth can go as deep as the work needs — outlines, worldbuilding, org maps, multi-phase plans.
+
+Creating a child is how you break a big idea into parts without losing the parent as the “home” for shared context and media.
+
+---
+
+## Siblings
+
+**Siblings** are nodes that share the same parent (including multiple roots, which are siblings at the top level).
+- Order among siblings matters: you can reorder them to match priority, timeline, or narrative sequence.
+- Bulk actions often target a multi-selection of siblings or mixed branches.
+
+---
+
+## Selection
+
+Whatever you **select** in the tree drives the right side of the app:
+- Select a node → its **gallery** (and node-level chrome) is what you see.
+- Multi-select → bulk tree actions; the gallery still follows the product’s selection rules for the focused node.
+
+The tree is navigation *and* structure. You are not only browsing a list — you are choosing *where* the next piece of work lives.
+
+---
+
+## Related
+
+- [Navigating and selecting](/tree/navigating)
+- [Creating, renaming, reordering](/tree/creating-renaming-reordering)
+- [Gallery anatomy](/gallery/anatomy)
+- [Core mental model](/getting-started/mental-model)

@@ -1,0 +1,72 @@
+---
+title: "Gallery & Slot Anatomy"
+description: "The media hemisphere — slots, cards, and interactive elements."
+---
+
+The right hemisphere of FlowJoe is the **Gallery**. The gallery holds your visual and document references, arranged as independent blocks called **slots**.
+
+---
+
+## What is a Slot?
+
+A **slot** is an individual container in the selected node's gallery. It wraps any file, URL, embed, or interactive workbench into a card layout that includes:
+
+```
+┌────────────────────────────────────────┐
+│ [Type Icon]  Title / Filename          │
+├────────────────────────────────────────┤
+│                                        │
+│             MEDIA PREVIEW              │
+│      (Image, PDF, Video Player, etc.)  │
+│                                        │
+├────────────────────────────────────────┤
+│ Slot Notes: "This is why this file is  │
+│ here..."                               │
+├────────────────────────────────────────┤
+│ [Tags]          [Previous/Next Stack]  │
+└────────────────────────────────────────┘
+```
+
+- **Metadata Header:** Shows the file type icon, name, and size.
+- **Interactive Preview:** A responsive rendering area (e.g. an audio player, a scrollable doc frame, or a web link preview). Click it to open the full-size [Preview view](/gallery/preview).
+- **Slot Notes:** An isolated annotation field, backed by the full [rich-text editor](/reference/rich-text-editor) — slash commands, emoji, markdown shortcuts, and a floating formatting menu with Joe's AI actions.
+- **Tag Tray:** Custom category tags.
+- **Context Controls:** Options to replace, duplicate, move, or combine the slot.
+
+---
+
+## Toolbar: Collapse All
+
+The gallery toolbar (and the canvas expand bar) includes a set of "Collapse all" toggles that act on every slot for the current node at once:
+
+- **Collapse all media**, **Collapse all tag bins**, and **Collapse all notes** each fold that part of every slot card down to save space, and expand it back out on a second click.
+- Each toggle's state is per-node — collapsing notes on one node doesn't affect any other node, and a node you haven't touched always opens with everything expanded.
+
+---
+
+## Slot Identity & Integrity
+
+FlowJoe uses a stable, unique ID for every slot (`entryId`). 
+- **Notes Conservation:** Even if you change the media item inside a slot or drag it to another position, any attached notes remain intact.
+- **Undo History:** Slot actions (like editing notes) have their own isolated history lanes. Undo-ing a note edit does not disrupt tree editing.
+- **Joe References:** Joe uses stable IDs to target slot-level mutations (such as replacing an image placeholder with a generated graphic).
+
+---
+
+## Adding Slots
+
+Slots are created automatically when you drag-and-drop files onto the gallery grid, paste clipboard content, or add web URLs. You can also click the **Add Item** button at the end of the gallery to create empty placeholders, calendars, spreadsheets, or rich documents.
+
+---
+
+## 📌 Slot Context Menu & Short-cuts
+
+Right-clicking any slot card triggers a context menu of advanced file operations:
+
+* **Tag Copying & Pasting:** Quickly copy all tags from one card and **Paste** or **Merge** them onto other cards to build tag assets rapidly.
+* **Asset Operations:** Convert images or documents to PDF, crop images inline, or manage image stacking (Convert to Stack, Add to Stack, and Flatten Stack).
+* **Ask Joe:** You can ask Joe to copy a slot, or one item out of a stack, and leave the original in place; to crop a picture in its slot; or to turn a picture or a note into a PDF placed beside the original.
+* **Download & Zip Exports:** Pack all images/files in a stack into a single `.zip` file for download (*Download Stack Media ZIP*), export calendar workbenches as `.ics` files, or download raw original/derived files.
+* **Notes Assistant:** Right-click the notes field to access:
+  - **`Dictate Notes` (Microphone):** Triggers voice dictation to speak annotations directly into the text field.
+  - **`Spelling & Grammar Check` (Spell-check):** Instructs Joe to audit notes spelling and rewrite it cleanly for your approval.

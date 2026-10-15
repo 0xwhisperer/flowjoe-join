@@ -1,0 +1,39 @@
+---
+title: "Flow Summary"
+description: "One durable summary for your whole tree, not just a single node."
+---
+
+Where a [Node Summary](/tree/summaries) captures one node, the **Flow Summary** captures the whole tree — the single place to write "what this entire workspace is and where it stands" once, instead of piecing it together from individual nodes.
+
+---
+
+## Opening the Flow Summary
+
+Open it from the top-bar button — the same place you'd expect a whole-flow action, distinct from the per-node Summary button that only shows once a node is selected.
+
+---
+
+## Managing the Flow Summary
+
+The Flow Summary uses the same [rich-text editor](/reference/rich-text-editor) as Node Summary, with the same full toolset:
+
+- **Rich-Text Editor:** Write and format the summary using an embedded rich-text editor with Markdown storage.
+- **Rich Formatting & Dropdowns:** Heading styles (H1–H3, paragraph), text alignments (Left, Center, Right, Justify), advanced marks (Underline, Highlight, Inline Code, Subscript, Superscript), task lists / checklists, tables, blockquotes, and dividers.
+- **Slash Commands & Bubble Menu:** Type `/` to insert structural blocks quickly or select text to format on the fly with the floating formatting menu.
+- **Undo/Redo:** Cmd+Z / Cmd+Shift+Z (and the toolbar's Undo/Redo icons) walk the same persistent history as the rest of FlowJoe, so your edits are still there to step back through after a reload.
+- **Native Right-Click:** Right-clicking in the editor opens your system's standard menu (cut/copy/paste, spelling suggestions, etc.) — dictation and spell-check live on the toolbar here instead.
+- **AI actions:** Select some text (or just place your cursor in a paragraph) and click ✨ — on the toolbar, or in the floating menu that appears when you select text. Pick Improve, Fix grammar, Simplify, Shorten, Expand, Change tone, Translate, Turn into bullets, Summarize, or Continue writing, or choose Ask Joe… to give any other instruction. The suggestion streams in below your text as Joe writes it, then shows the changes highlighted once it's done — Stop cancels a request in progress. You can Replace it, Insert it below instead, copy it, tweak it in the box before accepting, or discard it, and Cmd+Z undoes an accepted change.
+- **Collapsible Sections & Block Actions:** Wrap any selection into a collapsible section to tuck away detail, then un-collapse it later while keeping the content. Hover any block for quick duplicate, copy-to-clipboard, and delete actions — plus drag its handle to reorder blocks.
+- **Images:** Drag an image file straight onto the editor (or paste one) to insert it where you dropped it, or type `/upload` for a drop box. Click an image to align it, float it so text wraps around it, add a caption or alt text, and drag its corner to resize. Images are stored inside the summary itself, so each file is limited to 4 MB — larger ones are skipped with a notice.
+- **Emoji Shortcodes:** Type `:` followed by a name — `:fire`, `:check`, `:rocket` — and pick from the popup.
+- **Live Voice Dictation:** Dictate hands-free using FlowJoe's speech engine, including automatic spoken punctuation and line-break conversion.
+- **Brainstorm with Joe:** Highlight a draft and ask Joe to refine, format, or extract Action Items from it.
+- **Spellcheck Review:** Built-in review makes editing clean and fast.
+
+---
+
+## Why It Matters for AI Context
+
+The Flow Summary gives Joe a top-level directory card for the entire tree, the same way a Node Summary does for one branch — useful when you want Joe grounded in the shape of the whole project rather than just the currently selected node and its ancestors.
+
+It rides with the **flow map** on each Joe send (the **Flow map** slice on the token bar). Checking **Omit entire flow map** leaves both the tree outline and this summary off that send. See [Token usage with Joe](/joe/token-usage).

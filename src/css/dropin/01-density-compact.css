@@ -54,7 +54,8 @@ body.density-compact {
   --ai-chat-header-control-height: 24px; /* was 32px — Joe's rail */
   --modal-section-header-height:   26px; /* was 36px */
   --browser-tab-height:   34px; /* was 46px */
-  --modal-header-padding: 4px 8px 4px 12px; /* was 8px 12px 8px 12px */
+  --modal-header-padding-block: 4px;
+  --modal-header-padding: var(--modal-header-padding-block) 8px var(--modal-header-padding-block) 12px; /* was 8px 12px 8px 12px */
   --toggle-switch-height: 20px;  /* was 24px */
   --toggle-switch-inset:  3px;   /* was 4px */
   --tag-chip-height:      18px;  /* was 22px — bigger step so chips read as visibly denser, matching Manage/Slot-Stack's shrink */
