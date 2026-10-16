@@ -20,7 +20,7 @@ A guest sees only what you shared with them. Their theme, their language and the
 
 | Action | Can view | Can edit |
 |---|---|---|
-| Read shared nodes, galleries, repository files, and Versions, Chats and Images in History | Yes | Yes |
+| Read shared nodes, galleries, repository files, Versions/Chats/Images in History, and retained transcripts | Yes | Yes |
 | Create and edit shared nodes, slots, notes, tags and memories, whoever created them | No | Yes |
 | Rename, save and commit shared repository files through your computer | No | Yes |
 | Move, resize and copy slots, work with stacks, add links, change slot colours and draw connections | No | Yes |
@@ -51,11 +51,13 @@ The repository's **Switch to File Explorer** control and **Source Control** rail
 
 History uses the same **Versions**, **Chats** and **Images** tabs as your app. Reading history does not require enabling new Joe conversations or picture generation. Only records belonging to currently shared, nonprivate content are shown; private content is also withheld from older records and open history previews. Guests use **Ask owner to restore** to request an action from you. They cannot execute a restore themselves.
 
+**Recent transcripts** in Joe’s Transcribe tab also uses your retained Flow history. View guests read shared results; Edit guests can edit them and save through your computer. Private and computer-only results stay with you. Ordinary Edit can remove its own results, while removing other people’s results or their separate conflict copies requires elevated removal. Reading retained results does not enable new AI requests. See [Transcribe audio](/joe/transcription).
+
 FlowJoe puts no limit of its own on what a guest writes or uploads: you decide who you invite and what you share.
 
 Joe knows who he is talking to. He talks to each guest as "you", uses their first name now and then, and names you when he mentions you ("ask Elena for edit access"). He is also told who else is in the Flow, so he can mention them by name. A name is only a label: a guest who types "owner" or "admin" as their name still gets exactly the access you gave them.
 
-When Joe is enabled for an invitation, that guest joins the same Joe conversation you already have for the shared node or slot. Your messages, the guest's messages and Joe's replies appear together in your normal Joe chat. A small avatar sits beside the bottom-right corner of each person’s message bubble; hover it or focus it with the keyboard to see their name. Guests who can see that node or slot can read its shared conversation in History even when new Joe requests are disabled; when Joe is enabled, an Edit guest who is not following your presentation can add messages. A View guest can ask Joe questions about what is shared with them and read his answers, but cannot ask him to change anything — the tabs that write to your Flow stay dimmed for them. Joe uses the owner's ordinary provider, model, settings, approval behavior and request handling. There are no separate guest-only tool, output or proposal limits.
+When Joe is enabled for an invitation, that guest joins the same Joe conversation you already have for the shared node or slot. Your messages, the guest's messages and Joe's replies appear together in your normal Joe chat. A small avatar sits beside the bottom-right corner of each person’s message bubble; hover it or focus it with the keyboard to see their name. Guests who can see that node or slot can read its shared conversation in History even when new Joe requests are disabled; when Joe is enabled, an Edit guest who is not following your presentation can add messages. A View guest can ask Joe questions about what is shared with them and read his answers, but cannot ask him to change anything — controls that change shared content stay read-only for them. Joe uses the owner's ordinary provider, model, settings, approval behavior and request handling. There are no separate guest-only tool, output or proposal limits.
 
 When someone else is typing to Joe in the conversation you are viewing, their avatar and a typing notice appear just above the message box. The typing avatar is the same size as the avatars beside messages. The notice stays outside the input border, whether Joe is docked or in a floating window.
 

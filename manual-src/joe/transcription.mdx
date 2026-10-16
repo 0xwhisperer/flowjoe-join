@@ -59,12 +59,22 @@ Completed transcripts and your edits are kept automatically for the current Flow
 
 The transcription method controls where speech recognition runs. Storage follows the Flow’s storage mode:
 
-- **Local mode, including the browser:** transcript history is kept in this browser or app’s local data, separately for each Flow. Clearing browser/app data removes that local copy; use an export for a backup.
+- **Local mode, including a standalone browser:** transcript history is kept in this browser or app’s local data, separately for each Flow. Clearing browser/app data removes that local copy; use an export for a backup.
 - **Workspace folder:** eligible history is also kept in the Workspace’s `.flowjoe/transcript-history.json` file and restored when that Workspace opens. Private-source transcripts and transcripts marked **Keep on this computer only** stay in local data instead.
 
 Transcript history is registered app data and is excluded from orphaned-media cleanup. Private transcripts become unavailable when their source is locked. A transcript whose source was removed remains available in history for copying or saving, subject to its privacy restrictions.
 
-Exports have an **Include transcript history** option, enabled by default. Private-source and computer-only transcripts are excluded even when the option is enabled. See [Export & Import](/portability/export-import). Shared guest sessions do not retain the owner’s local transcript history.
+Exports have an **Include transcript history** option, enabled by default. Private-source and computer-only transcripts are excluded even when the option is enabled. See [Export & Import](/portability/export-import).
+### Shared guests
+
+Open **Recent transcripts** in Transcribe to read the retained results shared with you. Private sources and transcripts the owner keeps on their computer are excluded. Removing a recording does not remove its retained text when its shared origin is known.
+
+- **View access:** open and read shared retained results.
+- **Edit access:** edit retained text and save a gallery copy through the existing Save chooser. Text edits are saved through the owner, with a pending recovery copy in your browser.
+- **Removal:** Edit can remove its own results; removing someone else's results or a separate conflict result they contributed requires the owner's elevated removal permission. A mixed removal tells you what was kept. Ordinary text edits do not change who created the result.
+
+The owner keeps the authoritative history with the Flow. Closing or losing access to the share clears the guest browser's shared data and pending drafts; it does not delete the owner's history. **Keep on this computer only** is controlled by the owner. Reading existing results does not require permission to run Joe; new online recognition uses the owner's enabled connection. Local model setup remains a desktop function.
+
 
 ### Plain text, timestamps and speaker labels
 
