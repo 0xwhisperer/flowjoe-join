@@ -13,13 +13,19 @@ Explorer supports inline file/folder/tab Rename, folder Delete, Cut/Copy/Paste, 
 A repo node is the Git boundary for a project. A **Workspace Folder** chooses where the whole Flow is stored. They are separate features: do not make the whole Workspace Folder your project repository. See [Workspace Folders](/workspaces/folders).
 </Note>
 
+## Shared repositories
+
+Guests use the same Explorer, editor and Source Control surfaces. **Can view** allows reading shared files and their associated history. **Can edit** allows creating, editing, renaming, saving and committing shared files through the owner's computer. Saving and committing are separate actions. Credentials and native filesystem paths stay with the owner, and a scoped commit preserves private and unshared files.
+
+Removing your own created file requires no extra removal permission when it has no protected contributions from others. Removing someone else's file requires the owner's additional removal permission. Editing its text does not make you its creator. Private content remains unavailable with either permission. See [Sharing, Guests and Presenting](/workspaces/sharing-and-presenting).
+
 ## Create or open a repo node
 
 Use the **New Node** window to create an empty repository or clone from a Git remote. To import an existing local Git folder, drag the folder onto the Flow tree and choose **Import as Repository**. (The other choice, **Import as Ordinary Folder**, brings it in as a normal folder.) A repo node is the Git boundary for that project: folders become child nodes and files become gallery items. FlowJoe keeps the bare Git history in its own hidden storage and saves the working files through the Flow's normal storage. It does not create a checkout folder elsewhere on your computer, and it does not put the whole Flow into Git.
 
 For a remote, use its HTTPS address or, on macOS and Linux, either SSH form shown by the Git host, such as `https://host/owner/project.git`, `ssh://git@host/owner/project.git`, or `git@host:owner/project.git`. FlowJoe uses one remote named `origin` for each repo node. A repository imported from a local Git folder can keep its existing SSH origin on macOS and Linux. On Windows, SSH addresses are not supported yet: use an `https://` address instead.
 
-When you open a repo node, choose **Source Control** in the app rail. The repository appears with its current branch and any changes waiting to pull or push. The panel is available in the desktop app; browser guests can see repository nodes but cannot run Git actions.
+When you open a repo node, choose **Source Control** in the app rail. The repository appears with its current branch and any changes waiting to pull or push. The panel is available to the owner and to browser guests with repository access. View guests read shared files and history; Edit guests save and commit through the owner.
 
 <Note>
 Repo files use a separate Explorer/editor workbench. **Save** updates working files; **Commit** is separate in Source Control. **New File** and **New Folder** put an inline name field at the target folder: **Enter** creates, **Escape** or blur cancels. Rename uses a transparent, theme-underlined field. Double-click a file or folder name in Explorer, press **F2**, or choose **Rename…**. Working-file tab names can also be renamed by double-clicking the name, pressing **F2**, or choosing **Rename…** from the tab menu. Historical tabs stay read-only.
@@ -32,6 +38,10 @@ Timeline **Open Changes** opens a separate read-only tab labeled with filename, 
 </Note>
 
 ## Browse and edit repository files
+
+<Note>
+Guest repairs are still in progress for stash, merge/rewrite, and branch, tag and remote actions. The repaired guest workflow currently covers shared-file reading, editing, saving, renaming, creation and commits. This is an implementation gap, not an extra permission the owner must grant.
+</Note>
 
 Choose **Switch to File Explorer** in the repository gallery to show its folder tree and editor. Select a file row to open it in the workbench. Resize the Explorer divider by dragging it or using the keyboard, and use the file tabs to move between files. Each file keeps its own draft and undo history while you switch tabs.
 

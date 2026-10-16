@@ -159,6 +159,7 @@ This guest build publishes only components delivered to the browser. The complet
 | scheduler | 0.23.2 | MIT |
 | sonner | 2.0.8 | MIT |
 | Spectral | bundled | OFL-1.1 |
+| three.js | 0.160.0 | MIT |
 | tiff | 7.1.3 | MIT |
 | tippy.js | 6.3.7 | MIT |
 | tiptap-markdown | 0.9.0 | MIT |

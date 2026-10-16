@@ -18,53 +18,71 @@ Sharing needs FlowJoe open on your computer. If you quit, guests see that you ar
 
 A guest sees only what you shared with them. Their theme, their language and their other settings are their own and never change your Flow. Where a card sits and how wide it is belong to the Flow, so they are the same for you and for everyone you shared with. (While you present, guests who follow see your screen, so show only what you are happy for them to see.)
 
-| | Can view | Can edit |
+| Action | Can view | Can edit |
 |---|---|---|
-| Read everything shared with them, including History (read-only) | Yes | Yes |
-| Change nodes, slots and notes; tag slots with tags they can see | No | Yes |
-| Create, rename, recolour and delete tags | No | Yes |
-| Move, resize and copy slots, make or take apart a stack, add a link, set a slot's colour, draw lines between slots | No | Yes |
-| Freeze or unfreeze a node, change a node's own theme | No | Yes |
-| Add a node at the top level, and delete one they made themselves | No | Yes |
-| Read the shared Joe conversation for a node or slot (if Joe is enabled for their invitation) | Yes | Yes |
-| Ask Joe read-only questions about shared content (if Joe is enabled) | Yes | Yes |
-| Ask Joe for changes, use spell check or transcription, or attach pictures and documents (if Joe is enabled; Edit guests must not be following a presentation) | No | Yes |
-| Ask Joe to set up a schedule | No | Yes |
-| Make pictures in the Images tab (if you turned on **Let guests generate images**) | Sees the tab, cannot generate | Yes |
-| Export, download, copy, print | No | Only when the owner enables **Let guests export** (off by default) |
-| Their own theme, layout, canvas view and Settings for how FlowJoe looks | Yes | Yes |
-| Make a slot private or password-protect a node, delete a top-level node they did not create, delete a shared top-level node | No | No |
+| Read shared nodes, galleries, repository files, and Versions, Chats and Images in History | Yes | Yes |
+| Create and edit shared nodes, slots, notes, tags and memories, whoever created them | No | Yes |
+| Rename, save and commit shared repository files through your computer | No | Yes |
+| Move, resize and copy slots, work with stacks, add links, change slot colours and draw connections | No | Yes |
+| Freeze or unfreeze a shared node, or change its theme | No | Yes |
+| Remove their own content when it contains no protected contributions from others | No | Yes |
+| Remove someone else's shared content, or their own container holding others' contributions | No | Only with your additional removal permission |
+| Ask you to restore a version or change a restore point | Yes | Yes |
+| Execute a version restore or change restore-point settings | No | No |
+| Use Joe when enabled for the invitation | Questions and conversation; no shared-content changes | Ordinary Joe features within their shared access |
+| Generate pictures in the Images tab when enabled for the invitation | Read only | Yes |
+| Export, download, copy or print | No | Only when you enable **Let guests export** |
+| Change their own appearance, language, layout and audio preferences | Yes | Yes |
+| Manage your invitations, credentials, workspace storage or native computer tools | No | No |
+
+Choose the additional removal permission in the invitation to let an Edit guest remove other people's shared content. It never reveals private content and never turns a View invitation into Edit access. Editing a title or note does not change who created the item. Older items without a recorded creator count as yours. For mixed selections, permitted removals proceed and protected items stay, with an explanation.
+
+<Note>
+Making a shared node private removes guest access. Currently, making it public again can require you to confirm the newly available content in Sharing before guests see it again. This extra confirmation is under review; it is not an additional guest permission.
+</Note>
+
+### Repositories and History
+
+<Note>
+Guest repairs are still in progress for stash, merge/rewrite, and branch, tag and remote actions. The repaired guest workflow currently covers shared-file reading, editing, saving, renaming, creation and commits. This is an implementation gap, not an extra permission the owner must grant.
+</Note>
+
+The repository's **Switch to File Explorer** control and **Source Control** rail are available for shared repositories. View guests can browse shared files and the associated readable history. Edit guests can edit, save, rename, create files and folders, and commit through your computer. **Save** saves the file; **Commit** records the saved changes in Git. Your credentials stay on your computer. Private and unshared files are preserved when a guest commits shared changes.
+
+History uses the same **Versions**, **Chats** and **Images** tabs as your app. Reading history does not require enabling new Joe conversations or picture generation. Only records belonging to currently shared, nonprivate content are shown; private content is also withheld from older records and open history previews. Guests use **Ask owner to restore** to request an action from you. They cannot execute a restore themselves.
 
 FlowJoe puts no limit of its own on what a guest writes or uploads: you decide who you invite and what you share.
 
 Joe knows who he is talking to. He talks to each guest as "you", uses their first name now and then, and names you when he mentions you ("ask Elena for edit access"). He is also told who else is in the Flow, so he can mention them by name. A name is only a label: a guest who types "owner" or "admin" as their name still gets exactly the access you gave them.
 
-When Joe is enabled for an invitation, that guest joins the same Joe conversation you already have for the shared node or slot. Your messages, the guest's messages and Joe's replies appear together in your normal Joe chat. A small avatar sits beside the bottom-right corner of each person’s message bubble; hover it or focus it with the keyboard to see their name. Guests with Joe enabled who can see that same node or slot can read the thread; an Edit guest who is not following your presentation can add messages. A View guest can ask Joe questions about what is shared with them and read his answers, but cannot ask him to change anything — the tabs that write to your Flow stay dimmed for them. Only one guest request runs at a time across the share. If Joe is still busy after ten seconds, the guest sees that he is busy and the app retries the same request automatically.
+When Joe is enabled for an invitation, that guest joins the same Joe conversation you already have for the shared node or slot. Your messages, the guest's messages and Joe's replies appear together in your normal Joe chat. A small avatar sits beside the bottom-right corner of each person’s message bubble; hover it or focus it with the keyboard to see their name. Guests who can see that node or slot can read its shared conversation in History even when new Joe requests are disabled; when Joe is enabled, an Edit guest who is not following your presentation can add messages. A View guest can ask Joe questions about what is shared with them and read his answers, but cannot ask him to change anything — the tabs that write to your Flow stay dimmed for them. Joe uses the owner's ordinary provider, model, settings, approval behavior and request handling. There are no separate guest-only tool, output or proposal limits.
 
 When someone else is typing to Joe in the conversation you are viewing, their avatar and a typing notice appear just above the message box. The typing avatar is the same size as the avatars beside messages. The notice stays outside the input border, whether Joe is docked or in a floating window.
 
 The conversation is saved with your ordinary Joe chat on your computer, so it remains there after the guest leaves, sharing stops or FlowJoe restarts. The **Joe conversations with guests** screen is a separate, read-only way to browse the guest turns grouped by guest; it does not hold a separate live conversation. Joe access is set per invitation. There is no additional all-participants chat switch in the current Share window. If you remove a node or slot from a guest's access, retrying an earlier Joe request cannot retrieve a saved answer about content they can no longer see.
 
-Things that need your computer, such as Browser, Terminal, Source Control and Data, are visible to guests but inactive.
+Native Browser and Terminal windows belong to your computer and are unavailable to guests. Source Control works through your computer for shared repositories; settings that manage your storage, accounts and credentials remain yours.
 
-A slot whose file stays on your computer (a linked file) shows guests a note that the file is not available in the shared view, with the slot's title and notes still in place.
+A trusted linked file can be read from a shared slot while your computer is connected. Guests receive the file content through your app; your local path and permission to open, reveal or relink native files are not shared. An untrusted or missing link remains unavailable until you resolve it.
 
 ### Top-level nodes, tags and schedules
 
-- **Top-level nodes.** If you shared the whole Flow, an Edit guest's new top-level node is a real top-level node in your Flow. If you shared only some nodes, it sits beside the shared top node, where it belongs in your tree, and it is added to that guest's share. An Edit guest can also drop files into empty tree space to make a top-level node, including when an existing whole-Flow share has become empty. A guest can delete a top-level node only if they made it, so they can never remove one you created.
-- **Tags.** An Edit guest can create tags, and rename, recolour or delete a tag they can see when nothing outside what they can see uses it. A tag lives in your whole Flow, so one that also sits on a node you did not share, or on a hidden or private slot, cannot be changed or deleted by a guest. Tags a guest cannot see stay hidden from them.
+- **Top-level nodes.** If you shared the whole Flow, an Edit guest's new top-level node is a real top-level node in your Flow. If you shared only some nodes, it sits beside the shared top node, where it belongs in your tree, and it is added to that guest's share. An Edit guest can also drop files into empty tree space to make a top-level node, including when an existing whole-Flow share has become empty. Removing top-level nodes follows the same creator, contribution and additional removal permission as other shared nodes.
+- **Tags.** An Edit guest can create tags, and rename or recolour a tag they can see when nothing outside their access uses it. Deleting it also follows the creator and contribution rules: a guest's own tag used by someone else on their content needs your additional removal permission. A tag lives in your whole Flow, so one that also sits on a node you did not share, or on a hidden or private slot, cannot be changed or deleted by a guest. Tags a guest cannot see stay hidden from them.
 - **Schedules.** An Edit guest can ask Joe to set up a scheduled task. It runs on your computer with your key, but it can only read and change what is shared with that guest, and you see who made each task. A task does not start while you present, while sharing is deliberately paused, or after the guest's access ends. Disconnecting the Workspace pauses these tasks before they use AI credits; reconnecting lifts that pause.
 - **Flow summary.** A guest who was shared the whole Flow sees your written Flow summary, and an Edit guest can edit it. A guest who sees only some nodes gets a read-only summary of what is shared.
 
 ### Pictures made by guests
 
-Turn on **Let guests generate images** in the Share window and an Edit guest sees Joe's **Images** tab. The picture is made on your computer with your AI key and credits, kept in your image history credited to the guest, and shown in the guest's own preview. **Send to Gallery** adds it to the node like any picture they add. A guest who can only view sees the tab with the prompt and Generate switched off.
+Turn on **Let guests generate images** in the Share window and an Edit guest sees Joe's **Images** tab. The picture is made through your computer with your AI key and credits and shown in the guest's preview. **Send to Gallery** adds it to the node like any picture they add. A guest who can only view sees the tab with the prompt and Generate switched off.
 
 Image history and its pictures follow the guest’s current access. If you remove access to a node, make it private, or end the invitation while a picture or history request is waiting, that request cannot deliver the content afterwards.
 
 ### Settings
 
-Guests have FlowJoe's real Settings. Appearance, Tree, Gallery and Audio work and affect only their own screen. AI, APIs, Data, Browser and Automation are shown but locked, with one exception: **Settings → Data → Open-source licenses** works for guests and lists the open-source software their browser receives, with each license text.
+Guests have FlowJoe's real Settings. Personal appearance, density, surface style, language, layout, Tree, Gallery and Audio preferences affect their own browser. **Settings → Data → Reset Layouts**, the startup profiler and **Open-source licenses** are also available. Controls for your workspace, storage, restore points, provider accounts and native computer remain yours. Changing a shared node's theme requires Edit access; resetting themes affects only accessible shared nodes and respects protected subtrees.
+
+The coffee-mug logo also opens the same personal coffee-break game for View and Edit guests. Leaving or ending access closes the game.
 
 ## Browse guest turns
 
