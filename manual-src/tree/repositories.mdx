@@ -17,6 +17,10 @@ A repo node is the Git boundary for a project. A **Workspace Folder** chooses wh
 
 Guests use the same Explorer, editor and Source Control surfaces. **Can view** allows reading shared files and their associated history. **Can edit** allows creating, editing, renaming, saving and committing shared files through the owner's computer. Saving and committing are separate actions. Credentials and native filesystem paths stay with the owner, and a scoped commit preserves private and unshared files.
 
+The Graph includes branches in the shared repository, including branches not yet open as Flow nodes. A branch represented by a private or unshared node stays unavailable. Guests can read admitted branch history, tags and stashes. Edit guests can create branches and tags, open a branch as a node where that keeps it inside the shared area, merge shared changes, and use Fetch, Pull and Push through the owner's computer.
+
+Discarding working changes, saving a stash that puts files back to their last commit, applying or popping a stash over existing work, rewriting the last commit, renaming or deleting branches, deleting tags or stashes, and replacing or removing a remote require the owner's additional removal permission. Linking a new remote does not. Private and unshared file contents stay protected when changes are merged, pulled, committed or restored. A guest push stops if the branch or tag history contains private or unshared files, because Git would send that history to the remote. Fully shared repositories can be pushed normally. A partially completed stash operation reports that some files could not be changed; the saved stash remains available.
+
 Removing your own created file requires no extra removal permission when it has no protected contributions from others. Removing someone else's file requires the owner's additional removal permission. Editing its text does not make you its creator. Private content remains unavailable with either permission. See [Sharing, Guests and Presenting](/workspaces/sharing-and-presenting).
 
 ## Create or open a repo node
@@ -39,9 +43,7 @@ Timeline **Open Changes** opens a separate read-only tab labeled with filename, 
 
 ## Browse and edit repository files
 
-<Note>
-Guest repairs are still in progress for stash, merge/rewrite, and branch, tag and remote actions. The repaired guest workflow currently covers shared-file reading, editing, saving, renaming, creation and commits. This is an implementation gap, not an extra permission the owner must grant.
-</Note>
+Joined guests use the same Explorer and Source Control through the owner's computer. View reads shared files and history; Edit saves and commits. Elevated removal is required for actions that discard work or rewrite history. Private files and branches stay excluded. The supported actions are described under **Shared repositories** above.
 
 Choose **Switch to File Explorer** in the repository gallery to show its folder tree and editor. Select a file row to open it in the workbench. Resize the Explorer divider by dragging it or using the keyboard, and use the file tabs to move between files. Each file keeps its own draft and undo history while you switch tabs.
 

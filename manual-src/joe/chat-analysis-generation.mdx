@@ -35,6 +35,14 @@ You can generate graphics directly in your workspace:
 - **If generation fails:** Your previous generated picture and its prompt remain available. A failed replacement request does not clear that draft. The new request stays in the prompt box so you can retry it.
 - **Survives a restart:** A generated image you haven't sent to the gallery yet still shows, and can still be sent or reused, after you close and reopen FlowJoe. If a generated image genuinely can't be recovered, the card says so with a plain note instead of showing a blank frame.
 
+### Shared image history
+
+Images made through a shared Joe conversation or the **Images** tab are kept with the owner’s Flow, including their image bytes and history entry. The existing image-history drawer shows results whose source is shared with you; reopening or reloading the guest app reads that owner-kept history.
+
+View access can inspect shared history and use the Joe conversation features the owner enabled. Changing shared gallery content and saving a history result into the gallery require Edit access. Saving someone else’s shared result does not change who created it. Removing an image-history entry does not remove a picture still used in shared chat or the gallery; that picture continues to follow its source’s privacy and sharing permissions.
+
+Private sources and hidden stack items are excluded. A public stack item stays available even when a sibling is private. If the source becomes private or access ends while a new history entry is being saved, that entry is refused. Older entries whose source cannot be established reliably are withheld rather than attached to a different item.
+
 ---
 
 ## A node's look, and changes in the gallery

@@ -43,9 +43,7 @@ Making a shared node private removes guest access. Currently, making it public a
 
 ### Repositories and History
 
-<Note>
-Guest repairs are still in progress for stash, merge/rewrite, and branch, tag and remote actions. The repaired guest workflow currently covers shared-file reading, editing, saving, renaming, creation and commits. This is an implementation gap, not an extra permission the owner must grant.
-</Note>
+Shared repositories also support branches, tags, remotes, merge, history and stashes through your computer. Guests see native branches except those tied to private or unshared nodes. Actions that discard existing work or rewrite Git history require elevated removal; ordinary file editing, saving and committing require Edit. Private repository content remains excluded and preserved. See [Repositories](/tree/repositories) for the individual actions.
 
 The repository's **Switch to File Explorer** control and **Source Control** rail are available for shared repositories. View guests can browse shared files and the associated readable history. Edit guests can edit, save, rename, create files and folders, and commit through your computer. **Save** saves the file; **Commit** records the saved changes in Git. Your credentials stay on your computer. Private and unshared files are preserved when a guest commits shared changes.
 
@@ -56,6 +54,8 @@ History uses the same **Versions**, **Chats** and **Images** tabs as your app. R
 FlowJoe puts no limit of its own on what a guest writes or uploads: you decide who you invite and what you share.
 
 Joe knows who he is talking to. He talks to each guest as "you", uses their first name now and then, and names you when he mentions you ("ask Elena for edit access"). He is also told who else is in the Flow, so he can mention them by name. A name is only a label: a guest who types "owner" or "admin" as their name still gets exactly the access you gave them.
+
+Joe's existing rail button and panel stay available when you turn Joe off or your app is offline. Guests can still open the panel and browse retained shared history. New requests are disabled until execution is available again.
 
 When Joe is enabled for an invitation, that guest joins the same Joe conversation you already have for the shared node or slot. Your messages, the guest's messages and Joe's replies appear together in your normal Joe chat. A small avatar sits beside the bottom-right corner of each person’s message bubble; hover it or focus it with the keyboard to see their name. Guests who can see that node or slot can read its shared conversation in History even when new Joe requests are disabled; when Joe is enabled, an Edit guest who is not following your presentation can add messages. A View guest can ask Joe questions about what is shared with them and read his answers, but cannot ask him to change anything — controls that change shared content stay read-only for them. Joe uses the owner's ordinary provider, model, settings, approval behavior and request handling. There are no separate guest-only tool, output or proposal limits.
 
@@ -82,7 +82,7 @@ Image history and its pictures follow the guest’s current access. If you remov
 
 ### Settings
 
-Guests have FlowJoe's real Settings. Personal appearance, density, surface style, language, layout, Tree, Gallery and Audio preferences affect their own browser. **Settings → Data → Reset Layouts**, the startup profiler and **Open-source licenses** are also available. Controls for your workspace, storage, restore points, provider accounts and native computer remain yours. Changing a shared node's theme requires Edit access; resetting themes affects only accessible shared nodes and respects protected subtrees.
+Guests have FlowJoe's real Settings. Personal appearance, density, surface style, language, layout, Tree, Gallery and Audio preferences affect their own browser. Personal save/reload prompts, reminders and export preference choices are also available; export itself still requires the permission you granted. **Settings → Data → Reset Layouts**, Delete Undo, onboarding replay, the startup profiler and **Open-source licenses** are also available. Controls for your workspace, storage, restore points, provider accounts and native computer remain yours. Changing a shared node's theme requires Edit access; resetting themes affects only accessible shared nodes and respects protected subtrees.
 
 The coffee-mug logo also opens the same personal coffee-break game for View and Edit guests. Leaving or ending access closes the game.
 
@@ -138,3 +138,5 @@ Open the **Presenting** panel to **Lock all**, **Unlock all** or lock and releas
   While paused, guests are not shown as present, but changes they made are kept and sent automatically when you are back. A guest who chooses **Discard changes** is told which changes were dropped.
 - **A guest sees "(Owner's name)'s FlowJoe needs an update"**: the guest page is newer than the FlowJoe on your computer. They can keep the page open and it connects as soon as you have updated; there is a **Try now** button, and the page checks again by itself every so often.
 - **You see "Update needed" when you try to share**: your FlowJoe is too old to work with your guests' browsers. **Update now** opens the FlowJoe download page; install the new version, then turn sharing on again. Everything else you do on your computer keeps working.
+
+Guests can use Joe after the owner enables it during the session, without reloading their browser. Joe checks the owner's current provider availability when an action starts.

@@ -16,6 +16,16 @@ A scheduled task executes a headless loop of the AI assistant in the background.
 
 ---
 
+## Schedules created by guests
+
+An Edit guest's scheduled task runs on the owner's computer within the area currently shared with that guest. It uses the normal scheduler tools and approval rules: no separate six-action list, URL-only restriction or guest-only ban on web search, images or shared memories. Current image-generation permission still applies. Removal follows the same creator and elevated-removal rules as other guest edits.
+
+Execution stops if the guest loses Edit access, the invitation ends, sharing pauses, the owner is presenting, or Joe is disabled for that invitation. The guest's retained shared history stays readable when new Joe requests are disabled.
+
+Guests use the same **Tasks** settings tab. View guests can inspect shared tasks, proposals and recent runs. Edit guests can pause or resume shared tasks and approve or reject shared proposals; Run Now uses the guest's current shared access even for an owner-created task. Joe must be enabled to run or approve. The owner's global background-runs switch remains visible and locked.
+
+Deleting tasks, review items or run history follows the same creator and elevated-deletion permission as other shared content. Clearing a mixed list keeps protected records and explains what remained. **Ask owner to restore** sends the owner a request to undo a run; it does not roll back the Flow from the guest's browser. Private task targets and private run/proposal content stay hidden.
+
 ## 📅 Scheduling Cadences
 
 FlowJoe supports three repeating cadences for automations:
@@ -91,3 +101,9 @@ If you configure a task to update a specific slot (e.g. *"keep slot 1 updated"*)
 * **Configuration:**
   - **Cadence:** Weekly (Friday at 17:00)
   - **Behavior:** Scans metadata, writes summary notes, and flags incomplete nodes.
+
+Shared tasks can change a parent's status when all affected descendants are shared and editable. A parent change that would modify private or frozen descendants is refused.
+
+When an Edit guest asks Joe to create or change a shared recurring task, the task is saved on the owner's Flow. Joe reads the owner's shared task list; tasks aimed at private content are excluded. Removing tasks follows the same creator and elevated deletion permissions as the Automation panel.
+
+If a guest asks Joe to undo a change, Joe sends the owner a restore request. The owner performs the restoration.

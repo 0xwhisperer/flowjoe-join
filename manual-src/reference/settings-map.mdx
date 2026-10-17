@@ -25,7 +25,9 @@ Tab order matches the app (top to bottom):
 
 ## Settings when you join someone else's Flow
 
-Your personal display preferences belong to your browser: appearance, density, surface style, language, layout, Tree, Gallery and Audio. Data's **Reset Layouts**, startup profiler, **Delete Undo (5s)** and **Open-source licenses** also work in a guest session. Your choices do not change the owner's preferences.
+Your personal display preferences belong to your browser: appearance, density, surface style, language, layout, Tree, Gallery and Audio. Data's personal save/import prompt policies, reload warnings, save reminders, export preference choices, onboarding replay, **Reset Layouts**, startup profiler, **Delete Undo (5s)** and **Open-source licenses** also work in a guest session. Changing an import preference does not grant permission to import or replace the owner's Flow. Your choices do not change the owner's preferences.
+
+The owner's Joe voice and auto-read settings remain the shared runtime settings. You can preview that voice through the owner's OpenAI connection while Joe execution is available; you do not need your own API key.
 
 Shared-node themes require **Can edit**. Workspace storage, restore-point management, invitations, credentials and native computer settings belong to the owner. See [Sharing, Guests and Presenting](/workspaces/sharing-and-presenting) for the permission and removal rules.
 
@@ -110,6 +112,8 @@ Shared-node themes require **Can edit**. Workspace storage, restore-point manage
 * List of scheduled tasks (pause, resume, run now, delete).
 * Review inbox for propose-only automation results.
 * Recent run history.
+
+In a shared browser session, View guests can inspect the shared lists and task records. Edit guests can manage shared tasks and proposals within their access; deletion follows creator/elevated-deletion permission. Joe-off disables running and approving, while the lists remain readable. The global background-runs switch belongs to the owner. A run's restore control asks the owner to undo it.
 
 ---
 
