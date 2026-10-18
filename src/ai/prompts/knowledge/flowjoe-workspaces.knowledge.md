@@ -3,7 +3,7 @@
 <!-- GENERATED FILE — do not edit by hand. Built from the mintlify user docs by
 scripts/build-app-help-knowledge.js (deterministic digest; re-run it after editing any source page).
 Source pages: workspaces/folders.mdx, workspaces/recovery.mdx
-Generated: 2026-10-14 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
+Generated: 2026-10-18 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
 Sync guard: tests/unit/appHelpKnowledgeSync.test.js fails when mintlify/**/*.mdx or this digest drifts
 from scripts/app-help-knowledge.manifest.json. -->
 
@@ -28,14 +28,14 @@ A **Workspace Folder** chooses where the Flow's data is stored. A **repo node** 
 To bring a project into Git in FlowJoe, create or clone a repo node from the New Node window. Do not make the whole Flow's Workspace Folder the project repository. Each repo node has its own hidden Git history; its files remain in the Flow's tree and galleries. See Repo nodes and Git for HTTPS and SSH remotes.
 **Network and shared drives are not supported yet.** FlowJoe checks before connecting and refuses a folder on a network or shared drive: *"That folder is on a network or shared drive. FlowJoe can only use a folder on this computer's own disk for now. Choose a folder on your local drive instead."* Keep your workspace on the computer's own disk.
 
-Also covered in the full docs for this area: Where to find it; Setting one up; When something changes outside FlowJoe; When the workspace file can't be read; Open on another computer; Missing, retained, and changed media; Using one Workspace on two computers; When saving pauses; Private nodes; Quitting FlowJoe; Exports still work; Related.
+Also covered in the full docs for this area: Where to find it; Setting one up; When something changes outside FlowJoe; When the workspace file can't be read; Open on another computer; Missing, retained, and changed media; Using one Workspace on two computers; When saving pauses; Private nodes; Quitting FlowJoe; Exports still work; Related; Placeholder.
 
 ## History & Recovery
 
 Restore points that let you jump back to an earlier version of your Flow, plus the safety nets that keep your work when something goes wrong.
 
 Restore points and History work; Local Recovery Copy is Workspace-only.
-**History** in the app rail: **Versions**, **Chats**, **Images** (owner only). Joe’s clock shows history for its current place.
+**History** in the app rail: **Versions**, **Chats**, **Images**. Guests read shared nonprivate history.
 **Chats**: this Flow’s conversations, search, filters; **Open** goes there in Joe. Deleted places: **No longer in your flow**, read-only.
 Implemented in source; no packaged release implied.
 Ordinary chats and picture backups travel with the Workspace folder. **Keep on this computer only** applies per conversation. Private-node/computer-only chats and backups stay local, excluded from exports/shares; moving a slot privately applies immediately.

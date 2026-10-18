@@ -11,7 +11,7 @@ Sharing needs FlowJoe open on your computer. If you quit, guests see that you ar
 
 ## Share a Flow
 
-1. Open **Share** in the header and turn **Sharing on**.
+1. Open **Share** in the header and turn **Sharing on**. You can move the window by dragging its title, including while it is opening.
 2. Choose **Invite someone**, type their name and choose **Can view** or **Can edit**.
 3. Choose what they see: the whole Flow or only the nodes you tick.
 4. Copy the link and send it. Each link is for one person and you can end it at any time.
@@ -57,11 +57,11 @@ Joe knows who he is talking to. He talks to each guest as "you", uses their firs
 
 Joe's existing rail button and panel stay available when you turn Joe off or your app is offline. Guests can still open the panel and browse retained shared history. New requests are disabled until execution is available again.
 
-When Joe is enabled for an invitation, that guest joins the same Joe conversation you already have for the shared node or slot. Your messages, the guest's messages and Joe's replies appear together in your normal Joe chat. A small avatar sits beside the bottom-right corner of each person’s message bubble; hover it or focus it with the keyboard to see their name. Guests who can see that node or slot can read its shared conversation in History even when new Joe requests are disabled; when Joe is enabled, an Edit guest who is not following your presentation can add messages. A View guest can ask Joe questions about what is shared with them and read his answers, but cannot ask him to change anything — controls that change shared content stay read-only for them. Joe uses the owner's ordinary provider, model, settings, approval behavior and request handling. There are no separate guest-only tool, output or proposal limits.
+When Joe is enabled for an invitation, that guest joins the same Joe conversation you already have for the shared node or slot. Your messages, the guest's messages and Joe's replies appear together in your normal Joe chat. A small avatar sits beside the bottom-right corner of each person’s message bubble; hover it or focus it with the keyboard to see their name. Guests who can see that node or slot can read its shared conversation in History even when new Joe requests are disabled; when Joe is enabled, an Edit guest who is not following your presentation can add messages. A View guest can ask Joe questions about what is shared with them and read his answers, but cannot ask him to change anything — controls that change shared content stay read-only for them. Joe uses the owner's ordinary provider, model, settings, approval behavior and request handling. Ordinary Joe tools, output and proposal behavior stay the same within the shared area. CLI brains are isolated from your unrelated local files, commands and installed integrations; an unsupported CLI version or Antigravity cannot execute a guest request, and Joe does not switch providers automatically. See [CLI brains in shared conversations](/joe/byob#cli-brains-in-shared-conversations).
 
 When someone else is typing to Joe in the conversation you are viewing, their avatar and a typing notice appear just above the message box. The typing avatar is the same size as the avatars beside messages. The notice stays outside the input border, whether Joe is docked or in a floating window.
 
-The conversation is saved with your ordinary Joe chat on your computer, so it remains there after the guest leaves, sharing stops or FlowJoe restarts. The **Joe conversations with guests** screen is a separate, read-only way to browse the guest turns grouped by guest; it does not hold a separate live conversation. Joe access is set per invitation. There is no additional all-participants chat switch in the current Share window. If you remove a node or slot from a guest's access, retrying an earlier Joe request cannot retrieve a saved answer about content they can no longer see.
+The conversation is saved with your ordinary Joe chat on your computer, so it remains there after the guest leaves, sharing stops or FlowJoe restarts. The **Joe conversations with guests** screen is a separate, read-only way to browse the guest turns grouped by guest; it does not hold a separate live conversation. Joe access is set per invitation. There is no additional all-participants chat switch in the current Share window. If you remove a node or slot from a guest's access, retrying an earlier Joe request cannot retrieve a saved answer about content they can no longer see. Pending requests also stop before releasing more content or changing a conversation or memory after that access changes. A saved computer-only conversation stays private even when someone knows an older conversation or message id.
 
 Native Browser and Terminal windows belong to your computer and are unavailable to guests. Source Control works through your computer for shared repositories; settings that manage your storage, accounts and credentials remain yours.
 
@@ -77,6 +77,8 @@ A trusted linked file can be read from a shared slot while your computer is conn
 ### Pictures made by guests
 
 Turn on **Let guests generate images** in the Share window and an Edit guest sees Joe's **Images** tab. The picture is made through your computer with your AI key and credits and shown in the guest's preview. **Send to Gallery** adds it to the node like any picture they add. A guest who can only view sees the tab with the prompt and Generate switched off.
+
+Shared Image History includes only pictures recorded for this Flow. Copying a Flow does not bring another Flow's picture history into the share. Older pictures without a recorded Flow stay available on your computer and are withheld from guests.
 
 Image history and its pictures follow the guest’s current access. If you remove access to a node, make it private, or end the invitation while a picture or history request is waiting, that request cannot deliver the content afterwards.
 

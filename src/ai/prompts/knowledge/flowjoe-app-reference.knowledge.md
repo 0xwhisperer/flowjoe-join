@@ -3,7 +3,7 @@
 <!-- GENERATED FILE — do not edit by hand. Built from the mintlify user docs by
 scripts/build-app-help-knowledge.js (deterministic digest; re-run it after editing any source page).
 Source pages: reference/keyboard-shortcuts.mdx, reference/status-bar.mdx, reference/settings-map.mdx, reference/limitations.mdx, reference/glossary.mdx
-Generated: 2026-10-13 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
+Generated: 2026-10-18 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
 Sync guard: tests/unit/appHelpKnowledgeSync.test.js fails when mintlify/**/*.mdx or this digest drifts
 from scripts/app-help-knowledge.manifest.json. -->
 
@@ -64,7 +64,7 @@ Tab order matches the app (top to bottom):
 - **Data**
 - **Tasks**
 
-Also covered in the full docs for this area: Appearance; Language (localization); Layout; Theme & typography; Tree; Gallery; Audio; Browser (desktop); Joe AI; APIs; Data; Tasks; Tips.
+Also covered in the full docs for this area: Settings when you join someone else's Flow; Appearance; Language (localization); Layout; Theme & typography; Tree; Gallery; Audio; Browser (desktop); Joe AI; APIs; Data; Tasks; Tips.
 
 ## Honest Limitations
 

@@ -3,7 +3,7 @@
 <!-- GENERATED FILE — do not edit by hand. Built from the mintlify user docs by
 scripts/build-app-help-knowledge.js (deterministic digest; re-run it after editing any source page).
 Source pages: joe/byob.mdx, joe/agent-bridge.mdx, joe/permissions.mdx
-Generated: 2026-09-30 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
+Generated: 2026-10-18 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
 Sync guard: tests/unit/appHelpKnowledgeSync.test.js fails when mintlify/**/*.mdx or this digest drifts
 from scripts/app-help-knowledge.manifest.json. -->
 
@@ -38,10 +38,10 @@ To adjust your model config:
 - Open **Settings → APIs → API Settings** and paste your key.
 - Click the model settings button inside the Joe panel — or the brain name in the status bar — to pick the brain behind Joe:
 - **OpenAI models (API key):** **Sol 6.1**, **Luna 6** (the default), **Sol 6**, and **Astra 6**, plus **Luna**, **Terra**, and **Sol** from the GPT-5.6 family.
-- **CLI brains (no API key):** route Joe through an agent CLI you have already installed and signed into on your own machine — **Fable 5.1**, **Opus 5.5**, **Opus 5**, **Sonnet 5.5**, **Sonnet 5**, **Haiku**, **Grok**, **Antigravity**, or **Antigravity (3.7)**. Desktop only.
+- **CLI brains (no API key):** route Joe through an agent CLI you have already installed and signed into on your own machine — **Fable 5.1**, **Opus 5.5**, **Opus 5**, **Sonnet 5.5**, **Sonnet 5**, **Haiku**, **Grok**, **Antigravity**, or **Antigravity (3.7)**.
 - **Temperature and response length are managed automatically per model** — there is no manual temperature dial, and GPT-5.6 / GPT-6 models run at their fixed default temperature.
 
-Also covered in the full docs for this area: Where to get an OpenAI key; What CLI brains need first; What happens with no key and no CLI brain; Making Joe faster: the optional TypeSafe key; It also trims a big flow map; Checking that a key works.
+Also covered in the full docs for this area: Where to get an OpenAI key; What CLI brains need first; What happens with no key and no CLI brain; Making Joe faster: the optional TypeSafe key; It also trims a big flow map; Checking that a key works; CLI brains in shared conversations.
 
 ## Agent Bridge (MCP)
 

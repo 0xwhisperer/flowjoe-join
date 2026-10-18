@@ -39,7 +39,7 @@ To adjust your model config:
 1. Open **Settings → APIs → API Settings** and paste your key.
 2. Click the model settings button inside the Joe panel — or the brain name in the status bar — to pick the brain behind Joe:
    - **OpenAI models (API key):** **Sol 6.1**, **Luna 6** (the default), **Sol 6**, and **Astra 6**, plus **Luna**, **Terra**, and **Sol** from the GPT-5.6 family.
-   - **CLI brains (no API key):** route Joe through an agent CLI you have already installed and signed into on your own machine — **Fable 5.1**, **Opus 5.5**, **Opus 5**, **Sonnet 5.5**, **Sonnet 5**, **Haiku**, **Grok**, **Antigravity**, or **Antigravity (3.7)**. CLI installation and sign-in belong to the owner’s desktop. Authorized browser guests use that selected owner CLI through Joe; they do not install it or receive its credentials.
+   - **CLI brains (no API key):** route Joe through an agent CLI you have already installed and signed into on your own machine — **Fable 5.1**, **Opus 5.5**, **Opus 5**, **Sonnet 5.5**, **Sonnet 5**, **Haiku**, **Grok**, **Antigravity**, or **Antigravity (3.7)**. CLI installation and sign-in belong to the owner’s desktop. Authorized browser guests use a supported, isolated version of that selected owner CLI through Joe; they do not install it or receive its credentials. Antigravity is currently available only to the owner.
    - **Temperature and response length are managed automatically per model** — there is no manual temperature dial, and GPT-5.6 / GPT-6 models run at their fixed default temperature.
 
 ### Where to get an OpenAI key
@@ -99,3 +99,8 @@ On a 274-node flow, one such question kept 41 nodes — the right branch and its
 ## Checking that a key works
 
 Both key fields have a **Test** button. Press it and FlowJoe makes one tiny real request to that provider and tells you immediately whether the key was accepted. Worth doing whenever you paste a new key — otherwise a mistyped or expired one looks fine until the next time you actually ask Joe something.
+
+
+### CLI brains in shared conversations
+
+A guest's Joe can use shared Flow tools and web tools, but cannot use the CLI to read your computer's unrelated files, run commands, or reach your other installed integrations. FlowJoe checks the installed CLI version before sending the guest's request. An unsupported version, an unavailable Codex model record, or Antigravity causes that request to fail using the selected brain; FlowJoe does not silently choose another provider. The currently supported release families are Claude 2.1.302 or later within 2.1, Codex 0.162.1 or later within 0.162, Gemini 0.64, and Grok 1.0.52 or later within 1.0.

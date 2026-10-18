@@ -61,3 +61,10 @@ When you import a `.json` or `.fj` file, FlowJoe prompts you for a merge strateg
 ## Shared transcript history
 
 Shared guests read retained transcripts from the owner's Flow; their browser's pending edit recovery is not an independent export source. The owner’s export can include eligible retained transcript text with **Include transcript history**, subject to the privacy rules above. A guest's export/download availability still follows the permissions granted for that share. Clearing guest browser data does not delete owner-retained transcripts. See [Transcribe audio](/joe/transcription).
+
+## Cancelling a browser export
+
+Cancel releases the export controls even if the browser is still finishing a file operation.
+FlowJoe removes a newly created empty file when it can safely do so. It preserves existing backups,
+files changed elsewhere, and completed files. If the browser finishes saving after you press Cancel,
+the completed file stays on disk; check that destination before starting another export.
