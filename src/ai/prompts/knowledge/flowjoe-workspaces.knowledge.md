@@ -16,19 +16,16 @@ Loading this knowledge is not evidence that a workspace folder is open, converte
 Save a Flow as a normal folder on your drive, so your work sits in plain files you can back up, version, and see.
 
 Status note: if an older Workspace backup contains private text, FlowJoe protects it automatically by replacing that text with a placeholder (the private notes stay on this computer), removes any backup too damaged to check, and then lets saving resume.
-Where to find it: **Settings → Data**, on the **Workspace Folder** card; there is no File menu entry or context-menu item.
+**Settings → Data** → **Workspace Folder**; no File/context menu.
 Workspace Folders are available in the desktop app.
 **Older backups are protected automatically.** When a Flow already contains private nodes, FlowJoe preserves their full content in owner-only storage, replaces it in the Workspace with redacted placeholders, and verifies the saved file before resuming saves. A copy shared or backed up before migration cannot be recalled.
-
-**What lands on disk.**
-Implemented in source; no packaged release implied.
 
 **Backups, Git, and syncing.**
 A **Workspace Folder** chooses where the Flow's data is stored. A **repo node** gives one node its own Git repository for project files. Those are separate choices: repo-node files appear in the node tree and galleries and are saved through FlowJoe's normal storage, while Git history is kept as FlowJoe-managed hidden data.
 To bring a project into Git in FlowJoe, create or clone a repo node from the New Node window. Do not make the whole Flow's Workspace Folder the project repository. Each repo node has its own hidden Git history; its files remain in the Flow's tree and galleries. See Repo nodes and Git for HTTPS and SSH remotes.
 **Network and shared drives are not supported yet.** FlowJoe checks before connecting and refuses a folder on a network or shared drive: *"That folder is on a network or shared drive. FlowJoe can only use a folder on this computer's own disk for now. Choose a folder on your local drive instead."* Keep your workspace on the computer's own disk.
 
-Also covered in the full docs for this area: Where to find it; Setting one up; When something changes outside FlowJoe; When the workspace file can't be read; Open on another computer; Missing, retained, and changed media; Using one Workspace on two computers; When saving pauses; Private nodes; Quitting FlowJoe; Exports still work; Related; Placeholder.
+Also covered in the full docs for this area: Where to find it; Setting one up; What lands on disk; When something changes outside FlowJoe; When the workspace file can't be read; Open on another computer; Missing, retained, and changed media; Using one Workspace on two computers; When saving pauses; Reconnect after working locally; Private nodes; Quitting FlowJoe; Exports still work; Related; Placeholder.
 
 ## History & Recovery
 
@@ -36,12 +33,12 @@ Restore points that let you jump back to an earlier version of your Flow, plus t
 
 Restore points and History work; Local Recovery Copy is Workspace-only.
 **History** in the app rail: **Versions**, **Chats**, **Images**. Guests read shared nonprivate history.
-**Chats**: this Flow’s conversations, search, filters; **Open** goes there in Joe. Deleted places: **No longer in your flow**, read-only.
-Implemented in source; no packaged release implied.
-Ordinary chats and picture backups travel with the Workspace folder. **Keep on this computer only** applies per conversation. Private-node/computer-only chats and backups stay local, excluded from exports/shares; moving a slot privately applies immediately.
-Each Flow owns its chats/summary. The old global summary is adopted once by the open Flow. Exports contain its eligible chats; node exports cover that branch. Failed reads block chat overwrite; switching Flows cancels pending chat deletion.
-Image History stays local; gallery pictures travel separately. **Images**: Open, Send to slot, Copy prompt. Failed deletion keeps card/picture; locked private destination names stay hidden. Failed generation keeps the prior draft.
-Trash deletes one row (unowned older read-only conversations have none); **Delete all shown** deletes shown eligible rows. Every delete confirms the count and cannot be undone.
+**Chats**: this Flow’s conversations; search/filter, **Open** in Joe. Deleted places: **No longer in your flow**, read-only.
+Implemented source; release not implied.
+Ordinary chats/backups travel with the Workspace. **Keep on this computer only** applies per conversation. Private-node/computer-only chats, chat-only pictures and image-history prompts stay out of folders, exports and shares; moving a slot privately applies immediately.
+Each Flow owns its chats/summary; the old global summary is adopted once by the open Flow. Exports carry history for that Flow/branch. Failed reads block overwrite; switching Flows cancels deletion; New Chat cannot clear another target.
+Image History is local; gallery media travels. **Images**: Open, Send to slot, Copy prompt. Eligible chat pictures export after deleting Image History rows. Restores keep their prompt/details; failed generation keeps the prior draft. Failed deletion keeps card/picture; private destinations stay hidden.
+Trash deletes a row (unowned older read-only conversations have none); **Delete all shown** deletes shown eligible rows. Deletes confirm the count and cannot be undone.
 
 **Going back.**
 A restore point includes your **whole Flow, galleries too**, so restoring puts images, files, links and slot notes back as they were — including one you mark on an older version. A restore point made before this update, still sitting in a Flow you haven't touched since, is the one exception and holds only the tree and text.
@@ -49,7 +46,7 @@ A restore point includes your **whole Flow, galleries too**, so restoring puts i
 **What restore points do not cover.**
 **Importing a Flow over the current one, and starting a New Flow, do not take a restore point.** Both replace your Flow completely, so a restore point taken then would not survive.
 
-Also covered in the full docs for this area: Restore points; Opening History; Chat History and Image History; Making one; How many are kept; The Local Recovery Copy (Workspace mode); When a workspace file was changed elsewhere; Related.
+Also covered in the full docs for this area: Restore points; Opening History; Chat History and Image History; Making one; How many are kept; The Local Recovery Copy (Workspace mode); When the folder and Local copy disagree; When a workspace file was changed elsewhere; Related.
 
 ## Manual links
 

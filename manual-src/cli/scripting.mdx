@@ -1,0 +1,106 @@
+---
+title: "CLI scripting and action lists"
+description: "Use JSON, pipes and shared results in repeatable FlowJoe workflows."
+---
+
+Use `--json` when another program will read a command's result:
+
+```sh
+flowjoe-cli show --json
+flowjoe-cli search "launch plan" --json
+```
+
+Use a JSON file with `apply`, or send the file through standard input:
+
+```sh
+flowjoe-cli apply changes.json --preview --json
+cat changes.json | flowjoe-cli apply - --autoapprove --json
+```
+
+The pipe example uses a macOS/Linux shell. In PowerShell, use
+`Get-Content -Raw changes.json | flowjoe-cli apply - --autoapprove --json`.
+Passing the filename directly works on all three platforms.
+
+## Run several actions together
+
+Save an array of steps in `steps.json`. Each step names an `action` and can supply an `input` object:
+
+```json
+[
+  {"action": "search_flow", "input": {"query": "launch"}},
+  {"action": "get_flow_snapshot", "input": {}}
+]
+```
+
+```sh
+flowjoe-cli run steps.json --json
+```
+
+Actions run in order using one connection. The list stops at the first failed action or rejected
+approval. Earlier completed changes remain applied. A list is not one all-or-nothing change;
+put related edits in one `apply` request when they need to succeed together.
+
+Add `--autoapprove` to skip approval cards for the entire list, including deletions. Without that
+option, the command waits for approval in FlowJoe whenever an action needs it.
+
+## Use an earlier result
+
+Give a step a `saveAs` name, then use `{"$result":"name","path":[...]}` in a later input.
+The path selects fields from the first JSON text result returned by the earlier action. If it has
+no JSON text result, the path starts at the complete action response.
+
+This example uploads the text "Hello", prepares it as a document, then places it in a node. Replace
+`YOUR_NODE_ID` with a node ID from `show`:
+
+```json
+[
+  {
+    "action": "upload_attachment",
+    "input": {"fileName": "hello.txt", "mimeType": "text/plain", "dataBase64": "SGVsbG8="},
+    "saveAs": "uploaded"
+  },
+  {
+    "action": "stage_media",
+    "input": {
+      "nodeId": "YOUR_NODE_ID",
+      "kind": "document",
+      "attachmentId": {"$result": "uploaded", "path": ["attachment", "id"]}
+    },
+    "saveAs": "prepared"
+  },
+  {
+    "action": "propose_flow_patch",
+    "input": {
+      "ops": [
+        {
+          "verb": "addImageSlots",
+          "args": {
+            "nodeId": "YOUR_NODE_ID",
+            "entries": [{"$result": "prepared", "path": ["entry"]}]
+          }
+        }
+      ]
+    }
+  }
+]
+```
+
+The final step asks FlowJoe to place the prepared document in the gallery. Approve that request in
+the app, or run the list with `flowjoe-cli run steps.json --autoapprove` to skip the card.
+Read `actions stage_media` and the current change catalog when adapting the example to other content.
+Result references may select array items using a numeric path element.
+Names must start with a letter and be unique within the list.
+
+## Keep related work in one connection
+
+Uploaded files, recent-change history and undo belong to the connection that created them. They are
+cleared when the command ends. A later terminal command gets a new connection and cannot reuse
+those uploads or undo the earlier command's edit.
+
+Use one `run` list for upload → prepare → place workflows, or for an edit followed by
+`undo_last_change`. Undo still refuses if the Flow changed after that connection's last edit.
+This prevents a script from undoing someone else's later work.
+
+If a command stops waiting, loses its connection or is interrupted, earlier completed steps are not
+rolled back. The CLI never automatically repeats a failed edit request. Read the result and check
+FlowJoe before running the list again.

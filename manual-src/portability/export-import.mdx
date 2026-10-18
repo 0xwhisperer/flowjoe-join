@@ -81,7 +81,9 @@ the completed file stays on disk; check that destination before starting another
 
 ## Conversations and sharing choices
 
-Use **Include AI chat and image history** to carry eligible history with the exported work. Private-node and computer-only conversations are excluded. A branch export includes only eligible conversations belonging to that branch.
+Use **Include AI chat and image history** to carry eligible history with the exported work. Private-node and computer-only conversations are excluded, together with their chat-only backup pictures and image-history prompts. A picture independently saved in an ordinary gallery follows the gallery’s export rules. A branch export includes only eligible chat and image history belonging to that branch.
+
+Full packages include the backup pictures that eligible current and older chats still use, even after you delete their separate Image History rows. Plain JSON keeps the references but does not carry picture bytes. Imported image history follows the imported Flow, nodes and slots instead of attaching itself to an older Flow with matching identifiers.
 
 Whole-Flow exports can separately include **sharing setup** and **conversations guests had with Joe**. Review guest names and saved history before including them. Imported sharing choices are inactive until you review them in **Share** and send fresh invitations; old links do not open the imported Flow.
 

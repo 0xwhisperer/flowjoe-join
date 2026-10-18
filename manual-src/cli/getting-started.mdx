@@ -1,0 +1,87 @@
+---
+title: "Start using the CLI"
+description: "Read, search, and change your open Flow from a terminal."
+---
+
+The FlowJoe CLI lets you work with your open Flow from a terminal or a script. FlowJoe stays running
+and saves the changes. The command reference lives here in the manual; no extra command panel is
+added to the app. You can also ask Joe for help with the commands.
+
+## Install
+
+Install **Node.js 22.12 or newer**, which includes npm. Install the CLI with
+`npm install --global https://docs.flowjoe.app/downloads/flowjoe-cli-0.1.0.tgz`, then check its version:
+
+```sh
+flowjoe-cli --version
+```
+
+The download is the standalone CLI, version 0.1.0. It is published with this manual, rather than on
+the npm registry. npm also installs its connection dependency. The same command works on macOS,
+Windows and Linux. Your npm global installation folder must be on your terminal's PATH.
+
+The command is called `flowjoe-cli` so it can coexist with the Linux desktop launcher, `flowjoe`.
+To update, run the install command again with the download version listed here.
+To remove it, run `npm uninstall --global @flowjoe/cli`.
+
+## Connect to FlowJoe
+
+1. Open the Flow you want to work with in the desktop app.
+2. Open **Settings → Joe AI → Agent Bridge (MCP)** and turn the bridge on.
+3. Keep FlowJoe running and run:
+
+```sh
+flowjoe-cli status
+flowjoe-cli show
+flowjoe-cli search "launch plan"
+```
+
+The CLI uses FlowJoe's saved bridge connection. You do not need to copy an access token into a
+command. It connects only to FlowJoe on this computer. Read-only bridge access allows reading and
+searching; changing a Flow requires edit access.
+
+Commands act on the currently open Flow. Keep that Flow open while a command runs, especially while
+you are reviewing a change. The CLI does not open or switch Flows for you.
+
+## Try a change
+
+Save this as `changes.json`:
+
+```json
+[
+  {"verb": "createNode", "args": {"position": "root", "values": {"name": "CLI notes"}}}
+]
+```
+
+Check the changes first, then apply them:
+
+```sh
+flowjoe-cli apply changes.json --preview
+flowjoe-cli apply changes.json
+```
+
+The second command waits while you approve or reject the request in FlowJoe. Keep the terminal
+command running until it reports the result.
+
+To apply without approval cards, including deletion approvals, use:
+
+```sh
+flowjoe-cli apply changes.json --autoapprove
+```
+
+`--autoapprove` applies only to that command. It changes no saved setting and does not change other
+agents' approvals. FlowJoe still enforces permissions, privacy protections and validation. You need
+a desktop build that supports this option; the CLI refuses to send actions if support is absent.
+
+## What is available
+
+The CLI uses the same available Flow actions as the Agent Bridge: reading, searching, organizing
+nodes and references, editing supported content, preparing media and more. Run `flowjoe-cli actions`
+to see what your running app offers. Some actions depend on your app's features and permissions.
+Image generation uses your configured service and may incur its usual charges.
+
+This first version requires the desktop app. It does not provide every desktop setting or control,
+open/import/export whole Flows, switch workspaces, or run by itself without FlowJoe.
+
+See the [command reference](/cli/commands), [scripting examples](/cli/scripting), and
+[approvals and troubleshooting](/cli/approvals-and-troubleshooting).

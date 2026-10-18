@@ -3,7 +3,7 @@
 <!-- GENERATED FILE — do not edit by hand. Built from the mintlify user docs by
 scripts/build-app-help-knowledge.js (deterministic digest; re-run it after editing any source page).
 Source pages: tree/status-theming.mdx
-Generated: 2026-10-11 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
+Generated: 2026-10-18 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
 Sync guard: tests/unit/appHelpKnowledgeSync.test.js fails when mintlify/**/*.mdx or this digest drifts
 from scripts/app-help-knowledge.manifest.json. -->
 
@@ -19,8 +19,8 @@ FlowJoe provides native visual indicators and safety features to help you catego
 
 **Node Status.**
 Every node in FlowJoe can display a status badge. This is useful for project tracking:
-- **Status Options:** Node status can be toggled (e.g., Todo, In Progress, Done, Flagged, Paused).
-- **Tree Filtering:** You can filter your tree search specifically by status (e.g., searching `status:progress` displays only items currently being worked on).
+- **Status Options:** Choose **Not Started**, **In Progress**, **Completed**, or **Neutral**. Number keys 1–4 set these in that order when the tree has focus.
+- **Tree Filtering:** Use the tree filter controls to choose a status. The tree search box searches node names.
 - **Joe Awareness:** Joe is aware of node statuses and will use them to prioritize suggestions.
 
 **Branch Theming & Inheritance.**

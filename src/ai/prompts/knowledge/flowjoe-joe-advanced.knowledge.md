@@ -13,19 +13,20 @@ Loading this knowledge is not evidence that an API key, CLI brain, Agent Bridge 
 
 ## Bring Your Own Brain (BYOB)
 
-Total privacy, zero subscription fees, and complete control over your AI models.
+Choose Joe’s connection, set up your keys, and use a brain that suits your work.
 
-FlowJoe operates on a **Bring Your Own Brain (BYOB)** model. Unlike traditional SaaS tools that charge high monthly subscription fees with hefty markups on AI usage, FlowJoe runs entirely locally and connects directly to AI providers using your own API keys.
+**Bring Your Own Brain (BYOB)** lets you choose the intelligence behind Joe. Use your own provider API key, or connect a supported command-line assistant you already use. Your workspace lives locally; the context needed for an AI request goes to the chosen provider.
+A command-line tool, or **CLI**, is an app you run by typing commands in a terminal. FlowJoe can use some of these tools behind the scenes, so you keep talking to Joe in the familiar chat panel.
 
 **Why BYOB?**
-- **Zero Subscription Markups:** You only pay the raw token usage fees directly to the AI providers (such as OpenAI or Anthropic). For typical note-taking and outlining, this costs pennies a month compared to a $20/month subscription.
+- **Your account, your usage:** API brains use your provider key and its usage charges. CLI brains use that tool’s account, plan, and limits. FlowJoe adds no markup to either connection. How much context you send affects usage; see Token usage with Joe.
 - **Model Choice:** You choose exactly which model drives Joe—whether you want the speed of a lighter model or the reasoning of a frontier model.
-- **Privacy & Control:** Your keys and chats are never routed through FlowJoe servers. Connections are established directly from your local desktop application to the AI API endpoint.
+- **Privacy & Control:** Owner requests go from your desktop to the selected provider or installed tool, rather than through a FlowJoe AI service. Shared guests use the owner’s authorized connection; they do not receive its credentials.
 
 **API Key Storage & Fallbacks.**
 FlowJoe uses a multi-tier storage design for your keys to balance security and convenience:
-- **OS Secure Storage (Default):** Inside the desktop Electron wrapper, FlowJoe prioritizes storing keys in your operating system's native secure credential manager (macOS Keychain, Windows Credential Manager, Linux Secret Service).
-- **Plaintext Safety:** Keys are never written to project JSON files, shared synced directories, or git version control systems.
+- **Desktop storage:** Supported keys are encrypted using your operating system’s secure-storage service when available and saved in FlowJoe’s app data. A standalone browser, or unavailable secure storage, uses local browser storage with weaker protection.
+- **Export choice:** Keys are excluded from portable exports by default. You can explicitly include an OpenAI key, so review that checkbox before sharing a package.
 
 **Viewing & Copying Your Key.**
 For easy verification, you can inspect or copy your stored API key:
@@ -35,37 +36,39 @@ For easy verification, you can inspect or copy your stored API key:
 
 **Configuring Your AI Brain.**
 To adjust your model config:
-- Open **Settings → APIs → API Settings** and paste your key.
+- For an API brain, add its key in **Settings → APIs**. For a CLI brain, install and sign into its tool first, as described below.
 - Click the model settings button inside the Joe panel — or the brain name in the status bar — to pick the brain behind Joe:
 - **OpenAI models (API key):** **Sol 6.1**, **Luna 6** (the default), **Sol 6**, and **Astra 6**, plus **Luna**, **Terra**, and **Sol** from the GPT-5.6 family.
-- **CLI brains (no API key):** route Joe through an agent CLI you have already installed and signed into on your own machine — **Fable 5.1**, **Opus 5.5**, **Opus 5**, **Sonnet 5.5**, **Sonnet 5**, **Haiku**, **Grok**, **Antigravity**, or **Antigravity (3.7)**.
-- **Temperature and response length are managed automatically per model** — there is no manual temperature dial, and GPT-5.6 / GPT-6 models run at their fixed default temperature.
+- **Gemini API:** **Gemini 3.8 Flash** uses a separate Google Gemini API key. See setup below.
 
-Also covered in the full docs for this area: Where to get an OpenAI key; What CLI brains need first; What happens with no key and no CLI brain; Making Joe faster: the optional TypeSafe key; It also trims a big flow map; Checking that a key works; CLI brains in shared conversations.
+Also covered in the full docs for this area: Where to get an OpenAI key; Set up Gemini chat; What CLI brains need first; Which brains can work with your Flow?; A CLI brain, Agent Bridge, or Forge?; What happens with no key and no CLI brain; Making Joe faster: the optional TypeSafe key; It also trims a big flow map; Checking that a key works; CLI brains in shared conversations.
 
 ## Agent Bridge (MCP)
 
-Connect terminal-based AI agents and developer scripts directly to your local FlowJoe workspace.
+Let a local coding assistant work with your Flow while you stay in control.
 
-FlowJoe is designed for both human and agentic collaboration. Through the **Agent Bridge**, FlowJoe hosts a local **Model Context Protocol (MCP)** server, exposing your outlines, workspaces, and media galleries to external terminal-driven agents.
+The **Agent Bridge** connects your active Flow to compatible AI assistants and developer tools on your computer. A coding assistant can work with your plan, references, and notes—not just the files in a code folder. MCP is the connection format these tools use.
 
-**How It Works.**
-The Agent Bridge acts as a secure local loopback server. When active, it translates FlowJoe's complex visual structure and files into a standard format that external LLM agents can read and write:
+**Connect a tool.**
+- Open **Settings → Joe AI → Agent Bridge (MCP)** in the desktop app.
+- Turn the bridge on.
+- Find your assistant under **Assistants on this machine** and turn on **Connect**. Follow any confirmation shown.
+- If FlowJoe offers **Copy setup command**, copy it and run it in that assistant’s terminal instead.
+The bridge starts again on launch if you left it enabled. Turn it off here to stop access.
 
-Also covered in the full docs for this area: Setting Up the Bridge; The Automation Seatbelt.
+Also covered in the full docs for this area: Choose how changes are approved; How MCP relates to Joe’s actions; What connected tools can do.
 
-## Permissions & Privacy
+## Permissions & privacy
 
-You control what Joe sees and what Joe is allowed to propose.
+Choose what Joe can read and which changes he can propose.
 
-Because FlowJoe is local-first, privacy and safety are built directly into the AI integration. You control Joe's level of access to your workspace.
+Joe can help at the level you choose—from a conversation about an idea to a reviewed reorganization of your Flow.
 
-**Permission Levels.**
-In Settings, or at the top of the Joe chat panel, you can set Joe's global permission level:
-- **Off** — Joe cannot access your flow or read files. The AI interface is disabled. — Absolute lock
-- **Read-Only** — Joe can read your selected node structure, notes, and references to answer questions, but cannot write. — Cannot mutate
+**Choose Joe’s access.**
+Set the default in **Settings → Joe AI**. The selector in Chat overrides that default for the current conversation. Starting a new conversation clears the override.
+- **Off** — Chat and explain FlowJoe, without automatic access to your Flow or tools to read or change it.
 
-Also covered in the full docs for this area: Visual & Content Access Gates.
+Also covered in the full docs for this area: Keep content out of Joe’s reach; Check the next message.
 
 ## Manual links
 
@@ -73,4 +76,4 @@ A FlowJoe manual reference chip linking the page(s) below is already attached un
 
 - [Bring Your Own Brain (BYOB)](flowjoe-docs:joe/byob)
 - [Agent Bridge (MCP)](flowjoe-docs:joe/agent-bridge)
-- [Permissions & Privacy](flowjoe-docs:joe/permissions)
+- [Permissions & privacy](flowjoe-docs:joe/permissions)

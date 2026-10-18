@@ -1,0 +1,90 @@
+---
+title: "CLI commands"
+description: "The commands and options available in flowjoe-cli."
+---
+
+Run `flowjoe-cli --help` whenever you need a reminder. Use `--version` to see the installed CLI version.
+
+| Command                                            | What it does                                                |
+| -------------------------------------------------- | ----------------------------------------------------------- |
+| `flowjoe-cli status`                               | Checks that the running desktop app is reachable.           |
+| `flowjoe-cli show`                                 | Shows the current Flow's node names and IDs.                |
+| `flowjoe-cli search "words"`                       | Finds visible matching Flow text.                           |
+| `flowjoe-cli actions`                              | Lists the actions your running app offers.                  |
+| `flowjoe-cli actions search_flow`                  | Shows one action's description and expected input.          |
+| `flowjoe-cli apply changes.json`                   | Applies a file of Flow changes after the required approval. |
+| `flowjoe-cli apply changes.json --preview`         | Checks the changes without applying them.                   |
+| `flowjoe-cli apply changes.json --autoapprove`     | Applies without approval cards, including for deletions.    |
+| `flowjoe-cli run steps.json`                       | Runs a list of actions in one connection.                   |
+| `flowjoe-cli action search_flow --file input.json` | Uses a particular action directly.                          |
+
+## Shared options
+
+| Option                   | Meaning                                                                                |
+| ------------------------ | -------------------------------------------------------------------------------------- |
+| `--json`                 | Outputs JSON for scripts instead of the readable summary.                              |
+| `--wait 60`              | Stops waiting after 60 seconds. The default is 120 seconds.                            |
+| `--settings-file <path>` | Uses a particular app bridge settings file.                                            |
+| `--autoapprove`          | Skips approval cards for this `apply`, `run` or `action` command, including deletions. |
+| `--preview`              | Checks an `apply` command without applying or queuing changes.                         |
+
+Use `-` instead of a JSON filename to read from standard input. To pass a value beginning with `--`
+as an argument, put `--` before it. Quote search phrases containing spaces.
+
+`--preview` always keeps an `apply` command non-mutating, even with `--autoapprove`. A preview checks
+the changes; it does not draw a new preview panel in FlowJoe. There are no saved CLI approval settings.
+
+## Files of changes
+
+`apply` accepts either an array of changes or an object containing `ops`:
+
+```json
+{
+  "ops": [
+    {"verb": "createNode", "args": {"position": "root", "values": {"name": "Research"}}}
+  ]
+}
+```
+
+A single file is sent as one Flow change request. FlowJoe validates it and applies it atomically:
+if an operation fails, the patch is rolled back. Use node IDs from `show` when an action needs an
+existing node. Use `flowjoe-cli actions describe_patch_protocol` to inspect the catalog action, then
+`flowjoe-cli action describe_patch_protocol --json` to read the current change names and arguments.
+
+## Advanced actions
+
+The readable commands cover common tasks. `action` gives scripts access to the full live action
+catalog, including future actions without waiting for a new convenience command in the CLI.
+
+For example, save `{"query":"launch plan","limit":10}` in `input.json`, then run:
+
+```sh
+flowjoe-cli action search_flow --file input.json --json
+```
+
+The advanced action names and JSON fields match the running app. Read their instructions with
+`actions <name>` before using them. Some actions ask you to choose a file or interact in FlowJoe;
+`--autoapprove` skips approval cards, not file pickers or missing service setup.
+
+## Results for scripts
+
+`--json` writes one JSON result to standard output. Progress messages, such as waiting for approval,
+go to standard error. Tool content is preserved, including images and multiple text blocks.
+Successful help/version commands print their usual text, even if `--json` is also supplied.
+
+Results include `version: 1`, `status`, and `autoapprove`. Action results are under `result`;
+`run` also includes `steps`. An error includes `error` and a readable `message`. `show --json` returns
+the app's permitted snapshot content rather than only the names shown by ordinary `show`.
+
+| Exit code | Meaning                                                       |
+| --------- | ------------------------------------------------------------- |
+| `0`       | The command completed, changes applied, or a preview passed.  |
+| `2`       | Invalid command, file, action name or result reference.       |
+| `3`       | The connection or required app capability was unavailable.    |
+| `4`       | An app action failed.                                         |
+| `5`       | You rejected the approval request in FlowJoe.                 |
+| `6`       | Completion was not confirmed before the waiting time ran out. |
+| `130`     | The command was interrupted.                                  |
+
+Inputs are limited to 16 MB. Action lists are limited to 1,000 steps. A time limit or interruption
+does not prove an edit was canceled. Check FlowJoe before repeating it.

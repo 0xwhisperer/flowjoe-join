@@ -40,7 +40,7 @@ What the bottom status bar shows and what you can change without opening Setting
 The **status bar** is the thin strip pinned to the **bottom of the FlowJoe window**. It is always available while visible, so you can **monitor** the flow and **change a few common choices** without digging through Settings.
 Show or hide it under **Settings → Appearance → Status Bar** (on by default).
 Layout (left cluster, then right cluster):
-**Left:** Stats · Save · Joe brain (plus short-lived notices such as "Outside change waiting" and "Also open on a computer" when they apply) **Right:** Scheduled tasks · Theme · Language · Shortcuts · Version (desktop only)
+**Left:** Stats · Save · Joe brain (plus short-lived notices such as "Outside change waiting" and "Also open on a computer" when they apply) **Right:** Scheduled tasks · Theme · Language · Shortcuts · Version
 
 **What you can monitor.**
 - **Stats** — Total **nodes** in the flow and total **gallery slots** (across the whole tree, not only the selected node). Read-only.

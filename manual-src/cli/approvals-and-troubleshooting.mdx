@@ -1,0 +1,69 @@
+---
+title: "CLI approvals and troubleshooting"
+description: "Understand approval choices and resolve common connection or command problems."
+---
+
+## Approve changes in the app
+
+Without `--autoapprove`, the CLI follows the bridge's current approval rules. When a request needs
+review, it says **Waiting for approval in FlowJoe**. Approve or reject the **Agent request** card
+in FlowJoe, then let the terminal command report the result. The default waiting time is 120 seconds;
+use `--wait 300` if you want five minutes.
+
+The app's existing **Auto-apply agent edits** setting can already let ordinary edits apply without
+a card. Its extra review holds still apply unless the CLI command explicitly uses `--autoapprove`.
+
+## Skip approval cards for a command
+
+```sh
+flowjoe-cli apply changes.json --autoapprove
+flowjoe-cli run steps.json --autoapprove
+```
+
+`--autoapprove` skips approval cards for that command, **including deletion approvals and the usual
+extra review of saved-memory and scheduled-task changes**. Use it when you want the supplied actions
+to run without those confirmations.
+
+It does not change the app's approval setting, affect other connected clients, or carry over to the
+next CLI command. Permissions, privacy protections, locked/read-only content and action validation
+still apply. It does not reveal content hidden from Joe or make every requested edit valid.
+It also does not dismiss file pickers or configure paid services for you.
+
+The CLI checks that the running app supports this choice before sending actions. If it does not,
+update FlowJoe. Read-only bridge connections cannot use the bypass.
+
+## Couldn't connect
+
+- Keep the desktop app open.
+- Turn on **Settings → Joe AI → Agent Bridge (MCP)**.
+- Run `flowjoe-cli status` again.
+- If you run a development app or a separate profile, point `--settings-file` at that profile's
+  `mcp-bridge.json`. The CLI never writes this file. Keep it private because it contains the token.
+
+The CLI normally checks the app settings folder for your platform: Application Support on macOS,
+AppData/Roaming on Windows, or XDG config on Linux. It tries the `flow-joe`, `FlowJoe`, and `flowjoe`
+profile names in that order. An existing disabled or damaged first profile is reported instead of
+silently connecting to another profile.
+
+## Command not found after installing
+
+Open a new terminal. Check that npm's global installation folder is on your PATH. You can find the
+prefix with `npm prefix --global`; on macOS/Linux the executable is in its `bin` folder. Do not replace
+the desktop app's `flowjoe` launcher—the CLI command is `flowjoe-cli`.
+
+## Action unavailable or input rejected
+
+Run `flowjoe-cli actions` to see the actions offered by your running app and permissions. Use
+`flowjoe-cli actions ACTION_NAME` for its input instructions. Use `--json` to retain the full error
+returned by an app action. A private or hidden item may be absent from search and reads.
+
+## Timed out, interrupted, or connection lost
+
+Check the current Flow before trying again. An edit may already have applied even if its response
+was lost. The CLI does not automatically repeat it. A waiting approval card may still exist in
+FlowJoe after the CLI disconnects; inspect or reject it there. A new CLI command cannot resume the
+previous command's approval lookup, uploaded files or undo history.
+
+For a list of actions, earlier completed changes remain in the Flow. `--json` includes completed
+step results when available. After an interrupted request, the last in-flight action may have an
+unconfirmed outcome; do not assume it was undone.

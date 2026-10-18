@@ -18,6 +18,11 @@ For another compatible MCP tool, copy the connection details shown in the card i
 
 The bridge starts again on launch if you left it enabled. Turn it off here to stop access.
 
+To use ordinary terminal commands or scripts, install the [FlowJoe CLI](/cli/getting-started).
+Its dedicated manual section covers setup, commands, scripting and troubleshooting. The CLI's
+`--autoapprove` flag skips approval cards for that command, including deletion approvals; it does
+not change this card's saved settings or other agents' approvals.
+
 ## Choose how changes are approved
 
 **Read-only access for external agents** allows inspection but blocks Flow change requests.

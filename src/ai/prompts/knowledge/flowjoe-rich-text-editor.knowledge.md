@@ -3,7 +3,7 @@
 <!-- GENERATED FILE — do not edit by hand. Built from the mintlify user docs by
 scripts/build-app-help-knowledge.js (deterministic digest; re-run it after editing any source page).
 Source pages: reference/rich-text-editor.mdx
-Generated: 2026-09-10 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
+Generated: 2026-10-18 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
 Sync guard: tests/unit/appHelpKnowledgeSync.test.js fails when mintlify/**/*.mdx or this digest drifts
 from scripts/app-help-knowledge.manifest.json. -->
 
@@ -59,7 +59,7 @@ The picker matches on emoji name and keywords, and shows up to eight results at 
 - Highlighter — Highlight the selection
 
 **Decide what to do with it.**
-AI actions need an API key configured — see Bring Your Own Brain.
+AI actions use your selected Joe connection: an API key or a supported signed-in command-line brain. Shared guests use the owner’s enabled connection. See Bring Your Own Brain.
 
 **Markdown shortcuts as you type.**
 **Block triggers**, typed at the start of a line: `# `, `## `, `### ` for headings 1–3; `- ` or `* ` for a bullet list; `1. ` for a numbered list; `[ ] ` for a checklist item; `> ` for a blockquote; ` ``` ` then Enter for a code block; `--- ` then Enter for a horizontal divider.

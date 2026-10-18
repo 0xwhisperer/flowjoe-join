@@ -3,7 +3,7 @@
 <!-- GENERATED FILE — do not edit by hand. Built from the mintlify user docs by
 scripts/build-app-help-knowledge.js (deterministic digest; re-run it after editing any source page).
 Source pages: workbenches/calendars.mdx, workbenches/spreadsheets.mdx, workbenches/rich-documents.mdx
-Generated: 2026-10-10 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
+Generated: 2026-10-18 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
 Sync guard: tests/unit/appHelpKnowledgeSync.test.js fails when mintlify/**/*.mdx or this digest drifts
 from scripts/app-help-knowledge.manifest.json. -->
 
@@ -29,9 +29,9 @@ You can import schedules in several shapes:
 Double-click a Calendar slot to open the FullCalendar workbench:
 - **Multiple Views:** Switch between Month, Week, Day, and Agenda List views.
 - **Manage Events:** Create new events, rename titles, or delete events.
-- **Drag & Resize:** Drag event cards to change dates, or drag block edges to resize duration. Changes write back to the underlying ICS format.
+- **Drag & Resize:** Drag event cards to change dates, or drag block edges to resize duration. Changes save in the FlowJoe calendar; download an `.ics` copy to use elsewhere.
 
-Also covered in the full docs for this area: Joe Integration.
+Also covered in the full docs for this area: Joe Integration; Calendar boundaries.
 
 ## Spreadsheet Workbench
 
@@ -41,7 +41,7 @@ The **Spreadsheet Workbench** is an interactive, editable island powered by Univ
 
 **Creating & Importing Spreadsheets.**
 - **New Spreadsheet:** Click **Add Slot** (or **Add First Slot** on an empty node) in the gallery and select **New Spreadsheet**. This initializes an empty slot running the Univer Sheets engine.
-- **Importing Files:** Drag and drop `.csv`, `.xlsx`, `.ods`, or `.xls` files directly onto the gallery. FlowJoe turns each one into an editable spreadsheet slot automatically (there is no prompt), and keeps your untouched original file hidden behind it so you can download it again.
+- **Importing Files:** Drag and drop `.csv`, `.tsv`, `.xlsx`, `.ods`, or `.xls` files directly onto the gallery. FlowJoe turns each one into an editable spreadsheet slot automatically (there is no prompt), and keeps your untouched original file hidden behind it so you can download it again.
 
 **Workbench Features.**
 - **Formulas & Math:** Supports standard spreadsheet formulas (SUM, IF, etc.).
@@ -50,7 +50,7 @@ The **Spreadsheet Workbench** is an interactive, editable island powered by Univ
 - **Exporting:** Download the sheet from the slot's menu. It saves in the same format you imported (`.csv`, `.tsv`, `.xlsx` or `.ods`); a new spreadsheet, or an imported `.xls`, downloads as `.xlsx`.
 - **Appearance:** The spreadsheet always uses a light look, even when the app is in a dark theme.
 
-Also covered in the full docs for this area: AI Access & Interactions.
+Also covered in the full docs for this area: Import and export limits; AI Access & Interactions.
 
 ## Rich Document Workbench
 
@@ -66,7 +66,6 @@ The **Rich Document Workbench** utilizes Univer Docs to provide a real word-proc
 - **Typography styling:** Change headers, font weights, colors, text alignment, and spacing.
 - **Image Integration:** Paste images directly from your clipboard into the body of the document.
 - **Headers & Footers:** Double-click the top or bottom margin of a page to edit its header or footer. Tables from imported files are kept when you save, but they cannot be edited in the editor yet.
-- **Exporting:** Download your edited copy from the slot's menu. It always saves as a `.docx` file (`.odt` and `.rtf` files are imported but not written back).
 
 Also covered in the full docs for this area: Collaborative AI Writing.
 

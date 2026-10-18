@@ -42,11 +42,13 @@ The History window has three tabs, **Versions**, **Chats** and **Images**, and i
 
 **Images** lists the pictures Joe made for nodes that are still in your Flow, grouped by day. Pictures from deleted nodes, and from locked private nodes, are not listed. Search, or filter by **All**, **In a slot** and **Not placed**. Each picture has **Open**, **Send to slot**, **Copy prompt** and a trash icon. Deleting a picture asks first. After deletion succeeds, its card goes; the stored picture is kept for as long as a slot or a chat message still uses it. If deletion cannot be saved, the card and picture are kept so you can retry. **Delete all shown** works the same way as in Chats, and only removes the rows that have a trash icon.
 
+Starting a new conversation keeps the outgoing conversation with its original place. If you move to another conversation while the old one is being saved, that newer conversation stays intact.
+
 The **Saved** label follows the picture’s current destinations. It hides the names and slot titles of locked private destinations.
 
 Standalone Image History stays on this computer when you copy a Workspace folder. A generated picture saved into an ordinary gallery slot can travel with the Workspace folder as gallery media; its separate Image History record does not.
 
-A `.fj` export with **Include AI chat and image history** selected includes only eligible conversations from the Flow you are exporting. It excludes private-node and computer-only conversations. A selected-node export includes only conversations in that branch. Import keeps conversations anchored in the imported Flow. Conversation sharing also respects private-node and computer-only exclusions, even when ordinary Joe conversations are enabled for an invitation.
+A `.fj` export with **Include AI chat and image history** selected includes only eligible conversations from the Flow you are exporting. It excludes private-node and computer-only conversations, including their chat-only picture backups and image-history prompts. A picture independently saved in an ordinary gallery follows the gallery’s export rules. Eligible chat pictures still travel in a full package after their standalone Image History rows have been deleted. A selected-node export includes only eligible chat and image history in that branch. Import keeps conversations anchored in the imported Flow. Conversation sharing also respects private-node and computer-only exclusions, even when ordinary Joe conversations are enabled for an invitation.
 
 ### Making one
 
