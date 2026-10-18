@@ -26,7 +26,7 @@ Workspace Folders are available in the desktop app.
 A **Workspace Folder** chooses where the Flow's data is stored. A **repo node** gives one node its own Git repository for project files. Those are separate choices: repo-node files appear in the node tree and galleries and are saved through FlowJoe's normal storage, while Git history is kept as FlowJoe-managed hidden data.
 To bring a project into Git in FlowJoe, create or clone a repo node from the New Node window. Do not make the whole Flow's Workspace Folder the project repository. Each repo node has its own hidden Git history; its files remain in the Flow's tree and galleries. See Repo nodes and Git for HTTPS and SSH remotes.
 
-Also covered in the full docs for this area: Where to find it; Setting one up; What lands on disk; Backups, Git, and syncing; iCloud Drive, Dropbox, and Google Drive; Network and shared drives; When something changes outside FlowJoe; When the workspace file can't be read; Open on another computer; Missing, retained, and changed media; Using one Workspace on two computers; When saving pauses; Switch between Workspace and Local storage; Reconnect after working locally; Private nodes; Quitting FlowJoe; Exports still work; Related; Placeholder.
+Also covered in the full docs for this area: Where to find it; Setting one up; What lands on disk; Backups, Git, and syncing; iCloud Drive, Dropbox, and Google Drive; Network and shared drives; When something changes outside FlowJoe; When the workspace file can't be read; Open on another computer; Missing, retained, and changed media; Using one Workspace on two computers; When a folder becomes unavailable; Switch between Workspace and Local storage; Reconnect after working locally; Private nodes; Quitting FlowJoe; Exports still work; Related; Placeholder.
 
 ## History & Recovery
 
@@ -47,7 +47,7 @@ A restore point includes your **whole Flow, galleries too**, so restoring puts i
 **What restore points do not cover.**
 **Importing a Flow over the current one, and starting a New Flow, do not take a restore point.** Both replace your Flow completely, so a restore point taken then would not survive.
 
-Also covered in the full docs for this area: A connected Workspace temporarily stops saving; Restore points; Opening History; Ask Joe about a saved version; Chat History and Image History; Making one; How many are kept; The Local Recovery Copy (Workspace mode); When the folder and Local copy disagree; When a workspace file was changed elsewhere; Related.
+Also covered in the full docs for this area: A Workspace folder becomes unavailable; Restore points; Opening History; Ask Joe about a saved version; Chat History and Image History; Making one; How many are kept; The Local Recovery Copy (Workspace mode); When the folder and Local copy disagree; When a workspace file was changed elsewhere; Related.
 
 ## Manual links
 

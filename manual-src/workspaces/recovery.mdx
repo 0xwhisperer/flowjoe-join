@@ -8,17 +8,17 @@ FlowJoe keeps two different safety nets, and it helps to know which one you want
 - **Restore points** let you deliberately jump back to how your Flow looked at an earlier moment. Use it after a change you regret.
 - The **Local Recovery Copy** is an automatic backup that exists only in Workspace Folder mode, for when the folder itself becomes unreachable.
 
-## A connected Workspace temporarily stops saving
+## A Workspace folder becomes unavailable
 
-FlowJoe keeps pending work on this computer and retries quietly. When the same unchanged folder
-becomes writable again, it saves the pending work and resumes editing automatically. If the saved
-Flow changed meanwhile, it opens the outside-change review and keeps your version until you decide.
-A folder that was replaced or now contains another Workspace or Flow needs an explicit reconnect.
+FlowJoe automatically keeps working and saving locally, with a small save-status warning. You do
+not need to choose a recovery action for an ordinary temporary outage. When the original folder
+returns, FlowJoe checks it and saves your latest work back automatically. Restarting while the
+folder is offline keeps you on the Local session.
 
-You can still switch to Local storage or choose another recovery action while a retry is waiting;
-a delayed retry cannot reconnect the old folder after your choice. An intentional disconnect or a
-cancelled startup reconnect does not start this automatic retry. See
-[When saving pauses](/workspaces/folders#when-saving-pauses) for the available actions.
+Independent folder edits are combined automatically when both versions can be kept safely.
+Conflicting folder changes need review; your Local version stays saved while you decide. A
+deliberate choice to stay Local stops automatic return. See
+[When a folder becomes unavailable](/workspaces/folders#when-a-folder-becomes-unavailable).
 
 ## Restore points
 
@@ -128,7 +128,10 @@ Restore points also:
 
 When your Flow is connected to a [Workspace Folder](/workspaces/folders), FlowJoe also keeps one automatic copy of it inside the app.
 
-It is for when the folder becomes unreachable (a drive unplugged, permission lost, the folder moved). FlowJoe then **pauses saving instead of losing your work**, and **Use Local Copy** restores from this copy.
+It provides the last verified Flow and media for recovery when the folder becomes unreachable.
+For an ordinary temporary outage, FlowJoe preserves your current edits and automatically continues
+in Local storage. **Use Local Copy** remains an explicit recovery action when that automatic
+handoff cannot complete; it restores the verified copy and can be older than your latest edits.
 
 Your options, on the **Settings → Data → Workspace Folder** card:
 

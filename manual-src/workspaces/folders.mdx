@@ -55,7 +55,7 @@ The card shows different buttons depending on whether a folder is connected.
 | **Connect Workspace** | No folder connected | Open a folder that is already a FlowJoe workspace. |
 | **Reconnect Workspace** | FlowJoe remembers your last folder | Reconnects to it without picking again. |
 | **Change Workspace** | A folder is connected | Switch to a different workspace folder. |
-| **Switch to Local Storage** | A folder is connected | Copies the workspace back into the app's own storage and keeps editing there. The folder is left untouched. |
+| **Switch to Local Storage** | A folder is connected, or FlowJoe is temporarily saving locally | Copies the workspace back into the app's own storage and keeps editing there. The folder is left untouched. |
 | **Disconnect Workspace** | A folder is connected | Detaches from the folder without taking a copy of your Flow. Editing stays paused until you reconnect the folder or start a new Local Project. To keep working with your Flow, use **Switch to Local Storage** instead. |
 | **Delete Workspace** | A folder is connected | Removes only the files FlowJoe manages in that folder. This cannot be undone. |
 | **Reveal Workspace Folder** | A folder is remembered | Opens the folder in Finder or Explorer. |
@@ -111,6 +111,7 @@ A **Workspace Folder** chooses where the Flow's data is stored. A **repo node** 
 
 To bring a project into Git in FlowJoe, create or clone a repo node from the New Node window. Do not make the whole Flow's Workspace Folder the project repository.
 Each repo node has its own hidden Git history; its files remain in the Flow's tree and galleries. See [Repo nodes and Git](/tree/repositories) for HTTPS and SSH remotes.
+
 </Note>
 
 ### iCloud Drive, Dropbox, and Google Drive
@@ -158,14 +159,12 @@ FlowJoe checks periodically for outside changes as well as listening for file-ch
 so a drive that does not send those notifications can still be used. Outside changes may take about
 15 seconds to appear. Saving also checks for outside changes before replacing the saved Flow.
 
-If the drive becomes unavailable or refuses a save, pending edits stay on this computer and saving
-pauses. See [Switch between Workspace and Local storage](#switch-between-workspace-and-local-storage)
+If the drive becomes unavailable or refuses a save, FlowJoe continues saving locally and reconnects automatically when it can. See [Switch between Workspace and Local storage](#switch-between-workspace-and-local-storage)
 for the available recovery choices. Network devices vary; passing the checks does not certify every
 device's behavior during a power cut or connection failure.
 
 If a sync service (Dropbox, iCloud Drive, Google Drive, OneDrive) leaves a conflict copy of `flow.json`
 in the folder, FlowJoe notices it and tells you.
-
 
 Replacing files inside `media/` by hand is not a supported way to swap media — FlowJoe watches `flow.json`, not the media folder.
 
@@ -192,7 +191,7 @@ If `flow.json` becomes unreadable while the workspace is open (a Git merge left 
 
 ### Open on another computer
 
-If the workspace was used on another computer within the last 5 minutes, FlowJoe warns **This Workspace is open on another computer** before you open or reconnect it, and when it reconnects automatically at launch. Choose **Open here anyway** or **Cancel**. Cancelling at launch leaves saving paused until you reconnect from Settings. While both computers have it open, the status bar shows **Also open on (computer name)**. Editing on two computers at once can leave two different versions of your Flow.
+If the workspace was used on another computer within the last 5 minutes, FlowJoe warns **This Workspace is open on another computer** before you open or reconnect it, and when you reconnect it. Choose **Open here anyway** or **Cancel**. Automatic return waits while another computer is using the folder; your work continues saving locally. Cancelling an explicit reconnect leaves your current Local work available. While both computers have it open, the status bar shows **Also open on (computer name)**. Editing on two computers at once can leave two different versions of your Flow.
 
 ### Missing, retained, and changed media
 
@@ -209,34 +208,38 @@ If two computers, or two FlowJoe windows, save the same Workspace at the same mo
 
 If a sync service delivers a version that was made without your latest save, FlowJoe asks which version to keep and keeps a copy of the other one.
 
-If the Workspace was changed on another computer while FlowJoe was closed, FlowJoe keeps your last version as a copy when you open it again and tells you. Copies kept this way are listed in Settings.
+After launch, FlowJoe opens your verified Local copy while it checks the folder. Independent changes
+can be combined automatically; conflicting changes leave your Local work saved and available for
+review. Explicitly opening a changed folder can also preserve your previous version as a copy listed
+in Settings.
 
 The **Open on another computer** note is only information. It never stops you from opening or saving.
 
 ---
 
-## When saving pauses
+## When a folder becomes unavailable
 
-If a connected folder becomes unavailable or a save fails — for example, the drive disconnects,
-permissions change, or the disk fills up — FlowJoe keeps the pending work on this computer and pauses
-editing. The status bar shows **Saving paused · retrying automatically**, then **Checking Workspace…**
-when it checks again. It retries quietly, with longer waits up to about 15 seconds between attempts.
+If the drive disconnects, the folder refuses a save, or its disk fills up, FlowJoe automatically
+continues saving your current Flow on this computer. You can keep editing. The status bar says
+**Saving locally · reconnecting automatically**; you do not need to switch storage or answer a
+recovery prompt for an ordinary temporary outage.
 
-- **The same unchanged folder is writable again:** FlowJoe saves your current pending work, then
-  resumes editing automatically. You do not need to click Reconnect.
-- **The saved Flow changed while the folder was away:** FlowJoe opens the existing outside-change
-  review. Your pending version stays intact until you choose what to do; **Decide Later** keeps
-  folder saving paused.
-- **The folder was replaced, moved, or now contains another Workspace or Flow:** FlowJoe does not
-  automatically save into it. Reconnect or choose a recovery action in Settings.
+When the same folder is available again, FlowJoe checks it and saves your latest Local work back
+before resuming folder saving. Independent edits in the folder are combined with your Local edits
+when they can be kept safely. It keeps your newer edits rather than opening an older folder copy.
+This also works after restarting FlowJoe while the folder is still unavailable.
 
-Automatic retry applies to a failure while a Workspace was connected. Deliberately disconnecting,
-switching to Local storage, choosing another Workspace, or cancelling a launch-time reconnect does
-not cause a background retry to reconnect it against your choice. Privacy checks and an unresolved
-outside-change review also keep their existing saving safeguards.
+If the folder contains conflicting changes, your work stays saved locally while you review the
+versions. FlowJoe does not guess which work to discard. A replaced folder or a different Workspace
+or Flow needs an explicit reconnect.
 
-You can still choose a recovery action while a check is waiting on a drive. A delayed check cannot
-switch you back from Local storage. Closing the app keeps the existing unsaved-work choices.
+Choosing **Switch to Local Storage** deliberately stops automatic return. Choosing another Flow or
+Workspace also stops the old folder from taking over later. Ordinary Local saving and closing the
+app do not wait for a disconnected drive.
+
+Automatic recovery needs a usable Local copy and enough space on this computer to save your work.
+If neither destination can save, FlowJoe tells you and retains the work it can recover rather than
+claiming it is saved. The explicit recovery tools remain available for an incomplete or damaged copy.
 
 Your ways out, all on the same card:
 
@@ -272,7 +275,7 @@ your Flow's saves at a time.
 If saving to the folder has failed but FlowJoe can still read it, **Switch to Local Storage** keeps
 what is currently on screen, including the latest edit that could not be saved to the folder. It
 checks that the Local save succeeded before completing the switch. If the folder cannot be read,
-use the recovery choices under [When saving pauses](#when-saving-pauses).
+use the recovery choices under [When a folder becomes unavailable](#when-a-folder-becomes-unavailable).
 
 You can repeat this process. Returning to a folder after Local edits can require a decision about
 which version to use. FlowJoe does not continuously sync the two locations. If a required save or
