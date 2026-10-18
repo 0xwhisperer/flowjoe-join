@@ -1,31 +1,31 @@
 ---
-title: "Storage & Preferences"
-description: "Monitor database size, manage keys, and clean up orphaned files."
+title: "Storage & preferences"
+description: "Check saved data, inspect unused media, and include your preferences in backups."
 ---
 
-Manage local database allocations, configure backup schedules, and migrate application-level settings.
+## Check storage
 
----
+Open **Settings → Data → Storage Stats** to see how much data FlowJoe keeps on this computer.
 
-## Storage Transparency Panel
+The local database holds your Local Flow, media, and growing records such as histories. Smaller browser storage mainly holds settings and recovery information. A connected Workspace Folder is a separate storage destination.
 
-Open **Settings → Storage** to view disk allocations:
-- **IndexedDB usage:** Shows the total size of all imported media blobs stored in your local application database.
-- **LocalStorage usage:** Shows the size of tree structures and text nodes.
-- **Orphaned Media Cleanup:** If you delete nodes or remove gallery slots, their underlying files can sometimes remain cached. Click **Cleanup** to search and delete unreferenced media blobs, freeing disk space.
-- **Database Compression:** Compresses text indices to reduce storage footprints.
+Use the inspection controls before deleting anything:
 
----
+- **Inspect Orphaned Media** finds files no longer referenced by saved work.
+- **Inspect Stale References** checks references whose files may be missing.
+- **Inspect Orphaned Image Prompts** finds image-prompt records no longer attached to their images.
+- **View Diagnostics Log**, on desktop, opens troubleshooting information.
 
-## Autosaving & Dirty States
+Read the inspection results before choosing a cleanup. Export a backup first if you are unsure.
 
-- **Autosave:** FlowJoe saves edits to LocalStorage and IndexedDB automatically as you type. There is no manual "Save" button for everyday work.
-- **Export-Impact Dirty State:** If you make edits, the app tracks changes that have not yet been exported to your project folders or backups. A yellow indicator on the app title bar reminds you to run a backup before closing if pending changes are high.
+## Automatic saving and portable backups
 
----
+FlowJoe saves normal edits automatically to the active storage. Check the bottom save indicator for pending or blocked saves.
 
-## Preferences Import/Export
+**File → Export Flow**, the save indicator, and **Cmd/Ctrl+S** create a portable backup. Changes waiting to be exported are separate from whether the current storage save succeeded. See [History & recovery](/workspaces/recovery) if saving is blocked.
 
-You can back up your application-level configuration:
-- **Preferences bundle:** Contains settings maps, global theme selections, audio player configurations, and saved playlists.
-- **API Keys Export:** You can opt to exclude API keys from export bundles to prevent accidentally sharing credentials in public files.
+## Include preferences
+
+Use **Settings → Data → Save Preferences With Exports** to include choices such as appearance, audio settings, and saved playlists in an export.
+
+API keys are excluded by default. Only select **Include OpenAI API key in export** when you intend the recipient to receive that credential.

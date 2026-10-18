@@ -1,68 +1,36 @@
 ---
-title: "Security & Privacy"
-description: "Data ownership, local OS keychain isolation, AI context gating, and encrypted backups."
+title: "Security & privacy"
+description: "Understand where your work stays and what you choose to share."
 ---
 
-FlowJoe is built on a **trust-nothing architecture**. Because you bring your own AI keys and run the application locally, you have total control over where your data lives, how it is stored, and what is shared with external model providers.
+FlowJoe puts your work on your computer and gives you clear controls for bringing AI and collaborators into it.
 
----
+## Where your work lives
 
-## 1. Data Sovereignty (Local-First Safety)
+Normal desktop work stays in app storage, or in a **Workspace Folder** you choose. A Workspace Folder keeps the Flow and its shared media in files you can back up or sync with your own tools.
 
-FlowJoe is not a SaaS platform. It has no centralized servers, no cloud databases, and collects **zero telemetry** on the content of your outlines, workflows, or media logs.
+Sharing deliberately sends permitted content to guests through the owner’s computer. Remote sharing can use a Cloudflare tunnel. AI features send the context they need to the selected provider; the provider’s account and data policies apply. Web browsing and link previews also contact websites.
 
-- **Desktop App:** Your data stays on your computer. Workspace Folders keep the Flow and its media in the folder you choose.
-- **Media Assets:** Image, PDF, audio, and spreadsheet references are stored locally in the workspace subfolders. No third-party servers act as intermediaries.
+See [Workspace folders](/workspaces/folders), [Sharing](/workspaces/sharing-and-presenting), and [Token usage](/joe/token-usage).
 
----
+## API keys
 
-## 2. API Key Isolation
+On desktop, supported keys are encrypted using the operating system’s secure-storage service when available and saved in FlowJoe’s app data. In a standalone browser, or when secure storage is unavailable, keys use local browser storage with weaker protection.
 
-We believe your API credentials should be treated with the highest security standards. FlowJoe never writes your keys to plaintext config files, local storage databases, or git directories without your knowledge.
+Keys appear masked in Settings. Use the eye button to reveal or copy them. Keys are excluded from portable exports by default; the export dialog lets you explicitly include an OpenAI key. Review that option before sharing a package.
 
-| Desktop Platform | Storage Location | Security Layer |
-| :--- | :--- | :--- |
-| **macOS Desktop** | Keychain Services | OS-level encryption (Keychain Access) |
-| **Windows Desktop** | Credential Manager | DPAPI-encrypted credential store |
-| **Linux Desktop** | Secret Service API | `libsecret` keyring manager |
+## Private and Hidden-from-Joe nodes
 
-### Key Protection Rules:
-1. **Settings Reveal:** You can view, reveal, or copy your API keys directly out of the Settings panel by toggling the **Eye button**. Keys are kept masked (`••••••••`) by default in the UI to prevent shoulder surfing.
+**Private** nodes protect access in the app with a password. Their contents stay on the owner’s computer and are excluded from the shared Workspace Folder and browser guests. Unlocking one for yourself does not give Joe access to its contents.
 
----
+**Hidden from Joe** seals a node’s contents from Joe while leaving them available to you. Sealed node names and positions can still appear in Joe’s outline, so keep secrets out of names. Neither setting recalls information already sent in an earlier message.
 
-## 3. AI Privacy & Context Gating (Private Nodes)
+Private-node passwords do not encrypt all data at rest. A normal portable package can carry private content and its protection settings. Use package encryption when you need a protected backup.
 
-When collaborating with Joe, you might have outline branches that contain sensitive credentials, personal details, or protected intellectual property. FlowJoe lets you isolate this data from LLM APIs.
+## Review changes
 
-### Private Nodes:
-- You can mark any node in the tree as **Private** (using the node context menu or keyboard shortcuts).
-- Private nodes are visually highlighted with a diagonal stripe pattern in the tree.
-- **Context Exclusion:** When you ask Joe a question or trigger an automation, the engine **completely filters out** the contents, summaries, and gallery files of any Private node (and all of its child sub-branches) before sending the prompt payload to external LLM providers (like OpenAI, Anthropic, or Gemini).
-- This ensures you can mix public/private outlines in the same project without risk of data leaks.
+Joe normally proposes Flow changes for you to approve, reject, or revise. Scheduled tasks and connected agents can apply changes under permissions you authorize. See [Proposals & approval](/joe/propose-approve) and [Automations](/joe/automation) before enabling automatic work.
 
----
+## Encrypted backups
 
-## 4. The Propose-Approve Safe-Loop
-
-Joe is a *proposer*, not an *executor*. The system isolates mutation privileges to prevent runaway code or unauthorized files.
-
-- **No Raw Execution:** Joe cannot directly write files, delete nodes, or run commands on your machine.
-- **Patch Proposals:** When Joe suggests changes, they are generated as **proposals** in your chat panel or the automation logs.
-- **Safety Seatbelt:** You review the visual diff side-by-side. The action is only executed once you click **Approve**.
-
----
-
-## 5. Encrypted Backups (`.fj` Packages)
-
-When exporting or saving backups, you can encrypt your entire project folder.
-
-- **AES-256 Encryption:** Exporting a workspace as a `.fj` package allows you to enable password protection. The outline structure and media assets are zipped and encrypted using standard AES-256.
-- **Portability:** Encrypted packages can be shared securely over email, Slack, or git, and can only be decrypted by entering the workspace password upon import.
-
----
-
-## Related Guides
-- [Bring Your Own Brain (BYOB)](/joe/byob)
-- [Workspace Folders & Storage](/workspaces/folders)
-- [Recovering Data](/workspaces/recovery)
+When exporting a **.fj** package, you can protect that package with a password. The recipient needs the password to import it. This protects the exported file; it does not encrypt the live Workspace Folder or replace your computer’s disk protection.

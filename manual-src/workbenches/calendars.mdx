@@ -23,7 +23,7 @@ You can import schedules in several shapes:
 Double-click a Calendar slot to open the FullCalendar workbench:
 - **Multiple Views:** Switch between Month, Week, Day, and Agenda List views.
 - **Manage Events:** Create new events, rename titles, or delete events.
-- **Drag & Resize:** Drag event cards to change dates, or drag block edges to resize duration. Changes write back to the underlying ICS format.
+- **Drag & Resize:** Drag event cards to change dates, or drag block edges to resize duration. Changes save in the FlowJoe calendar; download an `.ics` copy to use elsewhere.
 - **Exporting:** Save calendars back to a standard `.ics` file.
 
 ---
@@ -32,4 +32,8 @@ Double-click a Calendar slot to open the FullCalendar workbench:
 
 Joe receives calendar agendas as parsed, readable text:
 - **Planning:** Ask Joe *"Find conflicts in my schedule next week"* or *"Draft an itinerary for Tuesday."*
-- **ICS Preservation:** FlowJoe keeps the original source `.ics` file preserved in the slot metadata, allowing round-trips without data loss.
+- **Original versus edited copy:** **Download Original** keeps the untouched imported calendar. Downloading the edited calendar creates an `.ics` file from its current events; it does not preserve every original calendar field.
+
+## Calendar boundaries
+
+Calendar imports are copies, not live subscriptions to Google Calendar, Outlook, or another provider. Recurring events retain readable recurrence information, but FlowJoe does not expand every occurrence or provide reminder notifications or provider write-back.

@@ -126,6 +126,16 @@ If the copy has fallen behind, the card says so plainly rather than implying it 
 
 ---
 
+## When the folder and Local copy disagree
+
+A recovery prompt may offer **Keep Workspace**, **Use Local Copy**, or **Rebuild Workspace**. Keep Workspace opens the folder’s version and preserves the differing Local copy.
+
+In **Settings → Data**, **Resolve Retained Conflict Copies** lets you export a retained recovery copy or explicitly discard it. A successful export removes that copy from the retained list, so keep the exported file.
+
+If you reconnect after editing a Local copy, a separate review offers **Send My Changes**, **Merge Safe Changes**, and other choices. See [Reconnect after working locally](/workspaces/folders#reconnect-after-working-locally). Those preserved versions appear under **Retained Reconcile Flows**.
+
+---
+
 ## When a workspace file was changed elsewhere
 
 If your workspace's `flow.json` changes on disk while FlowJoe is running, you are asked what to do (**Use External Changes**, **Keep My Changes**, **Open External as New Flow** or **Decide Later**), and an unreadable file gets its own dialog; the full steps are in [Workspace Folders](/workspaces/folders#when-something-changes-outside-flowjoe). FlowJoe does not pick silently. Any copy it sets aside is kept rather than deleted (your own side is kept complete, including unlocked private nodes, and stays on this computer): open it as its own Flow, export it to `.fj`, or discard it.

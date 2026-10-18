@@ -1,51 +1,30 @@
 ---
-title: "AI as a Collaborator"
-description: "Meet Joe — a powerful AI assistant that coordinates, outlines, and researches under your control."
+title: "AI as a collaborator"
+description: "Meet Joe: a partner for thinking, creating, and organizing your workspace."
 ---
 
-Many modern tools use AI to silently rewrite your documents or generate text without your oversight. 
+Joe works beside your tree and references. You can brainstorm a project, make sense of a document, compare images, draft a summary, or ask him to turn a rough idea into an organized branch.
 
-FlowJoe introduces **Joe**—an AI collaborator designed around absolute transparency, operating strictly within a trust model you define.
+## From conversation to action
 
----
+Choose a Flow, node, or slot as Joe’s target. Give him the material he needs, then ask a question or describe a change. For Flow edits, Joe offers a proposal you can approve, reject, or revise.
 
-## The Propose-Approve Safety Loop
+For example: “Group these research links into Sources and Findings, and write a short summary of each.” You review what he intends before it becomes part of the tree.
 
-The core philosophy of Joe is simple: **AI proposes, you approve.** 
+## More than chat
 
-When you ask Joe to make changes to your workspace—such as organizing tags, generating design drafts, or restructuring a messy outline—Joe creates an interactive **Proposal Card**.
+- Read documents, spreadsheets, calendars, and images together.
+- Write and refine summaries or slot notes, with a review before replacing your text.
+- Generate artwork and keep variations together in a stack.
+- Organize nodes, tags, and gallery references.
+- Save useful memories for later conversations.
+- Set up recurring work, such as refreshing a research board.
+- Control music while you work.
 
-```mermaid
-sequenceDiagram
-    User->>Joe: "Group these reference links"
-    Joe->>User: Generates visual Proposal Card (Diff)
-    Note over User: User reviews additions (+), moves, or deletes (-)
-    alt User clicks Approve
-        User->>FlowJoe: Apply changes (atomic, undoable)
-    else User clicks Reject
-        User->>FlowJoe: Discard proposal (workspace untouched)
-    end
-```
+Chat edits normally need your approval. Scheduled tasks and connected agents can apply changes under permissions you choose. See [Proposals & approval](/joe/propose-approve) and [Automations](/joe/automation).
 
-- **Visual Diff:** You see exactly what Joe wants to add, move, or rename before it happens.
-- **Single-Click Undo:** If you approve a change and decide you don't like it, pressing `Cmd/Ctrl+Z` rolls back the entire AI operation instantly.
-- **Zero Silent Overwrites:** Joe can never alter your tree or files in the background without your explicit confirmation.
+## Your choice of brain and context
 
----
+Configure a supported API connection or signed-in command-line brain. Joe’s access controls let you choose whether he can read the Flow or propose changes. Private and Hidden-from-Joe content stay sealed; the outline may still show node names and positions.
 
-## How Joe Helps You Build
-
-Joe is equipped with a deep flow-mutation API consisting of **56 verbs** across multiple areas:
-* **Autorestructure outlines:** Ask Joe to reorganize branches based on topics.
-* **A node's look and its gallery:** Ask Joe to give a node a Theme-menu look by name, copy a slot or a stack item without moving the original, crop a picture, make a PDF of a picture or a note, set album art, color a canvas slot, or draw and remove lines on that board. Each change still waits for your approval.
-* **Smart Stacking:** Direct Joe to group similar assets or drafts into stacks.
-* **Document and Image Analysis:** Send PDFs, spreadsheets, or graphics to Joe for deep summaries and text extraction.
-* **Spellcheck Diffing:** Clean up grammar using a side-by-side diff review modal.
-
-<Accordion title="Technical Details: Developer & Agent Integration">
-FlowJoe exposes Joe's capabilities to external terminal tools (like Claude Code, Codex, or Gemini CLI) via a loopback **Model Context Protocol (MCP)** server. 
-
-This lets you drive your visual FlowJoe workspace directly from your terminal. External command-line scripts can call:
-- `get_flow_snapshot` to inspect the tree.
-- `propose_flow_patch` to execute structural edits under the same propose-approve seatbelt protection.
-</Accordion>
+Start with [Meeting Joe](/joe/opening-joe), [Bring Your Own Brain](/joe/byob), and [Permissions & privacy](/joe/permissions). To let an outside coding assistant work with the Flow, see [Agent Bridge](/joe/agent-bridge).

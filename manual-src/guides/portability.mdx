@@ -1,31 +1,27 @@
 ---
-title: "Data Portability & Backups"
-description: "How to move a project to a new computer without losing files."
+title: "Move a Flow to another computer"
+description: "Take your tree, references, and optional preferences with you."
 ---
 
-Follow this guide to safely transfer your visual workspaces and assets to a new machine or backup drive.
+A full **.fj** package is a convenient way to carry a Flow as one file.
 
----
+## Make the backup
 
-## Workflow Steps
+1. If you want your display settings and playlists included, choose **Settings → Data → Save Preferences With Exports**.
+2. Choose **File → Export Flow**.
+3. Export the whole Flow as a **.fj** package, including its media.
+4. Keep the API-key option off unless you deliberately want to transfer that key. Choose package password protection if needed.
+5. Save the package, then copy it to the other computer or backup drive.
 
-### Step 1: Prepare the Export
-1. Right-click the root node of the project you want to move.
-2. Select **Export Subtree**.
-3. Choose the **Full-Package Media Bundle (`.fj`)** format.
-4. Save the file to your disk. FlowJoe compiles your tree database and packages all IndexedDB media files into the archive.
+A whole-Flow export includes all root branches. **Export Node…** in a node’s right-click menu is the alternative for taking just that branch. The package gathers media referenced by the chosen work, rather than every unused file in the app’s database.
 
-### Step 2: Transfer the Package
-Copy the `.fj` package onto an external drive or send it to your target machine using local transfer tools.
+## Open it on the other computer
 
-### Step 3: Set up Preferences (Optional)
-If you want your settings and playlists to match:
-1. Open Settings on your original machine.
-2. Click **Export Preferences**.
-3. Transfer and import the preference file on the new machine.
+1. Open FlowJoe and choose **File → Import Flow**.
+2. Select the package and enter its password if it has one.
+3. Review whether to replace the current Flow or merge the incoming work. Export the current Flow first if you want a separate backup.
+4. Check a few media cards and linked files before relying on the transfer.
 
-### Step 4: Ingest on the New Computer
-1. Open FlowJoe on the new machine.
-2. Click **Import** from the top app menu.
-3. Choose your `.fj` package.
-4. Select **Merge at Root** or **Overwrite** to restore the project.
+Linked files may need to be relinked when their original paths do not exist on the new computer. Private-node protection travels with a package; it does not mean a plain package is encrypted.
+
+For regular use across computers, consider a [Workspace Folder](/workspaces/folders). For export choices, see [Export & import](/portability/export-import).

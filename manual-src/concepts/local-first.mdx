@@ -1,38 +1,29 @@
 ---
-title: "Local-First Storage"
-description: "Instant speed, complete privacy, and total ownership of your work."
+title: "Local-first storage"
+description: "Keep your work close, work offline, and take it with you."
 ---
 
-Your thoughts, creative assets, and research drafts are valuable. They shouldn't be locked inside a closed cloud network or scanned by remote servers. 
+FlowJoe is a desktop workspace that keeps your tree, notes, and imported media on your computer. You can organize ideas and work with saved references without signing into a hosted workspace.
 
-FlowJoe is built as a **local-first desktop application**. Every document, image, audio file, and outline is stored directly on your computer.
+## Work offline
 
----
+Your local outlines, notes, and saved files remain available without an internet connection. Free local audio transcription also works offline after its engine and model are installed.
 
-## Why Local-First Matters
+Websites, online AI, remote sharing, and model downloads need a connection. Recurring Joe tasks may contact an AI provider while the owning Flow is open and scheduled runs are enabled.
 
-### ⚡ Blazing-Fast Performance
-Because all assets live on your local drive, there are no loading spinners or network lag. Outlines open instantly, spreadsheets recalculate immediately, and large PDFs scroll smoothly.
+## Choose how to store a Flow
 
-### ✈️ True Offline Capability
-FlowJoe does not require an active internet connection. You can outline your novel, edit budgets, and manage tasks on a flight, in a coffee shop with bad Wi-Fi, or deep in the mountains.
+- **Local storage:** FlowJoe manages the Flow and its media in this computer’s app storage.
+- **Workspace Folder:** Choose a folder containing the Flow and shared media. You can back it up, sync it with your own service, and use it with external tools. Private content stays on its original computer.
 
-### 🔒 Absolute Privacy
-Your data belongs to you. FlowJoe has no tracking servers. Your AI keys are stored locally in your operating system's secure keychain, and AI calls are made only when you explicitly ask Joe for assistance.
+See [Workspace folders](/workspaces/folders) for setup, changing computers, and what happens when another tool changes the folder.
 
-### 📁 Direct File System Compatibility
-Unlike apps that lock data inside a single database file, FlowJoe's folder structure makes your project fully compatible with external tools. You can point your own backup scripts at it, or commit changes natively using Git.
+## Keep a portable copy
 
----
+Export a **.fj** package to take the Flow and its included media together, or choose JSON for a data-only copy. Right-click a node to export just that branch or copy its JSON.
 
-## Portable & Open Data
+Linked files need separate attention because their paths may not exist on another computer. See [Export & import](/portability/export-import).
 
-You are never locked into FlowJoe. We make it easy to move, export, and copy your data:
-- **Clipboard Portability:** You can right-click any node and copy its entire outline as clean JSON metadata to paste anywhere.
-- **Data Backup:** Export your whole project as a lightweight `.json` structure or a full `.fj` package containing all your media assets zipped up.
+## Choose what leaves your computer
 
-<Accordion title="Technical Details: How Data is Structured Natively">
-- **Tree and Text Data:** Serialized as JSON and saved locally in your Electron application user profile.
-- **Media Blobs:** Indexed and stored in your device's local database (IndexedDB) for fast retrieval.
-- **Workspace folders:** Workspaces map this structure directly to a folder on your filesystem (containing `flow.json` and a `media/` folder), making it compatible with Git and external backup systems.
-</Accordion>
+Joe uses a provider you configure. Sharing uses the access you grant to guests. API keys use protected desktop storage when available, with a local browser-storage fallback. See [Security & privacy](/concepts/security) for those boundaries.

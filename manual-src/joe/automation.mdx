@@ -9,10 +9,10 @@ FlowJoe features a powerful **Background Scheduler** that allows Joe to run auto
 
 ## How Scheduling Works
 
-A scheduled task executes a headless loop of the AI assistant in the background. Joe can perform any flow mutation that a human can request in chat—reading outline structures, searching the web, generating images, updating slot notes, or managing tags.
+A scheduled task gives Joe instructions to repeat while you work. He can read the outline, search the web, generate images, update notes, and manage tags using the available tools and permissions.
 
 > [!IMPORTANT]
-> **Desktop-Only Rule:** Scheduled tasks **only execute while FlowJoe is running**. It is not a cloud cron job. If you close the app, the scheduler pauses. Any jobs that missed their scheduled runtime will execute immediately the next time you open FlowJoe.
+> Schedules run while the owning Flow is open in FlowJoe and **Scheduled runs** is enabled. Closing the app or browser stops them. A missed occurrence normally runs when you reopen the Flow, unless the task is set to skip it. FlowJoe does not replay every missed interval in a burst.
 
 ---
 
@@ -32,14 +32,11 @@ Deleting tasks, review items or run history follows the same creator and elevate
 
 FlowJoe supports three repeating cadences for automations:
 
-1. **Daily:** Runs once a day at a specific 24-hour time and timezone.
-   - *Example JSON:* `{ "cadence": "daily", "time": "08:00", "timezone": "America/New_York" }`
-2. **Weekly:** Runs once a week on a specific day.
-   - *Example JSON:* `{ "cadence": "weekly", "dayOfWeek": 0, "time": "18:00", "timezone": "Europe/London" }` *(0 = Sunday, 6 = Saturday)*
-3. **Interval:** Runs repeatedly after a set duration in minutes.
-   - *Example JSON:* `{ "cadence": "interval", "everyMinutes": 120 }` *(runs every 2 hours)*
+1. **Daily:** At a chosen time and timezone—for example, every morning at 8:00.
+2. **Weekly:** On a chosen day and time—for example, Friday at 17:00.
+3. **Interval:** Every chosen number of minutes—for example, every two hours.
 
-*For short intervals (e.g. sub-hourly), the interface displays a warning estimate (`~N runs/day`) to help you manage API token spend on your OpenAI key.*
+For short intervals, the interface shows an estimated number of runs per day to help you understand ongoing AI usage.
 
 ---
 
@@ -48,7 +45,7 @@ FlowJoe supports three repeating cadences for automations:
 You can configure and manage scheduled tasks in two ways:
 
 * **Natural Language Chat:** Ask Joe: *"Search the web for new references on quantum computing and update my Research node every morning at 9:00 AM."* Joe will draft a proposal card showing the task parameters. Approving the proposal card registers the task.
-* **The Automation Settings Panel:** Go to **Settings → Automation** to view active tasks, monitor running logs, pause/resume schedules, delete tasks, or click **Run Now** to trigger an immediate execution (Run Now always runs in-place, bypassing proposal reviews).
+* **Settings → Tasks:** View tasks, pause or resume them, delete them, and inspect recent results. **Run Now** normally applies the result immediately, including for a review-first task. Changes held by the safety checks still go to **Review Inbox**.
 
 ---
 
@@ -56,29 +53,23 @@ You can configure and manage scheduled tasks in two ways:
 
 To prevent an unattended background run from clobbering your outlines due to an AI hallucination, FlowJoe wraps automations in a **Safety Seatbelt**:
 
-- **Propose-Only (Review Inbox):** By default, scheduled runs do not edit your tree directly. Instead, the scheduler places updates into a **Review Card** in your automation inbox for you to verify.
-- **Auto-Apply:** You can authorize a task to apply edits directly on completion.
-- **The Seatbelt Gate:** Even with Auto-Apply enabled, if a background task attempts a **risky action**, FlowJoe halts the write and diverts the patch to your review inbox. Risky actions include:
-  - Deleting outline nodes (`deletes_nodes`).
-  - Deleting a scheduled task record (`deletes_scheduler_task`).
-  - Deleting content that the task does not own (`removes_unowned` or `deletes_content` like deleting stacks, tags, or memories).
-  - Creating or changing a scheduled task or a saved Joe memory (`changes_scheduler_task`, `changes_memory`) — a run can't silently rewrite your other automations.
-  - Revealing a node you hid from Joe (`reveals_hidden_from_joe`).
-- **Approve Once:** Confirming a held destructive run in the review inbox prompts you to authorize *Auto-Apply Destructive* for that task, so recurring runs can write changes without bothering you again.
+- **Auto-apply is the normal starting choice:** Approving a recurring task normally authorizes its routine updates to apply automatically.
+- **Review-first is available:** Ask Joe to make the task review-first if you want results held in **Settings → Tasks → Review Inbox**.
+- **Risky changes are held:** Removing nodes, tasks, or other content; changing tasks or memories; and revealing content hidden from Joe can send a result to review. TypeSafe can also hold a change that falls outside the task’s instructions.
+
+<Warning>
+For an owner-created task, approving a result held by the destructive-change check also authorizes that task to make destructive changes on future runs. There is no extra authorization prompt after approval. Approving a TypeSafe instruction warning does not grant that broader permission. Guest-created tasks do not gain that standing permission through this approval.
+</Warning>
 
 Each scheduled run has its own **Undo** in the run history, separate from your `Cmd/Ctrl+Z` in the tree — undoing a run never touches your own manual edits. If the revert itself can't be saved (for example, a storage problem at that moment), FlowJoe tells you so with a warning instead of quietly showing "undone" for a change that may come back after a restart.
 
 ---
 
-## 📌 Ownership & Stable Slot Identity
+## Which items a task can refresh
 
-The scheduler uses two mechanisms to edit content precisely and safely:
+When you create a task, it adopts the existing slots on its target node. This lets it refresh those references later without treating them as someone else’s content.
 
-### 1. Adopt-on-Create
-When you create a task, it automatically **adopts** all existing slots on its target node, stamping them with `adopted-on-create` provenance. This lets the task refresh or replace those specific slots on later runs without triggering the "removes unowned content" seatbelt warning.
-
-### 2. Stable Slot Identity (`slotEntryIds`)
-If you configure a task to update a specific slot (e.g. *"keep slot 1 updated"*), the scheduler anchors to that slot's permanent database ID. On later runs, Joe edits that specific slot in place by its ID, preventing duplicate slots or structural renumbering bugs.
+If you ask it to keep a particular slot updated, the task follows that same slot when cards are reordered. You do not need to maintain slot numbers by hand.
 
 ---
 
@@ -99,10 +90,10 @@ If you configure a task to update a specific slot (e.g. *"keep slot 1 updated"*)
   - **Seatbelt:** Non-destructive (applies directly without prompt).
 
 ### Example 3: Weekly Project Auditor
-* **Prompt:** *"Every Friday at 5:00 PM, scan my project milestones tree and flag any nodes that are marked 'Flagged' but have empty summaries."*
+* **Prompt:** *"Every Friday at 5:00 PM, scan my project milestones and report any In Progress nodes with empty summaries."*
 * **Configuration:**
   - **Cadence:** Weekly (Friday at 17:00)
-  - **Behavior:** Scans metadata, writes summary notes, and flags incomplete nodes.
+  - **Behavior:** Reports incomplete summaries so you can decide what to add.
 
 Shared tasks can change a parent's status when all affected descendants are shared and editable. A parent change that would modify private or frozen descendants is refused.
 

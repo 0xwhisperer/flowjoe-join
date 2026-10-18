@@ -1,99 +1,12 @@
 ---
-title: "Plugin Architecture"
-description: "Technical manifest schemas, extension fields contract, and template remapping rules."
+title: "About future plugins"
+description: "What the planned plugin system means for people using FlowJoe today."
 ---
 
-FlowJoe’s core engine is built to be domain-agnostic. Rather than hardcoding the logic of wargames, lab protocols, or lawsuits, FlowJoe provides an extensible foundation that allows plugins to teach the application the unique language and validation rules of any domain.
+FlowJoe’s tree, references, and Joe already suit many kinds of work. A future plugin system is planned to add more specialized tools—for example, character fields for a story bible or experiment templates for a lab notebook.
 
-Here is the data structure, field serialization, and validation contract behind FlowJoe's plugin framework.
+The plugin installer, marketplace, and custom plugin panels are not currently available. Proposed plugin formats are design plans, not features you can turn on in Settings.
 
----
+You can build a tailored workspace today using nodes, tags, summaries, spreadsheets, calendars, and recurring Joe tasks. For outside AI tools, the existing [Agent Bridge](/joe/agent-bridge) lets a connected agent read permitted content and request reviewed changes.
 
-## 1. Project Metadata Owner (`window.FlowJoeProjectState`)
-
-To prevent workspace details from scattering across separate global states, FlowJoe centralizes all document-level metadata. The project state manager implements a single serialization envelope for files and backup transfers:
-
-```js
-window.FlowJoeProjectState = {
-  getFlowMetadata,
-  setFlowMetadata,
-  normalizeFlowMetadata,
-  serializeFlowDocumentEnvelope, // packages schemas + plugindata on-save
-  applyFlowDocumentEnvelope      // hydrafts state on-load / import
-};
-```
-
----
-
-## 2. Extension Fields & Fail-Safe Round-Tripping
-
-To support third-party custom plugins, FlowJoe's storage layer natively reserves namespace zones at every tier of the database schema. If a user opens a Flow that utilizes a plugin they do not have installed, **FlowJoe preserves the plugin's data intact as inert variables** during subsequent save/load or export cycles:
-
-* **Flow Level:** `flow.enabledPlugins` and `flow.pluginData`
-* **Node Level:** `node.pluginData`
-* **Slot Level:** `slot.pluginData`
-* **Stack Item Level:** `stackItem.pluginData`
-* **Metadata Tracking:** `changeMeta` objects record creation sources, such as `createdFromTemplate` details.
-
----
-
-## 3. Declarative Manifest Schema
-
-Milestone 1 plugins are completely declarative (containing no executable code fields or remote scripts to maintain strict local-first sandbox safety). Every plugin is defined by a JSON manifest structure:
-
-```json
-{
-  "id": "tabletop-game",
-  "name": "Tabletop Game Developer",
-  "version": "1.0.0",
-  "publisher": "flowjoe",
-  "kind": "declarative",
-  "flowJoeCompatibility": ">=0.9.32 <2.0.0",
-  "pluginApiVersion": "1",
-  "dataSchemaVersion": 1,
-  "permissions": [],
-  "dependencies": [
-    {
-      "id": "worldbuilding-core",
-      "version": ">=1.0.0",
-      "required": true
-    }
-  ],
-  "entityTypes": ["Unit", "Weapon", "Rule", "Faction"],
-  "fields": [
-    {
-      "key": "pointsCost",
-      "label": "Points Cost",
-      "type": "numeric",
-      "scope": "shared",
-      "aiAccess": "allow",
-      "mergeStrategy": "last-writer-wins",
-      "indexing": "numeric"
-    }
-  ],
-  "flowTemplates": ["blank-skirmish-game"],
-  "templates": [],
-  "actions": [],
-  "aiPrompts": [],
-  "exports": []
-}
-```
-
----
-
-## 4. Custom Field Classifications
-
-Custom metadata fields must declare their data handling policies:
-* **Scopes:** `shared` (serialized in JSON), `local-only` (local device settings), `secret` (keys/tokens never serialized), or `private-project` (written into the device vault only).
-* **AI Access Rules:** `allow` (Joe can read/write), `deny` (AI blocked completely), `ask` (requires confirmation), or `metadata-only`.
-* **Merge Strategies:** Defines how conflict resolution handles overlapping edits (e.g. `last-writer-wins`, `set-union`, `append`, or `manual-review`).
-* **Indexing Styles:** Informs how search is indexed (`exact`, `tokenized`, `numeric`, or `date`).
-
----
-
-## 5. Flow Template Instantiation
-
-When a user selects a starter template (e.g., *RPG Campaign Bible*), FlowJoe runs a remapping step to prevent ID collisions:
-- **Local ID Translation:** Remaps template node IDs to fresh, unique IDs.
-- **Reference Rewriting:** Sweeps all media references, stack links, and tags to match the newly generated IDs.
-- **Provenance Recording:** Adds `changeMeta.createdFromTemplate` markers to keep track of the source template name and version.
+See [Ways to use FlowJoe](/concepts/ways-to-use-flowjoe) for practical starting points and [Plugins & specialized workflows](/concepts/plugins-verticals) for the direction of future plugins.

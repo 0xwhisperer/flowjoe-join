@@ -22,6 +22,10 @@ Joe can read files attached to your gallery slots:
 
 ## Image Generation
 
+Joe’s **Images** tab gives you a small creative studio beside your references: describe a picture, use an existing image as a guide, and keep useful results together as a stack. It needs an **OpenAI API key**, regardless of your chat brain. Shared guests use the owner’s enabled image connection.
+
+Choose an image model, quality, size, and output format before generating. Background choices depend on the model and format. Use the reference-image control to select an accessible image and enable it for the request.
+
 In the **Images** tab, the compact **Auto**, **New** and **Edit** pills choose how the next request uses the preview:
 
 - **Auto** continues the saved image thread when one exists, or starts a new generation.
@@ -34,6 +38,12 @@ You can generate graphics directly in your workspace:
 - **Write-back Options:** Generated images render inside a chat card. You can click **Send to Gallery** to save it as a new slot, insert it into a stack, or replace an existing image.
 - **If generation fails:** Your previous generated picture and its prompt remain available. A failed replacement request does not clear that draft. The new request stays in the prompt box so you can retry it.
 - **Survives a restart:** A generated image you haven't sent to the gallery yet still shows, and can still be sent or reused, after you close and reopen FlowJoe. If a generated image genuinely can't be recovered, the card says so with a plain note instead of showing a blank frame.
+
+### Continue an older picture
+
+Open image-generation history from **Images**. Change **Current node** to **All** if necessary, find a picture, and open it to restore its preview, prompt, and saved generation choices. Choose **Auto** or **Edit** to continue where supported, or **New** for a fresh picture. You can send a result to the gallery as a new slot, add it to a stack, or replace an item.
+
+This drawer can find older pictures kept on this computer even when their original node is no longer in the current Flow. **History → Images** is narrower: it lists pictures whose source node is still in this Flow. Guest history always stays within the guest’s shared access.
 
 ### Shared image history
 

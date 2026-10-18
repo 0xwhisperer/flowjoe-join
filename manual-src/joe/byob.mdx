@@ -1,6 +1,6 @@
 ---
 title: "Bring Your Own Brain (BYOB)"
-description: "Total privacy, zero subscription fees, and complete control over your AI models."
+description: "Choose Joe’s connection, set up your keys, and use a brain that suits your work."
 ---
 
 FlowJoe operates on a **Bring Your Own Brain (BYOB)** model. Unlike traditional SaaS tools that charge high monthly subscription fees with hefty markups on AI usage, FlowJoe runs entirely locally and connects directly to AI providers using your own API keys.
@@ -9,7 +9,7 @@ FlowJoe operates on a **Bring Your Own Brain (BYOB)** model. Unlike traditional 
 
 ## Why BYOB?
 
-* **Zero Subscription Markups:** You only pay the raw token usage fees directly to the AI providers (such as OpenAI or Anthropic). For typical note-taking and outlining, this costs pennies a month compared to a $20/month subscription. Each send includes the tree outline unless you shrink it — see [Token usage with Joe](/joe/token-usage).
+* **Zero Subscription Markups:** You only pay the raw token usage fees directly to the AI providers (such as OpenAI or Anthropic). Your cost depends on the model, how much context you send, and how often you use it. Each send includes the tree outline unless you shrink it — see [Token usage with Joe](/joe/token-usage).
 * **Model Choice:** You choose exactly which model drives Joe—whether you want the speed of a lighter model or the reasoning of a frontier model.
 * **Privacy & Control:** Your keys and chats are never routed through FlowJoe servers. Connections are established directly from your local desktop application to the AI API endpoint.
 
@@ -19,8 +19,8 @@ FlowJoe operates on a **Bring Your Own Brain (BYOB)** model. Unlike traditional 
 
 FlowJoe uses a multi-tier storage design for your keys to balance security and convenience:
 
-* **OS Secure Storage (Default):** Inside the desktop Electron wrapper, FlowJoe prioritizes storing keys in your operating system's native secure credential manager (macOS Keychain, Windows Credential Manager, Linux Secret Service).
-* **Plaintext Safety:** Keys are never written to project JSON files, shared synced directories, or git version control systems.
+* **Desktop storage:** Supported keys are encrypted using your operating system’s secure-storage service when available and saved in FlowJoe’s app data. A standalone browser, or unavailable secure storage, uses local browser storage with weaker protection.
+* **Export choice:** Keys are excluded from portable exports by default. You can explicitly include an OpenAI key, so review that checkbox before sharing a package.
 
 ---
 
@@ -39,12 +39,17 @@ To adjust your model config:
 1. Open **Settings → APIs → API Settings** and paste your key.
 2. Click the model settings button inside the Joe panel — or the brain name in the status bar — to pick the brain behind Joe:
    - **OpenAI models (API key):** **Sol 6.1**, **Luna 6** (the default), **Sol 6**, and **Astra 6**, plus **Luna**, **Terra**, and **Sol** from the GPT-5.6 family.
+   - **Gemini API:** **Gemini 3.8 Flash** uses a separate Google Gemini API key. See setup below.
    - **CLI brains (no API key):** route Joe through an agent CLI you have already installed and signed into on your own machine — **Fable 5.1**, **Opus 5.5**, **Opus 5**, **Sonnet 5.5**, **Sonnet 5**, **Haiku**, **Grok**, **Antigravity**, or **Antigravity (3.7)**. CLI installation and sign-in belong to the owner’s desktop. Authorized browser guests use a supported, isolated version of that selected owner CLI through Joe; they do not install it or receive its credentials. Antigravity is currently available only to the owner.
    - **Temperature and response length are managed automatically per model** — there is no manual temperature dial, and GPT-5.6 / GPT-6 models run at their fixed default temperature.
 
 ### Where to get an OpenAI key
 
 Create one at [platform.openai.com/api-keys](https://platform.openai.com/api-keys), then paste it into **Settings → APIs → API Settings**. Keys start with `sk-`. You pay OpenAI directly for what you use; FlowJoe never takes a cut and never sees the key.
+
+### Set up Gemini chat
+
+Open **Settings → APIs → Gemini API Key**, paste a key from Google AI Studio, choose **Test**, then **Save**. Select **Gemini 3.8 Flash** in Joe’s brain picker. It supports chat and writing assistance. This connection cannot apply Flow proposals, manage memories or tasks, search the web, or use Code interpreter.
 
 ### What CLI brains need first
 
@@ -62,7 +67,7 @@ A CLI brain honors the same [flow permission level](/joe/permissions) (Off / Rea
 
 ### What happens with no key and no CLI brain
 
-Joe's chat, the AI writing actions, and image generation stay unavailable until at least one brain is set up, and the app will say so when you try to use them. **Everything else works normally without any key** — your tree, galleries, notes, documents, workspaces, and import/export are entirely local and never need an AI provider.
+Chat and AI writing need a supported brain. Image generation separately needs an **OpenAI API key**, even when your chat uses Gemini or a command-line brain. Free local transcription does not need an AI key. **Everything else works normally without any key** — your tree, galleries, notes, documents, workspaces, and import/export are entirely local and never need an AI provider.
 
 ---
 
@@ -79,7 +84,9 @@ The difference is largest on the CLI brains (Claude, Grok, Antigravity). Those u
 * It is stored as securely as your OpenAI key, and it is a **separate** key: adding or removing one never affects the other.
 * It is **desktop only.** The Test button explains when TypeSafe is unavailable rather than reporting a network error.
 
-To set it up, get a key from [console.typesafe.ai](https://console.typesafe.ai), open **Settings → APIs**, click the button next to **TypeSafe API Key** to open its panel, paste the key in, and press **Test** before saving.
+To set it up, get a key from [console.typesafe.ai](https://console.typesafe.ai), open **Settings → APIs**, click the button next to **TypeSafe API Key**, paste the key, press **Test**, then **Save**.
+
+TypeSafe is a separate online service. When enabled, it receives relevant message text, node names and summaries, file text, and Joe’s replies for the routing and checks it performs. See [what TypeSafe checks and receives](/joe/token-usage#the-optional-typesafe-key). **Use TypeSafe** turns it off without deleting your key. **Double-check Joe’s work** turns the three trust checks on or off. Context selection and map ranking stay available while TypeSafe is on.
 
 ### It also trims a big flow map
 
@@ -98,7 +105,7 @@ On a 274-node flow, one such question kept 41 nodes — the right branch and its
 
 ## Checking that a key works
 
-Both key fields have a **Test** button. Press it and FlowJoe makes one tiny real request to that provider and tells you immediately whether the key was accepted. Worth doing whenever you paste a new key — otherwise a mistyped or expired one looks fine until the next time you actually ask Joe something.
+The key panels have a **Test** button. Press it and FlowJoe makes one tiny real request to that provider and tells you immediately whether the key was accepted. Worth doing whenever you paste a new key — otherwise a mistyped or expired one looks fine until the next time you actually ask Joe something.
 
 
 ### CLI brains in shared conversations

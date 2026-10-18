@@ -10,7 +10,7 @@ The **Spreadsheet Workbench** is an interactive, editable island powered by Univ
 ## Creating & Importing Spreadsheets
 
 - **New Spreadsheet:** Click **Add Slot** (or **Add First Slot** on an empty node) in the gallery and select **New Spreadsheet**. This initializes an empty slot running the Univer Sheets engine.
-- **Importing Files:** Drag and drop `.csv`, `.xlsx`, `.ods`, or `.xls` files directly onto the gallery. FlowJoe turns each one into an editable spreadsheet slot automatically (there is no prompt), and keeps your untouched original file hidden behind it so you can download it again.
+- **Importing Files:** Drag and drop `.csv`, `.tsv`, `.xlsx`, `.ods`, or `.xls` files directly onto the gallery. FlowJoe turns each one into an editable spreadsheet slot automatically (there is no prompt), and keeps your untouched original file hidden behind it so you can download it again.
 
 ---
 
@@ -23,6 +23,10 @@ The **Spreadsheet Workbench** is an interactive, editable island powered by Univ
 - **Appearance:** The spreadsheet always uses a light look, even when the app is in a dark theme.
 
 ---
+
+## Import and export limits
+
+Treat imported spreadsheets as editable copies focused on values, sheets, and basic formulas. Charts, pivot tables, macros, and advanced formatting are not preserved. Use **Download Original** for the unchanged source, especially for complex workbooks or legacy `.xls` files. CSV and TSV downloads contain one sheet. Very large sheets and long cell text can be cut down during import; use **Download Original** for the complete source.
 
 ## AI Access & Interactions
 

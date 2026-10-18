@@ -15,7 +15,7 @@ The onboarding wizard helps you seed your project and select your interface pref
 
 <Steps>
   <Step title="Name your Flow">
-    Every project starts with a **Flow**—the root node of your outline. Choose a title that matches your current goal, such as *Novel Draft*, *Research Board*, or *Product Design Plan*.
+    Every project starts with a **Flow**—the whole document, containing one or more root nodes. Choose a title that matches your current goal, such as *Novel Draft*, *Research Board*, or *Product Design Plan*.
   </Step>
   <Step title="Pick a Starting Shape">
     To prevent staring at a blank screen, pick one of our pre-designed outline shapes to seed your tree:
@@ -28,7 +28,7 @@ The onboarding wizard helps you seed your project and select your interface pref
   <Step title="Optionally Link Joe AI">
     If you want to use Joe's AI capabilities, you can paste in an OpenAI API key. This unlocks inline image analysis, document summarization, AI artwork generation, and side-by-side spelling/grammar diffs. 
     
-    *FlowJoe is local-first, so your API keys are stored securely in your OS keychain.*
+    *On desktop, FlowJoe encrypts supported API keys using the operating system’s secure-storage service when available. Browser storage has different protections; see [Security & privacy](/concepts/security).*
   </Step>
   <Step title="Choose a Swatch Theme">
     Select a workspace theme color profile that fits your aesthetic:
@@ -49,7 +49,7 @@ Once your flow is created, the app runs a **Coach-Mark Tour** pointing out the l
 
 1. **The Flow Tree (`[data-spot="tree"]`):** The left panel outline where your nodes, child nesting, task status dots, and sibling item counts reside.
 2. **Nodes (`[data-spot="node"]`):** Living containers that store notes, summaries, themes, and their own media galleries. Clicking a node opens its gallery on the right.
-3. **The Slot Timeline Ruler (`[data-spot="ruler"]`):** The horizontal ruler at the bottom of the gallery. Use it to slide through slots or adjust the zoom slider to see more detail or more context.
+3. **Gallery navigation:** The default **Canvas** lets you pan, zoom, and arrange cards freely. Use **Fit** to bring your references back into view; see [Gallery layouts](/gallery/layouts).
 4. **Slots & Media (`[data-spot="slot"]`):** Cards where images, audio, video, PDFs, and web URLs live side-by-side. An action rail sits on the left of each slot card for quick tools.
 5. **Stacks (`[data-spot="stack"]`):** Drop zones that let you stack alternate versions, revisions, or related assets inside a single slot to keep your workspace tidy.
 6. **Tags (`[data-spot="tags"]`):** Color-coded labels to tag nodes or media slots. You can query tags to build dynamic search results without breaking your tree structure.
@@ -62,6 +62,6 @@ Once your flow is created, the app runs a **Coach-Mark Tour** pointing out the l
 
 ## Retours & Customizations
 
-* **Change Themes:** You can switch between light, dark, sepia, and cozy themes at any time by going to **Settings → Theme Profiles**.
-* **Edit AI Keys:** Update your API keys under **Settings → API Keys**.
-* **Run a clean start:** If you want to reset your workspace, you can clear app databases from the **Storage & Cleanups** tab.
+* **Change Themes:** You can switch between light, dark, sepia, and cozy themes at any time by going to **Settings → Appearance**.
+* **Edit AI Keys:** Update your API keys under **Settings → APIs**.
+* **Run a clean start:** If you want to reset your workspace, you can clear app databases from the **Settings → Data** tab.

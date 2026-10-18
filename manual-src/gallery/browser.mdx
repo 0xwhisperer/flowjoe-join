@@ -3,7 +3,7 @@ title: "In-App Browser & Web Clipping"
 description: "Research, bookmark, and clip web references directly into outline slots without leaving your workspace."
 ---
 
-FlowJoe includes a fully featured, sandboxed **In-App Browser**. Because research shouldn't force you to toggle between your workspace and external browsers, FlowJoe embeds web browsing directly into the visual shell, allowing you to clip content, capture screenshots, and save bookmarks in one click.
+The desktop app includes an **In-App Browser**. Browser guests open web links in their own browser rather than using the owner’s browser panel. Because research shouldn't force you to toggle between your workspace and external browsers, FlowJoe embeds web browsing directly into the visual shell, allowing you to clip content, capture screenshots, and save bookmarks in one click.
 
 ---
 
@@ -49,5 +49,5 @@ FlowJoe records a chronological log of all your visits, saved locally in Indexed
 
 FlowJoe treats web security as a priority:
 - **Sandbox Mode:** Web views run with `nodeIntegration: false`, `contextIsolation: true`, and `sandbox: true` to prevent malicious scripts from accessing local files.
-- **Permission Gating:** The browser prompts you before websites access your microphone, camera, location, or request file downloads.
-- **Clear Browsing Data:** Access the Settings panel to selectively clear cache, site cookies, history logs, or active tabs.
+- **Website permissions:** Websites in this panel cannot use the camera, microphone, or location. Open a site in your regular browser if it needs those permissions. Downloads follow the browser’s download settings, including whether to ask for a save location.
+- **Clear Browsing Data:** In **Settings → Browser**, choose **Website Data**, **FlowJoe Browser Data**, or **Both**. Website data covers cookies and temporary files for known sites. FlowJoe browser data includes bookmarks, history, tabs, tab groups, and saved sessions; clearing it resets the tabs to the home page. Export browser data first if you want to keep it.

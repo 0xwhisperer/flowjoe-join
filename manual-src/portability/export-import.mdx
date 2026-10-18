@@ -17,8 +17,10 @@ FlowJoe supports two primary export shapes:
 - **Best For:** Small backups, version-tracking text in Git, or sharing outlines.
 
 ### 2. Full-Package Media Bundle (`.fj`)
-- **What it contains:** The tree JSON structure plus a compressed zip of all media assets stored in IndexedDB.
+- **What it contains:** The tree and the media referenced by the Flow or branch you export, gathered from its active storage. Unused database files are not bundled.
 - **Best For:** Archiving projects, backing up files, or moving your work to a different machine.
+
+Linked local files remain references; their original files are not bundled. Copy those files separately and relink them on the destination computer.
 
 ---
 
@@ -36,9 +38,9 @@ In Local mode the restored history lives in local app/browser data. In Workspace
 
 When exporting a full package or data-only JSON, you can secure your backup by checking **Protect this `.fj` with a password** in the export prompt:
 
-* **Authenticated Encryption:** FlowJoe encrypts the entire snapshot—including Flow JSON, private nodes, media, metadata, and filenames—using **AES-GCM** authenticated encryption. Keys are derived using **PBKDF2** (SHA-256 with 250,000 iterations).
-* **Wire Format (v2):** Written as a compact binary file starting with the magic marker `FLOWJOEFP2`, followed by version flags, salt, initialization vectors, and the raw ciphertext (v1 JSON envelopes with base64 ciphertext are still supported for legacy imports).
-* **Fail-Closed Import:** Dragging or loading a protected package immediately prompts for the password before exposing any metadata. Entering an incorrect password fails closed cleanly, without writing partial data to IndexedDB or leaving decrypted temporary files on disk.
+The password protects the whole exported file, including its outline, included media, and filenames. FlowJoe asks for the password before opening it. A wrong password leaves the current Flow unchanged.
+
+This protects the package, not your live Workspace Folder. Keep the password somewhere safe so you can open the backup later.
 
 ---
 
@@ -55,7 +57,7 @@ When you import a `.json` or `.fj` file, FlowJoe prompts you for a merge strateg
 
 ## Clipboard Transfer (Copy JSON)
 
-- **Copy Node JSON:** Right-click a node and select **Copy Node JSON**. This places the subtree structure (namespaced with `_flowJoeMeta`) onto your operating system clipboard. You can paste this code block directly into a text editor or share it with Joe.
+- **Copy Node JSON:** Right-click a node and select **Copy Node JSON**. This puts the branch’s structure and metadata onto your clipboard. Media files are not bundled into the copied text. You can paste this code block directly into a text editor or share it with Joe.
 - **Copy Slot JSON:** Right-click a gallery card to copy individual card styling, tags, and notes data.
 
 ## Shared transcript history
@@ -68,3 +70,11 @@ Cancel releases the export controls even if the browser is still finishing a fil
 FlowJoe removes a newly created empty file when it can safely do so. It preserves existing backups,
 files changed elsewhere, and completed files. If the browser finishes saving after you press Cancel,
 the completed file stays on disk; check that destination before starting another export.
+
+## Conversations and sharing choices
+
+Use **Include AI chat and image history** to carry eligible history with the exported work. Private-node and computer-only conversations are excluded. A branch export includes only eligible conversations belonging to that branch.
+
+Whole-Flow exports can separately include **sharing setup** and **conversations guests had with Joe**. Review guest names and saved history before including them. Imported sharing choices are inactive until you review them in **Share** and send fresh invitations; old links do not open the imported Flow.
+
+Version History and restore points stay with the app on the original computer. See [History & recovery](/workspaces/recovery) for the difference between portable conversation history and local restore points.

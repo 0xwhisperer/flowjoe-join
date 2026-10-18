@@ -19,7 +19,7 @@ Manage your tag vocabulary in the Flow-level registry:
 ## Assigning Tags to Slots
 
 - **Tag Editor:** Click the tag badge on any gallery slot to open the tag picker.
-- **Multi-Slot Tagging:** Select multiple slots, right-click, and select **Add Tags** or **Remove Tags** to apply metadata in bulk.
+- **Assigning and reusing tags:** Use the **Tag Manager** to assign tags. The slot menu also lets you copy tags and paste or merge them onto other cards.
 - **Stack Tagging:** Stacks can be tagged as a single unit, or individual items within a stack can hold separate tags.
 
 ---
@@ -27,7 +27,7 @@ Manage your tag vocabulary in the Flow-level registry:
 ## Virtual Galleries
 
 A **Virtual Gallery** is a dynamically generated gallery view. 
-When you search for a tag (e.g. searching `tag:Important`) or type a text query across all nodes, FlowJoe gathers matching slots and presents them in a single view.
+Use **Query by tags** (`Q`) to choose tags, or open gallery search and turn on **All nodes** to gather matching references into one view. In gallery search, **Include tags**, **Include file names**, and **Include document text** expand what is searched. Without **All nodes**, search filters the current gallery. You do not need a special search expression.
 
 ### The Rules of Virtual Galleries
 
@@ -41,5 +41,6 @@ To protect your folder hierarchy and avoid accidental data mutations, Virtual Ga
 | **Drag & Drop Reorder** | **No** | Order is determined by search relevance |
 | **Merge Stacks / Delete** | **No** | Must perform structural edits on the origin node |
 
-> [!TIP]
-> **Virtual Gallery Safety:** Joe is restricted from executing tree mutations while focused on a Virtual Gallery, preventing AI processes from corrupting original outline paths during searches.
+<Note>
+A virtual gallery is a view of existing content, not a new destination. Jump to the origin node before reorganizing its cards, and check Joe’s **Flow / Node / Slot** target before requesting changes. See [Choosing Joe’s target](/joe/opening-joe).
+</Note>
