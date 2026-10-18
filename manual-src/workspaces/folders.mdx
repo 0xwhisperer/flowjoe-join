@@ -9,6 +9,22 @@ Normally FlowJoe keeps your Flow in its own storage inside the app. **Workspace 
 Workspace Folders are available in the desktop app.
 </Note>
 
+## Why use a Workspace Folder?
+
+Use a Workspace Folder when you want to choose where your Flow lives and manage its files with your
+usual tools. You can:
+
+- Keep a Flow and its media together in a folder you can find in Finder or Explorer.
+- Back up that folder with your normal backup tools, or copy it to another drive.
+- Move the folder to another computer and open it in FlowJoe there.
+- Keep the Flow's readable data under version control with a tool such as Git.
+
+You keep working in FlowJoe normally; saves go to the connected folder automatically.
+
+**Local storage is enough** if you prefer FlowJoe to manage storage for you. You can still export
+`.fj` packages for backups or transfers. Workspace Folders are optional, and you can switch between a
+Workspace and Local storage when you choose; see [Switch between Workspace and Local storage](#switch-between-workspace-and-local-storage).
+
 <Warning>
 **Older backups are protected automatically.** When a Flow already contains private
 nodes, FlowJoe preserves their full content in owner-only storage, replaces it in the Workspace with
@@ -79,6 +95,17 @@ Edit `flow.json` outside FlowJoe only if you know the format. If a Git merge lea
 
 Back up a Workspace Folder like any other directory: Time Machine, an external drive, or a sync client. Git can track the folder too, but that tracks the Flow's storage files together; it is not how FlowJoe's project repositories work.
 
+### Move a Flow to another computer
+
+1. Let the Flow finish saving, then close FlowJoe on the source computer.
+2. Copy the whole Workspace folder, including `flow.json`, `media/`, and the hidden `.flowjoe/` folder,
+   to a local drive on the other computer.
+3. On that computer, open **Settings → Data → Workspace Folder → Connect Workspace** and select the copied folder.
+
+Private nodes and conversations marked **Keep on this computer only** stay on their original
+computer. Version History and restore points also stay with that computer's app storage. Copying a
+Workspace moves its folder content; it does not move all of FlowJoe's settings and local history.
+
 <Note>
 A **Workspace Folder** chooses where the Flow's data is stored. A **repo node** gives one node its own Git repository for project files. Those are separate choices: repo-node files appear in the node tree and galleries and are saved through FlowJoe's normal storage, while Git history is kept as FlowJoe-managed hidden data.
 
@@ -86,9 +113,59 @@ To bring a project into Git in FlowJoe, create or clone a repo node from the New
 Each repo node has its own hidden Git history; its files remain in the Flow's tree and galleries. See [Repo nodes and Git](/tree/repositories) for HTTPS and SSH remotes.
 </Note>
 
-<Warning>
-**Network and shared drives are not supported yet.** FlowJoe checks before connecting and refuses a folder on a network or shared drive: *"That folder is on a network or shared drive. FlowJoe can only use a folder on this computer's own disk for now. Choose a folder on your local drive instead."* Keep your workspace on the computer's own disk. If a sync service (Dropbox, iCloud Drive, Google Drive, OneDrive) leaves a conflict copy of `flow.json` in the folder while FlowJoe is running, FlowJoe notices it and tells you.
-</Warning>
+### iCloud Drive, Dropbox, and Google Drive
+
+You can choose a Workspace Folder inside a folder managed by the desktop app for iCloud Drive,
+Dropbox, or Google Drive. FlowJoe reads and saves the files through your computer's filesystem;
+the sync service copies changes to and from the cloud in the background. FlowJoe does not need a
+separate cloud connection or upload your Workspace through those services' APIs.
+
+Keep the **whole Workspace folder** downloaded, including `media/` and `.flowjoe/`, so the files
+remain available while you work:
+
+- **iCloud Drive:** in Finder, select the folder and choose **Keep Downloaded** where available.
+  See [Apple's iCloud Drive guide](https://support.apple.com/guide/mac-help/work-with-folders-and-files-in-icloud-drive-mchl1a02d711/mac).
+- **Dropbox:** choose **Make available offline** for the folder.
+  See [Dropbox's offline-files guide](https://help.dropbox.com/sync/access-files-offline).
+- **Google Drive for desktop:** use **Mirror files**, or make the Workspace folder **Available offline**
+  when using streamed files. See [Google's stream and mirror guide](https://support.google.com/drive/answer/13401938?hl=en).
+
+A file left online-only may need downloading before FlowJoe can read it. Google Drive's streamed
+files may appear on a virtual drive; they are still checked through the filesystem like other
+Workspace folders.
+
+**Saved in FlowJoe** means the files were saved in the selected folder. It does not mean the sync
+service has finished uploading them. Before moving to another computer, finish saving, close the
+Workspace on the first computer, and wait for syncing to finish on both computers before opening
+it on the second. Editing on two computers before their files have synced can produce competing
+versions; FlowJoe's outside-change review helps you choose between them.
+
+The folder paths and conflict-handling code support this arrangement. This does not claim that all
+three services have been verified in live end-to-end tests.
+
+### Network and shared drives
+
+You can use a Workspace Folder on a network or shared drive. Connect the drive through Finder or
+Explorer first, sign in there if needed, then select the folder in FlowJoe. On Windows, a mapped
+drive or a UNC folder path can be used. A server address such as `smb://server/share` needs to be
+connected through your computer before you select its folder.
+
+FlowJoe checks that it can write and replace files in the folder before connecting. A network-drive
+label alone does not prevent connection. If the checks fail, fix the reported access or drive problem
+and try again.
+
+FlowJoe checks periodically for outside changes as well as listening for file-change notifications,
+so a drive that does not send those notifications can still be used. Outside changes may take about
+15 seconds to appear. Saving also checks for outside changes before replacing the saved Flow.
+
+If the drive becomes unavailable or refuses a save, pending edits stay on this computer and saving
+pauses. See [Switch between Workspace and Local storage](#switch-between-workspace-and-local-storage)
+for the available recovery choices. Network devices vary; passing the checks does not certify every
+device's behavior during a power cut or connection failure.
+
+If a sync service (Dropbox, iCloud Drive, Google Drive, OneDrive) leaves a conflict copy of `flow.json`
+in the folder, FlowJoe notices it and tells you.
+
 
 Replacing files inside `media/` by hand is not a supported way to swap media — FlowJoe watches `flow.json`, not the media folder.
 
@@ -140,7 +217,26 @@ The **Open on another computer** note is only information. It never stops you fr
 
 ## When saving pauses
 
-If FlowJoe cannot reach the folder — the drive is unplugged, permission was lost, or the folder moved — it **stops saving rather than losing your work**. The status bar shows *Saving is paused*, and edits are refused until you sort it out. Joe is told too, and will say he cannot make changes until the workspace is reconnected.
+If a connected folder becomes unavailable or a save fails — for example, the drive disconnects,
+permissions change, or the disk fills up — FlowJoe keeps the pending work on this computer and pauses
+editing. The status bar shows **Saving paused · retrying automatically**, then **Checking Workspace…**
+when it checks again. It retries quietly, with longer waits up to about 15 seconds between attempts.
+
+- **The same unchanged folder is writable again:** FlowJoe saves your current pending work, then
+  resumes editing automatically. You do not need to click Reconnect.
+- **The saved Flow changed while the folder was away:** FlowJoe opens the existing outside-change
+  review. Your pending version stays intact until you choose what to do; **Decide Later** keeps
+  folder saving paused.
+- **The folder was replaced, moved, or now contains another Workspace or Flow:** FlowJoe does not
+  automatically save into it. Reconnect or choose a recovery action in Settings.
+
+Automatic retry applies to a failure while a Workspace was connected. Deliberately disconnecting,
+switching to Local storage, choosing another Workspace, or cancelling a launch-time reconnect does
+not cause a background retry to reconnect it against your choice. Privacy checks and an unresolved
+outside-change review also keep their existing saving safeguards.
+
+You can still choose a recovery action while a check is waiting on a drive. A delayed check cannot
+switch you back from Local storage. Closing the app keeps the existing unsaved-work choices.
 
 Your ways out, all on the same card:
 
@@ -160,7 +256,29 @@ If it was your own other computer, open FlowJoe there before clearing: it finish
 
 ---
 
-## Reconnect after working locally
+## Switch between Workspace and Local storage
+
+You can go back and forth using **Settings → Data → Workspace Folder**. Only one location receives
+your Flow's saves at a time.
+
+1. **Workspace → Local:** choose **Switch to Local Storage**. FlowJoe saves pending work, copies the
+   Flow and its media into the app's storage, and continues there. The Workspace folder is left intact.
+   Use this rather than **Disconnect Workspace** if you want to keep editing the same Flow.
+2. **Work locally:** new edits save inside FlowJoe. They do not update the disconnected folder.
+3. **Local → Workspace:** choose **Reconnect Workspace** for the remembered folder, or
+   **Connect Workspace** and select the original folder. If you edited the Local copy, review how
+   those edits should return to the Workspace using the choices below.
+
+If saving to the folder has failed but FlowJoe can still read it, **Switch to Local Storage** keeps
+what is currently on screen, including the latest edit that could not be saved to the folder. It
+checks that the Local save succeeded before completing the switch. If the folder cannot be read,
+use the recovery choices under [When saving pauses](#when-saving-pauses).
+
+You can repeat this process. Returning to a folder after Local edits can require a decision about
+which version to use. FlowJoe does not continuously sync the two locations. If a required save or
+safety copy cannot finish, the switch stops and reports the problem.
+
+### Reconnect after working locally
 
 If you edited a Local copy before reconnecting, FlowJoe asks how to bring the two versions together:
 
@@ -211,7 +329,11 @@ A private node's content stays on the computer where it lives. It is not stored 
 
 ## Quitting FlowJoe
 
-When you quit or close the window, FlowJoe closes straight away if nothing needs to finish. If it has to wait, a **Closing FlowJoe…** cover shows while FlowJoe saves your work and stops any running terminals (it waits about 2 seconds, then force-stops them); the cover appears at once when terminals are running, or after a moment if a save is still going. If the last workspace save could not finish, FlowJoe keeps those changes on this computer and offers them back the next time it starts.
+When you quit or close the window, FlowJoe closes straight away if nothing needs to finish. If it has to wait, a **Closing FlowJoe…** cover shows while FlowJoe saves your work and stops any running terminals (it waits about 2 seconds, then force-stops them); the cover appears at once when terminals are running, or after a moment if a save is still going. If the last Workspace save could not finish, FlowJoe tries to keep those changes on this computer
+for recovery at the next start. If it cannot confirm they are safely stored, it tells you and offers
+**Retry**, **Stay open**, or **Close anyway** / **Quit anyway**. Choosing to leave anyway closes the
+app even if its extra recovery record cannot be written; the warning explains that unverified
+changes may be lost. A failed save does not force you to keep the app open indefinitely.
 
 ---
 

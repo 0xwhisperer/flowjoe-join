@@ -18,14 +18,15 @@ Save a Flow as a normal folder on your drive, so your work sits in plain files y
 Status note: if an older Workspace backup contains private text, FlowJoe protects it automatically by replacing that text with a placeholder (the private notes stay on this computer), removes any backup too damaged to check, and then lets saving resume.
 **Settings → Data** → **Workspace Folder**; no File/context menu.
 Workspace Folders are available in the desktop app.
+
+**Why use a Workspace Folder?**
 **Older backups are protected automatically.** When a Flow already contains private nodes, FlowJoe preserves their full content in owner-only storage, replaces it in the Workspace with redacted placeholders, and verifies the saved file before resuming saves. A copy shared or backed up before migration cannot be recalled.
 
-**Backups, Git, and syncing.**
+**Move a Flow to another computer.**
 A **Workspace Folder** chooses where the Flow's data is stored. A **repo node** gives one node its own Git repository for project files. Those are separate choices: repo-node files appear in the node tree and galleries and are saved through FlowJoe's normal storage, while Git history is kept as FlowJoe-managed hidden data.
 To bring a project into Git in FlowJoe, create or clone a repo node from the New Node window. Do not make the whole Flow's Workspace Folder the project repository. Each repo node has its own hidden Git history; its files remain in the Flow's tree and galleries. See Repo nodes and Git for HTTPS and SSH remotes.
-**Network and shared drives are not supported yet.** FlowJoe checks before connecting and refuses a folder on a network or shared drive: *"That folder is on a network or shared drive. FlowJoe can only use a folder on this computer's own disk for now. Choose a folder on your local drive instead."* Keep your workspace on the computer's own disk.
 
-Also covered in the full docs for this area: Where to find it; Setting one up; What lands on disk; When something changes outside FlowJoe; When the workspace file can't be read; Open on another computer; Missing, retained, and changed media; Using one Workspace on two computers; When saving pauses; Reconnect after working locally; Private nodes; Quitting FlowJoe; Exports still work; Related; Placeholder.
+Also covered in the full docs for this area: Where to find it; Setting one up; What lands on disk; Backups, Git, and syncing; iCloud Drive, Dropbox, and Google Drive; Network and shared drives; When something changes outside FlowJoe; When the workspace file can't be read; Open on another computer; Missing, retained, and changed media; Using one Workspace on two computers; When saving pauses; Switch between Workspace and Local storage; Reconnect after working locally; Private nodes; Quitting FlowJoe; Exports still work; Related; Placeholder.
 
 ## History & Recovery
 
@@ -46,7 +47,7 @@ A restore point includes your **whole Flow, galleries too**, so restoring puts i
 **What restore points do not cover.**
 **Importing a Flow over the current one, and starting a New Flow, do not take a restore point.** Both replace your Flow completely, so a restore point taken then would not survive.
 
-Also covered in the full docs for this area: Restore points; Opening History; Chat History and Image History; Making one; How many are kept; The Local Recovery Copy (Workspace mode); When the folder and Local copy disagree; When a workspace file was changed elsewhere; Related.
+Also covered in the full docs for this area: A connected Workspace temporarily stops saving; Restore points; Opening History; Chat History and Image History; Making one; How many are kept; The Local Recovery Copy (Workspace mode); When the folder and Local copy disagree; When a workspace file was changed elsewhere; Related.
 
 ## Manual links
 

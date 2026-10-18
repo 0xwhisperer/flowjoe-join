@@ -8,6 +8,18 @@ FlowJoe keeps two different safety nets, and it helps to know which one you want
 - **Restore points** let you deliberately jump back to how your Flow looked at an earlier moment. Use it after a change you regret.
 - The **Local Recovery Copy** is an automatic backup that exists only in Workspace Folder mode, for when the folder itself becomes unreachable.
 
+## A connected Workspace temporarily stops saving
+
+FlowJoe keeps pending work on this computer and retries quietly. When the same unchanged folder
+becomes writable again, it saves the pending work and resumes editing automatically. If the saved
+Flow changed meanwhile, it opens the outside-change review and keeps your version until you decide.
+A folder that was replaced or now contains another Workspace or Flow needs an explicit reconnect.
+
+You can still switch to Local storage or choose another recovery action while a retry is waiting;
+a delayed retry cannot reconnect the old folder after your choice. An intentional disconnect or a
+cancelled startup reconnect does not start this automatic retry. See
+[When saving pauses](/workspaces/folders#when-saving-pauses) for the available actions.
+
 ## Restore points
 
 A restore point keeps a copy of your whole Flow (tree, notes, tags, summaries) as it was at one moment.
