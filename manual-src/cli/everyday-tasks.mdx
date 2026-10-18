@@ -1,0 +1,206 @@
+---
+title: "Everyday CLI tasks"
+description: "Read notes, inspect branches, edit content, add references, and check results."
+---
+
+Install and connect using [Start using the CLI](/cli/getting-started). These examples work on the
+currently open Flow; they do not open or switch Flows. Replace `YOUR_NODE_ID` with an ID from `show`.
+For an action with inputs, save the JSON block as `input.json`, then run its command.
+
+## Find a node
+
+```sh
+flowjoe-cli show
+flowjoe-cli search "launch plan" --json
+```
+
+`show` lists node names and IDs. Search returns visible matches and their node IDs; it searches
+node and gallery notes, but does not search the text inside document files.
+
+## Read a node’s notes and information
+
+Save as `input.json`:
+
+```json
+{
+  "rootId": "YOUR_NODE_ID",
+  "maxDepth": 1,
+  "includeSummary": true,
+  "includeGallery": true
+}
+```
+
+```sh
+flowjoe-cli action get_flow_snapshot --file input.json --json
+```
+
+Find the target ID in the returned `nodes` list. Its `summary` is the node’s notes; other fields can
+include status, tags, theme, Freeze state and gallery details. `rootId` selects the branch, and
+`maxDepth` bounds the returned depth. The branch may include children; identify the node by ID
+rather than assuming a particular array position. Missing or marked text can mean it is hidden
+from Joe. `--autoapprove` does not reveal it.
+
+The result is inside the CLI envelope’s `result.content`: a text block contains the app’s JSON.
+For example, the inner snapshot data has this general shape (fields depend on your Flow):
+
+```json
+{
+  "treeName": "Launch research",
+  "flowSummary": "Research and decisions for the launch.",
+  "nodes": [
+    {"id": "YOUR_NODE_ID", "name": "Research", "summary": "Questions to investigate next."}
+  ]
+}
+```
+
+This is an illustration of the inner data, not a complete response or an input file.
+
+## Read the Flow’s notes or a whole branch
+
+```sh
+flowjoe-cli show --json
+```
+
+The returned snapshot includes `treeName` and, when present and permitted, `flowSummary` for the
+open Flow. Nodes carry their own `summary` fields. For a branch, use the previous JSON input with
+its `rootId` and omit `maxDepth` if you need deeper descendants. Large snapshots are bounded
+(default 2,000 nodes); check `truncated`, narrow the branch, or raise `nodeCap` deliberately.
+
+## Read gallery notes or a document
+
+A gallery snapshot gives permitted titles, notes and metadata; it does not contain the complete
+underlying files. Gallery metadata can be shortened. To read a document’s actual text, save:
+
+```json
+{"nodeId":"YOUR_NODE_ID","slotIndex":0}
+```
+
+```sh
+flowjoe-cli action read_item_content --file input.json --json
+```
+
+`slotIndex: 0` means the first gallery item. Add `itemIndex: 1` only if it is a stack and you want
+its second member. Use `get_island_content` instead for a spreadsheet, rich document or calendar;
+use `read_media_content` for image content, or `read_media_blob` for media as a data URL.
+These reads do not automatically ask an AI to summarize the content.
+
+## Write node notes
+
+Save as `changes.json`:
+
+```json
+[
+  {
+    "verb":"setNodeSummary",
+    "args":{"nodeId":"YOUR_NODE_ID","value":"Review the launch checklist on Friday."}
+  }
+]
+```
+
+```sh
+flowjoe-cli apply changes.json --preview --json
+flowjoe-cli apply changes.json --json
+```
+
+Approve the second request in FlowJoe if asked. To skip the approval card, use
+`flowjoe-cli apply changes.json --autoapprove --json`. Node notes use `setNodeSummary`; gallery-item
+notes use `setSlotFields` with `fields.notes`. Neither rewrites the text stored inside a document.
+
+## Create a branch and fill its notes in one request
+
+A same-patch alias lets later changes refer to a node being created. Save as `changes.json`:
+
+```json
+[
+  {"verb":"createNode","args":{"position":"root","alias":"$research","values":{"name":"Research"}}},
+  {"verb":"setNodeSummary","args":{"nodeId":"$research","value":"Questions and sources for the next release."}}
+]
+```
+
+```sh
+flowjoe-cli apply changes.json --preview
+flowjoe-cli apply changes.json
+```
+
+Both changes succeed together or that patch rolls back. An alias exists only inside its own patch.
+It is different from a `run` list’s `$result` reference, which reads an earlier action’s response.
+
+## Add a file or generate an image
+
+For a file you want to choose in the app, use [request_file](/cli/action-reference).
+For script-provided text or supported images, follow the complete
+[upload → prepare → place example](/cli/scripting#use-an-earlier-result).
+Uploads are temporary and must be consumed in that same `run` list.
+
+For image generation, save as `steps.json`:
+
+```json
+[
+  {
+    "action":"generate_image",
+    "input":{"prompt":"A watercolor illustration of a mountain lake","title":"Mountain lake"},
+    "saveAs":"generated"
+  },
+  {
+    "action":"propose_flow_patch",
+    "input":{"ops":[{"verb":"addImageSlots","args":{"nodeId":"YOUR_NODE_ID","entries":[{"$result":"generated","path":["entry"]}]}}]}
+  }
+]
+```
+
+```sh
+flowjoe-cli run steps.json --wait 300 --json
+```
+
+Generation uses your configured service and its usual credits. Approve placement when asked;
+add `--autoapprove` to skip placement approval. That flag does not skip service setup, make
+generation free, or change the processing deadline. Five minutes is a longer wait, not a guarantee
+that the provider will finish. A generated result is staged until the placement step succeeds.
+
+## Inspect changes or undo within a script
+
+Save as `steps.json`:
+
+```json
+[
+  {"action":"propose_flow_patch","input":{"ops":[{"verb":"createNode","args":{"position":"root","values":{"name":"Temporary CLI example"}}}]}},
+  {"action":"list_recent_changes","input":{"limit":5}},
+  {"action":"undo_last_change"}
+]
+```
+
+```sh
+flowjoe-cli run steps.json --json
+```
+
+This creates a temporary node, reads this command’s history, then attempts to undo that creation.
+Undo refuses if the Flow changed in the meantime. A separate invocation of `undo_last_change`
+cannot undo an earlier CLI command. Neither session history nor undo is a general Flow backup.
+
+## Use stable reference IDs in repeatable scripts
+
+For verbs that support them, prefer `slotEntryId` and other ID alternatives from the live catalog
+over saved positions. This avoids accidentally targeting a different reference after a reorder.
+For example, `setSlotFields` accepts:
+
+```json
+[
+  {"verb":"setSlotFields","args":{"nodeId":"YOUR_NODE_ID","slotEntryId":"YOUR_ENTRY_ID","fields":{"notes":"Reviewed."}}}
+]
+```
+
+Read the ID from a fresh gallery snapshot and the alternatives from
+`flowjoe-cli action describe_patch_protocol --json`. An entry ID does not bypass permissions or
+make a deleted reference exist. Not all read actions or editing verbs accept the same ID fields.
+
+## Check the outcome
+
+`--json` retains the full result for a script, and the command’s exit code indicates success or
+failure. A list stops at its first failed step; earlier completed changes stay applied. One `apply`
+patch is atomic, but a whole `run` list is not. A timeout or interrupted command can leave an edit
+applied or an approval card pending. Check FlowJoe before retrying; see
+[approvals and troubleshooting](/cli/approvals-and-troubleshooting).
+
+Browse the complete [action reference](/cli/action-reference) and the editing references for
+[nodes](/cli/node-changes), [gallery and stacks](/cli/gallery-changes), and
+[Flow details, memories and automations](/cli/flow-changes).

@@ -54,7 +54,6 @@ The **Agent Bridge** connects your active Flow to compatible AI assistants and d
 - Turn the bridge on.
 - Find your assistant under **Assistants on this machine** and turn on **Connect**. Follow any confirmation shown.
 - If FlowJoe offers **Copy setup command**, copy it and run it in that assistant’s terminal instead.
-The bridge starts again on launch if you left it enabled. Turn it off here to stop access.
 
 Also covered in the full docs for this area: Choose how changes are approved; How MCP relates to Joe’s actions; What connected tools can do.
 
@@ -67,8 +66,9 @@ Joe can help at the level you choose—from a conversation about an idea to a re
 **Choose Joe’s access.**
 Set the default in **Settings → Joe AI**. The selector in Chat overrides that default for the current conversation. Starting a new conversation clears the override.
 - **Off** — Chat and explain FlowJoe, without automatic access to your Flow or tools to read or change it.
+- **Read** — Read permitted Flow content to answer questions, without changing it.
 
-Also covered in the full docs for this area: Keep content out of Joe’s reach; Check the next message.
+Also covered in the full docs for this area: Keep content out of Joe’s reach; Ask about current app facts; Check the next message.
 
 ## Manual links
 

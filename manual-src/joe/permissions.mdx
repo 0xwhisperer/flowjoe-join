@@ -25,6 +25,12 @@ These permissions apply to OpenAI and supported command-line brains. A brain may
 
 These controls govern content Joe receives from the Flow. They cannot remove text you already pasted into a conversation or sent earlier.
 
+## Ask about current app facts
+
+With OpenAI API chat at **Read** or **Propose**, you can ask about the current storage mode, save blocks, export changes, pending conflict review, selected/responding model, Joe permissions, or a small performance sample. Joe reads only the requested facts. Unavailable measurements are marked as unavailable; an export-changes indicator does not prove that a local save failed or succeeded. No keys, local paths or diagnostic logs are included.
+
+In a browser guest session, this reader can describe only the already available session model and permissions. Owner storage, save, conflict and computer diagnostics remain unavailable. New guest schedule inspection through Joe and transport parity are separate pending work; the existing shared Tasks lists are unchanged.
+
 ## Check the next message
 
 Use **Add extra context** to choose gallery items for your next message. The target controls choose the Flow, node, or slot you are discussing. The token bar estimates how much context the send includes.

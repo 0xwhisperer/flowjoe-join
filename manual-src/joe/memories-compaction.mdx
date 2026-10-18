@@ -59,3 +59,7 @@ Saved memories are separate from the summary of a compacted conversation. A memo
 Joe Memories are sent up to a per-turn cap (a handful per flow, node, and slot). If you have more active memories than the cap for where you are, the Memories panel marks the ones that are past the limit with a **Not sent — over the limit** badge — pin one, or disable an older one, to make room. A memory whose node is currently private or hidden from Joe shows a separate **Not sent — Joe can't see this node** badge instead, since that one is never sent regardless of the cap. When you ask Joe to remember something very similar to an existing memory, he's told about the near-duplicate so he can mention it rather than silently creating a copy.
 
 Remembering and recalling memories works the same way in every language FlowJoe ships (see [Language settings](/reference/settings-map)) — asking Joe "what did we decide about the budget?" in Chinese, Arabic, Thai, or any of the other 16 languages finds the same relevant memory it would in English, instead of only working for space-separated Latin-script text.
+
+Compaction uses your selected provider: the configured small model for OpenAI, your selected Gemini API model, or your selected command-line provider's helper model. Changing providers while compaction is running affects the next job.
+
+If Joe needs to compact before sending your message, **Stop** also stops that compaction. Joe keeps your existing history and memory; a late summary from the stopped job is not saved.

@@ -1,0 +1,320 @@
+---
+title: "Change Flow details and automations"
+description: "Edit Flow notes, tags, saved memories, and scheduled tasks."
+---
+
+Every example below is a **separate** change. Save its JSON as `changes.json`, replace all
+`YOUR_…` placeholders with IDs from your current Flow, and run:
+
+```sh
+flowjoe-cli apply changes.json --preview --json
+flowjoe-cli apply changes.json --json
+```
+
+The first command checks without applying. The second follows FlowJoe’s approval rules. Add
+`--autoapprove` to the second command to skip **all approval cards, including deletions**, for that
+command. Permissions, privacy, frozen content and validation still apply. All verbs on these pages
+change data; none is a read command. A successful patch reports applied and operation results; a
+failed operation rolls back that patch. See [results and exit codes](/cli/commands#results-for-scripts).
+
+A gallery position (`slotIndex`, `index`, `sourceIndex`, `fromIndex`, `toIndex`) starts at **0**:
+0 means first, 1 means second. An `itemIndex` selects a member **inside a stack**, also from 0.
+Only use examples whose targets exist and have the required content type. Examples with two or
+three positions need at least that many items. Read fresh data after an edit that changes positions.
+
+The required inputs below come from the current 59-verb catalog. Where an alternative stable entry
+ID is listed, supply that instead of its positional field, not both. Read IDs with a gallery snapshot;
+not every verb supports the same ID alternative. `removeEntryContexts` uses nested positional
+references. The live catalog is authoritative for your installed desktop version:
+
+```sh
+flowjoe-cli action describe_patch_protocol --json
+```
+
+Prepared-entry examples containing `$result` belong **inside a `run` action list**, after a step
+saved as `prepared`; they cannot be pasted unchanged into a standalone `apply` file. See the
+[complete upload → prepare → place example](/cli/scripting#use-an-earlier-result). Replace that
+example’s final `ops` with the operation shown here. Never invent a stored-media key.
+
+## Create a reusable tag — `createTag`
+
+Optional color and description describe the tag. An existing tag with the same name is reused. Read tag IDs from the snapshot’s tags dictionary.
+
+**Required inputs:** `name`.
+
+```json
+[
+  {
+    "verb": "createTag",
+    "args": {
+      "name": "Research",
+      "color": "#336699"
+    }
+  }
+]
+```
+
+**Result:** The tag is created or identified as already existing.
+
+## Rename or recolor a tag — `updateTag`
+
+Supply tagId plus name, color or description. This changes the shared tag definition wherever it is used.
+
+**Required inputs:** `tagId`.
+
+```json
+[
+  {
+    "verb": "updateTag",
+    "args": {
+      "tagId": "YOUR_TAG_ID",
+      "name": "Reviewed"
+    }
+  }
+]
+```
+
+**Result:** The tag definition changes.
+
+## Delete a tag — `deleteTag`
+
+Delete the tag definition and remove its assignments. This is a deletion; the tagged nodes and references remain.
+
+**Required inputs:** `tagId`.
+
+```json
+[
+  {
+    "verb": "deleteTag",
+    "args": {
+      "tagId": "YOUR_TAG_ID"
+    }
+  }
+]
+```
+
+**Result:** The tag is removed.
+
+## Rename the current Flow — `editFlowTitle`
+
+Set the open Flow’s title.
+
+**Required inputs:** `title`.
+
+```json
+[
+  {
+    "verb": "editFlowTitle",
+    "args": {
+      "title": "Launch research"
+    }
+  }
+]
+```
+
+**Result:** The Flow title changes.
+
+## Write the Flow’s notes — `editFlowSummary`
+
+Replace the Flow-level notes. An empty string clears them. These differ from a node’s summary.
+
+**Required inputs:** `summary`.
+
+```json
+[
+  {
+    "verb": "editFlowSummary",
+    "args": {
+      "summary": "Research and decisions for the launch."
+    }
+  }
+]
+```
+
+**Result:** The Flow’s summary changes.
+
+## Save a Joe memory — `createMemory`
+
+text is required. scope is flow (default), node or slot; node and slot scopes also need nodeId, and slot needs slotIndex or slotEntryId. Optional title and type describe the memory. Memory writes normally receive extra review.
+
+**Required inputs:** `text`.
+
+**Stable IDs:** `slotEntryId` can replace `slotIndex`.
+
+```json
+[
+  {
+    "verb": "createMemory",
+    "args": {
+      "text": "Use British spelling in this Flow.",
+      "scope": "flow"
+    }
+  }
+]
+```
+
+**Result:** A saved memory is created; its ID is returned in the memory operation result.
+
+## Delete a saved Joe memory — `deleteMemory`
+
+Find the real ID with list_joe_memories first. This is a deletion and normally receives extra review.
+
+**Required inputs:** `memoryId`.
+
+```json
+[
+  {
+    "verb": "deleteMemory",
+    "args": {
+      "memoryId": "YOUR_MEMORY_ID"
+    }
+  }
+]
+```
+
+**Result:** The saved memory is removed.
+
+## Enable or disable a Joe memory — `setMemoryStatus`
+
+Use active or disabled. Find the ID with list_joe_memories first. This normally receives extra review.
+
+**Required inputs:** `memoryId`, `status`.
+
+```json
+[
+  {
+    "verb": "setMemoryStatus",
+    "args": {
+      "memoryId": "YOUR_MEMORY_ID",
+      "status": "disabled"
+    }
+  }
+]
+```
+
+**Result:** The memory’s active state changes.
+
+## Create an automation — `createSchedulerTask`
+
+task needs a nonempty title, nodeId and instruction. See the schedule and policy options below. Creation can adopt existing gallery output for the task. Task changes normally receive extra review.
+
+**Required inputs:** `task`.
+
+```json
+[
+  {
+    "verb": "createSchedulerTask",
+    "args": {
+      "task": {
+        "title": "Daily review",
+        "nodeId": "YOUR_NODE_ID",
+        "instruction": "Summarize the open questions in this node.",
+        "schedule": {
+          "cadence": "daily",
+          "time": "09:00",
+          "timezone": "America/Denver"
+        },
+        "policy": {
+          "approvalMode": "propose-only"
+        }
+      }
+    }
+  }
+]
+```
+
+**Result:** The automation is created; its task ID is included in the scheduler result.
+
+## Change an automation — `updateSchedulerTask`
+
+patch accepts title, schedule, instruction, policy and slotEntryIds. Use setSchedulerTaskEnabled for enabled state. Find taskId with list_scheduled_tasks; task edits normally receive extra review.
+
+**Required inputs:** `taskId`, `patch`.
+
+```json
+[
+  {
+    "verb": "updateSchedulerTask",
+    "args": {
+      "taskId": "YOUR_TASK_ID",
+      "patch": {
+        "title": "Morning review"
+      }
+    }
+  }
+]
+```
+
+**Result:** The automation’s supplied fields change.
+
+## Turn an automation on or off — `setSchedulerTaskEnabled`
+
+Use true to enable or false to disable. This changes future task runs; it is not a command to run a task immediately. Task changes normally receive extra review.
+
+**Required inputs:** `taskId`, `enabled`.
+
+```json
+[
+  {
+    "verb": "setSchedulerTaskEnabled",
+    "args": {
+      "taskId": "YOUR_TASK_ID",
+      "enabled": false
+    }
+  }
+]
+```
+
+**Result:** The enabled state changes.
+
+## Delete an automation — `deleteSchedulerTask`
+
+Find the ID with list_scheduled_tasks first. This is a deletion and normally receives extra review.
+
+**Required inputs:** `taskId`.
+
+```json
+[
+  {
+    "verb": "deleteSchedulerTask",
+    "args": {
+      "taskId": "YOUR_TASK_ID"
+    }
+  }
+]
+```
+
+**Result:** The automation is deleted.
+
+## Schedule and policy choices
+
+For `createSchedulerTask`, `task` accepts `title`, `nodeId`, `instruction`, `schedule`, `policy`,
+`useWebSearch`, `slotEntryIds` and `guest`. Ordinary owner scripts should omit `guest`; it attaches
+an existing guest invite identity and is not a way to create a share or gain permissions.
+
+`schedule` accepts:
+
+| Choice | Inputs |
+| --- | --- |
+| Daily | `cadence: "daily"`, `time: "09:00"`, optional IANA `timezone` |
+| Weekly | `cadence: "weekly"`, `time`, `dayOfWeek` (0 Sunday through 6 Saturday), optional `timezone` |
+| Interval | `cadence: "interval"`, `everyMinutes` (integer 1–10080) |
+
+When omitted, cadence is daily, time is 07:00, and timezone is the user’s local timezone.
+`missedRunPolicy` is `run-on-next-launch` (default) or `skip`.
+
+`policy` accepts `approvalMode` (`propose-only` or `auto-apply`), `autoApplyDestructive`,
+`replaceOnlyOwnedOutput`, `maxCreatedSlots`, `minCreatedSlots`, `allowedEntryTypes`, `allowedVerbs`,
+`requireUrls` and `requireNotes`. These describe **future task runs**. The CLI’s `--autoapprove`
+only bypasses approval for the current CLI command; it does not make future automation runs
+unattended. Private/frozen-target permission escalation is not supported here. `slotEntryIds` can
+focus a task on existing entries in its target node; unknown IDs are dropped rather than creating
+new references. `useWebSearch` controls whether the task requests web search.
+
+For `createMemory`, `type` defaults to `fact`; inspect the app’s memory guide before selecting other
+types. Read back saved memories or tasks to verify their actual IDs and states:
+
+```sh
+flowjoe-cli action list_joe_memories --json
+flowjoe-cli action list_scheduled_tasks --json
+```

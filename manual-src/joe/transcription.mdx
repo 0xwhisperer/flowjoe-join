@@ -64,6 +64,8 @@ The transcription method controls where speech recognition runs. Storage follows
 
 Transcript history is registered app data and is excluded from orphaned-media cleanup. Private transcripts become unavailable when their source is locked. A transcript whose source was removed remains available in history for copying or saving, subject to its privacy restrictions.
 
+In native owner/API chat, you can ask Joe to find or quote a retained transcript in the current Flow. He reads bounded text portions with source dates only when the recording still has an admitted public source. Private, Hidden from Joe, removed and uncertain sources stay unavailable to this reader, even if you can still copy them in the human history. A recording converted into a stack or moved to another public node keeps its retained source link. Ambiguous or newly private sources are withheld. Reading does not upload the audio or start recognition. Joe reads a bounded portion of history already loaded with the Flow; unusually large or unavailable retained collections can be unavailable to this reader while ordinary History remains readable. Results may be partial; guest and external history-tool exposure remains deferred.
+
 Exports have an **Include transcript history** option, enabled by default. Private-source and computer-only transcripts are excluded even when the option is enabled. See [Export & Import](/portability/export-import).
 ### Shared guests
 

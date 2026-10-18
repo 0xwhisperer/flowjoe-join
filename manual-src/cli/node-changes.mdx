@@ -1,0 +1,349 @@
+---
+title: "Change nodes"
+description: "Create, organize, tag, freeze, and write notes on FlowJoe nodes."
+---
+
+Every example below is a **separate** change. Save its JSON as `changes.json`, replace all
+`YOUR_…` placeholders with IDs from your current Flow, and run:
+
+```sh
+flowjoe-cli apply changes.json --preview --json
+flowjoe-cli apply changes.json --json
+```
+
+The first command checks without applying. The second follows FlowJoe’s approval rules. Add
+`--autoapprove` to the second command to skip **all approval cards, including deletions**, for that
+command. Permissions, privacy, frozen content and validation still apply. All verbs on these pages
+change data; none is a read command. A successful patch reports applied and operation results; a
+failed operation rolls back that patch. See [results and exit codes](/cli/commands#results-for-scripts).
+
+A gallery position (`slotIndex`, `index`, `sourceIndex`, `fromIndex`, `toIndex`) starts at **0**:
+0 means first, 1 means second. An `itemIndex` selects a member **inside a stack**, also from 0.
+Only use examples whose targets exist and have the required content type. Examples with two or
+three positions need at least that many items. Read fresh data after an edit that changes positions.
+
+The required inputs below come from the current 59-verb catalog. Where an alternative stable entry
+ID is listed, supply that instead of its positional field, not both. Read IDs with a gallery snapshot;
+not every verb supports the same ID alternative. `removeEntryContexts` uses nested positional
+references. The live catalog is authoritative for your installed desktop version:
+
+```sh
+flowjoe-cli action describe_patch_protocol --json
+```
+
+Prepared-entry examples containing `$result` belong **inside a `run` action list**, after a step
+saved as `prepared`; they cannot be pasted unchanged into a standalone `apply` file. See the
+[complete upload → prepare → place example](/cli/scripting#use-an-earlier-result). Replace that
+example’s final `ops` with the operation shown here. Never invent a stored-media key.
+
+## Create a node — `createNode`
+
+Add a child under an existing node. Use position root without parentId for a new top-level node. For sibling-after (or sibling), parentId identifies the sibling to insert after. values accepts name, status, skipPlaceholder and id; put notes in a separate setNodeSummary operation.
+
+**Required inputs:** `position`, `values`.
+
+```json
+[
+  {
+    "verb": "createNode",
+    "args": {
+      "position": "child",
+      "parentId": "YOUR_NODE_ID",
+      "values": {
+        "name": "Research"
+      }
+    }
+  }
+]
+```
+
+**Result:** The new node is created; its ID appears in the operation result.
+
+## Rename or change a node — `updateNode`
+
+Change name, status, theme, collapsed, hidden or hiddenFromJoe in patch. Notes use setNodeSummary. A theme must be an ID from the live catalog’s nodeThemes. Hiding content from Joe can make later CLI reads or edits unavailable; this channel cannot reveal sealed content.
+
+**Required inputs:** `nodeId`, `patch`.
+
+```json
+[
+  {
+    "verb": "updateNode",
+    "args": {
+      "nodeId": "YOUR_NODE_ID",
+      "patch": {
+        "name": "Research notes"
+      }
+    }
+  }
+]
+```
+
+**Result:** The selected fields change on the node.
+
+## Write node notes — `setNodeSummary`
+
+Replace the node’s notes (called summary in returned data). An empty string clears them. This does not edit a document in the gallery.
+
+**Required inputs:** `nodeId`, `value`.
+
+```json
+[
+  {
+    "verb": "setNodeSummary",
+    "args": {
+      "nodeId": "YOUR_NODE_ID",
+      "value": "Questions to investigate next."
+    }
+  }
+]
+```
+
+**Result:** The node’s summary contains the supplied text.
+
+## Delete a node and its branch — `deleteNode`
+
+Remove this node and all its descendants. This is a deletion, including the branch’s references; inspect the branch first.
+
+**Required inputs:** `nodeId`.
+
+```json
+[
+  {
+    "verb": "deleteNode",
+    "args": {
+      "nodeId": "YOUR_NODE_ID"
+    }
+  }
+]
+```
+
+**Result:** The branch is removed.
+
+## Delete several branches — `deleteNodes`
+
+Remove the nodes listed in ids and their descendants. These are node IDs, not names. This is a deletion.
+
+**Required inputs:** `ids`.
+
+```json
+[
+  {
+    "verb": "deleteNodes",
+    "args": {
+      "ids": [
+        "YOUR_NODE_ID",
+        "OTHER_NODE_ID"
+      ]
+    }
+  }
+]
+```
+
+**Result:** The selected branches are removed together.
+
+## Move a branch — `moveNode`
+
+Move under another node with child, beside it with before or after, or to the top level with root (no targetId needed). A branch cannot move into itself or one of its descendants.
+
+**Required inputs:** `nodeId`, `options`.
+
+```json
+[
+  {
+    "verb": "moveNode",
+    "args": {
+      "nodeId": "YOUR_NODE_ID",
+      "options": {
+        "position": "child",
+        "targetId": "OTHER_NODE_ID"
+      }
+    }
+  }
+]
+```
+
+**Result:** The branch moves with its descendants and references.
+
+## Move several branches — `moveNodes`
+
+Use the same options as moveNode, with ids identifying the branches to move together.
+
+**Required inputs:** `ids`, `options`.
+
+```json
+[
+  {
+    "verb": "moveNodes",
+    "args": {
+      "ids": [
+        "YOUR_NODE_ID"
+      ],
+      "options": {
+        "position": "child",
+        "targetId": "OTHER_NODE_ID"
+      }
+    }
+  }
+]
+```
+
+**Result:** The branches move to the requested destination.
+
+## Change several nodes — `updateNodes`
+
+Apply the same patch to every listed node. Allowed patch fields are name, status, theme, collapsed, hidden and hiddenFromJoe; giving name renames every listed node to that name.
+
+**Required inputs:** `ids`, `patch`.
+
+```json
+[
+  {
+    "verb": "updateNodes",
+    "args": {
+      "ids": [
+        "YOUR_NODE_ID",
+        "OTHER_NODE_ID"
+      ],
+      "patch": {
+        "collapsed": true
+      }
+    }
+  }
+]
+```
+
+**Result:** Each selected node receives the same fields.
+
+## Copy a branch — `duplicateNode`
+
+Duplicate the selected branch beside its original. The copied nodes receive their own identities.
+
+**Required inputs:** `sourceNodeId`.
+
+```json
+[
+  {
+    "verb": "duplicateNode",
+    "args": {
+      "sourceNodeId": "YOUR_NODE_ID"
+    }
+  }
+]
+```
+
+**Result:** A second branch is created; the source stays in place.
+
+## Freeze a node using the older name — `setNodeReadOnly`
+
+Accepted older spelling of setNodeFrozen. Use locked here, rather than frozen. Set false to request unfreezing, subject to the current permission rules.
+
+**Required inputs:** `nodeId`, `locked`.
+
+```json
+[
+  {
+    "verb": "setNodeReadOnly",
+    "args": {
+      "nodeId": "YOUR_NODE_ID",
+      "locked": true
+    }
+  }
+]
+```
+
+**Result:** The node’s Freeze state changes if permitted.
+
+## Freeze or unfreeze a node — `setNodeFrozen`
+
+Set frozen true to protect a node from edits, or false to request unfreezing. Inherited or other protections can still prevent a change.
+
+**Required inputs:** `nodeId`, `frozen`.
+
+```json
+[
+  {
+    "verb": "setNodeFrozen",
+    "args": {
+      "nodeId": "YOUR_NODE_ID",
+      "frozen": true
+    }
+  }
+]
+```
+
+**Result:** The node’s Freeze state changes if permitted.
+
+## Replace a node’s tags — `setNodeTags`
+
+Use tag IDs from a snapshot’s tags dictionary. The list replaces the existing tags; an empty array clears them. A tag name created earlier in the same patch can also be resolved.
+
+**Required inputs:** `nodeId`, `tagIds`.
+
+```json
+[
+  {
+    "verb": "setNodeTags",
+    "args": {
+      "nodeId": "YOUR_NODE_ID",
+      "tagIds": [
+        "YOUR_TAG_ID"
+      ]
+    }
+  }
+]
+```
+
+**Result:** The node has the supplied tag list.
+
+## Create a whole branch — `createSubtree`
+
+Supply a tree of named nodes and optional children arrays. Placement follows createNode, including parentId for child or sibling placement. The tree is limited to 500 nodes and 20 levels.
+
+**Required inputs:** `position`, `tree`.
+
+```json
+[
+  {
+    "verb": "createSubtree",
+    "args": {
+      "position": "root",
+      "tree": {
+        "name": "Project",
+        "children": [
+          {
+            "name": "Research"
+          },
+          {
+            "name": "Delivery"
+          }
+        ]
+      }
+    }
+  }
+]
+```
+
+**Result:** The new branch is created together.
+
+## Sort a level of the tree — `sortNodes`
+
+Sort this parent’s children by name or number; direction is asc or desc. Omit parentId (or use root) to sort top-level nodes. Numbers are parsed from names; names without numbers go last.
+
+**Required inputs:** none; the example supplies optional sorting choices.
+
+```json
+[
+  {
+    "verb": "sortNodes",
+    "args": {
+      "parentId": "YOUR_NODE_ID",
+      "by": "name",
+      "direction": "asc"
+    }
+  }
+]
+```
+
+**Result:** That one level is reordered; descendants stay attached.
+

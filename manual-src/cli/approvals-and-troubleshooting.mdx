@@ -24,6 +24,9 @@ flowjoe-cli run steps.json --autoapprove
 extra review of saved-memory and scheduled-task changes**. Use it when you want the supplied actions
 to run without those confirmations.
 
+The default two-minute wait still applies with `--autoapprove`: there is no approval-card wait,
+but FlowJoe and any configured service still need time to finish. Use `--wait 300` for five minutes.
+
 It does not change the app's approval setting, affect other connected clients, or carry over to the
 next CLI command. Permissions, privacy protections, locked/read-only content and action validation
 still apply. It does not reveal content hidden from Joe or make every requested edit valid.

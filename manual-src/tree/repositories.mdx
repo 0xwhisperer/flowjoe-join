@@ -58,11 +58,15 @@ The editor toolbar has **Save**, **Diff**, **Find**, **Format**, and word wrap; 
 
 For JavaScript and TypeScript, nearby repository files can help the editor offer suggestions. The workbench does not run your project or provide every service of a standalone development environment.
 
+Renaming a branch or changing its remote keeps open editor drafts available. Stash, Pop, Apply, and Close Branch Node ask you to save or discard unsaved editor work before changing files; Cancel keeps your work in place.
+
+If you discard a folder deletion, FlowJoe restores its recorded folder protection and creator information along with the files, including after reopening the Flow on this computer. Restoration stops if that information is unavailable, a path now belongs to something else, or a protected folder is locked.
+
 ## Review and commit files
 
-The **Changes** section lists files that differ from the last commit. Its menu offers **View as Folders** to group the list by folder and **Open Changed Files** to open every changed file. Stage the files you want to include, write a commit message, then choose **Commit**. **Generate** can draft a message from the changes. You can also review a changed file before committing, discard a change, or use the split button for commit-and-push or commit-and-sync actions.
+The **Changes** section lists files that differ from the last commit. Its menu offers **View as Folders** to group the list by folder and **Open Changed Files** to open every changed file. Stage the files you want to include, write a commit message, then choose **Commit**. **Generate** can draft a message from the changes. Generate and Joe reviews leave out Private and Hidden-from-Joe file contents, including protected folders; unlocking a Private folder for yourself does not share it with Joe. You can also review a changed file before committing, discard a change, or use the split button for commit-and-push or commit-and-sync actions.
 
-New files added through the repo node's gallery appear in **Changes** so you can stage them. A Git commit records repository files; slot notes stay with the Flow.
+New files added through the repo node's gallery appear in **Changes** so you can stage them. Imported executable-permission changes also appear, even when the file text is unchanged. A Git commit records repository files; slot notes stay with the Flow.
 
 When a merge leaves conflicts, the Changes menu offers **Mark All Resolved**, which becomes available once you have resolved every conflict yourself; FlowJoe never picks a side for you.
 
@@ -86,9 +90,9 @@ Choose a tab close action to close the selected file or group. If any affected f
 
 ### Explore history and ask Joe
 
-A file’s **Timeline** follows its branch, including after a rename or move. Open an earlier version, compare it with today’s file, or choose **Restore This Version…** to bring its contents back into the working file. Restoring does not create a commit.
+A file’s **Timeline** follows its branch, including after a rename or move. Open an earlier version, compare it with today’s file, or choose **Restore This Version…** to bring its contents back into the working file. Restoring does not create a commit. A deleted folder is restored only when its original identity and current branch baseline can still be verified; a new folder with the same name does not take its place. If a restore’s save cannot be confirmed, the restored file and its bytes stay available for recovery; the operation does not claim that it was saved.
 
-**Open Changes** opens a separate comparison tab labeled with the file and revision. Older comparisons are read-only on both sides; your working tab and unsaved draft stay available. Reopening the same comparison selects its existing tab.
+**Open Changes** opens a separate comparison tab labeled with the file and revision. Older comparisons are read-only on both sides; your working tab and unsaved draft stay available. Reopening the same comparison selects its existing tab. Renaming the branch or changing its remote keeps both pinned sides available.
 
 In **Changes**, choose **Review Changes with Joe…** for the current edits. Timeline offers **Review Change with Joe…**, and the commit Graph offers **Review Commit with Joe…**.
 

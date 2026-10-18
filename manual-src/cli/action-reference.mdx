@@ -1,0 +1,636 @@
+---
+title: "CLI action reference"
+description: "Every bridge action: what it does, inputs, examples, results, and approvals."
+---
+
+The CLI has simple commands such as `show` and `search`, plus access to the running app’s **actions**.
+An action is a complete request, such as reading a document or preparing an image. The **59 editing
+verbs** are individual changes sent inside `apply` or `propose_flow_patch`; see
+[node changes](/cli/node-changes), [reference and stack changes](/cli/gallery-changes), and
+[Flow details and automations](/cli/flow-changes).
+
+This page covers the current desktop bridge action surface. Availability depends on the running
+build, permission level and configured services. Read the actual list with `flowjoe-cli actions`.
+`get_app_state`, `query_history` and `read_history` are Joe capabilities that this external bridge
+currently does not supply; CLI session history below is separate from saved chat/version history.
+The CLI does not expose MCP resource listing/reading as a command; `open_reference` supplies app help.
+
+## How to run an example
+
+For each action below, save its JSON input as `input.json`, replace `YOUR_…` placeholders with real
+IDs from `flowjoe-cli show --json`, and run the command shown. No input file is needed for actions
+with no inputs. All commands require FlowJoe running with Agent Bridge enabled.
+
+Results use the CLI’s [JSON envelope](/cli/commands#results-for-scripts); the app’s response is under
+`result`, with text and possibly image content blocks. A JSON-looking text block holds the action’s
+data. `--json` does not turn an image into a written description. Inspect the actual result before
+assuming a change succeeded. Private/hidden content remains withheld, even with `--autoapprove`.
+
+Gallery and stack positions start at **0**. Only pass `itemIndex` for a member **inside a stack**.
+Files, undo and change history are owned by one command’s connection. Examples using `$result`,
+previous uploads or undo must be steps in one [run list](/cli/scripting), not separate invocations.
+A two-minute default wait still applies **with `--autoapprove`**; the flag removes approval waiting,
+not processing time. Increase it with `--wait` when needed.
+
+## Read the Flow or one branch — `get_flow_snapshot`
+
+Read names, node IDs, structure, node notes (summary), tags and permitted reference details. Omit rootId for the whole open Flow. Gallery summaries are not the files themselves; use a content reader for a document or image.
+
+**Changes and approval:** Read only; no approval.
+
+| Input | Required? | Meaning |
+| --- | --- | --- |
+| `rootId` | No | Limit to this node's subtree. |
+| `maxDepth` | No | Max depth to include. |
+| `includeGallery` | No | Include a light per-slot gallery summary (incl. each slot's tagIds — needed for any tag-based slot work). |
+| `includeSummary` | No | Include node notes/summaries; default true. |
+| `nodeCap` | No | Maximum nodes; default 2000. |
+
+```json
+{
+  "rootId": "YOUR_NODE_ID",
+  "includeSummary": true,
+  "includeGallery": true
+}
+```
+
+```sh
+flowjoe-cli action get_flow_snapshot --file input.json --json
+```
+
+**Result:** A flat nodes list with parentId, index and depth, plus permitted notes, gallery data and tag dictionary. Privacy filtering and size limits apply.
+
+## Find nearby or related nodes — `get_node_neighbors`
+
+Read the parent, children, siblings and other nodes sharing tags. Use this when you need one node’s surroundings rather than the whole tree.
+
+**Changes and approval:** Read only; no approval.
+
+| Input | Required? | Meaning |
+| --- | --- | --- |
+| `nodeId` | Yes | The node whose neighborhood to read (an id from get_flow_snapshot or your context). |
+
+```json
+{
+  "nodeId": "YOUR_NODE_ID"
+}
+```
+
+```sh
+flowjoe-cli action get_node_neighbors --file input.json --json
+```
+
+**Result:** The node’s neighborhood and tag relationships; sealed content remains withheld.
+
+## Find text in your Flow — `search_flow`
+
+Search node names/notes and gallery or stack titles/notes. Matching is case-insensitive substring matching. It does not search inside PDF or document file contents; follow a match with a content reader.
+
+**Changes and approval:** Read only; no approval.
+
+| Input | Required? | Meaning |
+| --- | --- | --- |
+| `query` | Yes | The text to search for (case-insensitive substring match). |
+| `limit` | No | Max results to return (default 20, max 100). |
+
+```json
+{
+  "query": "launch plan",
+  "limit": 10
+}
+```
+
+```sh
+flowjoe-cli action search_flow --file input.json --json
+```
+
+**Result:** Ranked matches with nodeId, matching field and excerpt, and slotIndex/itemIndex when applicable. Empty results mean no visible match.
+
+## Read a document or note file — `read_item_content`
+
+Read extracted text from a gallery note, text file or supported PDF/Word/ODT/PowerPoint/EPUB. Add itemIndex only for a stack member. For scanned PDFs, startPage selects a 1-based page; follow the result’s continuation guidance.
+
+**Changes and approval:** Read only; no approval.
+
+| Input | Required? | Meaning |
+| --- | --- | --- |
+| `nodeId` | Yes | The node whose gallery holds the item. |
+| `slotIndex` | Yes | 0-based slot index in that node's gallery. |
+| `itemIndex` | No | Only for stack slots: 0-based item index inside the stack. |
+| `startPage` | No | Only for a SCANNED PDF being read as page images: 1-based page to start from. Use it to continue through a long scan (the result tells you the next page). Omit for a normal read. |
+
+```json
+{
+  "nodeId": "YOUR_NODE_ID",
+  "slotIndex": 0
+}
+```
+
+```sh
+flowjoe-cli action read_item_content --file input.json --json
+```
+
+**Result:** Extracted text or scanned-page image content, with truncation/continuation information when needed.
+
+## Read a spreadsheet, calendar or rich document — `get_island_content`
+
+Read one workbench reference’s structured content. Add itemIndex only for a member inside a stack.
+
+**Changes and approval:** Read only; no approval.
+
+| Input | Required? | Meaning |
+| --- | --- | --- |
+| `nodeId` | Yes | The node whose gallery holds the island. |
+| `slotIndex` | Yes | 0-based slot index in that node's gallery. |
+| `itemIndex` | No | Only for stack slots: 0-based item index inside the stack. |
+
+```json
+{
+  "nodeId": "YOUR_NODE_ID",
+  "slotIndex": 0
+}
+```
+
+```sh
+flowjoe-cli action get_island_content --file input.json --json
+```
+
+**Result:** A content summary and the workbench data; large content can be truncated.
+
+## Read an image — `read_media_content`
+
+Return an image from the gallery. Add itemIndex only for an image inside a stack. This does not ask an AI to describe the image; a script receives metadata and image content.
+
+**Changes and approval:** Read only; no approval.
+
+| Input | Required? | Meaning |
+| --- | --- | --- |
+| `nodeId` | Yes | The node whose gallery holds the image. |
+| `slotIndex` | Yes | 0-based slot index in that node's gallery. |
+| `itemIndex` | No | Only for stack slots: 0-based item index inside the stack. |
+
+```json
+{
+  "nodeId": "YOUR_NODE_ID",
+  "slotIndex": 0
+}
+```
+
+```sh
+flowjoe-cli action read_media_content --file input.json --json
+```
+
+**Result:** Text metadata plus image content blocks when available; --json retains those blocks.
+
+## Get a reference’s media bytes — `read_media_blob`
+
+Retrieve the actual stored media of one gallery item or stack member. Unlike a snapshot, this returns a data URL. It is useful when a script needs to display or save the media bytes.
+
+**Changes and approval:** Read only; no approval.
+
+| Input | Required? | Meaning |
+| --- | --- | --- |
+| `nodeId` | Yes | Node containing the media. |
+| `slotIndex` | Yes | Gallery position, starting at 0. |
+| `itemIndex` | No | Stack member position only, starting at 0. |
+
+```json
+{
+  "nodeId": "YOUR_NODE_ID",
+  "slotIndex": 0
+}
+```
+
+```sh
+flowjoe-cli action read_media_blob --file input.json --json
+```
+
+**Result:** On success, ok, dataUrl, mime and type; unsupported, missing or sealed media returns an error.
+
+## Read saved Joe memories — `list_joe_memories`
+
+Read saved memories for the current Flow. Use their IDs for memory changes, rather than inventing IDs.
+
+**Changes and approval:** Read only; no approval.
+
+| Input | Required? | Meaning |
+| --- | --- | --- |
+| `scope` | No | Filter by scope; default all. Choices: flow, node, slot, all. |
+| `includeDisabled` | No | Also include disabled memories (default false). |
+
+```json
+{
+  "scope": "all",
+  "includeDisabled": true
+}
+```
+
+```sh
+flowjoe-cli action list_joe_memories --file input.json --json
+```
+
+**Result:** Permitted memory IDs, scope, type, text, targets and current send state.
+
+## Read automations and their status — `list_scheduled_tasks`
+
+List automations for the open Flow and check when they next run. Availability depends on this bridge connection’s permissions and desktop build.
+
+**Changes and approval:** Read only; no approval; may be unavailable on a read-only bridge.
+
+**Inputs:** none.
+
+```sh
+flowjoe-cli action list_scheduled_tasks --json
+```
+
+**Result:** Permitted task IDs, titles, enabled states, schedule summaries, targets and runtime status.
+
+## Read FlowJoe’s user guidance — `open_reference`
+
+Read a named help topic. For a single complete page, add page with its exact manual slug, such as cli/node-changes. Use actions open_reference to see the current topic choices.
+
+**Changes and approval:** Read only; no approval.
+
+| Input | Required? | Meaning |
+| --- | --- | --- |
+| `topic` | Yes | Help topic ID from the current actions open_reference instructions. |
+| `page` | No | Optional exact manual page slug, such as cli/node-changes; reads that full page. |
+
+```json
+{
+  "topic": "cli"
+}
+```
+
+```sh
+flowjoe-cli action open_reference --file input.json --json
+```
+
+**Result:** Reference text and manual links, with any omitted pages or fallback made explicit.
+
+## Read every supported editing verb — `describe_patch_protocol`
+
+Discover the running app’s editing names and required arguments. This catalog includes optional stable entry-ID alternatives and valid theme IDs.
+
+**Changes and approval:** Read only; no approval.
+
+**Inputs:** none.
+
+```sh
+flowjoe-cli action describe_patch_protocol --json
+```
+
+**Result:** Protocol/version, verbs and scopes, argRules, idTargets, blobVerbs, deferred capabilities, stageMediaKinds and nodeThemes.
+
+## Apply a group of Flow changes — `propose_flow_patch`
+
+Send an ordered ops array of editing verbs. The simpler apply command wraps this action. validateOnly true checks without applying or queuing. A patch is atomic: a failed operation rolls back that patch.
+
+**Changes and approval:** Changes data. Follows app approval rules unless --autoapprove; this includes deletion, memory and task review.
+
+| Input | Required? | Meaning |
+| --- | --- | --- |
+| `ops` | Yes | Ordered list of `{verb, args}` editing operations. |
+| `validateOnly` | No | Check without applying or queuing approval; default false. |
+
+```json
+{
+  "ops": [
+    {
+      "verb": "setNodeSummary",
+      "args": {
+        "nodeId": "YOUR_NODE_ID",
+        "value": "Next steps: review the draft."
+      }
+    }
+  ]
+}
+```
+
+```sh
+flowjoe-cli action propose_flow_patch --file input.json --json
+```
+
+**Result:** Applied operation results, validation errors or a pending approval. The CLI normally waits for that approval to settle.
+
+## Prepare content for the gallery — `stage_media`
+
+Prepare new content without placing it. Supply exactly one source: text, dataUrl or attachmentId. Raw document text and SVG text are supported; MIME must match kind. Raw media staging is limited to 10 MB. An attachmentId must come from this connection’s upload_attachment. Explicit nodeId chooses the intended destination; omitted uses the selected node.
+
+**Changes and approval:** Prepares content; no Flow edit approval until placement. Requires an available staging capability.
+
+| Input | Required? | Meaning |
+| --- | --- | --- |
+| `kind` | No | Media kind; defaults to image (or document when text is given, unless mimeType is image/svg+xml → image). Choices: image, pdf, document, audio, video, spreadsheet, rich-document, calendar. |
+| `dataUrl` | No | Source A: `data:MIME;base64,…` (at most 10 MB). |
+| `attachmentId` | No | An ID returned by upload_attachment in this same connection. |
+| `text` | No | Source C: raw text/markdown/csv/json (kind document) OR raw SVG markup (kind image, mimeType image/svg+xml) — the app encodes + sanitizes it; do NOT base64 it yourself. |
+| `mimeType` | No | With text: the document flavor (default text/markdown) or image/svg+xml for SVG markup. |
+| `title` | No | Optional entry title. |
+| `nodeId` | No | Intended destination node; omitted means the currently selected node. |
+
+```json
+{
+  "nodeId": "YOUR_NODE_ID",
+  "kind": "document",
+  "text": "Meeting notes",
+  "mimeType": "text/plain",
+  "title": "Meeting notes"
+}
+```
+
+```sh
+flowjoe-cli action stage_media --file input.json --json
+```
+
+**Result:** A prepared entry and stored-media information. Use the returned entry in addImageSlots or a stack verb in the SAME run list.
+
+## Generate an image for placement — `generate_image`
+
+Use the configured image service and its normal paid credits. The bridge allows at most two generation attempts per connection, including failed attempts; a longer run list must stay within that limit. Optional size and quality can override the app’s generation settings. A style hint applies only when the app’s Generate Images style is None. The external bridge refuses action edit with chat_history_required; to make a variation, use action generate with sourceImageKey or a caller-owned referenceAttachmentId. referenceAttachmentId uses this connection’s uploaded image; sourceImageKey targets an accessible stored image.
+
+**Changes and approval:** Calls a paid service immediately; --autoapprove is not a billing confirmation. Placement is a separate Flow edit.
+
+| Input | Required? | Meaning |
+| --- | --- | --- |
+| `prompt` | Yes | What to generate (or, with action edit / sourceImageKey, what to change). |
+| `action` | No | Use generate (the default). The external bridge rejects edit because it requires Joe chat history. |
+| `size` | No | Override ONLY when the user asked: 1024x1024 (square) / 1024x1536 (portrait) / 1536x1024 (wide). |
+| `quality` | No | Override ONLY when the user asked (e.g. "high quality"). Choices: low, medium, high, auto. |
+| `style` | No | Optional style hint; only used when the Generate Images tab style is None. Otherwise that tab’s selected style applies. |
+| `referenceAttachmentId` | No | Optional att-N id of a user-attached IMAGE to use as a visual reference. |
+| `sourceImageKey` | No | Optional: edit / make a variation of an EXISTING gallery image — its indexeddb: src key. Refused (editing_blocked) when the image belongs to a private or hidden-from-Joe node. |
+| `title` | No | Optional title for the staged gallery entry. |
+
+```json
+{
+  "prompt": "A watercolor illustration of a mountain lake",
+  "title": "Mountain lake"
+}
+```
+
+```sh
+flowjoe-cli action generate_image --file input.json --json
+```
+
+**Result:** A staged image and prepared entry, not an automatically placed gallery item. Place the returned entry in the same run list.
+
+## Upload an image or text file for this command — `upload_attachment`
+
+Upload PNG, JPEG, GIF, WebP, plain text, Markdown or CSV. Current limits: 8 MB per file, 12 attachments and 24 MB total per connection. The base64 field has its own encoded-size limit. PDF, Word, audio and video are not accepted by this upload action; use request_file for the app’s normal import flow.
+
+**Changes and approval:** Uploads to temporary connection storage; no Flow edit approval.
+
+| Input | Required? | Meaning |
+| --- | --- | --- |
+| `fileName` | Yes | File name, 1–180 characters. |
+| `mimeType` | Yes | Supported image or text MIME type. |
+| `dataBase64` | Yes | File bytes encoded as base64, without a data: prefix. |
+
+```json
+{
+  "fileName": "hello.txt",
+  "mimeType": "text/plain",
+  "dataBase64": "SGVsbG8="
+}
+```
+
+```sh
+flowjoe-cli action upload_attachment --file input.json --json
+```
+
+**Result:** An attachment with id, fileName, mimeType and sizeBytes. Read or stage it later in the SAME run list; it disappears when the command ends.
+
+## Read this command’s uploaded attachment — `read_chat_attachment`
+
+Despite its name, this external action reads only a file uploaded by this MCP connection. It cannot read files from a Joe chat or a previous CLI invocation. Save an upload step as uploaded before this example.
+
+**Changes and approval:** Read only; no approval.
+
+| Input | Required? | Meaning |
+| --- | --- | --- |
+| `attachmentId` | Yes | ID from upload_attachment in this connection. |
+
+```json
+{
+  "attachmentId": {
+    "$result": "uploaded",
+    "path": [
+      "attachment",
+      "id"
+    ]
+  }
+}
+```
+
+Use this as a step in the same `run` list as its prerequisite:
+
+```json
+{
+  "action": "read_chat_attachment",
+  "input": {
+    "attachmentId": {
+      "$result": "uploaded",
+      "path": [
+        "attachment",
+        "id"
+      ]
+    }
+  }
+}
+```
+
+**Result:** Attachment metadata plus image bytes or UTF-8 text content. Use inside a run list.
+
+## Ask someone at FlowJoe to choose a file — `request_file`
+
+Show the app’s file request card; the chosen file is imported into the currently selected node. This uses the regular import flow, including supported formats that upload_attachment does not accept. Keep the user on the intended node.
+
+**Changes and approval:** Requires a person to choose a file in FlowJoe. --autoapprove does not answer the picker; importing changes the gallery.
+
+| Input | Required? | Meaning |
+| --- | --- | --- |
+| `prompt` | Yes | What file you need and why — shown verbatim to the user on the card. |
+| `title` | No | Optional title for the imported gallery entry (defaults to the file's own name). |
+
+```json
+{
+  "prompt": "Choose the reference document to add to the selected node."
+}
+```
+
+```sh
+flowjoe-cli action request_file --file input.json --json
+```
+
+**Result:** File name, media type and whether it was placed, or the user’s decline. It does not return file bytes.
+
+## Show a node in the app — `select_node`
+
+Move FlowJoe’s selection and gallery to an existing node. Alternatively use name for an exact case-insensitive name; duplicate names require a nodeId.
+
+**Changes and approval:** Changes the visible selection immediately; no Flow edit approval or data edit.
+
+| Input | Required? | Meaning |
+| --- | --- | --- |
+| `nodeId` | No | The target node's id (from get_flow_snapshot). Preferred over name — exact and never ambiguous. |
+| `name` | No | The target node's exact display name (case-insensitive). Refuses ambiguous_name if more than one node has this exact name. |
+
+```json
+{
+  "nodeId": "YOUR_NODE_ID"
+}
+```
+
+```sh
+flowjoe-cli action select_node --file input.json --json
+```
+
+**Result:** Navigation success or a not-found/ambiguous-name refusal.
+
+## Control music and playlists — `control_global_player`
+
+Control the header player. The action choices and examples below cover playback, mode and saved playlists. Accessible audio only; this is not a transcript or general media editor.
+
+**Changes and approval:** Immediate playback/UI action; no approval card. save_playlist saves a playlist. Flow edit undo does not revert player actions.
+
+| Input | Required? | Meaning |
+| --- | --- | --- |
+| `action` | Yes | What to do with the header player. Choices: show, hide, play, pause, set_mode, play_once, play_tagged, save_playlist, load. |
+| `playlist` | No | Saved playlist name for action load. Exact match, case-insensitive. Do not combine with nodeId. |
+| `nodeId` | No | Node id whose audio should load (load), whose one file should play (play_once), or whose tagged audio should be searched/saved (play_tagged/save_playlist with tagId). Do not combine with playlist. |
+| `play` | No | With action load, true starts playback. Omit or false loads the source and leaves playback paused. |
+| `mode` | No | Playback mode for action set_mode. Sequential repeats the queue in order; shuffle randomizes track order; repeat-one loops the current track. Choices: sequential, shuffle, repeat-one. |
+| `slotIndex` | No | 0-based gallery slot index for action play_once. |
+| `itemIndex` | No | 0-based item index inside a stack for action play_once. Required when that slot contains multiple audio files. |
+| `tagId` | No | Exact visible user tag id from get_flow_snapshot's top-level tags dictionary, for action play_tagged or to save matching audio in action save_playlist. |
+| `playlistName` | No | User-provided name for a new playlist saved from the current queue or tagId source, for action save_playlist. Duplicate names are refused. |
+
+```json
+{
+  "action": "pause"
+}
+```
+
+```sh
+flowjoe-cli action control_global_player --file input.json --json
+```
+
+**Result:** Player action success/state, or an unavailable/invalid-source error.
+
+## List changes made by this command — `list_recent_changes`
+
+Read only this connection’s change history, including approval status. Put it after editing steps in one run list. A separate CLI command starts fresh and cannot report the previous command’s history.
+
+**Changes and approval:** Read only; no approval.
+
+| Input | Required? | Meaning |
+| --- | --- | --- |
+| `limit` | No | Maximum 50; default 50. Only this connection’s changes. |
+
+```json
+{
+  "limit": 10
+}
+```
+
+Use this as a step in the same `run` list as its prerequisite:
+
+```json
+{
+  "action": "list_recent_changes",
+  "input": {
+    "limit": 10
+  }
+}
+```
+
+**Result:** A changes list for this connection, cleared when it closes.
+
+## Check a request from this command — `get_approval_outcome`
+
+Advanced: read the outcome of an approval created in this same connection. The CLI already polls ordinary patch approvals, so most users do not need this action. You cannot use a new CLI invocation to resume a previous request.
+
+**Changes and approval:** Read only; no approval.
+
+| Input | Required? | Meaning |
+| --- | --- | --- |
+| `approvalId` | Yes | Approval ID from this same connection. |
+
+```json
+{
+  "approvalId": "YOUR_APPROVAL_ID"
+}
+```
+
+Use this as a step in the same `run` list as its prerequisite:
+
+```json
+{
+  "action": "get_approval_outcome",
+  "input": {
+    "approvalId": "YOUR_APPROVAL_ID"
+  }
+}
+```
+
+**Result:** The current pending, applied, rejected or failed outcome, or a refusal for an unknown/foreign request.
+
+## Undo this command’s last applied change — `undo_last_change`
+
+Use after an edit in the SAME run list. It refuses if the Flow changed afterwards, rather than overwriting somebody else’s work. It does not undo a previous CLI invocation, a player action or another agent’s edit.
+
+**Changes and approval:** Changes the Flow immediately through the existing undo guard; no new patch approval card.
+
+**Inputs:** none.
+
+Use this as a step in the same `run` list as its prerequisite:
+
+```json
+{
+  "action": "undo_last_change",
+  "input": {}
+}
+```
+
+**Result:** Whether a change was undone, or nothing_to_undo/changed_since refusal.
+
+## Music player examples
+
+Save each input below as `input.json`, then run
+`flowjoe-cli action control_global_player --file input.json --json`.
+
+| Goal | JSON input |
+| --- | --- |
+| Show the player | `{"action":"show"}` |
+| Hide it and stop playback | `{"action":"hide"}` |
+| Play the loaded queue, or the first accessible playlist if empty | `{"action":"play"}` |
+| Pause | `{"action":"pause"}` |
+| Shuffle the loaded queue | `{"action":"set_mode","mode":"shuffle"}` |
+| Play sequentially and repeat the queue | `{"action":"set_mode","mode":"sequential"}` |
+| Repeat the current track | `{"action":"set_mode","mode":"repeat-one"}` |
+| Load a saved playlist and start playing | `{"action":"load","playlist":"My playlist","play":true}` |
+| Load a node’s audio, staying paused | `{"action":"load","nodeId":"YOUR_NODE_ID","play":false}` |
+| Play one audio item once | `{"action":"play_once","nodeId":"YOUR_NODE_ID","slotIndex":0}` |
+| Play one member of an audio stack | `{"action":"play_once","nodeId":"YOUR_NODE_ID","slotIndex":0,"itemIndex":1}` |
+| Play audio with a tag | `{"action":"play_tagged","tagId":"YOUR_TAG_ID"}` |
+| Save the current queue | `{"action":"save_playlist","playlistName":"My playlist"}` |
+| Save tagged audio without changing playback | `{"action":"save_playlist","tagId":"YOUR_TAG_ID","playlistName":"Research music"}` |
+
+`load` takes either `playlist` or `nodeId`, never both. `play_tagged` and tag-based `save_playlist`
+can add `nodeId` to limit their search. Playlist names match exactly ignoring case, and saving
+refuses duplicate names instead of overwriting them. Read real tag IDs from the snapshot.
+
+## Supported staging kinds and file limits
+
+The live staging catalog lists image, PDF, document, audio and video, plus spreadsheet,
+rich-document and calendar kinds. **The external bridge currently cannot stage spreadsheet,
+rich-document or calendar content**, including an uploaded CSV selected as kind spreadsheet.
+Those importers need a file-attachment handle, while this bridge passes uploaded content to staging
+as a data URL. Use `request_file` and the normal app importer for those workbench types.
+
+The external upload action also accepts only the image/text MIME types listed above. PDF, Word,
+audio and video files cannot be uploaded through `upload_attachment`; use the normal file chooser
+for them. A raw `dataUrl` can prepare a supported non-workbench kind when its MIME and size are
+valid; it does not bypass the workbench restriction. Do not invent an attachment ID or relabel a
+file’s MIME type. Staging is preparation, not placement; see the [working example](/cli/scripting).

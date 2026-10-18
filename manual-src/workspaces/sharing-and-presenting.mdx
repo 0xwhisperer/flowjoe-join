@@ -35,6 +35,8 @@ A guest sees only what you shared with them. Their theme, their language and the
 | Change their own appearance, language, layout and audio preferences | Yes | Yes |
 | Manage your invitations, credentials, workspace storage or native computer tools | No | No |
 
+The same removal permission protects shared Joe conversations in Joe's history popup: an Edit guest can remove their own conversation only when it has no protected contributions from someone else. Clearing a conversation or saving a shortened message list cannot remove those protected contributions.
+
 Choose the additional removal permission in the invitation to let an Edit guest remove other people's shared content. It never reveals private content and never turns a View invitation into Edit access. Editing a title or note does not change who created the item. Older items without a recorded creator count as yours. For mixed selections, permitted removals proceed and protected items stay, with an explanation.
 
 <Note>
@@ -80,6 +82,8 @@ Turn on **Let guests generate images** in the Share window and an Edit guest see
 
 Shared Image History includes only pictures recorded for this Flow. Copying a Flow does not bring another Flow's picture history into the share. Older pictures without a recorded Flow stay available on your computer and are withheld from guests.
 
+Gallery files, link-preview pictures and the media list also follow current access. Ending the invitation or removing a shared slot while a file is loading prevents that pending request from delivering it.
+
 Image history and its pictures follow the guest’s current access. If you remove access to a node, make it private, or end the invitation while a picture or history request is waiting, that request cannot deliver the content afterwards.
 
 ### Settings
@@ -116,9 +120,9 @@ Use **Present** in the header (next to the Sharing pill) to walk guests through 
 
 While you present, guests are invited to follow. A guest who follows sees what you see, live: the node you have open, your canvas camera and zoom, your layout, the cards you have selected (and the selection rectangle while you drag it), your open windows, menus, Joe's column and your Joe chat, and your Settings and History. They watch; they do not act.
 
-- **Nobody edits while you present.** Every guest's screen turns read-only and your computer refuses guest changes until you stop.
+- **Nobody edits while you present.** Every guest's screen turns read-only and your computer refuses guest changes, including changes to shared memories and restoring memory snapshots, until you stop. Reading shared memories remains available.
 - **Guests choose to follow**, and an unlocked guest can stop following. Guests can pan, zoom, scroll the canvas, and use canvas Fit or Reset while following. Other actions ask **Stop following?** first, so a click does not take them out by accident.
-- **Show my Joe chat while presenting** is yours to switch off.
+- **Show my Joe chat while presenting** is yours to switch off. Hidden or private slots and conversations kept on this computer stay out of the shared view, including older conversations. For stacks, this includes the picture or file currently shown and every stack containing it. If access changes, the copied conversation or slot preview clears. Public node-summary windows show your unsaved summary text too; the whole-Flow summary stays out of the presentation. A history popup containing a conversation kept on this computer is withheld.
 - The **Presenting** panel on the pill lists who follows and who is looking around on their own.
 - Guests who cannot see the node you are on see a short note that you are somewhere they cannot follow.
 
@@ -132,7 +136,7 @@ When you invite someone you can choose how they join:
 
 You can also set **Presenting starts** to a date, time and time zone. A guest who opens the link early sees when to expect you in **their own time zone**, in yours and in UTC, with a countdown. FlowJoe only shows the time; you still press **Present**.
 
-Open the **Presenting** panel to **Lock all**, **Unlock all** or lock and release one guest. Releasing never removes anyone from the Flow. If you stop presenting, stop sharing or go offline, the lock ends by itself.
+Open the **Presenting** panel to **Lock all**, **Unlock all** or lock and release one guest. Releasing never removes anyone from the Flow. If you stop presenting, stop sharing or go offline, the lock ends by itself. Stopping Present also releases Joe for guests who were following. Guests already released by ending Present stay released when you turn sharing off and back on with their session retained. Starting a new presentation or explicitly locking them again reapplies the invitation’s lock preference; a new locked guest still waits for their first presentation.
 
 ## When something is wrong
 

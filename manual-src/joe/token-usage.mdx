@@ -165,3 +165,15 @@ Private nodes and **Hidden from Joe** nodes have their content sealed from Joe â
 - [Bring Your Own Brain (BYOB)](/joe/byob) â€” you pay the provider directly
 - [Prompting & Best Practices](/joe/best-practices)
 - [Meeting Joe](/joe/opening-joe)
+
+## Whole-turn usage and unknown totals
+
+A conversation turn can make several provider requests: the reply, context selection, checks, tool follow-ups, compaction, and attachment summaries. FlowJoe keeps temporary usage metadata for these calls separately from the token bar. This record contains provider/model names, timings, request sizes and returned token counts; it contains no message or file content, credentials or reply text.
+
+Some providers and command-line tools do not return complete usage. Those totals stay unknown. A cancelled request may already have used tokens, and cached input still occupies context. The token bar continues to describe the next reply request's estimated context, rather than all charges for the turn.
+
+## Looking up a specific manual page
+
+Joe can ask for a specific page from a manual link when it needs a focused lookup. That lookup includes the complete page, its chapter introduction and any required permissions or approval guidance. Other pages remain available through another lookup. If the page or required guidance cannot be loaded, Joe receives the ordinary chapter result with an explanation of the fallback. The manual reference chip opens the page that was successfully consulted.
+
+OpenAI chats can narrow manual lookups and avoid repeating exact pages already in the request. Follow-up counts still depend on the conversation.

@@ -1,0 +1,840 @@
+---
+title: "Change references and stacks"
+description: "Edit gallery notes, organize references and stacks, crop images, and change canvas items."
+---
+
+Every example below is a **separate** change. Save its JSON as `changes.json`, replace all
+`YOUR_…` placeholders with IDs from your current Flow, and run:
+
+```sh
+flowjoe-cli apply changes.json --preview --json
+flowjoe-cli apply changes.json --json
+```
+
+The first command checks without applying. The second follows FlowJoe’s approval rules. Add
+`--autoapprove` to the second command to skip **all approval cards, including deletions**, for that
+command. Permissions, privacy, frozen content and validation still apply. All verbs on these pages
+change data; none is a read command. A successful patch reports applied and operation results; a
+failed operation rolls back that patch. See [results and exit codes](/cli/commands#results-for-scripts).
+
+A gallery position (`slotIndex`, `index`, `sourceIndex`, `fromIndex`, `toIndex`) starts at **0**:
+0 means first, 1 means second. An `itemIndex` selects a member **inside a stack**, also from 0.
+Only use examples whose targets exist and have the required content type. Examples with two or
+three positions need at least that many items. Read fresh data after an edit that changes positions.
+
+The required inputs below come from the current 59-verb catalog. Where an alternative stable entry
+ID is listed, supply that instead of its positional field, not both. Read IDs with a gallery snapshot;
+not every verb supports the same ID alternative. `removeEntryContexts` uses nested positional
+references. The live catalog is authoritative for your installed desktop version:
+
+```sh
+flowjoe-cli action describe_patch_protocol --json
+```
+
+Prepared-entry examples containing `$result` belong **inside a `run` action list**, after a step
+saved as `prepared`; they cannot be pasted unchanged into a standalone `apply` file. See the
+[complete upload → prepare → place example](/cli/scripting#use-an-earlier-result). Replace that
+example’s final `ops` with the operation shown here. Never invent a stored-media key.
+
+## Move a gallery item within its node — `moveSlotWithinNode`
+
+Move one gallery position to another. Read current positions first; both indices start at zero.
+
+**Required inputs:** `nodeId`, `fromIndex`, `toIndex`.
+
+**Stable IDs:** `fromEntryId` can replace `fromIndex`; `toEntryId` can replace `toIndex`.
+
+```json
+[
+  {
+    "verb": "moveSlotWithinNode",
+    "args": {
+      "nodeId": "YOUR_NODE_ID",
+      "fromIndex": 0,
+      "toIndex": 1
+    }
+  }
+]
+```
+
+**Result:** The gallery order changes.
+
+## Set the complete gallery order — `reorderSlots`
+
+Give every current gallery index exactly once, in the desired order. This two-item example requires exactly two gallery items.
+
+**Required inputs:** `nodeId`, `order`.
+
+**Stable IDs:** `orderEntryIds` can replace `order`.
+
+```json
+[
+  {
+    "verb": "reorderSlots",
+    "args": {
+      "nodeId": "YOUR_NODE_ID",
+      "order": [
+        1,
+        0
+      ]
+    }
+  }
+]
+```
+
+**Result:** The gallery takes the supplied order.
+
+## Sort gallery items — `sortSlots`
+
+Sort by title or number, in asc or desc order. Numbers are parsed from titles; items without numbers go last.
+
+**Required inputs:** `nodeId`.
+
+```json
+[
+  {
+    "verb": "sortSlots",
+    "args": {
+      "nodeId": "YOUR_NODE_ID",
+      "by": "title",
+      "direction": "asc"
+    }
+  }
+]
+```
+
+**Result:** The node’s gallery is sorted.
+
+## Delete gallery items — `deleteSlots`
+
+Delete the listed gallery positions. Deleting a stack removes its contents too. This is a deletion.
+
+**Required inputs:** `nodeId`, `indices`.
+
+**Stable IDs:** `slotEntryIds` can replace `indices`.
+
+```json
+[
+  {
+    "verb": "deleteSlots",
+    "args": {
+      "nodeId": "YOUR_NODE_ID",
+      "indices": [
+        0
+      ]
+    }
+  }
+]
+```
+
+**Result:** The selected gallery items are removed.
+
+## Add prepared references to a gallery — `addImageSlots`
+
+Despite its older name, this adds supported prepared references, not only images. Prepare entries with stage_media or generate_image in the same run list. Optional index chooses insertion position; omitted means append. The result reference in this example requires the prepared step in the scripting guide.
+
+**Required inputs:** `nodeId`, `entries`.
+
+```json
+[
+  {
+    "verb": "addImageSlots",
+    "args": {
+      "nodeId": "YOUR_NODE_ID",
+      "entries": [
+        {
+          "$result": "prepared",
+          "path": [
+            "entry"
+          ]
+        }
+      ]
+    }
+  }
+]
+```
+
+**Result:** The prepared references appear as new gallery items.
+
+## Replace a gallery item — `replaceImageSlot`
+
+Replace one item using a prepared entry from an earlier step in the same run list. This overwrites the current reference; it is not a title or notes edit.
+
+**Required inputs:** `nodeId`, `index`, `entry`.
+
+**Stable IDs:** `slotEntryId` can replace `index`.
+
+```json
+[
+  {
+    "verb": "replaceImageSlot",
+    "args": {
+      "nodeId": "YOUR_NODE_ID",
+      "index": 0,
+      "entry": {
+        "$result": "prepared",
+        "path": [
+          "entry"
+        ]
+      }
+    }
+  }
+]
+```
+
+**Result:** The gallery position contains the prepared replacement.
+
+## Move a reference to another node — `moveImageSlotToNode`
+
+Move the complete gallery item, including a stack if the selected item is a stack.
+
+**Required inputs:** `sourceNodeId`, `sourceIndex`, `targetNodeId`.
+
+**Stable IDs:** `sourceEntryId` can replace `sourceIndex`.
+
+```json
+[
+  {
+    "verb": "moveImageSlotToNode",
+    "args": {
+      "sourceNodeId": "YOUR_NODE_ID",
+      "sourceIndex": 0,
+      "targetNodeId": "OTHER_NODE_ID"
+    }
+  }
+]
+```
+
+**Result:** The reference leaves the source and appears in the destination.
+
+## Move several references to another node — `moveImageSlots`
+
+Move the selected gallery items together; each index refers to the source gallery before this operation.
+
+**Required inputs:** `sourceNodeId`, `indices`, `targetNodeId`.
+
+**Stable IDs:** `slotEntryIds` can replace `indices`.
+
+```json
+[
+  {
+    "verb": "moveImageSlots",
+    "args": {
+      "sourceNodeId": "YOUR_NODE_ID",
+      "indices": [
+        0,
+        1
+      ],
+      "targetNodeId": "OTHER_NODE_ID"
+    }
+  }
+]
+```
+
+**Result:** The references move to the destination gallery.
+
+## Delete specific gallery or stack occurrences — `removeEntryContexts`
+
+For precise deletion across nodes, give contextRefs with nodeId and slotIndex; add entryIndex for a stack member. This nested field is entryIndex, not itemIndex. Linked original/derived relationships are handled by the app’s deletion rules. This is a deletion.
+
+**Required inputs:** `contextRefs`.
+
+```json
+[
+  {
+    "verb": "removeEntryContexts",
+    "args": {
+      "contextRefs": [
+        {
+          "nodeId": "YOUR_NODE_ID",
+          "slotIndex": 0
+        }
+      ]
+    }
+  }
+]
+```
+
+**Result:** The specified occurrences are removed.
+
+## Unlink derived copies from their original — `detachDerivedEntries`
+
+Identify the original entry. Add entryIndex to identify an original inside a stack. Its derived copies are detached from that original; content is retained. Every affected node must be editable.
+
+**Required inputs:** `nodeId`, `slotIndex`.
+
+**Stable IDs:** `slotEntryId` can replace `slotIndex`; `itemEntryId` can replace `entryIndex`.
+
+```json
+[
+  {
+    "verb": "detachDerivedEntries",
+    "args": {
+      "nodeId": "YOUR_NODE_ID",
+      "slotIndex": 0
+    }
+  }
+]
+```
+
+**Result:** Derived copies become independent; the result includes a detached count.
+
+## Write a reference’s title or notes — `setSlotFields`
+
+fields accepts title, notes and audioTitle (audio only). To edit a stack member, add options with itemIndex, for example options: `{itemIndex: 0}`. An empty notes string clears notes. This edits reference notes, not the file’s stored text.
+
+**Required inputs:** `nodeId`, `slotIndex`, `fields`.
+
+**Stable IDs:** `slotEntryId` can replace `slotIndex`.
+
+```json
+[
+  {
+    "verb": "setSlotFields",
+    "args": {
+      "nodeId": "YOUR_NODE_ID",
+      "slotIndex": 0,
+      "fields": {
+        "notes": "Reviewed for the next meeting."
+      }
+    }
+  }
+]
+```
+
+**Result:** The chosen reference fields change.
+
+## Replace a reference’s tags — `setSlotTags`
+
+Replace tags on a gallery item or stack container. Tags do not belong to individual stack members. An empty array clears them.
+
+**Required inputs:** `nodeId`, `slotIndex`, `tagIds`.
+
+**Stable IDs:** `slotEntryId` can replace `slotIndex`.
+
+```json
+[
+  {
+    "verb": "setSlotTags",
+    "args": {
+      "nodeId": "YOUR_NODE_ID",
+      "slotIndex": 0,
+      "tagIds": [
+        "YOUR_TAG_ID"
+      ]
+    }
+  }
+]
+```
+
+**Result:** The reference has the supplied tags.
+
+## Write one spreadsheet cell — `setSpreadsheetCell`
+
+The target must be a spreadsheet. Choose cell such as B3, or row and column (both zero-based). Optional itemIndex targets a spreadsheet inside a stack. This changes one cell, not a whole workbook.
+
+**Required inputs:** `nodeId`, `slotIndex`, `value`.
+
+**Stable IDs:** `slotEntryId` can replace `slotIndex`; `itemEntryId` can replace `itemIndex`.
+
+```json
+[
+  {
+    "verb": "setSpreadsheetCell",
+    "args": {
+      "nodeId": "YOUR_NODE_ID",
+      "slotIndex": 0,
+      "cell": "B3",
+      "value": "Ready"
+    }
+  }
+]
+```
+
+**Result:** The cell contains the supplied value.
+
+## Copy a reference — `copyImageSlot`
+
+Copy a complete gallery item. Omit targetNodeId to copy within the source node; optional targetIndex chooses placement. The copy receives new entry IDs.
+
+**Required inputs:** `sourceNodeId`, `sourceIndex`.
+
+**Stable IDs:** `sourceEntryId` can replace `sourceIndex`.
+
+```json
+[
+  {
+    "verb": "copyImageSlot",
+    "args": {
+      "sourceNodeId": "YOUR_NODE_ID",
+      "sourceIndex": 0,
+      "targetNodeId": "OTHER_NODE_ID"
+    }
+  }
+]
+```
+
+**Result:** A copy appears; the original remains.
+
+## Crop an image — `cropImage`
+
+The target must be a supported stored image. Coordinates are fractions of the original image, from 0 to 1; the rectangle must fit inside it. Optional itemIndex targets a stack member.
+
+**Required inputs:** `nodeId`, `slotIndex`, `x`, `y`, `width`, `height`.
+
+**Stable IDs:** `slotEntryId` can replace `slotIndex`; `itemEntryId` can replace `itemIndex`.
+
+```json
+[
+  {
+    "verb": "cropImage",
+    "args": {
+      "nodeId": "YOUR_NODE_ID",
+      "slotIndex": 0,
+      "x": 0.1,
+      "y": 0.1,
+      "width": 0.8,
+      "height": 0.8
+    }
+  }
+]
+```
+
+**Result:** A crop is applied using the app’s image workflow.
+
+## Create a PDF from an image or note — `convertToPdf`
+
+Convert a supported image or note-like item using the installed PDF service. Optional itemIndex targets a stack member. This is not a general converter for every file format.
+
+**Required inputs:** `nodeId`, `slotIndex`.
+
+**Stable IDs:** `slotEntryId` can replace `slotIndex`; `itemEntryId` can replace `itemIndex`.
+
+```json
+[
+  {
+    "verb": "convertToPdf",
+    "args": {
+      "nodeId": "YOUR_NODE_ID",
+      "slotIndex": 0
+    }
+  }
+]
+```
+
+**Result:** A new PDF reference is inserted beside the source; the source remains.
+
+## Change an audio cover — `setAudioCover`
+
+This example clears the cover. To set one, use coverSrc from a prepared, stored image (an indexeddb: source), not an arbitrary web URL; optional itemIndex targets audio in a stack.
+
+**Required inputs:** `nodeId`, `slotIndex`, `coverSrc`.
+
+**Stable IDs:** `slotEntryId` can replace `slotIndex`; `itemEntryId` can replace `itemIndex`.
+
+```json
+[
+  {
+    "verb": "setAudioCover",
+    "args": {
+      "nodeId": "YOUR_NODE_ID",
+      "slotIndex": 0,
+      "coverSrc": ""
+    }
+  }
+]
+```
+
+**Result:** The audio cover is cleared or replaced.
+
+## Change a reference’s color — `setSlotColor`
+
+Set a gallery item’s color using a supported hex color.
+
+**Required inputs:** `nodeId`, `slotIndex`, `color`.
+
+**Stable IDs:** `slotEntryId` can replace `slotIndex`.
+
+```json
+[
+  {
+    "verb": "setSlotColor",
+    "args": {
+      "nodeId": "YOUR_NODE_ID",
+      "slotIndex": 0,
+      "color": "#336699"
+    }
+  }
+]
+```
+
+**Result:** The reference color changes.
+
+## Place an item on the canvas — `setSlotCanvasPlacement`
+
+Supply x, y or customWidth (at least one). Positions are canvas coordinates; customWidth is non-negative, with zero clearing the custom width.
+
+**Required inputs:** `nodeId`, `slotIndex`.
+
+**Stable IDs:** `slotEntryId` can replace `slotIndex`.
+
+```json
+[
+  {
+    "verb": "setSlotCanvasPlacement",
+    "args": {
+      "nodeId": "YOUR_NODE_ID",
+      "slotIndex": 0,
+      "x": 100,
+      "y": 200,
+      "customWidth": 320
+    }
+  }
+]
+```
+
+**Result:** The item’s saved canvas placement changes.
+
+## Connect two canvas items — `connectSlots`
+
+Add a connection between two gallery items in the same node.
+
+**Required inputs:** `nodeId`, `fromIndex`, `toIndex`.
+
+**Stable IDs:** `fromEntryId` can replace `fromIndex`; `toEntryId` can replace `toIndex`.
+
+```json
+[
+  {
+    "verb": "connectSlots",
+    "args": {
+      "nodeId": "YOUR_NODE_ID",
+      "fromIndex": 0,
+      "toIndex": 1
+    }
+  }
+]
+```
+
+**Result:** The canvas connection is added.
+
+## Remove a canvas connection — `disconnectSlots`
+
+Remove the connection between two gallery items in the same node.
+
+**Required inputs:** `nodeId`, `fromIndex`, `toIndex`.
+
+**Stable IDs:** `fromEntryId` can replace `fromIndex`; `toEntryId` can replace `toIndex`.
+
+```json
+[
+  {
+    "verb": "disconnectSlots",
+    "args": {
+      "nodeId": "YOUR_NODE_ID",
+      "fromIndex": 0,
+      "toIndex": 1
+    }
+  }
+]
+```
+
+**Result:** The connection is removed; both items remain.
+
+## Move an item within a stack — `reorderStackItem`
+
+slotIndex identifies the stack; fromIndex and toIndex identify its members, starting at zero.
+
+**Required inputs:** `nodeId`, `slotIndex`, `fromIndex`, `toIndex`.
+
+**Stable IDs:** `slotEntryId` can replace `slotIndex`; `fromItemEntryId` can replace `fromIndex`; `toItemEntryId` can replace `toIndex`.
+
+```json
+[
+  {
+    "verb": "reorderStackItem",
+    "args": {
+      "nodeId": "YOUR_NODE_ID",
+      "slotIndex": 0,
+      "fromIndex": 0,
+      "toIndex": 1
+    }
+  }
+]
+```
+
+**Result:** The stack’s item order changes.
+
+## Choose the displayed stack item — `setStackActiveItem`
+
+Choose which existing member the stack displays.
+
+**Required inputs:** `nodeId`, `slotIndex`, `itemIndex`.
+
+**Stable IDs:** `slotEntryId` can replace `slotIndex`; `itemEntryId` can replace `itemIndex`.
+
+```json
+[
+  {
+    "verb": "setStackActiveItem",
+    "args": {
+      "nodeId": "YOUR_NODE_ID",
+      "slotIndex": 0,
+      "itemIndex": 1
+    }
+  }
+]
+```
+
+**Result:** The selected member becomes active.
+
+## Delete one stack item — `removeStackItem`
+
+Delete a member, retaining the other members. Small stacks can collapse back to a plain gallery item. This is a deletion.
+
+**Required inputs:** `nodeId`, `slotIndex`, `itemIndex`.
+
+**Stable IDs:** `slotEntryId` can replace `slotIndex`; `itemEntryId` can replace `itemIndex`.
+
+```json
+[
+  {
+    "verb": "removeStackItem",
+    "args": {
+      "nodeId": "YOUR_NODE_ID",
+      "slotIndex": 0,
+      "itemIndex": 0
+    }
+  }
+]
+```
+
+**Result:** The member is removed.
+
+## Keep only the active stack item — `flattenStackSlot`
+
+Replace a stack with its currently active member and discard the others. This is a deletion of the other members; use extractAllStackItems to retain them instead.
+
+**Required inputs:** `nodeId`, `slotIndex`.
+
+```json
+[
+  {
+    "verb": "flattenStackSlot",
+    "args": {
+      "nodeId": "YOUR_NODE_ID",
+      "slotIndex": 0
+    }
+  }
+]
+```
+
+**Result:** One plain gallery item remains in place of the stack.
+
+## Add prepared entries to a stack — `addEntriesToSlot`
+
+Append prepared entries, converting a plain item to a stack when needed. Use a prepared result from the same run list.
+
+**Required inputs:** `nodeId`, `slotIndex`, `entries`.
+
+**Stable IDs:** `slotEntryId` can replace `slotIndex`.
+
+```json
+[
+  {
+    "verb": "addEntriesToSlot",
+    "args": {
+      "nodeId": "YOUR_NODE_ID",
+      "slotIndex": 0,
+      "entries": [
+        {
+          "$result": "prepared",
+          "path": [
+            "entry"
+          ]
+        }
+      ]
+    }
+  }
+]
+```
+
+**Result:** The entries join the stack.
+
+## Insert prepared entries at a stack position — `insertEntriesIntoStack`
+
+Insert prepared entries at options.itemIndex. Omit it to insert after the active item. options.makeActive defaults true. A plain item is converted to a stack first.
+
+**Required inputs:** `nodeId`, `slotIndex`, `entries`.
+
+**Stable IDs:** `slotEntryId` can replace `slotIndex`.
+
+```json
+[
+  {
+    "verb": "insertEntriesIntoStack",
+    "args": {
+      "nodeId": "YOUR_NODE_ID",
+      "slotIndex": 0,
+      "entries": [
+        {
+          "$result": "prepared",
+          "path": [
+            "entry"
+          ]
+        }
+      ],
+      "options": {
+        "itemIndex": 0,
+        "makeActive": true
+      }
+    }
+  }
+]
+```
+
+**Result:** The entries are inserted at the chosen position.
+
+## Pull one stack member into the gallery — `extractStackItemToSlot`
+
+Move a member out of its stack into a separate gallery position.
+
+**Required inputs:** `nodeId`, `slotIndex`, `itemIndex`.
+
+**Stable IDs:** `slotEntryId` can replace `slotIndex`; `itemEntryId` can replace `itemIndex`.
+
+```json
+[
+  {
+    "verb": "extractStackItemToSlot",
+    "args": {
+      "nodeId": "YOUR_NODE_ID",
+      "slotIndex": 0,
+      "itemIndex": 0
+    }
+  }
+]
+```
+
+**Result:** The member becomes a standalone reference.
+
+## Unpack a stack without deleting its members — `extractAllStackItems`
+
+Turn the stack’s members into separate gallery items.
+
+**Required inputs:** `nodeId`, `slotIndex`.
+
+**Stable IDs:** `slotEntryId` can replace `slotIndex`.
+
+```json
+[
+  {
+    "verb": "extractAllStackItems",
+    "args": {
+      "nodeId": "YOUR_NODE_ID",
+      "slotIndex": 0
+    }
+  }
+]
+```
+
+**Result:** The members appear separately in the gallery.
+
+## Move a stack member to another node — `moveStackItemToNode`
+
+Move one member out of a source stack into another node’s gallery.
+
+**Required inputs:** `sourceNodeId`, `slotIndex`, `itemIndex`, `targetNodeId`.
+
+**Stable IDs:** `slotEntryId` can replace `slotIndex`; `itemEntryId` can replace `itemIndex`.
+
+```json
+[
+  {
+    "verb": "moveStackItemToNode",
+    "args": {
+      "sourceNodeId": "YOUR_NODE_ID",
+      "slotIndex": 0,
+      "itemIndex": 0,
+      "targetNodeId": "OTHER_NODE_ID"
+    }
+  }
+]
+```
+
+**Result:** The member leaves the stack and appears in the destination.
+
+## Copy a stack member into the gallery — `copyStackItem`
+
+Copy one member as a standalone gallery item. Omit targetNodeId for a copy within the source node; optional targetIndex chooses placement.
+
+**Required inputs:** `sourceNodeId`, `slotIndex`, `itemIndex`.
+
+**Stable IDs:** `slotEntryId` can replace `slotIndex`; `itemEntryId` can replace `itemIndex`.
+
+```json
+[
+  {
+    "verb": "copyStackItem",
+    "args": {
+      "sourceNodeId": "YOUR_NODE_ID",
+      "slotIndex": 0,
+      "itemIndex": 0,
+      "targetNodeId": "OTHER_NODE_ID"
+    }
+  }
+]
+```
+
+**Result:** A copy appears; the original stack member remains.
+
+## Combine two gallery items into a stack — `mergeSlotsIntoStack`
+
+Merge the source gallery item into the target, converting the target to a stack when needed.
+
+**Required inputs:** `nodeId`, `sourceIndex`, `targetIndex`.
+
+**Stable IDs:** `sourceEntryId` can replace `sourceIndex`; `targetEntryId` can replace `targetIndex`.
+
+```json
+[
+  {
+    "verb": "mergeSlotsIntoStack",
+    "args": {
+      "nodeId": "YOUR_NODE_ID",
+      "sourceIndex": 0,
+      "targetIndex": 1
+    }
+  }
+]
+```
+
+**Result:** One combined stack replaces the separate items.
+
+## Collect several gallery items into one stack — `consolidateSlotsIntoStack`
+
+Choose the target gallery position and the selected indices. Omit indices to consolidate every gallery item into the target.
+
+**Required inputs:** `nodeId`, `targetIndex`.
+
+**Stable IDs:** `targetEntryId` can replace `targetIndex`; `slotEntryIds` can replace `indices`.
+
+```json
+[
+  {
+    "verb": "consolidateSlotsIntoStack",
+    "args": {
+      "nodeId": "YOUR_NODE_ID",
+      "targetIndex": 0,
+      "indices": [
+        0,
+        1,
+        2
+      ]
+    }
+  }
+]
+```
+
+**Result:** The selected items are combined in the target stack.
+

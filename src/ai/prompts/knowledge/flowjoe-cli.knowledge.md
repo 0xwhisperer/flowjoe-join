@@ -7,7 +7,7 @@ Generated: 2026-10-18 from the current worktree copies (post Joe-audit 2026-07-2
 Sync guard: tests/unit/appHelpKnowledgeSync.test.js fails when mintlify/**/*.mdx or this digest drifts
 from scripts/app-help-knowledge.manifest.json. -->
 
-This knowledge module teaches Joe using flowjoe-cli to control the running desktop app: installation, show/search/apply/run, JSON scripts, action lists, --preview, --autoapprove including deletions, and troubleshooting.
+This knowledge module teaches Joe using flowjoe-cli to control the running desktop app: installation, show/search/apply/run, JSON scripts, action lists, --preview, --autoapprove including deletions, troubleshooting, and finding the everyday-task and complete action/59-verb references.
 
 Loading this knowledge is not evidence that the CLI is installed, the desktop supports it, or any command has run. The command reference is in the user manual, not a new app panel.
 
