@@ -45,7 +45,7 @@ For short intervals, the interface shows an estimated number of runs per day to 
 You can configure and manage scheduled tasks in two ways:
 
 * **Natural Language Chat:** Ask Joe: *"Search the web for new references on quantum computing and update my Research node every morning at 9:00 AM."* Joe will draft a proposal card showing the task parameters. Approving the proposal card registers the task.
-* **Settings → Tasks:** View tasks, pause or resume them, delete them, and inspect recent results. **Run Now** normally applies the result immediately, including for a review-first task. Changes held by the safety checks still go to **Review Inbox**.
+* **Settings → Tasks:** View tasks, pause or resume them, delete them, and inspect recent results. **Run Now** means “run and apply this now,” including for a review-first task. Review-first controls unattended scheduled runs; your click authorizes this manual run without a second approval step. Changes held by the safety checks still go to **Review Inbox**.
 
 ---
 
@@ -57,9 +57,9 @@ To prevent an unattended background run from clobbering your outlines due to an 
 - **Review-first is available:** Ask Joe to make the task review-first if you want results held in **Settings → Tasks → Review Inbox**.
 - **Risky changes are held:** Removing nodes, tasks, or other content; changing tasks or memories; and revealing content hidden from Joe can send a result to review. TypeSafe can also hold a change that falls outside the task’s instructions.
 
-<Warning>
-For an owner-created task, approving a result held by the destructive-change check also authorizes that task to make destructive changes on future runs. There is no extra authorization prompt after approval. Approving a TypeSafe instruction warning does not grant that broader permission. Guest-created tasks do not gain that standing permission through this approval.
-</Warning>
+<Note>
+For an owner-created task, approving a result held by the destructive-change check also authorizes **that task** to make destructive changes on future runs. This lets a recurring task keep doing its approved work without asking the same question each time; there is no extra authorization prompt after approval. A review-first task still sends its unattended scheduled results to the inbox. Approving a TypeSafe instruction warning does not grant the broader permission, and guest-created tasks do not gain it through this approval.
+</Note>
 
 Each scheduled run has its own **Undo** in the run history, separate from your `Cmd/Ctrl+Z` in the tree — undoing a run never touches your own manual edits. If the revert itself can't be saved (for example, a storage problem at that moment), FlowJoe tells you so with a warning instead of quietly showing "undone" for a change that may come back after a restart.
 
@@ -67,7 +67,7 @@ Each scheduled run has its own **Undo** in the run history, separate from your `
 
 ## Which items a task can refresh
 
-When you create a task, it adopts the existing slots on its target node. This lets it refresh those references later without treating them as someone else’s content.
+When you ask a task to refresh existing references—for example, “keep these news links up to date”—it needs permission to replace the old results. An owner-created task takes over the existing slots it manages on its target node, and the approval card tells you how many. Cards already managed by another task are left alone. Review that count before approving. This lets the task refresh the board from its first run.
 
 If you ask it to keep a particular slot updated, the task follows that same slot when cards are reordered. You do not need to maintain slot numbers by hand.
 

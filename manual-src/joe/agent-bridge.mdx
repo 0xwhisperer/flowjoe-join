@@ -24,7 +24,15 @@ The bridge starts again on launch if you left it enabled. Turn it off here to st
 
 Otherwise, changes wait for approval by default. An **Agent request** card lets you approve or reject them even when Joe chat is closed.
 
-You can enable **Auto-apply agent edits** for the current session. Deletions, scheduled-task and saved-memory changes, and revealing hidden-from-Joe nodes still require review. The **Auto-apply** setting turns off when the bridge stops or FlowJoe relaunches.
+You can enable **Auto-apply agent edits** for the current session. Deletions, scheduled-task and saved-memory changes, and revealing hidden-from-Joe nodes still require review. The **Auto-apply** setting turns off when the bridge stops or FlowJoe relaunches. It also affects the owner’s tool-capable CLI brain inside Joe chat: ordinary changes can apply immediately, while the same review holds remain. Leave it off if you want to review each change. Guest Joe uses the invitation’s separate approval rules.
+
+## How MCP relates to Joe’s actions
+
+MCP is how a compatible assistant discovers FlowJoe’s tools and asks to use them. The tools include reading and search, preparing media, and proposing changes. A change request can combine several supported actions—such as creating nodes, moving cards, and building a stack—into one review.
+
+Connected assistants use the same [supported Flow changes](/joe/propose-approve#what-you-can-ask-joe-to-change) as Joe’s tool-capable brains. They also follow FlowJoe’s privacy and target restrictions. Their own file access, terminal commands, and other integrations are governed by the assistant’s separate settings.
+
+Choosing a CLI brain for Joe is the other direction: the installed tool answers **inside Joe chat**. FlowJoe automatically supplies that supported brain with a temporary connection; you do not need to connect it here first. The **Connect** controls are for assistants working **outside** Joe chat; the shared **Auto-apply** setting also affects the owner’s supported CLI brain, as explained above.
 
 ## What connected tools can do
 
@@ -32,6 +40,6 @@ Compatible tools can inspect and search permitted Flow content, read supported d
 
 File requests appear in FlowJoe even when Joe chat is closed. Files uploaded by a tool belong to that connection and are cleared when it disconnects.
 
-Each connection has its own recent-change history and approval results. Its undo action works only if the Flow has not changed since that connection’s last applied change.
+Each connection has its own recent-change history, supplied files, and approval results. It does not inherit Joe’s chat attachments or conversation history. Its undo action works only if the Flow has not changed since that connection’s last applied change.
 
 Run the connected assistant in [Forge](/gallery/terminal) or another terminal. This desktop connection is separate from [Joe’s choice of brain](/joe/byob) and from [browser sharing](/workspaces/sharing-and-presenting).

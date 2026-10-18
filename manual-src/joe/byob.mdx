@@ -3,15 +3,17 @@ title: "Bring Your Own Brain (BYOB)"
 description: "Choose Joe’s connection, set up your keys, and use a brain that suits your work."
 ---
 
-FlowJoe operates on a **Bring Your Own Brain (BYOB)** model. Unlike traditional SaaS tools that charge high monthly subscription fees with hefty markups on AI usage, FlowJoe runs entirely locally and connects directly to AI providers using your own API keys.
+**Bring Your Own Brain (BYOB)** lets you choose the intelligence behind Joe. Use your own provider API key, or connect a supported command-line assistant you already use. Your workspace lives locally; the context needed for an AI request goes to the chosen provider.
+
+A command-line tool, or **CLI**, is an app you run by typing commands in a terminal. FlowJoe can use some of these tools behind the scenes, so you keep talking to Joe in the familiar chat panel.
 
 ---
 
 ## Why BYOB?
 
-* **Zero Subscription Markups:** You only pay the raw token usage fees directly to the AI providers (such as OpenAI or Anthropic). Your cost depends on the model, how much context you send, and how often you use it. Each send includes the tree outline unless you shrink it — see [Token usage with Joe](/joe/token-usage).
+* **Your account, your usage:** API brains use your provider key and its usage charges. CLI brains use that tool’s account, plan, and limits. FlowJoe adds no markup to either connection. How much context you send affects usage; see [Token usage with Joe](/joe/token-usage).
 * **Model Choice:** You choose exactly which model drives Joe—whether you want the speed of a lighter model or the reasoning of a frontier model.
-* **Privacy & Control:** Your keys and chats are never routed through FlowJoe servers. Connections are established directly from your local desktop application to the AI API endpoint.
+* **Privacy & Control:** Owner requests go from your desktop to the selected provider or installed tool, rather than through a FlowJoe AI service. Shared guests use the owner’s authorized connection; they do not receive its credentials.
 
 ---
 
@@ -36,7 +38,7 @@ For easy verification, you can inspect or copy your stored API key:
 ## Configuring Your AI Brain
 
 To adjust your model config:
-1. Open **Settings → APIs → API Settings** and paste your key.
+1. For an API brain, add its key in **Settings → APIs**. For a CLI brain, install and sign into its tool first, as described below.
 2. Click the model settings button inside the Joe panel — or the brain name in the status bar — to pick the brain behind Joe:
    - **OpenAI models (API key):** **Sol 6.1**, **Luna 6** (the default), **Sol 6**, and **Astra 6**, plus **Luna**, **Terra**, and **Sol** from the GPT-5.6 family.
    - **Gemini API:** **Gemini 3.8 Flash** uses a separate Google Gemini API key. See setup below.
@@ -53,7 +55,7 @@ Open **Settings → APIs → Gemini API Key**, paste a key from Google AI Studio
 
 ### What CLI brains need first
 
-A CLI brain is **not** something FlowJoe installs for you. It appears in the picker only once the matching command-line tool is installed on your machine **and** you have signed into it in your own terminal:
+FlowJoe does not install a CLI brain for you. Install its tool and finish sign-in in your own terminal. The brain’s choice stays dimmed when FlowJoe cannot detect a usable installation or account:
 
 | Brain | Needs this installed | Sign in by running |
 |---|---|---|
@@ -61,9 +63,37 @@ A CLI brain is **not** something FlowJoe installs for you. It appears in the pic
 | Grok | the `grok` CLI | `grok` |
 | Antigravity | the `agy` CLI | `agy` |
 
-If a brain is greyed out in the picker, that tool is either missing or not signed in. These brains bill through that tool's own account rather than an API key you paste here — which is why they need no key at all.
+If a brain is greyed out, check the explanation in the picker. The tool may be missing, not signed in, or unsupported on your platform. These brains use the tool’s own account and billing; you do not paste an API key into FlowJoe for them.
 
-A CLI brain honors the same [flow permission level](/joe/permissions) (Off / Read / Propose) as OpenAI — it cannot read or propose changes to your flow beyond what your current permission allows, and this is enforced independently of what the brain itself claims. If something goes wrong on a CLI brain's turn, FlowJoe tells you what actually happened (for example, "your conversation is too large for this brain" or the brain's own error text) instead of a generic "sign in again" message. On Windows, a CLI brain that can't be driven safely from FlowJoe is shown greyed out with a note, rather than failing with a confusing error.
+### Which brains can work with your Flow?
+
+| Connection | What Joe can do |
+| --- | --- |
+| **OpenAI API** | Read permitted content and propose Flow changes. Web search and hosted Code interpreter are available when enabled. |
+| **Claude-family CLI** | Read permitted content, use Flow tools, inspect supported images, and propose changes. Replies appear as they arrive. |
+| **Grok CLI** | Read permitted content, use Flow tools, inspect supported images, and propose changes. Replies arrive together when ready. |
+| **Antigravity** | Discuss the context supplied with the conversation. It cannot fetch more Flow content on demand, propose Flow changes, or inspect image inputs through this connection. Owner only; replies arrive together when ready. |
+| **Gemini API** | Chat and writing assistance with supplied context. No callable Flow tools, proposals, web search, or Code interpreter. |
+
+For brains with Flow tools, **Off / Read / Propose** sets the limit on what they can access through FlowJoe. Choosing a stronger brain does not unlock private content. The owner’s tool-capable CLI brains also follow Agent Bridge’s session **Auto-apply agent edits** setting: leave it off to review each change; when it is on, ordinary changes can apply immediately and protected changes still wait for review. Guest Joe has separate invitation-based approval rules. See [Permissions & privacy](/joe/permissions).
+
+Claude and Grok use the same supported [Flow actions](/joe/propose-approve#what-you-can-ask-joe-to-change) as OpenAI. They connect to those actions through MCP, the connection format used by compatible AI tools. FlowJoe sets up this temporary connection for Joe automatically; you do **not** need to enable an outside assistant under Agent Bridge first.
+
+The **Web search** switch also applies to CLI brains; their available search tools depend on the selected provider. FlowJoe’s hosted **Code interpreter** is an OpenAI feature, separate from running commands in a terminal. On launch, Web search starts on and Code interpreter starts off.
+
+Codex and standalone Gemini CLI are not choices in the current Joe brain picker. A compatible outside assistant can still connect through [Agent Bridge](/joe/agent-bridge); that is a separate way to work with your Flow.
+
+### A CLI brain, Agent Bridge, or Forge?
+
+These three features fit together without being the same thing:
+
+- **BYOB** chooses who answers as Joe inside FlowJoe.
+- **Agent Bridge** lets an outside assistant work with the active Flow, using its own connection and approval controls.
+- **Forge** is FlowJoe’s [integrated terminal](/gallery/terminal), where you run commands or an interactive assistant yourself.
+
+Joe’s chat history belongs to FlowJoe. Choosing a CLI brain does not resume a terminal conversation you already have open in Forge. **Stop** cancels the current CLI request; it does not undo changes already applied. If a turn fails, FlowJoe shows the actual error or explains that the conversation is too large for that brain.
+
+FlowJoe’s access settings control its Flow tools. They are not a general restriction on everything an owner’s installed command-line tool can do on the computer; that tool has its own permissions and configuration.
 
 ### What happens with no key and no CLI brain
 
@@ -110,4 +140,4 @@ The key panels have a **Test** button. Press it and FlowJoe makes one tiny real 
 
 ### CLI brains in shared conversations
 
-A guest's Joe can use shared Flow tools and web tools, but cannot use the CLI to read your computer's unrelated files, run commands, or reach your other installed integrations. FlowJoe checks the installed CLI version before sending the guest's request. An unsupported version, an unavailable Codex model record, or Antigravity causes that request to fail using the selected brain; FlowJoe does not silently choose another provider. The currently supported release families are Claude 2.1.302 or later within 2.1, Codex 0.162.1 or later within 0.162, Gemini 0.64, and Grok 1.0.52 or later within 1.0.
+A guest's Joe can use shared Flow tools and web tools, but cannot use the CLI to read your computer's unrelated files, run commands, or reach your other installed integrations. FlowJoe checks the installed CLI version before sending the guest's request. An unsupported version or a brain unavailable to guests stops that request; FlowJoe does not silently choose another provider. For the selectable CLI brains, supported guest release families are Claude 2.1.302 or later within 2.1, and Grok 1.0.52 or later within 1.0. Antigravity is not available to guests.

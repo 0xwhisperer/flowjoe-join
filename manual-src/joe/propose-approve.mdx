@@ -3,7 +3,7 @@ title: "Proposals & approval"
 description: "Turn Joe’s ideas into changes you can review, revise, and undo."
 ---
 
-Joe can do more than describe a better workspace: he can help you build it. Ask him to organize a branch, sort references, write notes, or arrange a board. His proposal shows what will change before you decide.
+Joe can do more than describe a better workspace: he can help you build it. Ask him to organize a branch, sort references, write notes, or arrange a board. By default, his proposal shows what will change before you decide. Owner CLI brains also follow the optional [Agent Bridge auto-apply setting](#access-and-automatic-changes).
 
 ## Review a proposal
 
@@ -19,14 +19,89 @@ If the Flow changed while a proposal was waiting, FlowJoe refuses the stale prop
 
 ## What you can ask Joe to change
 
-- Build, rename, move, sort, and organize nodes.
-- Add, copy, sort, or remove gallery items; edit titles and notes.
-- Combine references into stacks, choose the displayed item, or copy one item out.
-- Create and assign tags, save memories, and set up recurring tasks.
-- Apply a node’s Theme-menu look, color a canvas card, or connect two cards on the same board.
-- Crop a picture, turn a picture or note into a PDF, or change audio cover art using an image already in FlowJoe.
+With **Propose** access and a [brain that supports Flow tools](/joe/byob#which-brains-can-work-with-your-flow), Joe can carry out the actions below. Describe the result you want in ordinary language; you do not need to learn command names. He can combine several steps into one proposal—for example, building a branch, adding references, and arranging its cards together.
 
-For example: “Create a Research branch with Sources and Findings underneath it, then move these references into Sources.” Review the result before approving.
+### Nodes and the tree
+
+- **Build a structure:** create a root, child, sibling, or a whole nested branch.
+- **Update it:** rename nodes, write their summaries, change status, apply a Theme-menu look, and expand or collapse branches. Changing a parent’s status also changes its descendants’ statuses.
+- **Reorganize:** move one or several nodes, duplicate a branch, or sort siblings by name or the numbers in their names, in either direction.
+- **Remove:** delete one node or several nodes, including their branches.
+- **Control visibility and editing:** hide or show nodes in the tree, hide a branch from Joe, or turn Freeze on or off. Ordinary tree hiding is separate from **Hidden from Joe**. Only you can reveal a branch hidden from Joe; an approved proposal cannot do that for him.
+
+Try: “Create a Research branch with Sources and Findings underneath it, then alphabetize its children.”
+
+### Gallery cards and their contents
+
+- Add cards using supported text, links, or media already supplied or prepared for the Flow; replace a card’s contents.
+- Copy cards within a node or to another node, move one or several cards between nodes, reorder them, or sort by title or numbers in their titles.
+- Edit card titles and notes, including the text attached to a stack or one of its items. Joe can also change an audio item’s displayed title.
+- Delete selected cards or selected occurrences of an item. For cropped pictures, he can separate cropped copies from their original before removing the original, so those copies remain.
+
+Editing a card’s notes is different from rewriting an attached file. These actions do not give Joe a general editor for every document or file type. Files managed by a [node repository](/tree/repositories) also have their own protections.
+
+### Stacks
+
+[Stacks](/gallery/stacks) let you keep alternatives, versions, and related references together without filling the gallery with separate cards. Joe can:
+
+- Merge two cards, several selected cards, or a node’s whole gallery into one stack.
+- Add items to a card, insert them at a chosen position in a stack, reorder items, or choose which item is displayed.
+- Copy an item into its own card while leaving it in the stack, or move it out into this node or another node.
+- Split **every** item into separate cards, keeping them all.
+- Remove selected items, or **flatten** a stack to keep only its displayed item and remove the others.
+
+<Warning>
+“Split the stack” and “keep only this version” have different results. Flattening removes the other stack items. Check the removal list before approving.
+</Warning>
+
+### Pictures, audio, and canvas boards
+
+- Crop a stored picture in place.
+- Make a new PDF from a picture or note, keeping the source.
+- Set or clear an audio item’s cover art using a picture already stored in FlowJoe.
+- Set or clear a canvas card’s color, move it to a position, set its width, or restore its usual width.
+- Connect two cards on the same board, or remove their connection.
+
+Try: “Put the three reference cards in a row, make the middle card wider, and connect the first card to the second.”
+
+Joe can also [generate or edit a picture](/joe/chat-analysis-generation#image-generation) with your OpenAI connection, then propose where to place it. Generating the picture and approving its placement are separate steps.
+
+### Spreadsheets and other workbenches
+
+Joe can read a spreadsheet and propose changes to individual cells, including several cell changes in one proposal. Each change writes a **plain value**. If that cell held a formula, the new value replaces the formula.
+
+He cannot write spreadsheet formulas, format cells, add rows or sheets, or edit a rich document or calendar through these proposals. He can read supported rich documents and calendars to help you understand or plan their contents.
+
+### Tags and Flow details
+
+Joe can create, rename, update, or delete tags and assign, replace, or clear tags on nodes and cards. A stack’s tags apply to the whole stack. He can also change the Flow’s title and summary.
+
+Try: “Create a ‘To review’ tag and put it on these reference cards.” Creating and assigning the tag can be one proposal.
+
+### Memories and recurring tasks
+
+Joe can create a [saved memory](/joe/memories-compaction), enable or disable an existing memory, or delete it. To rewrite an existing memory’s text directly, use the Memories panel.
+
+He can create or update a [scheduled task](/joe/automation), pause or resume it, or delete it. Updating a task does not move it to a different node. A task’s schedule, target, and approval settings determine how its later runs work. Creating a recurring task is a separate decision from approving a one-time chat change.
+
+## What else Joe can help with
+
+Changes are only part of Joe’s toolkit. Depending on your brain, access settings, and available services, he can also:
+
+| Ask Joe to… | What happens |
+| --- | --- |
+| Find something in the Flow | He can inspect the permitted outline, nearby and related nodes, and search node names, summaries, and card or stack-item titles and notes. This search does not search inside every attached document. |
+| Read a reference | He can open supported text and Markdown notes, PDFs, Word, ODT, PowerPoint, and EPUB files, or inspect spreadsheet, rich-document, and calendar contents. Large results may be shortened. |
+| Look at an image | He can inspect an accessible gallery picture or look again at an image attached to the current chat. A picture’s title alone does not tell him what is in it. |
+| Help with a file you have mentioned | He can show a **Choose file** request. You choose whether to supply it; a chosen file is imported into the current node’s gallery. |
+| Prepare media | He can write a text or Markdown file, create SVG artwork, prepare supplied media, or generate a picture for a later placement proposal. This does not let him load arbitrary remote image, video, or audio addresses into your gallery. |
+| Take you to a node | He can select the node and show its gallery immediately. A node link in his answer lets you choose when to go there yourself. |
+| Play audio | He can load a playlist or a node’s audio, play one track once, pause, change playback mode, play tagged audio, or save a new named playlist. These controls act immediately; see [Global audio player](/gallery/audio-player). |
+| Explain what he remembers or has changed | He can inspect saved memories and the decided proposals in **this conversation**, including rejected or revised proposals. This is separate from all-app version history. |
+| Check recurring work | He can list scheduled tasks and their reported next run, last result, and current state. |
+| Explain FlowJoe | He can consult the app’s built-in reference chapters when he needs more detail. |
+
+Web search and Code interpreter are separate options, with availability depending on the selected brain. See [Bring Your Own Brain](/joe/byob). A [connected external assistant](/joe/agent-bridge) uses the same supported change actions through MCP, with its own connection, approval, and history controls.
 
 ## Undo a change
 
@@ -36,9 +111,9 @@ Files removed by an undoable change are retained while undo may need them, so re
 
 ## Access and automatic changes
 
-Private content stays sealed from Joe even when you unlock it for yourself. Hidden-from-Joe content is also sealed; node names and positions may still appear in the outline. Frozen nodes refuse content edits.
+Private content stays sealed from Joe even when you unlock it for yourself. Hidden-from-Joe content is also sealed; node names and positions may still appear in the outline. Freeze blocks most changes to a node and its gallery. Joe can still update its summary or propose turning Freeze off; a frozen ancestor continues to protect its children. A duplicate starts unfrozen, unless its parent is still frozen.
 
-Chat proposals need your approval. [Scheduled tasks](/joe/automation) and [connected agents](/joe/agent-bridge) can apply changes under permissions you choose. Review their settings before authorizing unattended work.
+Chat proposals normally need your approval. For the owner’s tool-capable CLI brains, turning on Agent Bridge’s session **Auto-apply agent edits** also allows ordinary changes from Joe chat to apply immediately; protected changes still wait for review. Leave it off to review each change. [Scheduled tasks](/joe/automation) and [connected agents](/joe/agent-bridge) can apply changes under permissions you choose. Review their settings before authorizing unattended work.
 
 Joe’s audio playback controls take effect immediately without a proposal card. See [Global audio player](/gallery/audio-player).
 

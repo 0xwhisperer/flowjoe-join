@@ -51,6 +51,14 @@ When you import a `.json` or `.fj` file, FlowJoe prompts you for a merge strateg
 - **Merge at Root:** Appends the imported nodes as new roots side-by-side with your existing workspace.
 - **Merge Under Selected:** Ingests the imported subtree as nested children under the currently selected node.
 
+When a package has enough verified information to compare it with the connected Workspace,
+FlowJoe explains whether using it would advance the Workspace or replace it with an older version.
+It protects the current Flow and asks before updating it. A saved revision number alone does not
+prove which version is newer: packages from another app session or computer, and older packages
+without that proof, use the existing safe choices to keep the Workspace or open the package as a
+new Flow. Restarting the app does not mean the package belongs to a different Flow; it means its
+revision number cannot safely establish the relationship.
+
 *Protected nodes inside an imported package retain their individual password locks even after the package itself is unlocked and imported.*
 
 ---

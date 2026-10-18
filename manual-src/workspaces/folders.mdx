@@ -197,6 +197,14 @@ This also holds when you open a `.fj` file (File > Open, Recent imports or Impor
 
 Pictures and files that private nodes put in the Workspace folder before this protection existed are moved to this computer automatically the next time you open the Workspace, once an identical copy is safely on this computer. They keep working for you, and the folder no longer holds them. A spreadsheet, document or calendar of a private node that you have edited since may still have an older copy in the folder; FlowJoe leaves that copy in place so your newer version is never lost. Copies that other computers, sync services or backups already made cannot be recalled.
 
+FlowJoe confirms that private edits are safely saved on this computer before marking a Workspace
+save complete or switching to another Workspace. If that local save fails, saving pauses and the
+switch stops so the latest private edits are kept with the current Flow.
+When you delete the last private node, a completed save also updates this Flow's local startup
+recovery copy and removes the deleted node's old private copy so it does not return when you reopen
+the Flow. If the folder save or that local cleanup fails, saving pauses and the earlier private copy
+stays recoverable. A recovery copy belonging to another Flow is left alone.
+
 A private node's content stays on the computer where it lives. It is not stored in the Workspace folder, so it does not follow you to your own second computer: there, the node appears only as the *"Private node (not shared)"* placeholder.
 
 ---
