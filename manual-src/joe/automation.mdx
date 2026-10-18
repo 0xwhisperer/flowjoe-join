@@ -102,3 +102,6 @@ Shared tasks can change a parent's status when all affected descendants are shar
 When an Edit guest asks Joe to create or change a shared recurring task, the task is saved on the owner's Flow. Joe reads the owner's shared task list; tasks aimed at private content are excluded. Removing tasks follows the same creator and elevated deletion permissions as the Automation panel.
 
 If a guest asks Joe to undo a change, Joe sends the owner a restore request. The owner performs the restoration.
+
+
+Owner scheduled runs can read stored documents, workbook ranges and calendar date windows in the open Flow, including later pages. They do not include unsaved editor changes or open a consent dialog for scanned PDFs. Current Private and Hidden from Joe settings still apply; reads add no permission to change content. Guest tasks keep their existing shared-area access.

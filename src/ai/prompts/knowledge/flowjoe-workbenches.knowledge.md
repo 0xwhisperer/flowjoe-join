@@ -66,6 +66,7 @@ The **Rich Document Workbench** utilizes Univer Docs to provide a real word-proc
 - **Typography styling:** Change headers, font weights, colors, text alignment, and spacing.
 - **Image Integration:** Paste images directly from your clipboard into the body of the document.
 - **Headers & Footers:** Double-click the top or bottom margin of a page to edit its header or footer. Tables from imported files are kept when you save, but they cannot be edited in the editor yet.
+- **Appearance:** The editor always uses a light look, even when the app is in a dark theme.
 
 Also covered in the full docs for this area: Collaborative AI Writing.
 
