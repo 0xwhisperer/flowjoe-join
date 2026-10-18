@@ -353,13 +353,13 @@ Use the configured image service and its normal paid credits. The bridge allows 
 
 | Input | Required? | Meaning |
 | --- | --- | --- |
-| `prompt` | Yes | What to generate (or, with action edit / sourceImageKey, what to change). |
+| `prompt` | Yes | What to generate, or what to change when supplying a source image. |
 | `action` | No | Use generate (the default). The external bridge rejects edit because it requires Joe chat history. |
-| `size` | No | Override ONLY when the user asked: 1024x1024 (square) / 1024x1536 (portrait) / 1536x1024 (wide). |
-| `quality` | No | Override ONLY when the user asked (e.g. "high quality"). Choices: low, medium, high, auto. |
+| `size` | No | Image dimensions: 1024x1024 (square), 1024x1536 (portrait) or 1536x1024 (wide). Omit to use your app setting. |
+| `quality` | No | Choose low, medium, high or auto. Omit to use your app setting. |
 | `style` | No | Optional style hint; only used when the Generate Images tab style is None. Otherwise that tab’s selected style applies. |
-| `referenceAttachmentId` | No | Optional att-N id of a user-attached IMAGE to use as a visual reference. |
-| `sourceImageKey` | No | Optional: edit / make a variation of an EXISTING gallery image — its indexeddb: src key. Refused (editing_blocked) when the image belongs to a private or hidden-from-Joe node. |
+| `referenceAttachmentId` | No | For an image reference, use attachment.id returned by upload_attachment earlier in this same run list. Joe-chat attachment IDs and IDs from previous CLI commands are not accepted. |
+| `sourceImageKey` | No | Stored indexeddb: source key of an accessible gallery image to use for a variation with action generate. Private or hidden-from-Joe images are refused; the original remains unchanged until you place a result. |
 | `title` | No | Optional title for the staged gallery entry. |
 
 ```json
@@ -374,6 +374,25 @@ flowjoe-cli action generate_image --file input.json --json
 ```
 
 **Result:** A staged image and prepared entry, not an automatically placed gallery item. Place the returned entry in the same run list.
+
+For an uploaded image reference, put this step **after an image `upload_attachment` step saved
+as `uploaded` in the same `run` list**. Replace `YOUR_PROMPT` with your instructions:
+
+```json
+{
+  "action": "generate_image",
+  "input": {
+    "prompt": "YOUR_PROMPT",
+    "referenceAttachmentId": {"$result": "uploaded", "path": ["attachment", "id"]}
+  },
+  "saveAs": "generated"
+}
+```
+
+This is a run-list step, not a standalone input file. Add a later placement step using
+`{"$result":"generated","path":["entry"]}`, as in the
+[image-generation task example](/cli/everyday-tasks#add-a-file-or-generate-an-image). The upload must
+be an accepted image MIME type; using a text upload or a previous command’s ID is refused.
 
 ## Upload an image or text file for this command — `upload_attachment`
 
