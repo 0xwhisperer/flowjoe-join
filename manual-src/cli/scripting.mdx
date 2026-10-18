@@ -93,9 +93,13 @@ Names must start with a letter and be unique within the list.
 
 ## Keep related work in one connection
 
-Uploaded files, recent-change history and undo belong to the connection that created them. They are
+Uploaded files, recent-change history, undo and retained-history cursors belong to the connection that created them. They are
 cleared when the command ends. A later terminal command gets a new connection and cannot reuse
 those uploads or undo the earlier command's edit.
+
+Retained chat/image/transcript/version history is separate from connection-local change history.
+Use `query_history` and `read_history` for retained records; keep their query/read/continuation steps
+in one `run` list. A new CLI command cannot resume a previous connection’s cursor.
 
 Use one `run` list for upload → prepare → place workflows, or for an edit followed by
 `undo_last_change`. Undo still refuses if the Flow changed after that connection's last edit.

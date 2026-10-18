@@ -7,7 +7,7 @@ Generated: 2026-10-18 from the current worktree copies (post Joe-audit 2026-07-2
 Sync guard: tests/unit/appHelpKnowledgeSync.test.js fails when mintlify/**/*.mdx or this digest drifts
 from scripts/app-help-knowledge.manifest.json. -->
 
-This knowledge module teaches Joe using flowjoe-cli to control the running desktop app: installation, show/search/apply/run, JSON scripts, action lists, --preview, --autoapprove including deletions, troubleshooting, and finding the everyday-task and complete action/59-verb references.
+This knowledge module teaches Joe using flowjoe-cli to control the running desktop app: installation, show/search/apply/run, JSON scripts, action lists, --preview, --autoapprove including deletions, troubleshooting, and finding the everyday-task and complete live action/editing-verb references, bounded app-state/history/document/workbook/calendar reads.
 
 Loading this knowledge is not evidence that the CLI is installed, the desktop supports it, or any command has run. The command reference is in the user manual, not a new app panel.
 
@@ -41,15 +41,12 @@ Also covered in the full docs for this area: Shared options; Files of changes; A
 
 Use JSON, pipes and shared results in repeatable FlowJoe workflows.
 
-run takes an ordered JSON array of {action,input?,saveAs?}. Later inputs may use {"$result":"saved-name","path":["field",0]}. Steps share one connection. On failure, earlier changes remain applied. Uploads/history/undo belong only to that command's connection; a later command cannot reuse them.
+run takes an ordered JSON array of {action,input?,saveAs?}. Later inputs may use {"$result":"saved-name","path":["field",0]}. Steps share one connection. On failure, earlier changes remain applied. Uploads/history/undo belong only to that command's connection (history here means connection changes).
 Use `--json` when another program will read a command's result:
 Use a JSON file with `apply`, or send the file through standard input:
 The pipe example uses a macOS/Linux shell. In PowerShell, use `Get-Content -Raw changes.json | flowjoe-cli apply - --autoapprove --json`. Passing the filename directly works on all three platforms.
 
-**Run several actions together.**
-Save an array of steps in `steps.json`. Each step names an `action` and can supply an `input` object:
-
-Also covered in the full docs for this area: Use an earlier result; Keep related work in one connection.
+Also covered in the full docs for this area: Run several actions together; Use an earlier result; Keep related work in one connection.
 
 ## CLI approvals and troubleshooting
 

@@ -4,16 +4,36 @@ description: "Every bridge action: what it does, inputs, examples, results, and 
 ---
 
 The CLI has simple commands such as `show` and `search`, plus access to the running app’s **actions**.
-An action is a complete request, such as reading a document or preparing an image. The **59 editing
+An action is a complete request, such as reading a document or preparing an image. The **editing
 verbs** are individual changes sent inside `apply` or `propose_flow_patch`; see
 [node changes](/cli/node-changes), [reference and stack changes](/cli/gallery-changes), and
 [Flow details and automations](/cli/flow-changes).
 
 This page covers the current desktop bridge action surface. Availability depends on the running
 build, permission level and configured services. Read the actual list with `flowjoe-cli actions`.
-`get_app_state`, `query_history` and `read_history` are Joe capabilities that this external bridge
-currently does not supply; CLI session history below is separate from saved chat/version history.
+`get_app_state`, `query_history` and `read_history` expose current app facts and retained history.
+Saved history is separate from this command’s recent-change and undo history. Read access includes
+observational actions, including automation status and app help; it does not grant Flow edits.
+The editing catalog can still be inspected with Read access, even though applying its verbs requires Propose access.
 The CLI does not expose MCP resource listing/reading as a command; `open_reference` supplies app help.
+
+## Catalog snapshot and permissions
+
+On 2026-10-18, real CLI discovery against the desktop returned **25 actions with Propose access**
+and **18 with Read access**. Both profiles included **17 observational read tools**; Read’s extra
+action was `upload_attachment`, which prepares connection-local input rather than reading existing
+content. Propose also exposes editing, staging, generation, file import, navigation, player control
+and undo. These action totals are separate from the **59 editing verbs** returned by
+`describe_patch_protocol`. Read can inspect that protocol but cannot apply its changes.
+
+Observational tools in both profiles were `get_flow_snapshot`, `describe_patch_protocol`,
+`read_media_blob`, `get_app_state`, `query_history`, `read_history`, `get_node_neighbors`,
+`search_flow`, `get_island_content`, `read_item_content`, `read_media_content`, `list_joe_memories`,
+`list_scheduled_tasks`, `open_reference`, `list_recent_changes`, `get_approval_outcome` and
+`read_chat_attachment`. Uploads, staging, generation, navigation, player actions and mutations are
+not counted as observational reads. These are dated measurements, not permanent limits: discover
+your running app’s catalog before scripting. Native Joe, external MCP and guests can have different
+services and authority; an owner endpoint does not establish guest or shared-Flow support.
 
 ## How to run an example
 
@@ -27,10 +47,100 @@ data. `--json` does not turn an image into a written description. Inspect the ac
 assuming a change succeeded. Private/hidden content remains withheld, even with `--autoapprove`.
 
 Gallery and stack positions start at **0**. Only pass `itemIndex` for a member **inside a stack**.
-Files, undo and change history are owned by one command’s connection. Examples using `$result`,
+Files, undo, recent-change history and retained-history cursors are owned by one command’s connection.
+Content-reader cursors instead bind the target, source revision and identical selectors; using one
+run list is convenient, but they do not have the history reader’s session restriction. Examples using `$result`,
 previous uploads or undo must be steps in one [run list](/cli/scripting), not separate invocations.
 A two-minute default wait still applies **with `--autoapprove`**; the flag removes approval waiting,
 not processing time. Increase it with `--wait` when needed.
+
+## Read current app facts — `get_app_state`
+
+Read sampled facts about this running app without changing settings or opening a dialog. These are
+current observations, not historical evidence or proof that a save is durable. Missing information is
+reported as unavailable. External bridge permissions describe this connection; Joe’s native chat
+setting does not grant or remove this connection’s configured Read or Propose access.
+
+**Changes and approval:** Read only; no approval.
+
+| Input | Required? | Meaning |
+| --- | --- | --- |
+| `sections` | Yes | One or more unique values: `storage`, `save`, `conflicts`, `model`, `permissions`, `diagnostics` (at most six). |
+
+```json
+{"sections":["storage","save","permissions"]}
+```
+
+```sh
+flowjoe-cli action get_app_state --file input.json --json
+```
+
+**Result:** Bounded, sampled section data, with explicit unavailable fields. It does not reveal
+credentials or a complete settings dump. A Flow change, revoked permission or canceled request can
+invalidate an in-progress read. Owner desktop facts do not establish a guest’s permissions or settings.
+
+## Find retained history — `query_history`
+
+Search retained records belonging to the current Flow without opening or switching Joe chats.
+Accessible owners are checked before search results, snippets and counts are produced. A missing
+result does not prove something never happened: coverage and retention can be partial.
+
+**Changes and approval:** Read only; no approval.
+
+| Input | Required? | Meaning |
+| --- | --- | --- |
+| `kind` | Yes | `chat`, `image`, `transcript` or `version`. |
+| `query` | No | Search text, at most 200 characters. |
+| `after`, `before` | No | Inclusive ISO date/time bounds. |
+| `nodeId` | No | Limit to an accessible node. |
+| `limit` | No | Records per page, from 1 to 30. |
+| `cursor` | No | Previous `nextCursor`; repeat the same filters in the same connection. |
+
+```json
+{"kind":"chat","query":"launch decision","limit":10}
+```
+
+```sh
+flowjoe-cli action query_history --file input.json --json
+```
+
+**Result:** `records` with stable `recordId`, `revision`, source details and snippets, plus explicit
+coverage and continuation information. Image history provides prompt/model metadata, not image pixels.
+Version history provides permitted change metadata, not raw old documents or a version restore.
+
+## Read a retained history record — `read_history`
+
+Read bounded historical text identified by `query_history`. It does not change the current chat,
+restore a version or grant permission to edit. Historical text is evidence from its cited source.
+
+**Changes and approval:** Read only; no approval.
+
+| Input | Required? | Meaning |
+| --- | --- | --- |
+| `kind` | Yes | The query’s `chat`, `image`, `transcript` or `version` kind. |
+| `recordId` | Yes | Exact ID returned by the query. |
+| `revision` | Yes | Exact revision returned for that record. |
+| `limit` | No | Text character budget, from 1 to 12,000. |
+| `cursor` | No | Previous `nextCursor`; repeat kind, ID, revision and limit in the same connection. |
+
+Save this as `steps.json`, using a query that returns at least one record:
+
+```json
+[
+  {"action":"query_history","input":{"kind":"chat","query":"launch decision","limit":1},"saveAs":"found"},
+  {"action":"read_history","input":{"kind":"chat","recordId":{"$result":"found","path":["records",0,"recordId"]},"revision":{"$result":"found","path":["records",0,"revision"]},"limit":2000},"saveAs":"page"}
+]
+```
+
+```sh
+flowjoe-cli run steps.json --json
+```
+
+**Result:** Bounded text with source/conversation/message citations and character coverage. When
+`page` includes `nextCursor`, a later step in the same list can read the next page by repeating the
+same inputs and adding `"cursor":{"$result":"page","path":["nextCursor"]}`. Only add that step when
+you expect another page; an absent result reference stops the list. Do not paste a cursor into a new
+CLI command. Changed sources, revisions, Flow or permissions require a fresh query.
 
 ## Read the Flow or one branch — `get_flow_snapshot`
 
@@ -117,6 +227,13 @@ Read extracted text from a gallery note, text file or supported PDF/Word/ODT/Pow
 | `nodeId` | Yes | The node whose gallery holds the item. |
 | `slotIndex` | Yes | 0-based slot index in that node's gallery. |
 | `itemIndex` | No | Only for stack slots: 0-based item index inside the stack. |
+| `entryId` | No | Expected stable entry ID; a mismatch refuses the read. |
+| `itemPath` | No | Nested stack indices, starting at 0; replaces `itemIndex`. |
+| `startChar`, `endChar` | No | Character range starting at 0; end is exclusive. |
+| `startLine`, `endLine` | No | Line range starting at 1; end is inclusive. |
+| `heading` | No | Exact Markdown heading text, through the next heading. Choose characters, lines or heading, not a combination. |
+| `maxChars` | No | Page budget, from 512 to 60,000. |
+| `cursor` | No | Previous `nextCursor`; repeat all other inputs. |
 | `startPage` | No | Only for a SCANNED PDF being read as page images: 1-based page to start from. Use it to continue through a long scan (the result tells you the next page). Omit for a normal read. |
 
 ```json
@@ -130,11 +247,18 @@ Read extracted text from a gallery note, text file or supported PDF/Word/ODT/Pow
 flowjoe-cli action read_item_content --file input.json --json
 ```
 
-**Result:** Extracted text or scanned-page image content, with truncation/continuation information when needed.
+**Result:** Text pages include `textContent`, `source.revision`, exact `coverage`, `partial`,
+`truncated` and, when more remains, `nextCursor`. Scanned PDFs can instead return page images with
+page continuation guidance. For example, `{"nodeId":"YOUR_NODE_ID","slotIndex":0,"startLine":2001,"endLine":2050}`
+reads those lines rather than just the beginning of the file. A changed or moved target, changed
+content or revoked access refuses continuation; restart the read. A canceled read is not a successful empty result.
 
 ## Read a spreadsheet, calendar or rich document — `get_island_content`
 
 Read one workbench reference’s structured content. Add itemIndex only for a member inside a stack.
+Use `page: true` for bounded, addressed pages. An open workbench may be flushed before reading;
+`source.policy` identifies `flushed` or `stored` evidence. A failed flush is reported as
+`flush_unconfirmed`, rather than presenting an unsaved draft as saved content.
 
 **Changes and approval:** Read only; no approval.
 
@@ -155,7 +279,41 @@ Read one workbench reference’s structured content. Add itemIndex only for a me
 flowjoe-cli action get_island_content --file input.json --json
 ```
 
-**Result:** A content summary and the workbench data; large content can be truncated.
+Additional optional inputs:
+
+| Input | Meaning |
+| --- | --- |
+| `page` | Set `true` for addressed paging. |
+| `entryId`, `itemPath` | Expected entry ID and nested stack path; `itemPath` replaces `itemIndex`. |
+| `listSheets` | List workbook sheet IDs, names and dimensions without cell content. |
+| `sheet` | Exact workbook sheet ID or name. Omit to read workbook order. |
+| `range` | Inclusive A1 range, such as `A2001:C2050`. |
+| `startRow`, `endRow`, `startColumn`, `endColumn` | Alternative inclusive workbook bounds; rows start at 1, columns use letters. |
+| `startBlock`, `endBlock` | Rich-document block range, starting at 0 with exclusive end; body, then headers and footers. |
+| `after`, `before`, `timezone` | Inclusive calendar dates in `YYYY-MM-DD` and an IANA timezone, such as `America/Denver`; defaults to calendar timezone or UTC. No recurrence expansion. |
+| `limit` | Record budget: up to 2,000 workbook cells or 200 calendar/document records. |
+| `maxChars` | Character budget, from 512 to 16,000 for these pages. |
+| `cursor` | Previous `nextCursor`; repeat all other inputs. |
+
+For example, use one of these as `input.json` with the command above:
+
+```json
+{"nodeId":"YOUR_NODE_ID","slotIndex":0,"page":true,"sheet":"Sheet1","range":"A2001:C2050"}
+```
+
+```json
+{"nodeId":"YOUR_NODE_ID","slotIndex":0,"page":true,"startBlock":100,"endBlock":110}
+```
+
+```json
+{"nodeId":"YOUR_NODE_ID","slotIndex":0,"page":true,"after":"2026-10-01","before":"2026-10-31","timezone":"America/Denver"}
+```
+
+**Result:** `content` contains JSON text with addressed fragments, including cell/block/event
+addresses, `textOffset` and `complete`. `coverage`, `summary`, `source.revision`, `partial`, `truncated`
+and `nextCursor` describe the page. A long record can span pages; keep every fragment before moving
+on. Repeat identical selectors with the cursor in one `run` list. A changed source or revoked target
+invalidates continuation rather than silently mixing revisions.
 
 ## Read an image — `read_media_content`
 
@@ -235,7 +393,7 @@ flowjoe-cli action list_joe_memories --file input.json --json
 
 List automations for the open Flow and check when they next run. Availability depends on this bridge connection’s permissions and desktop build.
 
-**Changes and approval:** Read only; no approval; may be unavailable on a read-only bridge.
+**Changes and approval:** Read only; no approval; available with Read or Propose bridge access. Editing automations still requires Propose access and ordinary approval rules.
 
 **Inputs:** none.
 
