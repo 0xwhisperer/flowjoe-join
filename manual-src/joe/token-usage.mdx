@@ -61,9 +61,31 @@ The bar is this send against the model's context window. Your provider's separat
 
 ## A second request per send: the Context Director
 
-When **Smart context loading** is on (Settings → Joe AI; it is on by default), each send first makes one small, separate request that decides which manual chapters and skills to load for your message. It runs on the small pinned director model (Luna) when Joe uses OpenAI, on your brain's own helper tier when you bring your own brain, or on TypeSafe if you have added a key — see below.
+When **Smart context loading** is on (Settings → Joe AI; it is on by default), each send first makes one small, separate request that decides which manual chapters and skills to load for your message. Every brain has one. Without a TypeSafe key, this model decides:
 
-That request is billed like any other, but it is **not** part of Joe's context window, so it does not appear on the token bar. It is roughly 2k input tokens, plus a short verdict — capped at 200 output tokens on the OpenAI route. If you bring your own brain, that cap is not forwarded and your own provider's limits apply. Turn **Smart context loading** off to remove it — Joe then loads every chapter and skill inline instead, which usually costs more on the main send than the director saves.
+| Joe's brain | Who makes that decision |
+| :--- | :--- |
+| OpenAI | A small, cheap OpenAI model (Luna). |
+| Gemini 3.8 Flash (Gemini API key) | Gemini 3.5 Flash-Lite, a cheaper Gemini model on the same key. This works in the browser too. |
+| Claude | Haiku, through your Claude sign-in. |
+| Antigravity | Gemini 3.8 Flash (Low), through your Antigravity sign-in. |
+| Grok | Grok 4.7. Grok's command-line tool offers no cheaper model, so a TypeSafe key saves the most here. |
+
+With a TypeSafe key, in the desktop app, TypeSafe answers first on every brain (see below). If you run FlowJoe yourself in a plain web browser, TypeSafe can't be reached, so Gemini uses its own model from the table. Guests who join your shared Flow from a browser still get TypeSafe, because their requests go through your computer. If TypeSafe can't answer, OpenAI falls back to Luna. Other brains load everything for that message rather than also waiting for the model in the table.
+
+If the decision fails on any brain other than OpenAI (no answer, a garbled answer, or too slow), Joe gets every chapter and every skill for that message. A failure can cost tokens, but it never leaves Joe without the instructions he needs to edit your Flow.
+
+That request is billed like any other, but it is **not** part of Joe's context window, so it does not appear on the token bar. It is roughly 2k input tokens, plus a short answer: up to 200 output tokens on OpenAI, and more room on Gemini, because Gemini always thinks a little first. On a command-line brain your own provider's limits apply. Turn **Smart context loading** off to remove it. Joe then loads every chapter and skill inline instead, which usually costs more on the main send than the director saves.
+
+In an offline test with an empty Flow and a sample decision that picked one manual chapter, the first Gemini request for a plain question was about **one sixth** the size it was when every chapter and skill was loaded. Joe re-sends the request after each action he takes, so the saving counts again on each round.
+
+### Cheaper models for small jobs
+
+Spell-check, conversation compaction and the decision above use the cheaper helper model listed in the table, not your main chat model. Attachment memories use it too, on OpenAI (Luna) and on the Gemini API key (Gemini 3.5 Flash-Lite); command-line brains don't write attachment memories. Writing actions in documents and notes still use the chat model you picked.
+
+### How much Gemini thinks
+
+On **Gemini 3.8 Flash**, Joe asks for **low** thinking on ordinary chat and **high** thinking when he is about to change your Flow or is recovering from a failed action. With **Smart context loading** off, or on a message where that decision fails, Joe can't tell whether you want a change, so every such message uses **high** thinking. This matches what he does on OpenAI.
 
 ---
 
@@ -181,4 +203,4 @@ Some providers and command-line tools do not return complete usage. Those totals
 
 Joe can ask for a specific page from a manual link when it needs a focused lookup. That lookup includes the complete page, its chapter introduction and any required permissions or approval guidance. Other pages remain available through another lookup. If the page or required guidance cannot be loaded, Joe receives the ordinary chapter result with an explanation of the fallback. The manual reference chip opens the page that was successfully consulted.
 
-OpenAI chats can narrow manual lookups and avoid repeating exact pages already in the request. Follow-up counts still depend on the conversation.
+OpenAI and Gemini API-key chats can narrow manual lookups and avoid repeating exact pages already in the request. Follow-up counts still depend on the conversation.
