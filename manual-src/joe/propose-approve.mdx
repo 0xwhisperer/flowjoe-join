@@ -3,7 +3,7 @@ title: "Proposals & approval"
 description: "Turn Joe’s ideas into changes you can review, revise, and undo."
 ---
 
-Joe can do more than describe a better workspace: he can help you build it. Ask him to organize a branch, sort references, write notes, or arrange a board. By default, his proposal shows what will change before you decide. Owner CLI brains also follow the optional [Agent Bridge auto-apply setting](#access-and-automatic-changes).
+Joe can do more than describe a better workspace: he can help you build it. Ask him to organize a branch, sort references, write notes, or arrange a board. His proposal always shows what will change before you decide, whichever brain you choose.
 
 ## Review a proposal
 
@@ -93,7 +93,7 @@ Changes are only part of Joe’s toolkit. Depending on your brain, access settin
 | Find something in the Flow | He can inspect the permitted outline, nearby and related nodes, and search node names, summaries, and card or stack-item titles and notes. This search does not search inside every attached document. |
 | Read a reference | He can open supported text and Markdown notes, PDFs, Word, ODT, PowerPoint, and EPUB files, or inspect spreadsheet, rich-document, and calendar contents. Large results may be shortened. |
 | Look at an image | He can inspect an accessible gallery picture or look again at an image attached to the current chat. A picture’s title alone does not tell him what is in it. |
-| Find pictures by what they show | With a [TypeSafe API key](/joe/token-usage#the-optional-typesafe-key), he can rank the pictures in part of your Flow by what they show—“the warm, minimal interiors in my moodboard”, “more like this one”—then open only the best matches. This works in your own desktop chat when an OpenAI or Gemini model is Joe’s brain; a CLI brain and connected assistants cannot use it. Without a key, or if TypeSafe can’t help, he picks pictures by their names. |
+| Find pictures by what they show | With a [TypeSafe API key](/joe/token-usage#the-optional-typesafe-key), he can rank the pictures in part of your Flow by what they show—“the warm, minimal interiors in my moodboard”, “more like this one”—then open only the best matches. This works in your own desktop chat on every brain that uses Flow tools (OpenAI, Gemini, and CLI brains such as Claude, Grok, Codex and Gemini CLI); assistants connected from outside cannot use it. Antigravity can't use Flow tools yet; that's being fixed. Without a key, or if TypeSafe can’t help, he picks pictures by their names. |
 | Help with a file you have mentioned | He can show a **Choose file** request. You choose whether to supply it; a chosen file is imported into the current node’s gallery. |
 | Prepare media | He can write a text or Markdown file, create SVG artwork, prepare supplied media, or generate a picture for a later placement proposal. This does not let him load arbitrary remote image, video, or audio addresses into your gallery. |
 | Take you to a node | He can select the node and show its gallery immediately. A node link in his answer lets you choose when to go there yourself. |
@@ -120,7 +120,7 @@ Files removed by an undoable change are retained while undo may need them, so re
 
 Private content stays sealed from Joe even when you unlock it for yourself. Hidden-from-Joe content is also sealed; node names and positions may still appear in the outline. Freeze blocks most changes to a node and its gallery. Joe can still update its summary or propose turning Freeze off; a frozen ancestor continues to protect its children. A duplicate starts unfrozen, unless its parent is still frozen.
 
-Chat proposals normally need your approval. For the owner’s tool-capable CLI brains, turning on Agent Bridge’s session **Auto-apply agent edits** also allows ordinary changes from Joe chat to apply immediately; protected changes still wait for review. Leave it off to review each change. [Scheduled tasks](/joe/automation) and [connected agents](/joe/agent-bridge) can apply changes under permissions you choose. Review their settings before authorizing unattended work.
+Joe’s chat proposals always need your approval, on every brain. Agent Bridge’s session **Auto-apply agent edits** setting only affects outside assistants, never Joe chat. [Scheduled tasks](/joe/automation) and [connected agents](/joe/agent-bridge) can apply changes under permissions you choose. Review their settings before authorizing unattended work.
 
 Joe’s audio playback controls take effect immediately without a proposal card. See [Global audio player](/gallery/audio-player).
 

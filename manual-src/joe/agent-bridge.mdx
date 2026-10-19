@@ -29,7 +29,7 @@ not change this card's saved settings or other agents' approvals.
 
 Otherwise, changes wait for approval by default. An **Agent request** card lets you approve or reject them even when Joe chat is closed.
 
-You can enable **Auto-apply agent edits** for the current session. Deletions, repository file edits, scheduled-task and saved-memory changes, and revealing hidden-from-Joe nodes still require review. The **Auto-apply** setting turns off when the bridge stops or FlowJoe relaunches. It also affects the owner’s tool-capable CLI brain inside Joe chat: ordinary changes can apply immediately, while the same review holds remain. Leave it off if you want to review each change. Guest Joe uses the invitation’s separate approval rules.
+You can enable **Auto-apply agent edits** for the current session. Deletions, repository file edits, scheduled-task and saved-memory changes, and revealing hidden-from-Joe nodes still require review. The **Auto-apply** setting turns off when the bridge stops or FlowJoe relaunches. It only affects outside assistants: Joe’s own changes in Joe chat always ask you first, whichever brain you choose. Leave it off if you want to review each change. Guest Joe uses the invitation’s separate approval rules.
 
 ## How MCP relates to Joe’s actions
 
@@ -37,11 +37,11 @@ MCP is how a compatible assistant discovers FlowJoe’s tools and asks to use th
 
 Connected assistants use the same [supported Flow changes](/joe/propose-approve#what-you-can-ask-joe-to-change) as Joe’s tool-capable brains. They also follow FlowJoe’s privacy and target restrictions. Their own file access, terminal commands, and other integrations are governed by the assistant’s separate settings.
 
-Choosing a CLI brain for Joe is the other direction: the installed tool answers **inside Joe chat**. FlowJoe automatically supplies that supported brain with a temporary connection; you do not need to connect it here first. The **Connect** controls are for assistants working **outside** Joe chat; the shared **Auto-apply** setting also affects the owner’s supported CLI brain, as explained above.
+Choosing a CLI brain for Joe is the other direction: the installed tool answers **inside Joe chat**. FlowJoe automatically supplies that supported brain with a temporary connection; you do not need to connect it here first. The **Connect** controls and the **Auto-apply** setting are for assistants working **outside** Joe chat; Joe’s own changes always ask you first, as explained above.
 
 ## What connected tools can do
 
-Compatible tools can inspect and search permitted Flow content, read supported documents and media, supply files, generate images with your configured OpenAI connection, and propose changes. Connected tools and CLI brains cannot do the few things only Joe’s own chat can: hand you a restore, export, import or outside-changes review, find pictures by what they show, read terminal lines you share, or keep reading a browser page in parts (a page you explicitly ask about still reaches every brain). See [Only in Joe’s chat](/cli/action-reference#only-in-joes-chat).
+Compatible tools can inspect and search permitted Flow content, read supported documents and media, supply files, generate images with your configured OpenAI connection, and propose changes. Joe himself, on every brain that uses Flow tools (OpenAI, Gemini, and CLI brains such as Claude, Grok, Codex and Gemini CLI), can do a few things that assistants connected from outside cannot: hand you a restore, export, import or outside-changes review, find pictures by what they show, read terminal lines you share, or keep reading a browser page in parts (a page you explicitly ask about still reaches every assistant as context). Each of these still follows Joe’s permission level: cards need Propose and reads need Read. See [Only in Joe’s chat](/cli/action-reference#only-in-joes-chat). Antigravity can't use Flow tools yet; that's being fixed.
 
 File requests appear in FlowJoe even when Joe chat is closed. Files uploaded by a tool belong to that connection and are cleared when it disconnects.
 

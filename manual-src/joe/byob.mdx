@@ -77,7 +77,7 @@ If a brain is greyed out, check the explanation in the picker. The tool may be m
 | **Antigravity** | Discuss the context supplied with the conversation. It cannot fetch more Flow content on demand, propose Flow changes, or inspect image inputs through this connection. Owner only; replies arrive together when ready. |
 | **Gemini API** | Chat, permitted Flow reads, and proposals through the existing approval cards. No hosted web search or Code interpreter. |
 
-For brains with Flow tools, **Off / Read / Propose** sets the limit on what they can access through FlowJoe. Choosing a stronger brain does not unlock private content. The owner’s tool-capable CLI brains also follow Agent Bridge’s session **Auto-apply agent edits** setting: leave it off to review each change; when it is on, ordinary changes can apply immediately and protected changes still wait for review. Guest Joe has separate invitation-based approval rules. See [Permissions & privacy](/joe/permissions).
+For brains with Flow tools, **Off / Read / Propose** sets the limit on what they can access through FlowJoe. Choosing a stronger brain does not unlock private content. Whichever brain you choose, Joe’s own changes always come to you as a card to approve; Agent Bridge’s **Auto-apply agent edits** setting only affects outside assistants. Guest Joe has separate invitation-based approval rules. See [Permissions & privacy](/joe/permissions).
 
 Claude and Grok use the same supported [Flow actions](/joe/propose-approve#what-you-can-ask-joe-to-change) as OpenAI. They connect to those actions through MCP, the connection format used by compatible AI tools. FlowJoe sets up this temporary connection for Joe automatically; you do **not** need to enable an outside assistant under Agent Bridge first.
 
@@ -93,7 +93,7 @@ These three features fit together without being the same thing:
 - **Agent Bridge** lets an outside assistant work with the active Flow, using its own connection and approval controls.
 - **Forge** is FlowJoe’s [integrated terminal](/gallery/terminal), where you run commands or an interactive assistant yourself.
 
-Joe’s chat history belongs to FlowJoe. Choosing a CLI brain does not resume a terminal conversation you already have open in Forge. **Stop** cancels the current CLI request; it does not undo changes already applied. If a turn fails, FlowJoe shows the actual error or explains that the conversation is too large for that brain.
+Joe’s chat history belongs to FlowJoe. Choosing a CLI brain does not resume a terminal conversation you already have open in Forge. **Stop** cancels the current CLI request; it does not undo changes already applied. Asking Joe to undo his last change works across the whole conversation on every brain that uses Flow tools (OpenAI, Gemini, and CLI brains such as Claude, Grok, Codex and Gemini CLI); Antigravity can't use Flow tools yet (that's being fixed). If a turn fails, FlowJoe shows the actual error or explains that the conversation is too large for that brain.
 
 FlowJoe’s access settings control its Flow tools. They are not a general restriction on everything an owner’s installed command-line tool can do on the computer; that tool has its own permissions and configuration.
 

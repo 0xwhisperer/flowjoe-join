@@ -47,7 +47,9 @@ Also covered in the full docs for this area: Where to get an OpenAI key; Set up 
 
 Let a local coding assistant work with your Flow while you stay in control.
 
-Only Joe’s own chat with an OpenAI or Gemini brain can hand the owner a restore, export, import or outside-changes review, find pictures by what they show, read terminal lines the owner shares, or keep reading a browser page in parts; connected assistants, the FlowJoe CLI and CLI brains cannot. A page the owner explicitly asks about still reaches every brain.
+Joe works the same on every brain that uses Flow tools (OpenAI, Gemini, Claude, Grok, Codex, Gemini CLI): in his own chat he can hand the owner a restore, export, import or outside-changes review, find pictures, read shared terminal lines, read a browser page in parts, and undo or list his changes.
+Antigravity cannot use Flow tools yet (being fixed); Agent Bridge assistants and the FlowJoe CLI never get these tools.
+A page the owner explicitly asks about still reaches every brain.
 The **Agent Bridge** connects your active Flow to compatible AI assistants and developer tools on your computer. A coding assistant can work with your plan, references, and notes—not just the files in a code folder. MCP is the connection format these tools use.
 
 **Connect a tool.**
