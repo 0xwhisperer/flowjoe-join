@@ -10,6 +10,7 @@ description: "How to open Joe, interact, and manage active AI chat sessions."
 ## Opening Joe
 
 You can invoke Joe's assistant panel from multiple places:
+
 - **Sidebar Icon:** Click the Robot icon in the sidebar to open the primary Chat panel.
 - **Keyboard Shortcut:** Press `Cmd+Shift+A` / `Ctrl+Shift+A` to open, minimize, or restore the Joe panel. (`Ctrl+J` copies the selected node's JSON — it does **not** open Joe.)
 - **Node Summary brainstorm:** Click "Brainstorm with Joe" inside the Node Summary modal.
@@ -22,10 +23,11 @@ You can invoke Joe's assistant panel from multiple places:
 ![Joe Assistant Panel Chat Modal](/images/05-joe-chat-modal.png)
 
 When Joe is active, his interface is clean and lightweight:
+
 - **Docked or floating:** Joe normally opens beside the gallery. Drag the divider to resize the column, use **Widen** for more room, or pop Joe out into a floating window. All four docked tabs share your chosen column width; the default is 280 pixels.
 - **Streaming replies:** Joe's answers appear as they're written, not all at once at the end — including replies that come after he reads or checks something (a multi-step answer streams in each step). On the Claude-family CLI brains (see [Bring Your Own Brain](/joe/byob)), the terminal agent's own reply streams too; Gemini API replies also stream. Grok and Antigravity currently show their full reply at once instead.
 - **Stop really stops.** Clicking **Stop** on a CLI brain (Claude, Grok, or Antigravity) cancels that request and closes any temporary Flow connection. It does not undo changes already applied.
-- **Voice Dictation:** Click the microphone icon or hold your voice shortcut key to dictate prompts. Joe supports a robust voice command set (e.g. saying *"comma"*, *"new line"*, or *"delete last word"* inserts the correct characters).
+- **Voice Dictation:** Click the microphone icon or hold your voice shortcut key to dictate prompts. Joe supports a robust voice command set (e.g. saying _"comma"_, _"new line"_, or _"delete last word"_ inserts the correct characters).
 - **Clickable prompt suggestions:** Ask Joe for ideas or prompts you could try next, and he can show them as buttons below his reply. Clicking one puts it in the message box; review or edit it before sending.
 - **Read-Aloud Voice:** In Settings, you can configure Joe's voice. When enabled, Joe streams his replies out loud via OpenAI's text-to-speech engine.
 - **Honest waits and clear errors.** If a request needs to retry (a brief provider hiccup), Joe's status shows **Retrying…** instead of looking stuck on "thinking". If something goes wrong — you're out of quota, your key was rejected, or the provider is having trouble — the chat shows a plain-language reason instead of a raw technical error, with the original provider text available underneath if you need it for support. If a chat message genuinely fails to save (for example, storage is full), you see a one-time warning toast instead of silently losing it.
@@ -44,7 +46,11 @@ The target section below the tabs shows the node and, when selected, its slot. C
 - **Last used:** A separate **Last used** badge marks the most recently visited slot in that node, including gallery visits and notes editing. It is separate from Joe's selected-target highlight, so you can see both while Joe is locked to another slot. Recent slot visits are remembered on this computer after restart and follow the slot when it is reordered. Deleted slots are not replaced by whichever slot takes their old position.
 - **Lock:** The lock keeps Joe on the chosen target while you browse. Explicit target choices still work when locked; unfinished operations and read-only conversations keep their existing target restrictions.
 
-Unsent Chat text stays with its conversation. Unapplied Spelling text stays with its slot while you change tabs, choose another slot or visit Flow Chat and return. These unfinished text drafts are kept for this session; apply or save them before closing the app. The recent-visit badge is a separate remembered preference, not a saved Spelling draft.
+Unsent Chat text stays with its conversation. Unapplied Spelling text stays with its slot while you change tabs, choose another slot or visit Flow Chat and return. These unfinished text drafts are kept for this session; apply or save them before closing the app. The recent-visit badge is a separate remembered preference, not a saved Spelling draft. Replacing or reopening a Flow starts a new document session; unfinished drafts from the previous document are not inserted into the new one. Ordinary updates to the same shared Flow keep your session drafts.
+
+While Joe is preparing a reply, answering, compacting a conversation or waiting for a proposal decision, target choices keep the current work in place. Clicking Chat during a reply keeps that reply running. A chosen slot follows its identity when slots are reordered; if it disappears, choose a live destination before sending again. Loading an older conversation only updates the place you are still viewing. Replacing the Flow ends work that belonged to the previous document.
+
+Spelling checks the destination again when you press Apply. If the node or an ancestor is now frozen or password-locked, your role is View, or the workspace is temporarily unable to accept edits, the correction is not written and the review remains available.
 
 ---
 
@@ -52,7 +58,7 @@ Unsent Chat text stays with its conversation. Unapplied Spelling text stays with
 
 Each slot, node and summary keeps its own conversation with Joe. A slot's conversation stays with that slot: moving or reordering slots keeps it attached, and nothing is dropped to make room for newer ones, so every older conversation is kept.
 
-- **Chat History:** Click **History** (the clock icon) at the top of Joe's chat to see the conversations for the place you are on. The list names the real place (for example *Research › Slot 3*) and ends with **All conversations in this flow · N**, which opens the Chat History tab of History.
+- **Chat History:** Click **History** (the clock icon) at the top of Joe's chat to see the conversations for the place you are on. The list names the real place (for example _Research › Slot 3_) and ends with **All conversations in this flow · N**, which opens the Chat History tab of History.
 - **Back to …:** When Joe's docked panel follows you to a different node or slot, a **Back to "conversation title" · N messages** row appears under the new place so you can return to the conversation you left. It stays until you click it, dismiss it with **Dismiss**, send a message in the new place, lock the new place, or switch somewhere else again. It only appears when the conversation you left had messages. Guests can return to conversations in shared, nonprivate work; a conversation becomes unavailable when its place is made private or removed from their share.
 - **Omit, Pin and Delete** buttons sit flush against the message they belong to. In a narrow Joe column they turn into small icons; hover one to see its name.
 - **Shared conversations:** Your messages and guests’ messages carry a small avatar beside the bottom-right of the bubble. Hover or keyboard-focus the avatar to see who wrote it. A matching avatar above the message box shows who else is typing to Joe.
@@ -66,6 +72,7 @@ See [History & Recovery](/workspaces/recovery) for the Chat History and Image Hi
 ## Context awareness
 
 Joe is given a bundle with each send, not only the sentence you typed:
+
 - **Where you are** — the selected node, its summary, and the active gallery slot or stack.
 - **The flow map** — a name-and-id outline of the tree. By default this is limited to the node you are on, everything under it, and the path up to the root (**Limit map to my location**, on by default). You can send the whole tree, or omit the map entirely, with the checkboxes above the message box.
 - The text of the current slot, plus any documents, spreadsheets, or files you attach.

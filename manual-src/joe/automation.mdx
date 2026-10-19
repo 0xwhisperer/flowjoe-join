@@ -105,3 +105,7 @@ If a guest asks Joe to undo a change, Joe sends the owner a restore request. The
 
 
 Owner scheduled runs can read stored documents, workbook ranges and calendar date windows in the open Flow, including later pages. They do not include unsaved editor changes or open a consent dialog for scanned PDFs. Current Private and Hidden from Joe settings still apply; reads add no permission to change content. Guest tasks keep their existing shared-area access.
+
+When the owner enables Joe for an invitation, View and Edit guests can ask what's scheduled in their shared area. Joe can report task names, schedules, enabled state, approval mode and run timing/status without permission to change or run tasks. Tasks aimed at Private or Hidden from Joe content, missing targets, sealed items or content outside the share are omitted entirely. Task instructions, raw logs/errors and owner computer paths are not included.
+
+The owner checks access again while preparing the answer. Turning Joe off, ending access or withdrawing shared content prevents a pending answer from revealing that metadata; Stop cancels the read. These reads can continue while the owner presents, but a sharing pause blocks them. View remains read-only. The Automation panel's ordinary shared lists remain readable when Joe is off.

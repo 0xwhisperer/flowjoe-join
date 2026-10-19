@@ -3,6 +3,10 @@ title: "Everyday CLI tasks"
 description: "Read notes, inspect branches, edit content, add references, and check results."
 ---
 
+[Retained attachment memory](/cli/action-reference#read-an-uploaded-attachment-or-retained-attachment-memory--read_chat_attachment) can recover saved evidence after a document’s original bytes are gone. It returns stored memory text and provenance, not the original document.
+
+To inspect a repository, use [repository state and file reads](/cli/action-reference#read-repository-state--read_repository). Choose saved bytes or an actual already-open draft/revision; reading never opens or saves an editor.
+
 Install and connect using [Start using the CLI](/cli/getting-started). These examples work on the
 currently open Flow; they do not open or switch Flows. Replace `YOUR_NODE_ID` with an ID from `show`.
 For an action with inputs, save the JSON block as `input.json`, then run its command.

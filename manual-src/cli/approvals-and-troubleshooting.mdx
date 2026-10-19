@@ -3,6 +3,10 @@ title: "CLI approvals and troubleshooting"
 description: "Understand approval choices and resolve common connection or command problems."
 ---
 
+Memory mode needs an admitted chat `recordId` and its `historyRevision`; `conversation_required` means those selectors are missing. A stale memory revision requires a fresh index. Neither a memory ID nor an upload ID grants access to the other namespace.
+
+Repository reads need no approval card, but still require Read or Propose access and a currently admitted source. `model_unavailable` means no matching open draft/revision model exists; `stale_cursor` requires a fresh read in the same run connection.
+
 ## Approve changes in the app
 
 Without `--autoapprove`, the CLI follows the bridge's current approval rules. When a request needs

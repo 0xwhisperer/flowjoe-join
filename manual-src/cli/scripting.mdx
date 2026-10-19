@@ -3,6 +3,10 @@ title: "CLI scripting and action lists"
 description: "Use JSON, pipes and shared results in repeatable FlowJoe workflows."
 ---
 
+Retained attachment memory uses exact history and memory revisions plus `nextStart`, rather than a session cursor. Both revisions are rechecked on every read, including a new command. Upload IDs remain connection-local.
+
+Repository `nextCursor` values belong to the same `run` connection. Repeat the exact file/source or repository/view selectors; a different session, changed source, privacy or editor version refuses continuation.
+
 Use `--json` when another program will read a command's result:
 
 ```sh

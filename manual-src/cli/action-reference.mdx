@@ -19,8 +19,8 @@ The CLI does not expose MCP resource listing/reading as a command; `open_referen
 
 ## Catalog snapshot and permissions
 
-On 2026-10-18, real CLI discovery against the desktop returned **25 actions with Propose access**
-and **18 with Read access**. Both profiles included **17 observational read tools**; Read’s extra
+On 2026-10-18, real CLI discovery against the desktop returned **27 actions with Propose access**
+and **20 with Read access**. Both profiles included **19 observational read tools**; Read’s extra
 action was `upload_attachment`, which prepares connection-local input rather than reading existing
 content. Propose also exposes editing, staging, generation, file import, navigation, player control
 and undo. These action totals are separate from the **59 editing verbs** returned by
@@ -30,7 +30,7 @@ Observational tools in both profiles were `get_flow_snapshot`, `describe_patch_p
 `read_media_blob`, `get_app_state`, `query_history`, `read_history`, `get_node_neighbors`,
 `search_flow`, `get_island_content`, `read_item_content`, `read_media_content`, `list_joe_memories`,
 `list_scheduled_tasks`, `open_reference`, `list_recent_changes`, `get_approval_outcome` and
-`read_chat_attachment`. Uploads, staging, generation, navigation, player actions and mutations are
+`read_chat_attachment`, `read_repository` and `read_repo_file`. Uploads, staging, generation, navigation, player actions and mutations are
 not counted as observational reads. These are dated measurements, not permanent limits: discover
 your running app’s catalog before scripting. Native Joe, external MCP and guests can have different
 services and authority; an owner endpoint does not establish guest or shared-Flow support.
@@ -47,12 +47,64 @@ data. `--json` does not turn an image into a written description. Inspect the ac
 assuming a change succeeded. Private/hidden content remains withheld, even with `--autoapprove`.
 
 Gallery and stack positions start at **0**. Only pass `itemIndex` for a member **inside a stack**.
-Files, undo, recent-change history and retained-history cursors are owned by one command’s connection.
+Files, undo, recent-change history and retained-history and repository cursors are owned by one command’s connection.
 Content-reader cursors instead bind the target, source revision and identical selectors; using one
 run list is convenient, but they do not have the history reader’s session restriction. Examples using `$result`,
 previous uploads or undo must be steps in one [run list](/cli/scripting), not separate invocations.
 A two-minute default wait still applies **with `--autoapprove`**; the flag removes approval waiting,
 not processing time. Increase it with `--wait` when needed.
+
+## Read repository state — `read_repository`
+
+Read the current Flow’s admitted repository status, scoped commit identities/dates, or a saved-versus-committed file comparison. This does not run commands, stage changes, check out files or edit content. Private and Hidden from Joe sources remain withheld. Commit messages and author names are withheld because they can mention hidden paths.
+
+**Changes and approval:** Read only; no approval. Available with external Read or Propose access when the desktop repository service exists, independently of native Joe’s chat setting.
+
+| Input | Required? | Meaning |
+| --- | --- | --- |
+| `repoNodeId` | Yes | Repository node ID from the current Flow snapshot. |
+| `view` | Yes | `status`, `log` or `diff`. |
+| `path` | For `diff` | Exact admitted repository-relative file path. |
+| `diffScope` | No | `all`, `staged` or `unstaged`; staged filtering requires an existing current Changes-list baseline. |
+| `limit` | No | 1–12,000 characters; default 12,000. |
+| `cursor` | No | Returned continuation; repeat identical selectors in the same `run` connection. |
+
+```json
+{"repoNodeId":"YOUR_REPO_NODE_ID","view":"status"}
+```
+
+```sh
+flowjoe-cli action read_repository --file input.json --json
+```
+
+**Result:** Bounded `content`, source/view, branch/history identity and HEAD provenance, character range and optional `nextCursor`. Status describes saved gallery bytes against the branch. Deleted paths without an admitted live owner are omitted. Staging is explicitly unavailable unless a matching current Changes list exists. A changed Flow, source, privacy, permission, HEAD or canceled request refuses publication.
+
+## Read a repository file — `read_repo_file`
+
+Choose `saved`, `draft` or `historical` explicitly. Saved reads use native Git bytes. Draft reads require the actual already-open editor model; historical reads require an already-open read-only revision model with a unique admitted current file owner. The action never opens, selects or saves an editor. An unavailable draft is never replaced with saved text.
+
+**Changes and approval:** Read only; no approval. No repository editing verb is added.
+
+| Input | Required? | Meaning |
+| --- | --- | --- |
+| `repoNodeId` | Yes | Current repository node ID. |
+| `source` | Yes | `saved`, `draft` or `historical`. |
+| `nodeId`, `entryId` | Saved/draft | Exact current gallery owner and entry identity. |
+| `path`, `oid`, `revisionTreeOid` | Historical | Exact repository-relative path and identities of the retained open revision model. |
+| `limit` | No | 1–12,000 characters; default 12,000. |
+| `cursor` | No | Repeat the same selectors in the same `run` connection. |
+
+```json
+{"repoNodeId":"YOUR_REPO_NODE_ID","nodeId":"YOUR_NODE_ID","entryId":"YOUR_ENTRY_ID","source":"saved"}
+```
+
+```sh
+flowjoe-cli action read_repo_file --file input.json --json
+```
+
+**Result:** `content`, explicit `source`, path/OID and character range; draft/historical results also identify the captured model revision. Changed file ownership, bytes, privacy, model version or session invalidates continuation. Use one run list for all pages. A fresh command starts a different session.
+
+Browser-page reading remains unavailable to external clients: this connection has no user-approved page grant. Model arguments, a native Joe request, or an open tab cannot supply one. A future page grant must bind this connection to an explicit user request, exact page/revision and revocation lifecycle before the action can be exposed. Terminal access and repository edits likewise require their own approved implementation; they are not implied by these reads.
 
 ## Read current app facts — `get_app_state`
 
@@ -507,6 +559,8 @@ flowjoe-cli action stage_media --file input.json --json
 
 Use the configured image service and its normal paid credits. The bridge allows at most two generation attempts per connection, including failed attempts; a longer run list must stay within that limit. Optional size and quality can override the app’s generation settings. A style hint applies only when the app’s Generate Images style is None. The external bridge refuses action edit with chat_history_required; to make a variation, use action generate with sourceImageKey or a caller-owned referenceAttachmentId. referenceAttachmentId uses this connection’s uploaded image; sourceImageKey targets an accessible stored image.
 
+Select the destination node in FlowJoe before starting generation. The request keeps that destination if you select another node while it runs. A missing, removed, private or hidden destination cannot receive the generated result.
+
 **Changes and approval:** Calls a paid service immediately; --autoapprove is not a billing confirmation. Placement is a separate Flow edit.
 
 | Input | Required? | Meaning |
@@ -578,15 +632,21 @@ flowjoe-cli action upload_attachment --file input.json --json
 
 **Result:** An attachment with id, fileName, mimeType and sizeBytes. Read or stage it later in the SAME run list; it disappears when the command ends.
 
-## Read this command’s uploaded attachment — `read_chat_attachment`
+## Read an uploaded attachment or retained attachment memory — `read_chat_attachment`
 
-Despite its name, this external action reads only a file uploaded by this MCP connection. It cannot read files from a Joe chat or a previous CLI invocation. Save an upload step as uploaded before this example.
+Omit `mode` to read a file uploaded by this MCP connection. Upload IDs belong only to this command. With `mode: "memory"`, read retained attachment evidence from an exact admitted conversation returned by `query_history`; this never borrows whichever native Joe chat is open. Save an upload step as uploaded before the upload example below.
 
 **Changes and approval:** Read only; no approval.
 
 | Input | Required? | Meaning |
 | --- | --- | --- |
-| `attachmentId` | Yes | ID from upload_attachment in this connection. |
+| `attachmentId` | Yes | Upload: ID from `upload_attachment` in this connection. Memory: `*` to list, or exact memory ID returned by the list. |
+| `mode` | No | Omit (or `image`) for the existing uploaded-file read; use `memory` for retained text evidence. |
+| `recordId` | Memory | Exact chat `recordId` returned by `query_history`. |
+| `historyRevision` | Memory | That chat record’s `revision` from `records`, not the query’s collection revision. |
+| `revision` | Memory record/continuation | Exact listed memory record revision; list continuations use the memory index revision. |
+| `start` | No | Returned `nextStart`: record offset for `*`, character offset for an exact memory ID; starts at 0. |
+| `limit` | No | Memory index: 1–30 records; exact memory: 1–12,000 characters. |
 
 ```json
 {
@@ -617,7 +677,21 @@ Use this as a step in the same `run` list as its prerequisite:
 }
 ```
 
-**Result:** Attachment metadata plus image bytes or UTF-8 text content. Use inside a run list.
+**Result:** Uploaded attachment metadata plus image bytes or UTF-8 text content. Use inside a run list.
+
+For retained attachment memory, use a query/index/read run list:
+
+```json
+[
+  {"action":"query_history","input":{"kind":"chat","query":"YOUR_CONVERSATION_TEXT"},"saveAs":"conversation"},
+  {"action":"read_chat_attachment","input":{"mode":"memory","attachmentId":"*","recordId":{"$result":"conversation","path":["records",0,"recordId"]},"historyRevision":{"$result":"conversation","path":["records",0,"revision"]}},"saveAs":"index"},
+  {"action":"read_chat_attachment","input":{"mode":"memory","attachmentId":{"$result":"index","path":["records",0,"attachmentId"]},"revision":{"$result":"index","path":["records",0,"revision"]},"recordId":{"$result":"conversation","path":["records",0,"recordId"]},"historyRevision":{"$result":"conversation","path":["records",0,"revision"]},"limit":2000},"saveAs":"memory"}
+]
+```
+
+Check that the query returned the intended admitted conversation before using its result. A missing or ambiguous conversation is unavailable. Memory results give `textContent`, source identity/provenance, revision, range and optional `nextStart`; use the same record and memory revisions for more. They explicitly say `stored_memory_not_original_bytes`. A document’s retained memory can remain readable after its original bytes are gone; unavailable or unprovable memories require existing full context or re-sharing. This grants no original-file download or image pixels.
+
+Exact retained-memory addresses with both current revisions can be read in a new authenticated command; upload IDs cannot. Changed stored memory, conversation, privacy, Flow/storage authority, permission or cancellation refuses publication. A memory ID cannot select an uploaded file, and an upload ID cannot select retained memory. External memory reads work with native Joe Off. Native CLI brains use only their exact active turn’s conversation; guests and scheduled runs do not inherit this access.
 
 ## Ask someone at FlowJoe to choose a file — `request_file`
 

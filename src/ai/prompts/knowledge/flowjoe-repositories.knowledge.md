@@ -42,7 +42,7 @@ Unknown or changed host keys are rejected. FlowJoe never offers a prompt that tr
 **Preview repository files.**
 HTML and Markdown previews show saved content without running scripts or contacting websites. Images and styles from the same repository can load within preview limits. A preview does not start your app or development server, and custom fonts may not appear.
 
-Also covered in the full docs for this area: Create or open a repo node; Browse and edit repository files; Review and commit files; Explore history and ask Joe; Keyboard controls; Work with branches; Sync with a Git remote; Sign in to GitHub over HTTPS; Set changes aside (Stash); Bring FlowJoe into your IDE.
+Also covered in the full docs for this area: Create or open a repo node; Browse and edit repository files; Review and commit files; Explore history and ask Joe; Keyboard controls; Work with branches; Sync with a Git remote; Sign in to GitHub over HTTPS; Set changes aside (Stash); Bring FlowJoe into your IDE; What Joe can read.
 
 ## Manual links
 

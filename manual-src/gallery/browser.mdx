@@ -51,3 +51,13 @@ FlowJoe treats web security as a priority:
 - **Sandbox Mode:** Web views run with `nodeIntegration: false`, `contextIsolation: true`, and `sandbox: true` to prevent malicious scripts from accessing local files.
 - **Website permissions:** Websites in this panel cannot use the camera, microphone, or location. Open a site in your regular browser if it needs those permissions. Downloads follow the browser’s download settings, including whether to ask for a save location.
 - **Clear Browsing Data:** In **Settings → Browser**, choose **Website Data**, **FlowJoe Browser Data**, or **Both**. Website data covers cookies and temporary files for known sites. FlowJoe browser data includes bookmarks, history, tabs, tab groups, and saved sessions; clearing it resets the tabs to the home page. Export browser data first if you want to keep it.
+
+
+## Asking Joe about the page
+
+In the desktop app with Joe's Read access, explicitly ask Joe to read or summarize the current page. Explicit requests and refusals are recognized in all20 app languages. The page is shared for that request only; the page text is not saved into chat history. Unknown wording may need a clearer request.
+
+Joe can read the captured page in parts and receives its title, URL and capture time. Switching tabs, navigating or reloading cancels the old capture. The existing page extraction limit still applies, and Joe is told when the capture is incomplete. A model-generated tool request cannot grant permission on your behalf. Guest sessions and scheduled tasks cannot read the owner's open browser page.
+
+
+The existing page context continues to work with each selectable Joe provider. Before sending it, FlowJoe checks that the page and your access still match the request. If either changed while Joe was preparing, that response is cancelled. With OpenAI or Gemini API, the page-reading tool can continue the same capture in parts. CLI tool access remains part of the planned CLI integration.

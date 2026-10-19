@@ -3,6 +3,10 @@ title: "CLI commands"
 description: "The commands and options available in flowjoe-cli."
 ---
 
+`read_chat_attachment` also supports [retained attachment memory](/cli/action-reference#read-an-uploaded-attachment-or-retained-attachment-memory--read_chat_attachment) selected through an admitted history record; omitting `mode` keeps the connection-upload behavior.
+
+Repository reads use `action read_repository` and `action read_repo_file`; see the [repository inputs](/cli/action-reference#read-repository-state--read_repository). Use one `run` connection for continuation.
+
 Run `flowjoe-cli --help` whenever you need a reminder. Use `--version` to see the installed CLI version.
 
 | Command                                            | What it does                                                |

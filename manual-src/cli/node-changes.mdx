@@ -3,6 +3,10 @@ title: "Change nodes"
 description: "Create, organize, tag, freeze, and write notes on FlowJoe nodes."
 ---
 
+Reading a node conversation’s retained attachment memory uses the [memory read action](/cli/action-reference#read-an-uploaded-attachment-or-retained-attachment-memory--read_chat_attachment); it does not add a node editing verb.
+
+Repository inspection uses separate [read actions](/cli/action-reference#read-repository-state--read_repository); these node editing verbs do not grant repository file editing or commands.
+
 Every example below is a **separate** change. Save its JSON as `changes.json`, replace all
 `YOUR_…` placeholders with IDs from your current Flow, and run:
 

@@ -37,7 +37,10 @@ Organize your web references with a powerful bookmarks system:
 - **Bookmark All Tabs:** Right-click the tab strip to bookmark all open tabs into a new folder instantly—perfect for packing up a research session.
 - **Import/Export:** Sync bookmarks, tab groups, and history between devices. You can choose to **merge** new imports or **replace** existing local databases.
 
-Also covered in the full docs for this area: History & Retention Policies; Security & Privacy Gating.
+**History & Retention Policies.**
+FlowJoe records a chronological log of all your visits, saved locally in IndexedDB:
+
+Also covered in the full docs for this area: Security & Privacy Gating; Asking Joe about the page.
 
 ## Integrated terminal (Forge)
 
@@ -53,9 +56,7 @@ Drag tabs to reorder them, move them between panels, or drop them in empty space
 Minimizing a panel keeps its shells running. Closing the main panel hides it and preserves its sessions for reopening.
 Closing a detached panel or an individual tab ends its shells. Quitting or reloading FlowJoe also ends sessions.
 
-**Connect a coding assistant.**
-Enable **Settings → Joe AI → Agent Bridge (MCP)**, then run your connected assistant in Forge or another terminal. The bridge runs in FlowJoe independently of the shell.
-See Agent Bridge for connection and approval settings. Terminal sessions are a desktop feature; they are unavailable in standalone browsers and shared guest sessions.
+Also covered in the full docs for this area: Connect a coding assistant.
 
 ## Manual links
 
