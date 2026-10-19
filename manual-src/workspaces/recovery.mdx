@@ -38,6 +38,10 @@ History updates by itself while it is open. Use the **Close** X at the right of 
 
 Native owner/API chat can look up dates and revision details for verified public changes in the current Flow without opening or restoring a version. A private branch does not hide an unrelated public change, while private-only changes contribute no search results. Joe reads only metadata from locally compared retained copies; older gaps and uncertain sources remain unavailable, and results are explicitly partial. Historical private labels and full saved Flow documents are not sent to the model. Restoring still uses the ordinary History confirmation.
 
+### Ask Joe to restore a version
+
+If you ask Joe to go back to an earlier version, he finds it and shows a **Restore a saved version** card in the chat, naming the Flow and the version's number and date. Joe never restores anything by himself. Press **Review restore** to open the usual restore confirmation (it still saves a restore point first, and **Go back to where I was** is still offered afterwards), then confirm or cancel there. **Cancel** on the card, or New chat, drops the request. Joe can only offer versions that History shows with a **Restore** button, so the current version and quick saves merged into a later one cannot be offered. After you restore, Joe's chat starts fresh (the restored Flow is a different document) and the usual Go back notification confirms what happened. If you cancel, the card says **Cancelled · nothing changed**. If a different Flow opens while you are confirming, nothing is restored. This is available only in your own Joe chat when Joe may propose changes.
+
 ### Chat History and Image History
 
 The History window has three tabs, **Versions**, **Chats** and **Images**, and its title changes to match: **Version History**, **Chat History** or **Image History**. Guests see the same tabs for shared, nonprivate content. They can ask the owner to restore a version or change a restore point, but cannot execute those actions themselves. Reading Chats and Images here does not depend on enabling new Joe conversations or image generation for the invitation.

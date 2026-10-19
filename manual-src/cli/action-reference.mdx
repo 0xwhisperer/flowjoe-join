@@ -501,7 +501,7 @@ flowjoe-cli action describe_patch_protocol --json
 
 ## Apply a group of Flow changes — `propose_flow_patch`
 
-Send an ordered ops array of editing verbs. The simpler apply command wraps this action. validateOnly true checks without applying or queuing. A patch is atomic: a failed operation rolls back that patch. For `editRepoFileText`, validateOnly checks the request’s shape and that the edit is alone; whether `oldText` matches and the file is unchanged is checked when the change is applied.
+Send an ordered ops array of editing verbs. The simpler apply command wraps this action. validateOnly true checks without applying or queuing. A patch is atomic: a failed operation rolls back that patch. For `editRepoFileText`, validateOnly also runs the edit’s read-only file checks (the text appears once, the file or open draft is unchanged, the file is editable), and Apply checks them again.
 
 **Changes and approval:** Changes data. Follows app approval rules unless --autoapprove; this includes deletion, memory and task review.
 

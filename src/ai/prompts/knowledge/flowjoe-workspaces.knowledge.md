@@ -3,7 +3,7 @@
 <!-- GENERATED FILE — do not edit by hand. Built from the mintlify user docs by
 scripts/build-app-help-knowledge.js (deterministic digest; re-run it after editing any source page).
 Source pages: workspaces/folders.mdx, workspaces/recovery.mdx
-Generated: 2026-10-18 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
+Generated: 2026-10-19 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
 Sync guard: tests/unit/appHelpKnowledgeSync.test.js fails when mintlify/**/*.mdx or this digest drifts
 from scripts/app-help-knowledge.manifest.json. -->
 
@@ -47,7 +47,7 @@ A restore point includes your **whole Flow, galleries too**, so restoring puts i
 **What restore points do not cover.**
 **Importing a Flow over the current one, and starting a New Flow, do not take a restore point.** Both replace your Flow completely, so a restore point taken then would not survive.
 
-Also covered in the full docs for this area: A Workspace folder becomes unavailable; Restore points; Opening History; Ask Joe about a saved version; Chat History and Image History; Making one; How many are kept; The Local Recovery Copy (Workspace mode); When the folder and Local copy disagree; When a workspace file was changed elsewhere; Related.
+Also covered in the full docs for this area: A Workspace folder becomes unavailable; Restore points; Opening History; Ask Joe about a saved version; Ask Joe to restore a version; Chat History and Image History; Making one; How many are kept; The Local Recovery Copy (Workspace mode); When the folder and Local copy disagree; When a workspace file was changed elsewhere; Related.
 
 ## Manual links
 
