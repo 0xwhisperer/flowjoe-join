@@ -170,9 +170,15 @@
   opacity: 1;
 }
 
+/* The status word is meta text beside its row control (--font-meta). Its own size is set on the span so the
+   settings panel's large-font rule for <label> (styles-themes.css) cannot render it bigger than the name. */
+.mcp-bridge-connect-toggle span {
+  font-size: var(--font-meta);
+}
+
 .mcp-bridge-connect-toggle.is-connected span {
   color: var(--success-color, #2f9e44);
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .mcp-bridge-connect-toggle.is-connected input[type="checkbox"] {
