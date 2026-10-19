@@ -5,7 +5,7 @@ description: "Edit gallery notes, organize references and stacks, crop images, a
 
 Retained chat attachment memory and current gallery content are separate evidence sources. Use the [memory read action](/cli/action-reference#read-an-uploaded-attachment-or-retained-attachment-memory--read_chat_attachment) for saved conversation evidence; it does not recover original gallery bytes.
 
-A repository-backed gallery file can be inspected with [read_repo_file](/cli/action-reference#read-a-repository-file--read_repo_file). These gallery editing verbs do not add repository text editing or terminal access.
+A repository-backed gallery file can be inspected with [read_repo_file](/cli/action-reference#read-a-repository-file--read_repo_file). The one repository change is [editRepoFileText](#change-text-in-one-repository-file--editrepofiletext): one exact text change to one existing file, held for your review unless you started the session with `--autoapprove`. No gallery verb gives terminal access, commits or pushes.
 
 Every example below is a **separate** change. Save its JSON as `changes.json`, replace all
 `YOUR_…` placeholders with IDs from your current Flow, and run:
@@ -26,7 +26,7 @@ A gallery position (`slotIndex`, `index`, `sourceIndex`, `fromIndex`, `toIndex`)
 Only use examples whose targets exist and have the required content type. Examples with two or
 three positions need at least that many items. Read fresh data after an edit that changes positions.
 
-The required inputs below come from the editing catalog documented on 2026-10-18 (59 verbs; discover the running build’s catalog for updates). Where an alternative stable entry
+The required inputs below come from the editing catalog measured on 2026-10-19: 60 verb names for 59 distinct changes, because `setNodeReadOnly` is an older name for `setNodeFrozen` (discover the running build’s catalog for updates). Where an alternative stable entry
 ID is listed, supply that instead of its positional field, not both. Read IDs with a gallery snapshot;
 not every verb supports the same ID alternative. `removeEntryContexts` uses nested positional
 references. The live catalog is authoritative for your installed desktop version:
@@ -842,3 +842,30 @@ Choose the target gallery position and the selected indices. Omit indices to con
 
 **Result:** The selected items are combined in the target stack.
 
+## Change text in one repository file — `editRepoFileText`
+
+Propose one exact text change to one existing repository file. It must be the only change in its request, so send it on its own. Scheduled tasks and guest sessions cannot use it.
+
+**Required inputs:** `nodeId`, `entryId`, `source` (`saved` or `draft`), `expectedOid`, `oldText`, `newText`. Optional: `repoNodeId`, and `draftVersion` when `source` is `draft`.
+
+Read the file first with [read_repo_file](/cli/action-reference#read-a-repository-file--read_repo_file) using the same `source`, and copy its `oid` into `expectedOid` (and, for a draft, its `draftVersion`). `oldText` must appear exactly once in the saved file, or in the open unsaved editor draft when `source` is `draft`. A draft edit needs that repository editor tab to be open in FlowJoe; a historical revision cannot be edited. Requires Propose access.
+
+```json
+[
+  {
+    "verb": "editRepoFileText",
+    "args": {
+      "nodeId": "YOUR_NODE_ID",
+      "entryId": "YOUR_FILE_ENTRY_ID",
+      "source": "saved",
+      "expectedOid": "YOUR_FILE_OID",
+      "oldText": "retries = 3",
+      "newText": "retries = 5"
+    }
+  }
+]
+```
+
+**Result:** Held for your review on the approval card, which shows the exact before/after, even when FlowJoe’s Auto-apply setting is on — unless you started this CLI command with `--autoapprove`, which approves its changes for you. Applying saves the file in FlowJoe only; it does not write your working folder and makes no commit or push. Undo (`undo_last_change` in the same run list) restores the previous version unless the file was saved again or the open editor tab has newer typing.
+
+`--preview` changes nothing, but for this verb it only checks the request’s shape and that the edit is sent alone. Whether `oldText` still matches the current file is checked by the approval card’s own preview (Approve stays unavailable while it does not match) and again when the change is applied. A change that no longer matches writes nothing; reject the card and propose a fresh edit. Refusals: `file_edit_must_be_alone` (immediately); `old_text_not_found`, `old_text_not_unique`, `draft_changed`, `changed_meanwhile`, `not_a_repository_file`, `editing_blocked` (the file is Frozen, Private or read-only) and `no_change` (when applied).

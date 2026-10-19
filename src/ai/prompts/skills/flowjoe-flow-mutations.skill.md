@@ -615,6 +615,14 @@ don't ask "where should I put this?" as your default.
   op, no formulas, formatting, or row/column edits, and no batch — for several cells, use several ops in
   the same patch. Only a `type:"spreadsheet"` entry qualifies; a calendar or rich-document island stays
   read-only (`not_an_island` otherwise).
+- `editRepoFileText` — `{ nodeId, entryId, repoNodeId?, source:"saved"|"draft", expectedOid, draftVersion?, oldText, newText }` —
+  ONE exact text change to ONE existing repository file (a file in a repo node's explorer). Read it first with
+  `read_repo_file`: use that read's `source`, `oid` as `expectedOid` and, for an open unsaved draft, its
+  `draftVersion`. `oldText` is copied exactly from that read and must occur once in it; `newText` replaces it.
+  It must be the ONLY op in its proposal — several files or other changes go in separate proposals, one after
+  another. The user sees the exact before/after in the repository editor and chooses Apply, Revise or Reject;
+  Apply saves the file in FlowJoe only — it never commits or pushes. Not for binary files, a historical
+  version, or a file you could not read. `changed_meanwhile` / `draft_changed` mean read the file again.
 - `copyImageSlot` — `{ sourceNodeId, sourceIndex, targetNodeId?, targetIndex? }` — leave the original in place and put a copy beside it (same node, next position) or on another node (appended, unless `targetIndex` says where). Shares the same stored file. A file that came from a repository is refused (`repo_file_read_only`). This is a copy, not `moveImageSlotToNode` and not `duplicateNode`.
 - `cropImage` — `{ nodeId, slotIndex, itemIndex?, x, y, width, height }` — crop a picture in place. `x`/`y`/`width`/`height` are fractions of the picture from 0 to 1, and the rectangle must stay inside it. The original file is kept; the slot shows the crop. A stack needs `itemIndex`. Not a picture → `not_an_image`.
 - `convertToPdf` — `{ nodeId, slotIndex, itemIndex? }` — add a PDF beside a picture or a note and leave the original. Audio, video, a link, and an existing PDF are `not_convertible`.

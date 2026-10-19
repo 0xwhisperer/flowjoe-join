@@ -3,7 +3,7 @@
 <!-- GENERATED FILE — do not edit by hand. Built from the mintlify user docs by
 scripts/build-app-help-knowledge.js (deterministic digest; re-run it after editing any source page).
 Source pages: gallery/browser.mdx, gallery/terminal.mdx
-Generated: 2026-10-18 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
+Generated: 2026-10-19 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
 Sync guard: tests/unit/appHelpKnowledgeSync.test.js fails when mintlify/**/*.mdx or this digest drifts
 from scripts/app-help-knowledge.manifest.json. -->
 
@@ -39,6 +39,7 @@ Organize your web references with a powerful bookmarks system:
 
 **History & Retention Policies.**
 FlowJoe records a chronological log of all your visits, saved locally in IndexedDB:
+- **Retention Controls:** Configure history cleanup intervals in Settings (keep visits forever, or prune after 30, 90, or 365 days).
 
 Also covered in the full docs for this area: Security & Privacy Gating; Asking Joe about the page.
 
@@ -46,6 +47,7 @@ Also covered in the full docs for this area: Security & Privacy Gating; Asking J
 
 Keep shell sessions and connected coding assistants beside your workspace.
 
+Joe sees terminal output only when you share it: select the lines in the terminal, ask Joe, and press Share with Joe on the card in his chat (Cancel shares nothing). Revoke future access on that card stops Joe re-reading it. Joe can never type, run commands, or read other tabs or later output. Desktop owner chat only.
 Forge brings a real terminal into the desktop app, so your command-line work can sit beside the ideas, references, and notes that explain it. Open **Terminal** from the app rail.
 
 **Arrange your sessions.**
@@ -56,7 +58,10 @@ Drag tabs to reorder them, move them between panels, or drop them in empty space
 Minimizing a panel keeps its shells running. Closing the main panel hides it and preserves its sessions for reopening.
 Closing a detached panel or an individual tab ends its shells. Quitting or reloading FlowJoe also ends sessions.
 
-Also covered in the full docs for this area: Connect a coding assistant.
+**Connect a coding assistant.**
+Enable **Settings → Joe AI → Agent Bridge (MCP)**, then run your connected assistant in Forge or another terminal. The bridge runs in FlowJoe independently of the shell.
+
+Also covered in the full docs for this area: Share terminal output with Joe.
 
 ## Manual links
 

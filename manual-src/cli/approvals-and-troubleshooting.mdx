@@ -7,6 +7,8 @@ Memory mode needs an admitted chat `recordId` and its `historyRevision`; `conver
 
 Repository reads need no approval card, but still require Read or Propose access and a currently admitted source. `model_unavailable` means no matching open draft/revision model exists; `stale_cursor` requires a fresh read in the same run connection.
 
+A repository file edit (`editRepoFileText`) always waits for the card, even with Auto-apply on, unless the command uses `--autoapprove`. The card previews the exact before/after; if the file or its open draft no longer matches, Approve stays unavailable. Apply checks the file again and, if it changed at the last moment, refuses with `changed_meanwhile` (or `draft_changed` for an open draft) and writes nothing. In either case reject the card, read the file again and propose a fresh edit.
+
 ## Approve changes in the app
 
 Without `--autoapprove`, the CLI follows the bridge's current approval rules. When a request needs

@@ -5,7 +5,7 @@ description: "Read notes, inspect branches, edit content, add references, and ch
 
 [Retained attachment memory](/cli/action-reference#read-an-uploaded-attachment-or-retained-attachment-memory--read_chat_attachment) can recover saved evidence after a document’s original bytes are gone. It returns stored memory text and provenance, not the original document.
 
-To inspect a repository, use [repository state and file reads](/cli/action-reference#read-repository-state--read_repository). Choose saved bytes or an actual already-open draft/revision; reading never opens or saves an editor.
+To inspect a repository, use [repository state and file reads](/cli/action-reference#read-repository-state--read_repository). Choose saved bytes or an actual already-open draft/revision; reading never opens or saves an editor. To change one exact piece of text in a saved file, read it with `source: "saved"`, then propose [editRepoFileText](/cli/gallery-changes#change-text-in-one-repository-file--editrepofiletext) with its `oid` as `expectedOid`; the change saves the file in FlowJoe without writing your working folder, committing or pushing.
 
 Install and connect using [Start using the CLI](/cli/getting-started). These examples work on the
 currently open Flow; they do not open or switch Flows. Replace `YOUR_NODE_ID` with an ID from `show`.

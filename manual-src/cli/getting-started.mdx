@@ -5,7 +5,7 @@ description: "Read, search, and change your open Flow from a terminal."
 
 For saved attachment evidence, first find the intended conversation with `query_history`, then use [memory mode](/cli/action-reference#read-an-uploaded-attachment-or-retained-attachment-memory--read_chat_attachment). The current native chat is not an external source selection.
 
-With Read or Propose access, the CLI can [read repository state and files](/cli/action-reference#read-repository-state--read_repository) from the current Flow. This works independently of native Joe’s chat setting and grants no repository edits or terminal access.
+With Read or Propose access, the CLI can [read repository state and files](/cli/action-reference#read-repository-state--read_repository) from the current Flow. This works independently of native Joe’s chat setting. Reading grants no repository edits or terminal access; with Propose access you can propose one reviewed text change to a file with [editRepoFileText](/cli/gallery-changes#change-text-in-one-repository-file--editrepofiletext).
 
 The FlowJoe CLI lets you work with your open Flow from a terminal or a script. FlowJoe stays running
 and saves the changes. The command reference lives here in the manual; no extra command panel is

@@ -3,7 +3,7 @@
 <!-- GENERATED FILE — do not edit by hand. Built from the mintlify user docs by
 scripts/build-app-help-knowledge.js (deterministic digest; re-run it after editing any source page).
 Source pages: cli/getting-started.mdx, cli/commands.mdx, cli/scripting.mdx, cli/approvals-and-troubleshooting.mdx
-Generated: 2026-10-18 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
+Generated: 2026-10-19 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
 Sync guard: tests/unit/appHelpKnowledgeSync.test.js fails when mintlify/**/*.mdx or this digest drifts
 from scripts/app-help-knowledge.manifest.json. -->
 
@@ -17,7 +17,7 @@ Read, search, and change your open Flow from a terminal.
 
 Install with npm install --global https://docs.flowjoe.app/downloads/flowjoe-cli-0.1.0.tgz (Node.js 22.12+). Keep FlowJoe open and turn on Settings → Joe AI → Agent Bridge (MCP). Commands act on the currently open Flow; they do not open or switch Flows.
 For saved attachment evidence, first find the intended conversation with `query_history`, then use memory mode. The current native chat is not an external source selection.
-With Read or Propose access, the CLI can read repository state and files from the current Flow. This works independently of native Joe’s chat setting and grants no repository edits or terminal access.
+With Read or Propose access, the CLI can read repository state and files from the current Flow. This works independently of native Joe’s chat setting. Reading grants no repository edits or terminal access; with Propose access you can propose one reviewed text change to a file with editRepoFileText.
 
 Also covered in the full docs for this area: Install; Connect to FlowJoe; Try a change; What is available.
 

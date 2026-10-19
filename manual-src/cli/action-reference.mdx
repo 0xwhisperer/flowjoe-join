@@ -19,12 +19,15 @@ The CLI does not expose MCP resource listing/reading as a command; `open_referen
 
 ## Catalog snapshot and permissions
 
-On 2026-10-18, real CLI discovery against the desktop returned **27 actions with Propose access**
-and **20 with Read access**. Both profiles included **19 observational read tools**; Read’s extra
-action was `upload_attachment`, which prepares connection-local input rather than reading existing
-content. Propose also exposes editing, staging, generation, file import, navigation, player control
-and undo. These action totals are separate from the **59 editing verbs** returned by
-`describe_patch_protocol`. Read can inspect that protocol but cannot apply its changes.
+On 2026-10-19, real CLI discovery against a fully provisioned desktop (history, repository,
+scheduler and help services present) returned **27 actions with Propose access** and **20 with Read
+access**. Both profiles included **19 observational read tools**; Read’s extra action was
+`upload_attachment`, which prepares connection-local input rather than reading existing content.
+Propose also exposes editing, staging, generation, file import, navigation, player control and undo.
+A desktop without one of those services lists fewer actions. These action totals are separate from
+the **60 editing verb names** returned by `describe_patch_protocol`: 59 distinct changes, because
+`setNodeReadOnly` is an older name for `setNodeFrozen`. That catalog includes `editRepoFileText`.
+Read can inspect the editing catalog but cannot apply its changes.
 
 Observational tools in both profiles were `get_flow_snapshot`, `describe_patch_protocol`,
 `read_media_blob`, `get_app_state`, `query_history`, `read_history`, `get_node_neighbors`,
@@ -83,7 +86,7 @@ flowjoe-cli action read_repository --file input.json --json
 
 Choose `saved`, `draft` or `historical` explicitly. Saved reads use native Git bytes. Draft reads require the actual already-open editor model; historical reads require an already-open read-only revision model with a unique admitted current file owner. The action never opens, selects or saves an editor. An unavailable draft is never replaced with saved text.
 
-**Changes and approval:** Read only; no approval. No repository editing verb is added.
+**Changes and approval:** Read only; no approval. Reading adds no write; the separate `editRepoFileText` editing verb is reviewed before it changes a file.
 
 | Input | Required? | Meaning |
 | --- | --- | --- |
@@ -104,7 +107,11 @@ flowjoe-cli action read_repo_file --file input.json --json
 
 **Result:** `content`, explicit `source`, path/OID and character range; draft/historical results also identify the captured model revision. Changed file ownership, bytes, privacy, model version or session invalidates continuation. Use one run list for all pages. A fresh command starts a different session.
 
-Browser-page reading remains unavailable to external clients: this connection has no user-approved page grant. Model arguments, a native Joe request, or an open tab cannot supply one. A future page grant must bind this connection to an explicit user request, exact page/revision and revocation lifecycle before the action can be exposed. Terminal access and repository edits likewise require their own approved implementation; they are not implied by these reads.
+Which text you get depends on `source`. `saved` is the file as FlowJoe last saved it (an immutable Git blob), `draft` is unsaved typing in a repository editor tab that is already open, and `historical` is an older revision that is already open read-only. These are never substituted for one another.
+
+To change a file, propose the separate [`editRepoFileText`](/cli/gallery-changes#change-text-in-one-repository-file--editrepofiletext) editing verb with Propose access. Reading never grants it.
+
+Browser-page reading is not available to the CLI or any external client. Joe inside FlowJoe can read a page you explicitly ask about; with an OpenAI or Gemini API model he can also keep reading it in parts. No external connection, including this CLI, can receive that approval. Model arguments, a native Joe request, or an open tab cannot supply one. A future page grant must bind this connection to an explicit user request, exact page/revision and revocation lifecycle before the action can be listed. Terminal output is likewise not offered: Joe’s chat in the desktop app can read terminal lines only after you select them and press **Share with Joe** on his card ([terminal sharing](/gallery/terminal#share-terminal-output-with-joe)), and that is not available to the CLI or other Agent Bridge assistants.
 
 ## Read current app facts — `get_app_state`
 
@@ -494,7 +501,7 @@ flowjoe-cli action describe_patch_protocol --json
 
 ## Apply a group of Flow changes — `propose_flow_patch`
 
-Send an ordered ops array of editing verbs. The simpler apply command wraps this action. validateOnly true checks without applying or queuing. A patch is atomic: a failed operation rolls back that patch.
+Send an ordered ops array of editing verbs. The simpler apply command wraps this action. validateOnly true checks without applying or queuing. A patch is atomic: a failed operation rolls back that patch. For `editRepoFileText`, validateOnly checks the request’s shape and that the edit is alone; whether `oldText` matches and the file is unchanged is checked when the change is applied.
 
 **Changes and approval:** Changes data. Follows app approval rules unless --autoapprove; this includes deletion, memory and task review.
 

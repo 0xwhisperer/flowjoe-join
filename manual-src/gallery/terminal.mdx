@@ -26,3 +26,17 @@ Forge is a normal terminal: commands use your account’s permissions, and can c
 You can also use an installed tool as [Joe’s brain](/joe/byob). In that case you talk to Joe in his chat panel; you do not need to open Forge or keep a terminal conversation running. An interactive assistant in Forge and Joe’s conversation have separate histories.
 
 See [Agent Bridge](/joe/agent-bridge) for connection and approval settings. Terminal sessions are a desktop feature; they are unavailable in standalone browsers and shared guest sessions.
+
+## Share terminal output with Joe
+
+Joe cannot see your terminal on his own. When you want him to look at some output, select those lines in the terminal tab you are viewing, then ask Joe about them in his chat.
+
+Joe asks to read the output, and a card appears in his chat: **Share selected output with Joe?** It shows the tab, the selected lines and the exact text. Nothing is shared until you press **Share with Joe**. Press **Cancel** and nothing is shared.
+
+- If nothing is selected, Joe asks you to select the lines first.
+- If you close the tab before pressing Share, nothing is shared.
+- While the card waits, **New chat** cancels it and nothing is shared. Switching to another node or slot keeps it waiting, and it is there when you come back. **Escape** also cancels it.
+- Only the selected excerpt is shared for that question. Other tabs and later output stay private.
+- After sharing, **Revoke future access** stops Joe from reading that excerpt again later in the conversation. What he already received stays in the chat. Joe can also re-read the excerpt only while its card is still in the chat: if you close and reopen Joe, he can no longer read it again, though what he already received stays.
+
+Sharing output does not let Joe type into the terminal or run commands. This works in Joe’s chat in the desktop app. It is not available when Joe uses an installed CLI tool as his brain, nor for shared guests, scheduled tasks, or assistants connected through the Agent Bridge. Shared excerpts are forgotten when you reload FlowJoe.

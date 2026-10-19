@@ -89,6 +89,11 @@
   border-radius: var(--radius-sm, 4px);
   background: color-mix(in srgb, var(--ai-accent) 8%, transparent);
 }
+/* Terminal excerpt consent card (approved terminal scene): the shared output keeps its monospace shape. */
+.flow-mutation-approval-card .fm-terminal-excerpt {
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  overflow-wrap: anywhere;
+}
 /* 1.2b — thumbnails of NEW images a patch adds (generate_image / stage_media), so the user sees what they approve. */
 .flow-mutation-approval-card .fm-approval-thumbs {
   display: flex;
