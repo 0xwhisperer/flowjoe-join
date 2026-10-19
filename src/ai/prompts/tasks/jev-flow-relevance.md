@@ -41,13 +41,18 @@
   a 270-node flow over TypeSafe's 64k limit. If that structure changes, RE-MEASURE: an accuracy
   figure taken on one request shape does not transfer to another.
 
+  PARENT NAMES (2026-10-19): each node is sent as `Parent › Name — summary`. On the confusable en-hard eval flow
+  (twin "Packing list" / "Press list" nodes) the top node went 21/30 → 30/30 on jev-1.14.0 for ~5% more tokens.
+  The format sentence lives in ## appContext (shared state, sent once) — in ## instructions it is repeated per
+  node and cost +49%.
+
   Parsed by src/utils/ai/jevFlowRelevance.js. Sections are delimited by the ## headings; the parser
   reads them by name, so renaming a heading breaks the binding.
 -->
 
 ## appContext
 
-The user is talking to Joe, the assistant inside FlowJoe — a visual workspace with a TREE of NODES (a nestable outline); the selected node has a GALLERY of SLOTS, where a slot holds one item (image / video / URL / document) or a STACK of items. Each node has a title, and may have a short summary. A node is often a CONTAINER whose own title is generic ("Projects", "Imported Files") while the specific material lives in its children.
+The user is talking to Joe, the assistant inside FlowJoe — a visual workspace with a TREE of NODES (a nestable outline); the selected node has a GALLERY of SLOTS, where a slot holds one item (image / video / URL / document) or a STACK of items. Each node has a title, and may have a short summary. A node is often a CONTAINER whose own title is generic ("Projects", "Imported Files") while the specific material lives in its children. Each node to judge is written `Parent › Node` when it sits under another node: use the parent to tell apart nodes that share a name — two trips can each have a "Packing list", and only the one under the trip the user means is relevant.
 
 ## instructions
 

@@ -20,6 +20,9 @@
   user asks for that, otherwise treat them as content. A planted instruction therefore cannot steer Joe unless the
   user's message asks Joe to follow the file.
 
+  RE-MEASURED 2026-10-19 on jev-1.14.0 (the shipped JEV_CHECK_MODEL since then), same thresholds, same sitting as
+  1.13: injection 59/59 (1.13: 59/59); injection-large 249/256, 7 misses (1.13: 244/256, 12 misses).
+  Reproduce: JEV_EVAL_MODEL=jev-1.14.0 node scripts/jevCheckEval.mjs injection [cases].
   MEASURED 2026-09-24 (jev-1.13.0, scripts/jev-evals/injection.json, 59 passages: overt and disguised injections —
   hidden HTML comments, SYSTEM NOTICE blocks, fake tool output, fake user turns, JSON/CSV/ICS fields, code comments,
   link titles, 5 languages, calendars and spreadsheets in the exact text the app's context adapters produce, long

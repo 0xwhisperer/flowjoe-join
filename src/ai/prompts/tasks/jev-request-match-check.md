@@ -19,6 +19,9 @@
   alone; slot removals its seatbelt already proved are the task's own are shown with `ownedOutputNote`, not judged
   (only when the task is NOT autoApplyDestructive — that setting skips the ownership check, so nothing is proven).
 
+  RE-MEASURED 2026-10-19 on jev-1.14.0 (the shipped JEV_CHECK_MODEL since then), same thresholds, same sitting as
+  1.13: request-match 53/54 (1.13: 53/54); request-match-large 239/252 (1.13: 239/252), 25 no-verdicts vs 22.
+  Reproduce: JEV_EVAL_MODEL=jev-1.14.0 node scripts/jevCheckEval.mjs request-match [cases].
   MEASURED 2026-09-24 (jev-1.13.0, scripts/jev-evals/request-match.json, 54 cases in the app's real op shapes incl.
   confirmations, revise notes, scheduled refreshes, weekday numbers): flag when P(unrequested) + P(wrong_detail) ≥
   0.7 on the chat card, ≥ 0.6 on a scheduled run (scheduled since raised to 0.7 — see LARGE EVAL below) → 54/54 on each of 3 runs (162/162). Closest honest chat case 0.65

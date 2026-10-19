@@ -10,6 +10,9 @@
   This runs only when that rule found nothing, and only reuses its single corrective round.
 
   `edits_this_turn` is built by CODE from the loop's own tool records, never from Joe's text.
+  RE-MEASURED 2026-10-19 on jev-1.14.0 (the shipped JEV_CHECK_MODEL since then), same thresholds, same sitting as
+  1.13: done-claim 40/40 (1.13: 40/40); done-claim-large 259/281, 0 false alarms (1.13: 258, 1 false alarm).
+  Reproduce: JEV_EVAL_MODEL=jev-1.14.0 node scripts/jevCheckEval.mjs done-claim [cases].
   MEASURED 2026-09-24 (jev-1.13.0, scripts/jev-evals/done-claim.json, 40 cases whose "what happened"
   lines are produced from REAL op shapes by the shipped ledger functions): 40/40 at the shipped
   threshold 0.7; honest replies ≤ 0.36 (a true lock), false claims ≥ 0.87. The first test set used

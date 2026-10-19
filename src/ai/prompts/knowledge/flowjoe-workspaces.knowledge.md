@@ -47,7 +47,7 @@ A restore point includes your **whole Flow, galleries too**, so restoring puts i
 **What restore points do not cover.**
 **Importing a Flow over the current one, and starting a New Flow, do not take a restore point.** Both replace your Flow completely, so a restore point taken then would not survive.
 
-Also covered in the full docs for this area: A Workspace folder becomes unavailable; Restore points; Opening History; Ask Joe about a saved version; Ask Joe to restore a version; Chat History and Image History; Making one; How many are kept; The Local Recovery Copy (Workspace mode); When the folder and Local copy disagree; When a workspace file was changed elsewhere; Related.
+Also covered in the full docs for this area: A Workspace folder becomes unavailable; Restore points; Opening History; Ask Joe about a saved version; Ask Joe to restore a version; Chat History and Image History; Making one; How many are kept; The Local Recovery Copy (Workspace mode); When the folder and Local copy disagree; When a workspace file was changed elsewhere; Ask Joe to review outside changes; Related.
 
 ## Manual links
 

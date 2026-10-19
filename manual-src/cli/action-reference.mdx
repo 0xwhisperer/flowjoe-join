@@ -28,6 +28,7 @@ A desktop without one of those services lists fewer actions. These action totals
 the **60 editing verb names** returned by `describe_patch_protocol`: 59 distinct changes, because
 `setNodeReadOnly` is an older name for `setNodeFrozen`. That catalog includes `editRepoFileText`.
 Read can inspect the editing catalog but cannot apply its changes.
+A second measurement later on 2026-10-19, after Joe’s [workflow hand-offs](#only-in-joes-chat) and picture search landed, returned the same totals, and a direct MCP connection was offered exactly the same actions as the CLI at both access levels.
 
 Observational tools in both profiles were `get_flow_snapshot`, `describe_patch_protocol`,
 `read_media_blob`, `get_app_state`, `query_history`, `read_history`, `get_node_neighbors`,
@@ -37,6 +38,17 @@ Observational tools in both profiles were `get_flow_snapshot`, `describe_patch_p
 not counted as observational reads. These are dated measurements, not permanent limits: discover
 your running app’s catalog before scripting. Native Joe, external MCP and guests can have different
 services and authority; an owner endpoint does not establish guest or shared-Flow support.
+
+## Only in Joe’s chat
+
+When an OpenAI or Gemini model is Joe’s brain, his chat inside FlowJoe uses most of the actions on this page, plus the FlowJoe actions below that the CLI, other connected assistants and CLI brains (an installed tool such as Claude Code answering as Joe) cannot call. Those actions never appear in `flowjoe-cli actions` or in the tools a connected assistant is given, and asking for one by name is refused (`unknown_action` in the CLI). The last row lists tools built into some brains, not FlowJoe actions.
+
+| In Joe’s chat | What it does |
+| --- | --- |
+| `find_pictures` | Ranks the pictures in part of your Flow by what they show, so Joe opens only the best matches. Needs a [TypeSafe key](/joe/token-usage#the-optional-typesafe-key); without one, Joe picks pictures by their names. |
+| `request_app_workflow` | Shows a card that hands you an existing workflow: [restore a saved version](/workspaces/recovery#ask-joe-to-restore-a-version), [export a node](/portability/export-import#ask-joe-to-export-a-node), [import a Flow](/portability/export-import#ask-joe-to-import-a-flow) or [review changes made on another computer](/workspaces/recovery#ask-joe-to-review-outside-changes). You confirm in the app’s usual dialog; Joe never runs it himself. |
+| `read_terminal_output`, `read_browser_tab` | Read terminal lines you shared, or keep reading a browser page you asked about in parts (the page itself still reaches every brain as context). See the note under [Read a repository file](#read-a-repository-file--read_repo_file). |
+| Web search, Code interpreter | Built into some brains rather than FlowJoe actions. See [Bring Your Own Brain](/joe/byob). |
 
 ## How to run an example
 
