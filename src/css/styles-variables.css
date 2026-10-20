@@ -227,6 +227,7 @@
   --modal-column-gap-loose: 12px; /* RESERVED looser column gap — not yet applied (base is already the wide media/notes gap) */
   --icon-glyph: 14px; /* the standard chrome-button glyph size (icon-btn family, file-menu icons, playlist/settings button icons) */
   --icon-glyph-sm: 11px; /* small badge/status glyphs (node badges, status footer, pin, edit-tags, tag-chip icons) */
+  --provider-key-dot-size: 7px; /* the status dot on Settings → APIs key rows and in the key windows' saved line (provider-keys UI mockup). Own role. */
   --font-meta: calc(11px * var(--font-scale, 1)); /* secondary/meta text beside controls: shortcuts, counts, statuses, timestamps, hints, badges — scales with the user font-size setting */
   --font-micro: calc(10px * var(--font-scale, 1)); /* the smallest legible tier: dense badges/labels (e.g. missing-media badge, micro captions) */
   --font-control: calc(12px * var(--font-scale, 1)); /* the ONE control-label size: button/menu/chip/tab/toggle labels app-wide — owner folded the 13px drift down to 12px (2026-07-07); scales with the user font-size setting */

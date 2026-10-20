@@ -28,20 +28,17 @@ FlowJoe uses a multi-tier storage design for your keys to balance security and c
 - **Desktop storage:** Supported keys are encrypted using your operating system’s secure-storage service when available and saved in FlowJoe’s app data. A standalone browser, or unavailable secure storage, uses local browser storage with weaker protection.
 - **Export choice:** Keys are excluded from portable exports by default. You can explicitly include an OpenAI key, so review that checkbox before sharing a package.
 
-**Viewing & Copying Your Key.**
-For easy verification, you can inspect or copy your stored API key:
-- Open **Settings → APIs → API Settings**.
-- By default, the key is hidden behind a password mask (`••••••••`).
-- Click the **Eye icon** on the input field to reveal the plaintext key, allowing you to quickly verify or copy it to your clipboard.
-
 **Configuring Your AI Brain.**
 To adjust your model config:
 - For an API brain, add its key in **Settings → APIs**. For a CLI brain, install and sign into its tool first, as described below.
 - Click the model settings button inside the Joe panel — or the brain name in the status bar — to pick the brain behind Joe:
 - **OpenAI models (API key):** **Sol 6.1**, **Luna 6** (the default), **Sol 6**, and **Astra 6**, plus **Luna**, **Terra**, and **Sol** from the GPT-5.6 family.
+- **Anthropic API:** **Claude Fable 5.1**, **Claude Opus 5.5** and **Claude Sonnet 5.5** use your own Anthropic API key. This is separate from a Claude Code login: you can have both.
+- **xAI API:** **Grok 4.7** uses your own xAI API key. This is separate from a Grok terminal login.
 - **Gemini API:** **Gemini 3.8 Flash** uses a separate Google Gemini API key. See setup below.
+- **Temperature and response length are managed automatically per model** — there is no manual temperature dial, and GPT-5.6 / GPT-6 models run at their fixed default temperature.
 
-Also covered in the full docs for this area: Where to get an OpenAI key; Set up Gemini chat; What CLI brains need first; Which brains can work with your Flow?; A CLI brain, Agent Bridge, or Forge?; What happens with no key and no CLI brain; Making Joe faster: the optional TypeSafe key; It also trims a big flow map; Checking that a key works; CLI brains in shared conversations.
+Also covered in the full docs for this area: How the brain menu is arranged; Where to get an OpenAI key; Set up Gemini chat; Set up Claude or Grok with an API key; What CLI brains need first; Which brains can work with your Flow?; A CLI brain, Agent Bridge, or Forge?; What happens with no key and no CLI brain; Your keys in Settings → APIs; Viewing, copying and removing a key; Making Joe faster: the optional TypeSafe key; It also trims a big flow map; Checking that a key works; CLI brains in shared conversations.
 
 ## Agent Bridge (MCP)
 

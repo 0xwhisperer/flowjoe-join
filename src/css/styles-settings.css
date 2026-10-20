@@ -2861,4 +2861,119 @@
   opacity: 0;
 }
 
+/* ── Settings → APIs: provider-keys UI (docs/IMPLEMENTATION/PROVIDER_KEYS_UI_DECISIONS_2026-10-20.md) ──
+   Group headings (decision 1), the first-run intro, the status line under each key row (decision 5) and the
+   company logos on the Anthropic / xAI row buttons (decision 7). Tokens only. */
+[data-panel="apis"] .settings-apis-intro {
+  margin: 0 0 14px; /* the same 14px as the space above every later group heading */
+}
+[data-panel="apis"] .settings-apis-group {
+  margin: 14px 0 6px;
+  font-size: var(--font-meta);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+[data-panel="apis"] .settings-apis-section:first-of-type .settings-apis-group {
+  margin-top: 0;
+}
+[data-panel="apis"] .provider-key-status {
+  display: flex;
+  align-items: center;
+  gap: var(--control-icon-gap);
+  margin: 2px 0 4px;
+  min-width: 0;
+  font-size: var(--font-micro);
+  color: var(--text-secondary);
+}
+[data-panel="apis"] .provider-key-status:empty {
+  display: none;
+}
+[data-panel="apis"] .provider-key-status-dot {
+  flex: 0 0 auto;
+  width: var(--provider-key-dot-size);
+  height: var(--provider-key-dot-size);
+  border-radius: var(--radius-full);
+  background: var(--success-color);
+}
+[data-panel="apis"] .provider-key-status.is-empty .provider-key-status-dot {
+  background: transparent;
+  border: 1px solid var(--text-secondary);
+  opacity: 0.6;
+}
+[data-panel="apis"] .provider-key-status.is-rejected {
+  color: var(--danger-color);
+}
+[data-panel="apis"] .provider-key-status.is-rejected .provider-key-status-dot {
+  background: var(--danger-color);
+}
+[data-panel="apis"] .provider-key-status-mask {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: var(--font-meta);
+  color: var(--text-primary);
+}
+[data-panel="apis"] .provider-key-logo-btn svg {
+  width: var(--icon-glyph);
+  height: var(--icon-glyph);
+  pointer-events: none;
+}
+
+/* Key windows (OpenAI, Gemini, TypeSafe, Anthropic, xAI): the trash icon beside the eye (decision 4), the saved line
+   and the spinner before "Testing…" in the Anthropic / xAI windows, and the company logo before their titles. */
+/* .icon-btn (buttons.css, loaded later) sets its own min-width, so the pair of classes is needed to match the eye's 44px. */
+.icon-btn.key-window-remove-btn {
+  min-width: 44px;
+}
+.icon-btn.key-window-remove-btn:hover:not(:disabled) {
+  color: var(--danger-color);
+}
+.icon-btn.key-window-remove-btn:disabled {
+  opacity: var(--disabled-opacity-control);
+  cursor: default;
+}
+/* A dimmed trash keeps the icon button's resting look on hover/focus (buttons.css .icon-btn). */
+.icon-btn.key-window-remove-btn:disabled:hover,
+.icon-btn.key-window-remove-btn:disabled:focus {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+.key-window-saved-hint {
+  display: flex;
+  align-items: center;
+  gap: var(--control-icon-gap);
+  margin: 6px 0 0;
+  font-size: 0.8em;
+  color: var(--text-secondary);
+}
+.key-window-saved-hint[hidden] {
+  display: none;
+}
+.key-window-saved-dot {
+  width: var(--provider-key-dot-size);
+  height: var(--provider-key-dot-size);
+  border-radius: var(--radius-full);
+  background: var(--success-color);
+}
+.key-window-test-spin {
+  margin-right: 5px;
+}
+.provider-key-window-title {
+  display: flex;
+  align-items: center;
+  gap: var(--control-icon-gap);
+}
+.provider-key-window-logo {
+  display: inline-flex;
+  color: var(--text-primary);
+}
+.provider-key-window-logo svg {
+  width: var(--icon-glyph);
+  height: var(--icon-glyph);
+}
+
 }

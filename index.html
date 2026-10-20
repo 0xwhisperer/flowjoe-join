@@ -22,7 +22,7 @@
     <link rel="preload" as="font" type="font/woff2" crossorigin="anonymous" href="vendor/fontawesome-free-6.5.0/webfonts/fa-regular-400.woff2" />
     <!-- App typography families -->
     <link rel="stylesheet" href="vendor/fonts/fonts.css" />
-    <script src="boot/prebootstrap.802f4abf55154960.js"></script>
+    <script src="boot/prebootstrap.b09cc2893a693137.js"></script>
     <!-- canvas-confetti is now bundled (see VENDOR_GLOBALS in scripts/build-bundle-esm.js) — no CDN dependency. -->
   </head>
   <body>
@@ -1611,33 +1611,64 @@
 
         <!-- ── APIs (external service credentials) ── -->
         <div class="settings-tab-panel" data-panel="apis">
-          <div class="setting-item">
+          <!-- Provider-keys UI (docs/IMPLEMENTATION/PROVIDER_KEYS_UI_DECISIONS_2026-10-20.md): the key rows grouped under
+               "Your AI accounts" and "Extra services" (decision 1), each with a status line under its name (decision 5,
+               filled by providerKeyStatusLines.js). "More AI providers" waits until those providers have a route.
+               Each group is its own section ([data-card-group]): its rows drag to reorder inside the group, and the
+               order is saved per group (settingsCardOrderController.js). -->
+          <p class="setting-description settings-apis-intro" id="settings-apis-intro" data-i18n="settings.apis.intro" hidden>Add a key for any AI account you already pay for, and Joe can use it as his brain. Keys stay on this computer. Claude Code, Grok and Antigravity logins from your terminal work without a key.</p>
+          <section class="settings-apis-section" data-card-group="accounts" aria-labelledby="settings-apis-group-accounts">
+          <div class="settings-apis-group" id="settings-apis-group-accounts" data-i18n="settings.apis.groupAccounts">Your AI accounts</div>
+          <div class="setting-item" data-provider-account="openai">
             <div class="setting-control">
-              <label data-i18n="settings.apis.apiSettingsLabel">API Settings</label>
-              <button class="icon-btn" id="ai-settings-btn" data-tooltip="Open API Settings" data-position="left" style="margin-left: auto;" data-i18n-attr="data-tooltip:settings.apis.apiSettingsButtonTooltip">
+              <label data-i18n="settings.apis.apiSettingsLabel">OpenAI API Key</label>
+              <button class="icon-btn" id="ai-settings-btn" data-tooltip="Open OpenAI key settings" data-position="left" style="margin-left: auto;" data-i18n-attr="data-tooltip:settings.apis.apiSettingsButtonTooltip">
                 <i class="fa-solid fa-robot"></i>
               </button>
             </div>
+            <div class="provider-key-status" data-provider-account="openai" role="status" aria-live="polite"></div>
             <p class="setting-description" data-i18n="settings.apis.description">Configure your OpenAI API key for FlowJoe features that use OpenAI models, including image analysis, chat, spell check, and image generation.</p>
           </div>
-          <div class="setting-item">
+          <div class="setting-item" data-provider-account="anthropic">
             <div class="setting-control">
-              <label data-i18n="settings.apis.typesafeSettingsLabel">TypeSafe API Key</label>
-              <button class="icon-btn" id="typesafe-settings-btn" data-tooltip="Open TypeSafe Settings" data-position="left" style="margin-left: auto;" data-i18n-attr="data-tooltip:settings.apis.typesafeSettingsButtonTooltip">
-                <i class="fa-solid fa-bolt"></i>
-              </button>
+              <label data-i18n="settings.apis.anthropicSettingsLabel">Anthropic API Key</label>
+              <button class="icon-btn provider-key-logo-btn" id="anthropic-settings-btn" data-company-logo="anthropic" data-tooltip="Open Anthropic key settings" data-position="left" style="margin-left: auto;" data-i18n-attr="data-tooltip:settings.apis.anthropicSettingsButtonTooltip"></button>
             </div>
-            <p class="setting-description" data-i18n-html="settings.apis.typesafeDescription">Optional. Speeds up how quickly Joe works out what he needs from your flow. <strong>Desktop app only.</strong></p>
+            <div class="provider-key-status" data-provider-account="anthropic" role="status" aria-live="polite"></div>
+            <p class="setting-description" data-i18n="settings.apis.anthropicDescription">Use Claude models as one of Joe’s brains with your own Anthropic key. Separate from a Claude Code login: you can have both.</p>
           </div>
-          <div class="setting-item">
+          <div class="setting-item" data-provider-account="gemini">
             <div class="setting-control">
               <label data-i18n="settings.apis.geminiSettingsLabel">Gemini API Key</label>
               <button class="icon-btn" id="gemini-settings-btn" data-tooltip="Open Gemini Settings" data-position="left" style="margin-left: auto;" data-i18n-attr="data-tooltip:settings.apis.geminiSettingsButtonTooltip">
                 <i class="fa-solid fa-wand-magic-sparkles"></i>
               </button>
             </div>
+            <div class="provider-key-status" data-provider-account="gemini" role="status" aria-live="polite"></div>
             <p class="setting-description" data-i18n="settings.apis.geminiDescription">Configure your Google Gemini API key to use Gemini models as one of Joe's brains.</p>
           </div>
+          <div class="setting-item" data-provider-account="xai">
+            <div class="setting-control">
+              <label data-i18n="settings.apis.xaiSettingsLabel">xAI API Key</label>
+              <button class="icon-btn provider-key-logo-btn" id="xai-settings-btn" data-company-logo="xai" data-tooltip="Open xAI key settings" data-position="left" style="margin-left: auto;" data-i18n-attr="data-tooltip:settings.apis.xaiSettingsButtonTooltip"></button>
+            </div>
+            <div class="provider-key-status" data-provider-account="xai" role="status" aria-live="polite"></div>
+            <p class="setting-description" data-i18n="settings.apis.xaiDescription">Use Grok as one of Joe’s brains with your own xAI key. Separate from a Grok terminal login.</p>
+          </div>
+          </section>
+          <section class="settings-apis-section" data-card-group="services" aria-labelledby="settings-apis-group-services">
+          <div class="settings-apis-group" id="settings-apis-group-services" data-i18n="settings.apis.groupServices">Extra services</div>
+          <div class="setting-item" data-provider-account="typesafe">
+            <div class="setting-control">
+              <label data-i18n="settings.apis.typesafeSettingsLabel">TypeSafe API Key</label>
+              <button class="icon-btn" id="typesafe-settings-btn" data-tooltip="Open TypeSafe Settings" data-position="left" style="margin-left: auto;" data-i18n-attr="data-tooltip:settings.apis.typesafeSettingsButtonTooltip">
+                <i class="fa-solid fa-bolt"></i>
+              </button>
+            </div>
+            <div class="provider-key-status" data-provider-account="typesafe" role="status" aria-live="polite"></div>
+            <p class="setting-description" data-i18n-html="settings.apis.typesafeDescription">Optional. Speeds up how quickly Joe works out what he needs from your flow. <strong>Desktop app only.</strong></p>
+          </div>
+          </section>
         </div><!-- /settings-tab-panel apis -->
 
         <!-- ── Data (app data, import/export, resets, stats) ── -->
@@ -2131,6 +2162,6 @@
         </div><!-- /settings-content -->
       </div><!-- /settings-body -->
     </div><!-- /settings-panel -->
-    <script src="boot/progress.f0cff2982c8e5389.js"></script>
+    <script src="boot/progress.15d91aa2b9233b43.js"></script>
   </body>
 </html>

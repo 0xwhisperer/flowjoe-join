@@ -57,6 +57,7 @@
   --flowjoe-z-browser-tooltip: 100070;     /* browser-chrome tooltips */
   --flowjoe-z-settings-panel: 100100;      /* settings panel + header/tabs */
   --flowjoe-z-settings-controls: 100101;   /* settings header actions / close / effect previews */
+  --flowjoe-z-settings-key-window: 100110; /* API-key windows opened from Settings → APIs (above the drawer, below its confirm at drawer + 20) */
   --flowjoe-z-terminal-panel: 100120;       /* terminal panel tab drag ghost (above settings-controls) */
   --flowjoe-z-flow-audit-overlay: 100200;   /* flow audit overlay (above settings panel) */
 

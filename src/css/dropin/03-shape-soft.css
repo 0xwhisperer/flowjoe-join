@@ -78,6 +78,15 @@ body.shape-soft :is(.icon-btn, .app-rail-item, .settings-tab, .add-root-btn, .he
   border-color: transparent;
   color: var(--accent-color);
 }
+/* The key windows' "Remove key" trash (styles-settings.css keeps its outlined-style rules): it hovers red like a
+   delete, and a dimmed trash keeps the transparent resting look instead of lighting up. */
+body.shape-soft .icon-btn.key-window-remove-btn:hover:not(:disabled) {
+  color: var(--danger-color);
+}
+body.shape-soft .icon-btn.key-window-remove-btn:disabled:hover {
+  background-color: transparent;
+  color: var(--text-primary);
+}
 
 /* Cards and panels: keep the fill, drop the hairline. */
 body.shape-soft :is(.setting-item, .gallery-slot, .image-slot) {
