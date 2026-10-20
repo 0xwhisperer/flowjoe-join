@@ -20,6 +20,10 @@ Sections (one per `## <id>` heading; everything under it up to the next heading,
   flow-off     — the brain has no flow tools at all this turn (permission Off, or a brain the bridge
                  is not wired to, e.g. Antigravity outside macOS). Antigravity always gets
                  web-off: it runs with web search off whatever the toggle says.
+  flow-long-results — Antigravity with flow tools (Read-Only or Propose) only: agy 1.4.2 shows the model
+                 about 10,000 characters of a long tool result (the start and the end; live 2026-10-19 a
+                 13,814-character describe_patch_protocol result was cut in the middle) and puts the rest in
+                 a file this brain is not allowed to read, so it is told to read the flow in smaller pieces.
   closing      — the last line.
 The bridge enforces the same levels server-side (mcpBridgeMain.js); this note only keeps the brain's
 picture of itself truthful. A missing section is simply omitted by the code — never replaced with
@@ -52,6 +56,10 @@ You can READ the user's FlowJoe flow with `get_flow_snapshot` (and `describe_pat
 
 You do NOT have FlowJoe's flow/gallery editing, scheduling, or image-generation tools in this mode. Don't claim to edit the user's flow, add/change slots, schedule tasks, or generate images, and don't emit FlowJoe tool or patch syntax — none of that will run here.
 If the user asks for one of those FlowJoe actions, say it isn't available on this brain right now — either Joe's flow permission is Off (they can raise it in the chat's permission selector) or this brain has no flow tools, in which case they can switch the model to OpenAI for it.
+
+## flow-long-results
+
+Long tool results are shortened in this mode: you see only about the first and last few thousand characters, and the middle is cut. The file it mentions is not readable here, so do not try to open it. When a result says it was truncated, read the flow in smaller pieces instead: call `get_flow_snapshot` with `rootId` (one branch), `maxDepth`, a smaller `nodeCap`, or `includeSummary: false`, and use `search_flow` or `get_node_neighbors` to find what you need.
 
 ## closing
 
