@@ -91,11 +91,11 @@ When **Smart context loading** is on (Settings → Joe AI; it is on by default),
 
 With a TypeSafe key, in the desktop app, TypeSafe answers first on every brain (see below). If you run FlowJoe yourself in a plain web browser, TypeSafe can't be reached, so Gemini uses its own model from the table. Guests who join your shared Flow from a browser still get TypeSafe, because their requests go through your computer. If TypeSafe can't answer, OpenAI falls back to Luna. Other brains load everything for that message rather than also waiting for the model in the table.
 
-If the decision fails on any brain other than OpenAI (no answer, a garbled answer, or too slow), Joe gets every chapter and every skill for that message. A failure can cost tokens, but it never leaves Joe without the instructions he needs to edit your Flow.
+If the decision fails on any brain other than OpenAI (no answer, a garbled answer, or too slow), Joe gets a short summary of every manual chapter and every skill for that message, and opens any full chapter he needs himself. A failure can cost tokens, but it never leaves Joe without the instructions he needs to edit your Flow.
 
-That request is billed like any other, but it is **not** part of Joe's context window, so it does not appear on the token bar. It is roughly 2k input tokens, plus a short answer: up to 200 output tokens on OpenAI, and more room on Gemini, because Gemini always thinks a little first. On a command-line brain your own provider's limits apply. Turn **Smart context loading** off to remove it. Joe then loads every chapter and skill inline instead, which usually costs more on the main send than the director saves.
+That request is billed like any other, but it is **not** part of Joe's context window, so it does not appear on the token bar. It is roughly 2k input tokens, plus a short answer: up to 200 output tokens on OpenAI, and more room on Gemini, because Gemini always thinks a little first. On a command-line brain your own provider's limits apply. Turn **Smart context loading** off to remove it. Joe then loads a short summary of every chapter, and every skill, inline instead, which usually costs more on the main send than the director saves; he opens a full chapter when a summary isn't enough.
 
-In an offline test with an empty Flow and a sample decision that picked one manual chapter, the first Gemini request for a plain question was about **one sixth** the size it was when every chapter and skill was loaded. Joe re-sends the request after each action he takes, so the saving counts again on each round.
+In an offline test with an empty Flow and a sample decision that picked one manual chapter, the first Gemini request for a plain question was about **one sixth** the size it was when every full chapter and skill was loaded. Joe re-sends the request after each action he takes, so the saving counts again on each round.
 
 ### Cheaper models for small jobs
 

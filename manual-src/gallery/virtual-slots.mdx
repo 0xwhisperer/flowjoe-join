@@ -88,6 +88,10 @@ When you share a node with a guest, its virtual slots show their master's pictur
 
 A guest can change what a virtual slot shows only when they can edit the node its master is in. They can still use **Make Real Slot** to get their own copy in the node they're working in, with its own copy of the picture or file, and change that copy as they like — unless the master sits somewhere kept from them. They can still move it, reorder it, connect it or remove it in the node they're working in. For now, only you can remove a master slot that is shown in other places.
 
+## Exporting a node with virtual slots
+
+When you export a node on its own (or use Copy Node JSON), a virtual slot whose master lives elsewhere in your Flow brings that master's picture, title, notes and tags along with it, so the export never points at something that isn't there. A master that is hidden, or sits in a hidden or Private node, is never included in the export; that virtual slot travels as a bare pointer.
+
 ## Coming soon
 
-Making a real copy for guests, the Make Private choices, and moving virtual slots between Flows in exports are on their way and will be documented here as they arrive.
+Choosing what happens to those slots when you import the file again, and the Make Private choices, are on their way and will be documented here as they arrive.
