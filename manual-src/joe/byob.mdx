@@ -69,7 +69,7 @@ Some Anthropic answers have their own plain message:
 
 **xAI saves before it tests.** FlowJoe checks xAI keys through the desktop app, which uses the saved key, so pressing **Test** in the xAI window saves the key you typed for the check. That save only sticks when you press **Save**: if you close the window another way (**Cancel**, ×, or Escape), your previous key comes back, or the key is removed if there was none before. A mistyped key never replaces one that works. xAI brains need the FlowJoe desktop app.
 
-Like Gemini, these brains cannot search the web or use Code interpreter; the two switches are greyed out with a note that names the provider. **Grok 4.7 by API key cannot read attached documents** such as PDFs: Joe answers without them, and a note under his reply says so. If you send a message with an API-key brain whose key is missing, Joe tells you which key to add in **Settings → APIs** instead of sending it.
+Like Gemini, these brains cannot search the web or use Code interpreter; the two switches are greyed out with a note that names the provider. Every one of these brains reads attached documents such as PDFs, Grok 4.7 included. If you send a message with an API-key brain whose key is missing, Joe tells you which key to add in **Settings → APIs** instead of sending it.
 
 ### What CLI brains need first
 
@@ -103,7 +103,7 @@ If a brain is greyed out, check the explanation in the picker. The tool may be m
 | **Antigravity** | On a Mac: read permitted content, use Flow tools, and propose changes. On Windows and Linux it can only discuss the context supplied with the conversation, and it runs with your own Antigravity settings. It cannot inspect image inputs through this connection. Web search is not available with Antigravity yet. Owner only; replies arrive together when ready. |
 | **Gemini API** | Chat, permitted Flow reads, and proposals through the existing approval cards. No hosted web search or Code interpreter. |
 | **Anthropic API** | Chat, permitted Flow reads, and proposals through the existing approval cards. No hosted web search or Code interpreter. |
-| **xAI API** | Chat, permitted Flow reads, and proposals through the existing approval cards. No hosted web search or Code interpreter, and attached documents are left out (a note under the reply says so). Desktop app only. |
+| **xAI API** | Chat, permitted Flow reads, and proposals through the existing approval cards. No hosted web search or Code interpreter. Reads attached documents such as PDFs. Desktop app only. |
 
 For brains with Flow tools, **Off / Read / Propose** sets the limit on what they can access through FlowJoe. Choosing a stronger brain does not unlock private content. Whichever brain you choose, Joe’s own changes always come to you as a card to approve; Agent Bridge’s **Apply changes without asking** setting only affects outside assistants. Guest Joe has separate invitation-based approval rules. See [Permissions & privacy](/joe/permissions).
 
