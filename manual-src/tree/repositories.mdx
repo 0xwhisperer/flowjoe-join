@@ -48,7 +48,7 @@ When you open a repo node, choose **Source Control** in the app rail. The reposi
 
 An Edit guest can make a shared branch a repository through the owner's computer. The owner's complete branch is converted, including folders hidden from the guest; those folders are never shown to the guest. Private folders stay home. Names that need fixing are fixed on the owner's computer.
 
-Any branch of your tree can become a repository: right-click its top node and choose **Make This a Repository…** in the menu's **Organize** section (desktop app, owner only). Nothing changes until you confirm. A window shows first:
+Any branch of your tree can become a repository: right-click its top node and choose **Make This a Repository…** in the menu's **Organize** section (desktop app or an Edit guest using the owner’s computer). Nothing changes until you confirm. A window shows first:
 
 - **What goes in:** how many nodes, files and links. Every node becomes a folder, every item becomes a file (pictures and documents as they are, a link as a `.url` shortcut), and FlowJoe's small hidden files keep titles, notes, order, canvas layout, themes, tags and automations (switched off for anyone who clones).
 - **What stays on this computer:** where you are scrolled and zoomed, and your app-wide fonts, text size, line spacing and density. A linked file (one that points at a file elsewhere on your computer) stays here too.
@@ -369,3 +369,9 @@ file is saved as its link text rather than loading its target. Files that change
 are skipped; ordinary hardlinked files remain supported.
 
 Portable `.fj` and `.json` exports use the same per-Private-node password choice and warning as **Make This a Repository**. Every Private node starts excluded; included nodes carry history under the export’s ordinary history choices. See [Export & import](/portability/export-import#choose-private-nodes).
+
+### When history is temporarily unavailable
+
+If this computer cannot read saved undo steps or a history picture, FlowJoe keeps the repository's committed copy. An unavailable picture does not become a broken image or a deletion when you commit other changes. If a history import or update cannot finish, FlowJoe remembers the unfinished work across restarts and retries it in order when you next open Changes. Deleting undo history clears its saved steps while keeping the current notes and title. Deleting a history entry yourself still removes it from the repository for everyone, unless a teammate has changed that same entry.
+
+The incoming changes summary counts all commits since the gallery's last update, including changes by people whose commits are further back in the history.
