@@ -5,18 +5,20 @@ description: "Let a local coding assistant work with your Flow while you stay in
 
 The **Agent Bridge** connects your active Flow to compatible AI assistants and developer tools on your computer. A coding assistant can work with your plan, references, and notes—not just the files in a code folder. MCP is the connection format these tools use.
 
-## Connect a tool
+## Turn it on
 
 1. Open **Settings → Joe AI → Agent Bridge (MCP)** in the desktop app.
-2. Turn the bridge on.
-3. Find your assistant under **Assistants on this machine** and turn on **Connect**. Follow any confirmation shown.
-4. If FlowJoe offers **Copy setup command**, copy it and run it in that assistant’s terminal instead.
+2. Turn on **Let coding assistants use FlowJoe**. FlowJoe connects every assistant it finds by itself.
+3. Kimi needs one step: run its copied command in a terminal.
+4. To skip one, untick it under **Choose assistants**.
 
-Claude Code, Codex, Gemini, Grok and Antigravity connect automatically; for Kimi, use **Copy setup command** and run it once. For supported assistants, Connect adds FlowJoe to that assistant’s settings across its projects. Other settings are preserved. Turn off Connect to remove FlowJoe’s connection.
+FlowJoe asks once before turning on and names the assistants it will connect; it never connects one without that yes. If a terminal turned the bridge on, **Look again** asks the same question first. The assistants FlowJoe connects by itself are Claude Code, Codex, Gemini, Grok and Antigravity (on Windows and Linux, Antigravity starts out left out so Joe can keep using it as his brain; tick it to connect it); one sentence under the switch says who is connected. FlowJoe looks again whenever Settings opens; press the **Look again** icon to check right now. Restart an assistant that was already running so it picks up FlowJoe. Your other settings in each assistant are kept. FlowJoe remembers an assistant you left out; tick it again to bring it back.
 
-For another compatible MCP tool, copy the connection details shown in the card into that tool’s settings. Keep the access token private. If you rotate it, update tools using the old token.
+## Advanced
 
-The bridge starts again on launch if you left it enabled. Turn it off here to stop access.
+**Advanced** holds the technical part: the bridge's address, the connection key (hidden until you press the eye) and a setup file for any other compatible MCP tool (shown only when you ask; copy it into that tool's settings). Keep the key private. **Make a new key** asks first; assistants FlowJoe connected get the new key by themselves, and only Kimi's command needs copying again.
+
+The bridge starts again on launch if you left it on. Turning the switch off stops access and removes FlowJoe from those assistants' settings; turning it on connects them again.
 
 To use ordinary terminal commands or scripts, install the [FlowJoe CLI](/cli/getting-started).
 Its dedicated manual section covers setup, commands, scripting and troubleshooting. The CLI's
@@ -25,11 +27,11 @@ not change this card's saved settings or other agents' approvals.
 
 ## Choose how changes are approved
 
-**Read-only access for external agents** allows inspection but blocks Flow change requests.
+Under **Advanced**, **Look only, no changes** lets assistants read your Flow but blocks change requests.
 
 Otherwise, changes wait for approval by default. An **Agent request** card lets you approve or reject them even when Joe chat is closed.
 
-You can enable **Auto-apply agent edits** for the current session. Deletions, repository file edits, scheduled-task and saved-memory changes, and revealing hidden-from-Joe nodes still require review. The **Auto-apply** setting turns off when the bridge stops or FlowJoe relaunches. It only affects outside assistants: Joe’s own changes in Joe chat always ask you first, whichever brain you choose. Leave it off if you want to review each change. Guest Joe uses the invitation’s separate approval rules.
+You can turn on **Apply changes without asking** (under **Advanced**) for the current session. Deletions, repository file edits, scheduled-task and saved-memory changes, and revealing hidden-from-Joe nodes still require review. That setting turns off when the bridge stops or FlowJoe relaunches. It only affects outside assistants: Joe’s own changes in Joe chat always ask you first, whichever brain you choose. Leave it off if you want to review each change. Guest Joe uses the invitation’s separate approval rules.
 
 ## How MCP relates to Joe’s actions
 
@@ -37,15 +39,15 @@ MCP is how a compatible assistant discovers FlowJoe’s tools and asks to use th
 
 Connected assistants use the same [supported Flow changes](/joe/propose-approve#what-you-can-ask-joe-to-change) as Joe’s tool-capable brains. They also follow FlowJoe’s privacy and target restrictions. Their own file access, terminal commands, and other integrations are governed by the assistant’s separate settings.
 
-Choosing a CLI brain for Joe is the other direction: the installed tool answers **inside Joe chat**. FlowJoe automatically supplies that supported brain with a temporary connection; you do not need to connect it here first. The **Connect** controls and the **Auto-apply** setting are for assistants working **outside** Joe chat; Joe’s own changes always ask you first, as explained above.
+Choosing a CLI brain for Joe is the other direction: the installed tool answers **inside Joe chat**. FlowJoe automatically supplies that supported brain with a temporary connection; you do not need to connect it here first. The bridge switch and **Apply changes without asking** are for assistants working **outside** Joe chat; Joe’s own changes always ask you first, as explained above.
 
 ## Two FlowJoe apps open at once
 
-Only one FlowJoe app on a computer can use Agent Bridge’s usual address. If another FlowJoe app already has it, this app uses a temporary address until you quit it: Joe’s own tools still work here, Joe chat tells you once, and outside assistants you connected keep talking to the other app. Connect and copying the setup are turned off here meanwhile; connect outside assistants from the app that opened first. If no connection can open at all, Joe answers without Flow tools and suggests closing other FlowJoe apps. Next launch tries the usual address again.
+Only one FlowJoe app on a computer can use Agent Bridge’s usual address. If another FlowJoe app already has it, this app uses a temporary address until you quit it: Joe’s own tools still work here, Joe chat tells you once, and outside assistants you connected keep talking to the other app. Meanwhile this app adds, changes and removes nothing in your assistants' settings (turning it on or off, **Look again**, **Choose assistants** and **Make a new key** all leave them alone), copying the address, key, setup file or Kimi's command is turned off, and the card says so; connect outside assistants from the app that opened first. If no connection can open at all, Joe answers without Flow tools and suggests closing other FlowJoe apps. Next launch tries the usual address again.
 
 ## What connected tools can do
 
-Compatible tools can inspect and search permitted Flow content, read supported documents and media, supply files, generate images with your configured OpenAI connection, and propose changes. Joe himself, on every brain that uses Flow tools (OpenAI, Gemini, and CLI brains such as Claude, Grok, Codex and Gemini CLI), can do a few things that assistants connected from outside cannot: hand you a restore, export, import or outside-changes review, find pictures by what they show, read terminal lines you share, or keep reading a browser page in parts (a page you explicitly ask about still reaches every assistant as context). Each of these still follows Joe’s permission level: cards need Propose and reads need Read. See [Only in Joe’s chat](/cli/action-reference#only-in-joes-chat). On a Mac this includes Antigravity; on Windows and Linux, Antigravity can't use Flow tools yet.
+Compatible tools can inspect and search permitted Flow content, read supported documents and media, supply files, generate images with your configured OpenAI connection, and propose changes. Joe himself, on every brain that uses Flow tools (OpenAI, Gemini, and CLI brains such as Claude, Grok, Codex and Gemini CLI), can do a few things that assistants connected from outside cannot: hand you a restore, export, import or outside-changes review, find pictures by what they show, read terminal lines you share, or keep reading a browser page in parts (a page you explicitly ask about still reaches every assistant as context). Each of these still follows Joe’s permission level: cards need Propose and reads need Read. See [Only in Joe’s chat](/cli/action-reference#only-in-joes-chat). On a Mac this includes Antigravity; on Windows and Linux, Antigravity can't use Flow tools yet, and while it is connected here Joe can't use it as his brain — leave it out under **Choose assistants** if you want Joe to.
 
 File requests appear in FlowJoe even when Joe chat is closed. Files uploaded by a tool belong to that connection and are cleared when it disconnects.
 

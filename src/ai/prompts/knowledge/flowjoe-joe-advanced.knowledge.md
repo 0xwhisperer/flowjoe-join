@@ -52,14 +52,14 @@ Antigravity has them on a Mac only; Agent Bridge assistants and the FlowJoe CLI 
 A page the owner explicitly asks about still reaches every brain.
 The **Agent Bridge** connects your active Flow to compatible AI assistants and developer tools on your computer. A coding assistant can work with your plan, references, and notes—not just the files in a code folder. MCP is the connection format these tools use.
 
-**Connect a tool.**
+**Turn it on.**
 - Open **Settings → Joe AI → Agent Bridge (MCP)** in the desktop app.
-- Turn the bridge on.
-- Find your assistant under **Assistants on this machine** and turn on **Connect**. Follow any confirmation shown.
-- If FlowJoe offers **Copy setup command**, copy it and run it in that assistant’s terminal instead.
-The bridge starts again on launch if you left it enabled. Turn it off here to stop access.
+- Turn on **Let coding assistants use FlowJoe**. FlowJoe connects every assistant it finds by itself.
+- Kimi needs one step: run its copied command in a terminal.
+- To skip one, untick it under **Choose assistants**.
+FlowJoe asks once before turning on and names the assistants it will connect; it never connects one without that yes. If a terminal turned the bridge on, **Look again** asks the same question first.
 
-Also covered in the full docs for this area: Choose how changes are approved; How MCP relates to Joe’s actions; Two FlowJoe apps open at once; What connected tools can do.
+Also covered in the full docs for this area: Advanced; Choose how changes are approved; How MCP relates to Joe’s actions; Two FlowJoe apps open at once; What connected tools can do.
 
 ## Permissions & privacy
 

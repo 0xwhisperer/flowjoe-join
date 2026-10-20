@@ -22,7 +22,7 @@
     <link rel="preload" as="font" type="font/woff2" crossorigin="anonymous" href="vendor/fontawesome-free-6.5.0/webfonts/fa-regular-400.woff2" />
     <!-- App typography families -->
     <link rel="stylesheet" href="vendor/fonts/fonts.css" />
-    <script src="boot/prebootstrap.389210b328b39263.js"></script>
+    <script src="boot/prebootstrap.9ef22394b0b29c30.js"></script>
     <!-- canvas-confetti is now bundled (see VENDOR_GLOBALS in scripts/build-bundle-esm.js) — no CDN dependency. -->
   </head>
   <body>
@@ -1391,65 +1391,98 @@
               <h4 data-i18n="settings.ai.mcpBridge.heading">Agent Bridge (MCP)</h4>
             </div>
             <div class="setting-control">
-              <label for="mcp-bridge-enabled-toggle" data-i18n="settings.ai.mcpBridge.allowAgentsLabel">Allow agents to control FlowJoe</label>
+              <label for="mcp-bridge-enabled-toggle" data-i18n="settings.ai.mcpBridge.allowAgentsLabel">Let coding assistants use FlowJoe</label>
               <label class="toggle-switch">
                 <input type="checkbox" id="mcp-bridge-enabled-toggle" />
                 <span class="toggle-slider"></span>
               </label>
             </div>
-            <p class="setting-description" data-i18n-html="settings.ai.mcpBridge.description">Lets a coding agent running in the terminal (Claude Code, Codex, Gemini…) read and build your flow through the same actions Joe uses — over a local-only connection on your machine, secured by a secret token. <strong>Off by default. Desktop only.</strong></p>
-            <p class="setting-description" id="mcp-bridge-status-line"></p>
-            <p class="setting-description" id="mcp-bridge-detected" hidden></p>
-            <div class="mcp-bridge-action-row" id="mcp-bridge-connect-actions"></div>
-            <p class="setting-description" id="mcp-bridge-folder-line" hidden></p>
-            <div class="mcp-bridge-action-row" id="mcp-bridge-folder-actions" hidden>
-              <button id="mcp-bridge-change-folder-btn" class="btn cleanup-button" type="button" data-i18n="settings.ai.mcpBridge.changeFolderButton">Change folder…</button>
-            </div>
-            <div id="mcp-bridge-details" hidden>
-              <div class="setting-sub-divider"></div>
-              <div class="setting-control">
-                <label for="mcp-bridge-autoapply-toggle" data-i18n="settings.ai.mcpBridge.autoApplyLabel">Auto-apply agent edits (this session)</label>
-                <label class="toggle-switch">
-                  <input type="checkbox" id="mcp-bridge-autoapply-toggle" />
-                  <span class="toggle-slider"></span>
-                </label>
-              </div>
-              <p class="setting-description" data-i18n="settings.ai.mcpBridge.autoApplyDescription">Off by default: every agent edit waits for your approval. When on, non-destructive edits apply immediately for this session; deletions are always held for review. Resets to off when FlowJoe restarts.</p>
-              <div class="setting-control">
-                <label for="mcp-bridge-readonly-toggle" data-i18n="settings.ai.mcpBridge.readOnlyLabel">Read-only access for external agents</label>
-                <label class="toggle-switch">
-                  <input type="checkbox" id="mcp-bridge-readonly-toggle" />
-                  <span class="toggle-slider"></span>
-                </label>
-              </div>
-              <p class="setting-description" data-i18n="settings.ai.mcpBridge.readOnlyDescription">When on, external MCP connections can inspect FlowJoe but cannot request changes. Existing connections reconnect with the new setting.</p>
-              <div class="setting-sub-divider"></div>
-              <div class="setting-control mcp-bridge-field-row">
-                <label for="mcp-bridge-snippet" data-i18n="settings.ai.mcpBridge.configLabel">Agent config (.mcp.json)</label>
-                <textarea id="mcp-bridge-snippet" class="setting-input mcp-bridge-snippet" readonly spellcheck="false" rows="9"></textarea>
-              </div>
-              <div class="mcp-bridge-action-row">
-                <button id="mcp-bridge-copy-snippet-btn" class="btn cleanup-button" type="button" data-i18n="settings.ai.mcpBridge.copyConfigButton">Copy Config</button>
-                <button id="mcp-bridge-rotate-token-btn" class="btn cleanup-button" type="button" data-i18n="settings.ai.mcpBridge.rotateTokenButton">Rotate Token</button>
-              </div>
-              <p class="setting-description" data-i18n-html="settings.ai.mcpBridge.configDescription">Paste the config into your agent (e.g. a project <code>.mcp.json</code> for Claude Code) — it already contains the URL and token. Treat the token like a password — anyone with it can control your flow while the bridge is on. <strong>Rotate Token</strong> invalidates the old one.</p>
-            </div>
-            <div class="setting-sub-divider"></div>
-            <div id="agent-bridge-helper-toggle-row" hidden>
-              <div class="setting-control">
-                <label for="agent-bridge-helper-toggle" data-i18n="settings.ai.mcpBridge.helper.toggleLabel">Allow terminal to request bridge enable</label>
-                <label class="toggle-switch">
-                  <input type="checkbox" id="agent-bridge-helper-toggle" />
-                  <span class="toggle-slider"></span>
-                </label>
-              </div>
-              <p class="setting-description" data-i18n="settings.ai.mcpBridge.helper.toggleDescription">Lets an agent already running in your terminal ask FlowJoe to turn the bridge on with one command, instead of you switching back to Settings. You still approve every request.</p>
-              <p class="setting-description" id="agent-bridge-helper-unavailable-note" hidden data-i18n="settings.ai.mcpBridge.helper.unavailableFirstApp">Another FlowJoe app opened first and is using the terminal shortcut, so it only works in that app. Use the shortcut from that app, or quit it and restart this one.</p>
-            </div>
-            <div id="agent-bridge-helper-details" hidden>
-              <p class="setting-description" data-i18n="settings.ai.mcpBridge.helper.copyCommandDescription">Paste this into the terminal your agent is running in — it can then ask FlowJoe to turn the bridge on. Only works while FlowJoe is running; this does not launch it.</p>
-              <div class="mcp-bridge-action-row">
-                <button id="agent-bridge-helper-copy-btn" class="btn cleanup-button" type="button" data-i18n="settings.ai.mcpBridge.helper.copyCommandLabel">Copy enable command</button>
+            <p class="setting-description" data-i18n="settings.ai.mcpBridge.description">Assistants on this computer, like Claude Code or Codex, can read your flow and suggest changes the same way Joe does. Every change waits for your approval.</p>
+            <p class="setting-description" id="mcp-bridge-status-line" hidden></p>
+            <div class="mcp-bridge-fold-host" id="mcp-bridge-on-host">
+              <div id="mcp-bridge-on" hidden>
+                <div class="mcp-bridge-summary">
+                  <div class="mcp-bridge-summary-line">
+                    <span class="mcp-bridge-dot" id="mcp-bridge-connected-dot" aria-hidden="true"></span>
+                    <span class="mcp-bridge-summary-text" id="mcp-bridge-connected-line"></span>
+                    <button type="button" class="icon-btn" data-tooltip-strong="true" id="mcp-bridge-rescan-btn" data-tooltip="Look again|FlowJoe also checks by itself when Settings opens" aria-label="Look again" data-i18n-attr="data-tooltip:settings.ai.mcpBridge.lookAgainTooltip;aria-label:settings.ai.mcpBridge.lookAgainLabel"><i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i></button>
+                  </div>
+                  <div class="mcp-bridge-summary-line" id="mcp-bridge-kimi-line" hidden>
+                    <span class="mcp-bridge-dot is-off" aria-hidden="true"></span>
+                    <span class="mcp-bridge-summary-text" data-i18n="settings.ai.mcpBridge.kimiStep">Kimi needs one step: paste its command in a terminal.</span>
+                    <button type="button" class="icon-btn" data-tooltip-strong="true" id="mcp-bridge-kimi-copy-btn" data-tooltip="Copy Kimi's setup command|Paste it in a terminal once" aria-label="Copy Kimi's setup command" data-i18n-attr="data-tooltip:settings.ai.mcpBridge.copyKimiTooltip;aria-label:settings.ai.mcpBridge.copyKimiLabel"><i class="fa-solid fa-copy" aria-hidden="true"></i></button>
+                  </div>
+                </div>
+                <div class="mcp-bridge-fold-host" id="mcp-bridge-choose-host">
+                  <button type="button" class="mcp-bridge-disclosure" id="mcp-bridge-choose-btn" aria-expanded="false" aria-controls="mcp-bridge-choose"><i class="fa-solid fa-chevron-right mcp-bridge-chev" aria-hidden="true"></i><span data-i18n="settings.ai.mcpBridge.chooseAssistants">Choose assistants</span><span class="mcp-bridge-disclosure-hint" id="mcp-bridge-choose-hint"></span></button>
+                  <div class="mcp-bridge-fold" id="mcp-bridge-choose" hidden><div class="mcp-bridge-fold-inner" id="mcp-bridge-choose-list"></div></div>
+                </div>
+                <div class="mcp-bridge-fold-host" id="mcp-bridge-advanced-host">
+                  <button type="button" class="mcp-bridge-disclosure" id="mcp-bridge-advanced-btn" aria-expanded="false" aria-controls="mcp-bridge-advanced"><i class="fa-solid fa-chevron-right mcp-bridge-chev" aria-hidden="true"></i><span data-i18n="settings.ai.mcpBridge.advanced">Advanced</span><span class="mcp-bridge-disclosure-hint" data-i18n="settings.ai.mcpBridge.advancedHint">Address, key and permissions</span></button>
+                  <div class="mcp-bridge-fold" id="mcp-bridge-advanced" hidden>
+                    <div class="mcp-bridge-fold-inner">
+                      <div class="mcp-bridge-field">
+                        <span class="mcp-bridge-field-label" data-i18n="settings.ai.mcpBridge.addressLabel">Address</span>
+                        <div class="mcp-bridge-field-line">
+                          <input class="setting-input" id="mcp-bridge-url" readonly aria-label="Address" data-i18n-attr="aria-label:settings.ai.mcpBridge.addressLabel" />
+                          <button type="button" class="icon-btn" data-tooltip-strong="true" id="mcp-bridge-copy-url-btn" data-tooltip="Copy address" aria-label="Copy address" data-i18n-attr="data-tooltip:settings.ai.mcpBridge.copyAddress;aria-label:settings.ai.mcpBridge.copyAddress"><i class="fa-solid fa-copy" aria-hidden="true"></i></button>
+                        </div>
+                      </div>
+                      <div class="mcp-bridge-field">
+                        <span class="mcp-bridge-field-label" data-i18n="settings.ai.mcpBridge.keyLabel">Connection key</span>
+                        <div class="mcp-bridge-field-line">
+                          <input class="setting-input" id="mcp-bridge-key" readonly aria-label="Connection key" data-i18n-attr="aria-label:settings.ai.mcpBridge.keyLabel" />
+                          <button type="button" class="icon-btn" data-tooltip-strong="true" id="mcp-bridge-reveal-key-btn" aria-pressed="false"><i class="fa-solid fa-eye" aria-hidden="true"></i></button>
+                          <button type="button" class="icon-btn" data-tooltip-strong="true" id="mcp-bridge-copy-key-btn" data-tooltip="Copy key" aria-label="Copy key" data-i18n-attr="data-tooltip:settings.ai.mcpBridge.copyKey;aria-label:settings.ai.mcpBridge.copyKey"><i class="fa-solid fa-copy" aria-hidden="true"></i></button>
+                          <button type="button" class="icon-btn" data-tooltip-strong="true" id="mcp-bridge-rotate-token-btn" data-tooltip="Make a new key|The old key stops working" aria-label="Make a new key" data-i18n-attr="data-tooltip:settings.ai.mcpBridge.newKeyTooltip;aria-label:settings.ai.mcpBridge.newKeyLabel"><i class="fa-solid fa-rotate" aria-hidden="true"></i></button>
+                        </div>
+                      </div>
+                      <div class="mcp-bridge-field">
+                        <span class="mcp-bridge-field-label" data-i18n="settings.ai.mcpBridge.setupFileLabel">Setup file for other assistants</span>
+                        <div class="mcp-bridge-field-line">
+                          <span class="mcp-bridge-sub mcp-bridge-summary-text" data-i18n="settings.ai.mcpBridge.setupFileHint">For an assistant FlowJoe doesn't list. Paste it into that assistant's MCP settings.</span>
+                          <button type="button" class="icon-btn" data-tooltip-strong="true" id="mcp-bridge-show-file-btn" aria-pressed="false" aria-controls="mcp-bridge-snippet"><i class="fa-solid fa-eye" aria-hidden="true"></i></button>
+                          <button type="button" class="icon-btn" data-tooltip-strong="true" id="mcp-bridge-copy-snippet-btn" data-tooltip="Copy setup file|Includes the key" aria-label="Copy setup file" data-i18n-attr="data-tooltip:settings.ai.mcpBridge.copyFileTooltip;aria-label:settings.ai.mcpBridge.copyFileLabel"><i class="fa-solid fa-copy" aria-hidden="true"></i></button>
+                        </div>
+                        <textarea id="mcp-bridge-snippet" class="setting-input mcp-bridge-snippet" readonly spellcheck="false" rows="9" hidden aria-label="Setup file" data-i18n-attr="aria-label:settings.ai.mcpBridge.setupFileAria"></textarea>
+                      </div>
+                      <div class="setting-sub-divider"></div>
+                      <div class="setting-control">
+                        <label for="mcp-bridge-autoapply-toggle" data-i18n="settings.ai.mcpBridge.autoApplyLabel">Apply changes without asking</label>
+                        <label class="toggle-switch">
+                          <input type="checkbox" id="mcp-bridge-autoapply-toggle" />
+                          <span class="toggle-slider"></span>
+                        </label>
+                      </div>
+                      <p class="setting-description" data-i18n="settings.ai.mcpBridge.autoApplyDescription">Until FlowJoe restarts. Deleting things always asks.</p>
+                      <div class="setting-control">
+                        <label for="mcp-bridge-readonly-toggle" data-i18n="settings.ai.mcpBridge.readOnlyLabel">Look only, no changes</label>
+                        <label class="toggle-switch">
+                          <input type="checkbox" id="mcp-bridge-readonly-toggle" />
+                          <span class="toggle-slider"></span>
+                        </label>
+                      </div>
+                      <p class="setting-description" data-i18n="settings.ai.mcpBridge.readOnlyDescription">Assistants can read your flow but can't suggest edits.</p>
+                      <div id="agent-bridge-helper-toggle-row" hidden>
+                        <div class="setting-control">
+                          <label for="agent-bridge-helper-toggle" data-i18n="settings.ai.mcpBridge.helper.toggleLabel">Let a terminal turn this on</label>
+                          <label class="toggle-switch">
+                            <input type="checkbox" id="agent-bridge-helper-toggle" />
+                            <span class="toggle-slider"></span>
+                          </label>
+                        </div>
+                        <p class="setting-description" data-i18n="settings.ai.mcpBridge.helper.toggleDescription">An assistant can ask FlowJoe to switch the bridge on from the terminal. You still say yes each time.</p>
+                        <p class="setting-description" id="agent-bridge-helper-unavailable-note" hidden data-i18n="settings.ai.mcpBridge.helper.unavailableFirstApp">Another FlowJoe app opened first and is using the terminal shortcut, so it only works in that app. Use the shortcut from that app, or quit it and restart this one.</p>
+                      </div>
+                      <div id="agent-bridge-helper-details" hidden>
+                        <p class="setting-description" data-i18n="settings.ai.mcpBridge.helper.copyCommandDescription">Paste this into the terminal your agent is running in — it can then ask FlowJoe to turn the bridge on. Only works while FlowJoe is running; this does not launch it.</p>
+                        <div class="mcp-bridge-action-row">
+                          <button id="agent-bridge-helper-copy-btn" class="btn cleanup-button" type="button" data-i18n="settings.ai.mcpBridge.helper.copyCommandLabel">Copy enable command</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             <p class="setting-description" id="agent-bridge-helper-always-allow-note" hidden data-i18n="settings.ai.mcpBridge.helper.alwaysAllowActiveNote">This terminal can enable the bridge without asking.</p>
@@ -2098,6 +2131,6 @@
         </div><!-- /settings-content -->
       </div><!-- /settings-body -->
     </div><!-- /settings-panel -->
-    <script src="boot/progress.07cfd45cdfbaccf1.js"></script>
+    <script src="boot/progress.c613afb0b6480742.js"></script>
   </body>
 </html>
