@@ -74,7 +74,23 @@ If commits made earlier already include files from a Private folder and haven't 
 
 A branch opened as its own node follows the same Private folders. If the repository itself is Private, the whole repository is yours to commit and push as before; Source Control shows a key on it.
 
-New files added through the repo node's gallery appear in **Changes** so you can stage them. Imported executable-permission changes also appear, even when the file text is unchanged. A Git commit records repository files; slot notes stay with the Flow.
+New files added through the repo node's gallery appear in **Changes** so you can stage them. Imported executable-permission changes also appear, even when the file text is unchanged.
+
+### What goes into the repository
+
+Besides your files, a commit can record what you arranged in FlowJoe, so teammates who clone the repository see the branch the way you made it. Each folder with something FlowJoe-specific to say gets one small hidden file (`.flowjoe-node.json`, plus `.flowjoe-repo.json` at the top). It holds:
+
+- folder titles, node summaries, status, and slot and stack notes,
+- the order of slots and folders, the gallery layout, a chosen canvas arrangement and where you placed slots on the canvas, slot colours and connections,
+- tags on nodes and slots (each tag travels with its name, colour and description),
+- placeholder slots and link slots, and which picture a stack shows,
+- automations, which arrive switched off on the other computer.
+
+Where you are looking on the canvas, your Joe chats, Memories and picture prompts stay with you. A plain code repository gets no FlowJoe files until you add something like a note. A folder with no files but with a note or a placeholder is kept in Git through its FlowJoe file.
+
+When you change only notes or layout, **Changes** shows one row per folder: the folder's name with **Notes and layout** (the repository's name for the top level). Stage and commit it like a file. These rows can't be opened or discarded yet. A Private folder's notes are never committed, and if the whole repository is Private, FlowJoe leaves its notes and layout out of commits for now.
+
+When you clone a repository made in FlowJoe, its notes, order, layout, tags, placeholders and links appear in the new node. Tags you already have keep your own colour. If FlowJoe can't read those details (for example, they were saved by a newer FlowJoe), the files still arrive and a notice says what couldn't be used; FlowJoe never overwrites details it can't read.
 
 When a merge leaves conflicts, the Changes menu offers **Mark All Resolved**, which becomes available once you have resolved every conflict yourself; FlowJoe never picks a side for you.
 

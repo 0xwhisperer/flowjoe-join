@@ -1298,6 +1298,144 @@
   .stack-navigation.visible {
     animation: fadeInUp 0.3s ease-out forwards;
   }
+
+  /* ---------------------------------------------------------------------------------------------
+     Virtual Slots (S1, approved mockup round 2 — docs/IMPLEMENTATION/mockups/flowjoe-virtual-slots.html).
+     The dashed "M" / "V" chip sits in the slot's top-left badge row right after the stack count
+     (.image-stack-indicator-wrapper), so it lands right of the rail's "+" on a plain slot and right
+     of the count on a stack; it never covers the picture, its badges or the media-type light. It
+     matches the count badge's footprint on the mockup's theme surface (V tinted). A virtual slot also
+     gets a dashed outline. The hover card is fixed at page level (virtualSlotHoverCard.js).
+     --------------------------------------------------------------------------------------------- */
+  .image-stack-indicator-wrapper:has(.vslot-chip) {
+    display: flex;
+    align-items: center;
+    gap: calc(4px * var(--gallery-slot-scale, 1));
+  }
+
+  .vslot-chip {
+    pointer-events: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    height: var(--canvas-rail-btn-size, 18.8px);
+    min-width: var(--canvas-rail-btn-size, 18.8px);
+    padding: 0;
+    border: 1.5px dashed var(--accent-color);
+    border-radius: var(--radius-sm, 4px);
+    background-color: var(--bg-primary);
+    color: var(--accent-color);
+    font-size: calc(0.68em * var(--gallery-slot-scale, 1));
+    font-weight: 800;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .vslot-chip--virtual {
+    background-color: color-mix(in srgb, var(--accent-color) 16%, var(--bg-primary));
+  }
+
+  .vslot-chip:hover,
+  .vslot-chip[aria-expanded="true"] {
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-color) 35%, transparent);
+  }
+
+  .vslot-chip:focus-visible {
+    outline: none;
+    box-shadow:
+      var(--focus-ring),
+      0 0 0 2px color-mix(in srgb, var(--accent-color) 35%, transparent);
+  }
+
+  .image-item[data-vslot="virtual"] {
+    outline: 2px dashed color-mix(in srgb, var(--accent-color) 70%, transparent);
+    outline-offset: 3px;
+    border-radius: var(--radius-lg, 8px);
+  }
+
+  .vslot-card {
+    position: fixed;
+    z-index: var(--flowjoe-z-vslot-card);
+    box-sizing: border-box;
+    width: min(300px, calc(100vw - 16px));
+    padding: 10px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg, 8px);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    box-shadow: var(--elev-floating);
+    font-size: 12.5px;
+    line-height: 1.45;
+  }
+
+  .vslot-card-heading {
+    display: block;
+    margin: 8px 0 3px;
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+  }
+
+  .vslot-card-heading:first-child {
+    margin-top: 0;
+  }
+
+  .vslot-card-link {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    width: 100%;
+    padding: 2px 0;
+    border: 0;
+    background: transparent;
+    color: var(--accent-color);
+    font: inherit;
+    font-weight: 600;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .vslot-card-link:hover .vslot-card-path,
+  .vslot-card-link:focus-visible .vslot-card-path {
+    text-decoration: underline;
+  }
+
+  .vslot-card-link:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+    border-radius: var(--radius-sm, 4px);
+  }
+
+  .vslot-card-link i {
+    font-size: 10px;
+  }
+
+  .vslot-card-path {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .vslot-card-slotno {
+    flex: 0 0 auto;
+    color: var(--text-secondary);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .vslot-card-line {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-bottom: 4px;
+    color: var(--text-primary);
+  }
+
+  .vslot-card-hint {
+    margin-top: 8px;
+    color: var(--text-secondary);
+  }
 }
 
 /* Scrub-time media-height lock (imageStackListeners.js sets the class + var at

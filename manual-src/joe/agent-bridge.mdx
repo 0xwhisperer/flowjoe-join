@@ -12,13 +12,13 @@ The **Agent Bridge** connects your active Flow to compatible AI assistants and d
 3. Kimi needs one step: run its copied command in a terminal.
 4. To skip one, untick it under **Choose assistants**.
 
-FlowJoe asks once before turning on and names the assistants it will connect; it never connects one without that yes. If a terminal turned the bridge on, **Look again** asks the same question first. The assistants FlowJoe connects by itself are Claude Code, Codex, Gemini, Grok and Antigravity (on Windows and Linux, Antigravity starts out left out so Joe can keep using it as his brain; tick it to connect it); one sentence under the switch says who is connected. FlowJoe looks again whenever Settings opens; press the **Look again** icon to check right now. Restart an assistant that was already running so it picks up FlowJoe. Your other settings in each assistant are kept. FlowJoe remembers an assistant you left out; tick it again to bring it back.
+FlowJoe asks once before turning on and names the assistants it will connect; it never connects one without that yes. If a terminal turned the bridge on, **Look again** asks the same question first. The assistants FlowJoe connects by itself are Claude Code, Codex, Gemini, Grok and Antigravity (on Windows and Linux, Antigravity starts out left out so Joe can keep using it as his brain; tick it to connect it. If an earlier FlowJoe version connected Antigravity there, FlowJoe removes that connection the first time you open Settings after updating); one sentence under the switch says who is connected. FlowJoe looks again whenever Settings opens; press the **Look again** icon to check right now. Restart an assistant that was already running so it picks up FlowJoe. Your other settings in each assistant are kept. FlowJoe remembers an assistant you left out; tick it again to bring it back.
 
 ## Advanced
 
 **Advanced** holds the technical part: the bridge's address, the connection key (hidden until you press the eye) and a setup file for any other compatible MCP tool (shown only when you ask; copy it into that tool's settings). Keep the key private. **Make a new key** asks first; assistants FlowJoe connected get the new key by themselves, and only Kimi's command needs copying again.
 
-The bridge starts again on launch if you left it on. Turning the switch off stops access and removes FlowJoe from those assistants' settings; turning it on connects them again.
+The bridge starts again on launch if you left it on. Turning the switch off stops access and removes FlowJoe from those assistants' settings; turning it on connects them again. Off stays off for outside assistants: Joe's own chat can still use FlowJoe's tools, but an assistant holding the old key can't connect until you turn the switch back on. If FlowJoe couldn't change an assistant's settings, it tells you which one needs fixing by hand.
 
 To use ordinary terminal commands or scripts, install the [FlowJoe CLI](/cli/getting-started).
 Its dedicated manual section covers setup, commands, scripting and troubleshooting. The CLI's
