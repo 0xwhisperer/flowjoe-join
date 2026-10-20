@@ -54,7 +54,6 @@ The **Agent Bridge** connects your active Flow to compatible AI assistants and d
 - Turn on **Let coding assistants use FlowJoe**. FlowJoe connects every assistant it finds by itself.
 - Kimi needs one step: run its copied command in a terminal.
 - To skip one, untick it under **Choose assistants**.
-FlowJoe asks once before turning on and names the assistants it will connect; it never connects one without that yes. If a terminal turned the bridge on, **Look again** asks the same question first.
 
 Also covered in the full docs for this area: Advanced; Choose how changes are approved; How MCP relates to Joe’s actions; Two FlowJoe apps open at once; What connected tools can do.
 
@@ -70,7 +69,7 @@ Set the default in **Settings → Joe AI**. The selector in Chat overrides that 
 - **Read** — Read permitted Flow content to answer questions, without changing it.
 - **Propose** — Read permitted content and offer changes for you to review.
 
-Also covered in the full docs for this area: Keep content out of Joe’s reach; Ask about current app facts; Check the next message.
+Also covered in the full docs for this area: Keep content out of Joe’s reach; Ask about current app facts; Check the next message; Hidden notes and virtual slots.
 
 ## Manual links
 
