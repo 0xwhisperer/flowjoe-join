@@ -2,8 +2,8 @@
 
 <!-- GENERATED FILE — do not edit by hand. Built from the mintlify user docs by
 scripts/build-app-help-knowledge.js (deterministic digest; re-run it after editing any source page).
-Source pages: cli/getting-started.mdx, cli/commands.mdx, cli/scripting.mdx, cli/approvals-and-troubleshooting.mdx
-Generated: 2026-10-19 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
+Source pages: cli/getting-started.mdx, cli/commands.mdx, cli/everyday-tasks.mdx, cli/action-reference.mdx, cli/node-changes.mdx, cli/gallery-changes.mdx, cli/flow-changes.mdx, cli/scripting.mdx, cli/approvals-and-troubleshooting.mdx
+Generated: 2026-10-20 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
 Sync guard: tests/unit/appHelpKnowledgeSync.test.js fails when mintlify/**/*.mdx or this digest drifts
 from scripts/app-help-knowledge.manifest.json. -->
 
@@ -33,6 +33,26 @@ Run `flowjoe-cli --help` whenever you need a reminder. Use `--version` to see th
 
 Also covered in the full docs for this area: Shared options; Files of changes; Advanced actions; Results for scripts.
 
+## Everyday CLI tasks
+
+Read notes, inspect branches, edit content, add references, and check results.
+
+## CLI action reference
+
+Every bridge action: what it does, inputs, examples, results, and approvals.
+
+## Change nodes
+
+Create, organize, tag, freeze, and write notes on FlowJoe nodes.
+
+## Change references and stacks
+
+Edit gallery notes, organize references and stacks, crop images, and change canvas items.
+
+## Change Flow details and automations
+
+Edit Flow notes, tags, saved memories, and scheduled tasks.
+
 ## CLI scripting and action lists
 
 Use JSON, pipes and shared results in repeatable FlowJoe workflows.
@@ -60,5 +80,10 @@ A FlowJoe manual reference chip linking the page(s) below is already attached un
 
 - [Start using the CLI](flowjoe-docs:cli/getting-started)
 - [CLI commands](flowjoe-docs:cli/commands)
+- [Everyday CLI tasks](flowjoe-docs:cli/everyday-tasks)
+- [CLI action reference](flowjoe-docs:cli/action-reference)
+- [Change nodes](flowjoe-docs:cli/node-changes)
+- [Change references and stacks](flowjoe-docs:cli/gallery-changes)
+- [Change Flow details and automations](flowjoe-docs:cli/flow-changes)
 - [CLI scripting and action lists](flowjoe-docs:cli/scripting)
 - [CLI approvals and troubleshooting](flowjoe-docs:cli/approvals-and-troubleshooting)
