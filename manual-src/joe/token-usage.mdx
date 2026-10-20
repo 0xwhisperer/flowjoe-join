@@ -53,6 +53,20 @@ The number does not move while you type. Your unsent draft is shown separately a
 
 The bar is an estimate: FlowJoe counts characters with per-script ratios, not the provider's tokenizer. After each reply the app records the provider's real input-token count next to the estimate it made for that send (visible in the diagnostics/debug output), so a persistent gap can be spotted and fixed.
 
+### What a reply cost
+
+The bar estimates your next send. To see what a reply actually cost, look at the small line under the reply, just above its buttons: after `+N tok/send` it shows the whole reply's total, for example `80.2k in · 420 out`. That counts every request Joe made for the reply: the small "choosing what to read" request, Joe's own request, and each extra round after a tool step. The numbers are the ones your AI provider reported, not estimates.
+
+Press the total to open the receipt under the reply:
+
+- **Totals first:** tokens in, tokens out, and how many requests there were.
+- **How much was cached:** the bar shows how much of the input the provider had already seen recently. Cached input costs less.
+- **Each step in order,** with the model that ran it and its own in and out counts.
+
+Press the total again, or press Escape, to close it. The total is saved with the conversation, so it is still there after you restart FlowJoe.
+
+A `+` after a number means "at least this much". It appears when a request never reported its count, for example when you pressed **Stop** while Joe was still writing; the receipt says which step and why. The command-line brains (Claude, Codex, Grok, Gemini CLI, Antigravity) don't report token counts to FlowJoe, so their replies show a total only for the steps that did report (such as a TypeSafe request), with a `+`, or no total at all. Work that happens after the reply (attachment memories, compacting the chat) is not included.
+
 <Note>
 The bar is this send against the model's context window. Your provider's separate tokens-per-minute limit can still block a large request if you used a lot of tokens recently.
 </Note>

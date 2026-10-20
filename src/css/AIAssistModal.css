@@ -1459,6 +1459,230 @@
   text-align: left;
 }
 
+/* What a reply cost (joeTurnCostReceipt.js, approved mockup flowjoe-joe-turn-tokens.html variant A): on a reply that has
+   a cost, the "+N tok/send" note and the cost share one quiet line ABOVE the reply's action buttons, docked and floating
+   (the mockup draws it there). A note on its own (older replies, replies with no cost) keeps its existing placement (the rules above: after the buttons
+   when docked or wrapped, above them side-by-side). Inside
+   the line the pieces simply flow in a row, so the note's own flex placement never applies there. */
+#ai-spell-check-panel #ai-chat-messages .ai-chat-message .ai-chat-actions .ai-chat-turn-cost-row {
+  order: -1;
+  flex: 0 0 100%;
+  margin: 0;
+  align-self: center;
+}
+.ai-chat-turn-cost-row {
+  display: block;
+  min-width: 0;
+  text-align: left;
+  line-height: 1.3;
+}
+/* Not dead: the wrapped-layout note rule above (margin-left: 6px) ties on specificity and would indent the note inside
+   the line; this later rule keeps it flush. */
+#ai-spell-check-panel #ai-chat-messages .ai-chat-message.assistant .ai-chat-actions .ai-chat-turn-cost-row > .ai-chat-msg-token-chip {
+  margin: 0;
+}
+.ai-chat-turn-cost-sep {
+  margin: 0 6px;
+  font-size: var(--ai-micro-text-size, var(--font-micro));
+  color: var(--text-secondary);
+  opacity: 0.5;
+}
+/* A reply with no "+N tok/send" note (a stopped or failed turn's card) starts the line with its cost. */
+.ai-chat-turn-cost-row > .ai-chat-turn-cost-sep:first-child {
+  display: none;
+}
+.ai-chat-turn-cost-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 1px 6px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: var(--ai-micro-text-size, var(--font-micro));
+  line-height: 1.3;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  vertical-align: baseline;
+  cursor: pointer;
+  opacity: 0.75;
+}
+/* Hover and open only brighten the text and border (the mockup); the app's generic button:hover fill is not wanted. */
+.ai-chat-turn-cost-btn:hover,
+.ai-chat-turn-cost-btn[aria-expanded="true"] {
+  opacity: 1;
+  color: var(--text-primary);
+  border-color: var(--jd-line, var(--border-color));
+  background: transparent;
+}
+/* Keyboard focus: the app's own accent focus border on buttons is the focus ring (buttons.css removes outlines). */
+.ai-chat-turn-cost-btn:focus-visible {
+  opacity: 1;
+}
+.ai-chat-turn-cost-btn i {
+  font-size: 0.95em;
+}
+.ai-chat-turn-cost-warn {
+  color: var(--warning-color, var(--accent-color));
+}
+
+/* The receipt: one card per reply, under its actions. */
+.ai-chat-turn-cost {
+  align-self: stretch;
+  flex: 0 0 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+.ai-chat-turn-cost-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 6px 0 4px;
+  padding: 10px 12px;
+  border: 1px solid var(--jd-line, var(--border-color));
+  border-radius: var(--jd-radius, var(--radius-lg));
+  background: var(--jd-surface, var(--bg-secondary));
+  color: var(--jd-text-1, var(--text-primary));
+  font-size: var(--font-joe-turn-cost-body);
+}
+.ai-chat-turn-cost-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+.ai-chat-turn-cost-title {
+  font-size: var(--font-meta);
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--jd-text-3, var(--text-secondary));
+}
+.ai-chat-turn-cost-models {
+  min-width: 0;
+  margin-left: auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--font-meta);
+  color: var(--jd-text-3, var(--text-secondary));
+}
+.ai-chat-turn-cost-totals {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+.ai-chat-turn-cost-total {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+.ai-chat-turn-cost-total b {
+  font-size: var(--font-joe-turn-cost-total);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--jd-text-1, var(--text-primary));
+}
+.ai-chat-turn-cost-total span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--font-meta);
+  color: var(--jd-text-3, var(--text-secondary));
+}
+.ai-chat-turn-cost-cache {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.ai-chat-turn-cost-track {
+  display: flex;
+  height: 4px;
+  overflow: hidden;
+  border-radius: var(--radius-full);
+  background: var(--jd-well, var(--bg-tertiary));
+}
+.ai-chat-turn-cost-track .is-cached,
+.ai-chat-turn-cost-swatch.is-cached {
+  background: var(--success-color);
+}
+.ai-chat-turn-cost-track .is-fresh,
+.ai-chat-turn-cost-swatch.is-fresh {
+  background: var(--accent-color);
+}
+.ai-chat-turn-cost-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  font-size: var(--font-meta);
+  font-variant-numeric: tabular-nums;
+  color: var(--jd-text-3, var(--text-secondary));
+}
+.ai-chat-turn-cost-swatch {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 5px;
+  border-radius: var(--radius-xs);
+}
+.ai-chat-turn-cost-steps {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--jd-line-soft, var(--border-color));
+}
+.ai-chat-turn-cost-step {
+  display: grid;
+  grid-template-columns: 14px minmax(0, 1fr) auto;
+  gap: 1px 6px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--jd-line-soft, var(--border-color));
+}
+.ai-chat-turn-cost-step:last-child {
+  border-bottom: 0;
+}
+.ai-chat-turn-cost-step-n {
+  grid-row: 1 / 3;
+  padding-top: 1px;
+  font-size: var(--font-meta);
+  font-variant-numeric: tabular-nums;
+  color: var(--jd-text-3, var(--text-secondary));
+}
+.ai-chat-turn-cost-step-name {
+  grid-column: 2 / 4;
+  min-width: 0;
+  line-height: 1.35;
+  color: var(--jd-text-1, var(--text-primary));
+}
+.ai-chat-turn-cost-step-sub {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--font-meta);
+  color: var(--jd-text-3, var(--text-secondary));
+}
+.ai-chat-turn-cost-step-num {
+  white-space: nowrap;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--jd-text-1, var(--text-primary));
+}
+.ai-chat-turn-cost-step.is-unreported .ai-chat-turn-cost-step-name,
+.ai-chat-turn-cost-step.is-unreported .ai-chat-turn-cost-step-num {
+  color: var(--jd-text-3, var(--text-secondary));
+}
+.ai-chat-turn-cost-foot {
+  font-size: var(--font-meta);
+  line-height: 1.4;
+  color: var(--jd-text-3, var(--text-secondary));
+}
+
 #ai-spell-check-panel #ai-chat-messages .ai-chat-welcome {
   background: var(--bg-secondary);
   color: var(--text-primary) !important;

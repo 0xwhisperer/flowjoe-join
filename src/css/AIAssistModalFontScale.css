@@ -67,6 +67,7 @@
   --ai-control-text-size: calc(13px * var(--font-scale, 1) * var(--ai-font-scale));
   --ai-chat-text-size: calc(15px * var(--font-scale, 1) * var(--ai-font-scale));
   --ai-small-text-size: calc(12px * var(--font-scale, 1) * var(--ai-font-scale));
+  --ai-micro-text-size: calc(10px * var(--font-scale, 1) * var(--ai-font-scale)); /* the reply cost line's total and separator (joeTurnCostReceipt.js): the micro tier, following Joe's A+ */
   --tooltip-font-size: var(--ai-control-text-size);
   font-family: var(--app-font-family, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
   font-size: var(--ai-panel-text-size);
