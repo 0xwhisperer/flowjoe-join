@@ -67,7 +67,7 @@ Some Anthropic answers have their own plain message:
 * **Key rejected: Anthropic needs a key made inside a workspace** — this key was created outside any Anthropic workspace. Create a new key inside a workspace and paste that one.
 * **The key works, but the account has no credit** — add credit to your Anthropic account, then try again.
 
-**xAI saves before it tests.** FlowJoe checks xAI keys through the desktop app, which uses the saved key, so pressing **Test** in the xAI window saves the key you typed for the check. That save only sticks when you press **Save**: if you close the window another way (**Cancel**, ×, or Escape), your previous key comes back, or the key is removed if there was none before. A mistyped key never replaces one that works. xAI brains need the FlowJoe desktop app.
+**Test never saves.** Pressing **Test** checks the key you typed without storing it, for xAI too (FlowJoe checks xAI keys through the desktop app). Only **Save** changes your saved key, so a mistyped key never replaces one that works. xAI brains need the FlowJoe desktop app: in a plain web browser, Grok shows as "Desktop app only" in both brain lists and can't be picked, and **Test** in the xAI window says the same.
 
 Like Gemini, these brains cannot search the web or use Code interpreter; the two switches are greyed out with a note that names the provider. Every one of these brains reads attached documents such as PDFs, Grok 4.7 included. If you send a message with an API-key brain whose key is missing, Joe tells you which key to add in **Settings → APIs** instead of sending it.
 

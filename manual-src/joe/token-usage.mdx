@@ -67,6 +67,8 @@ Press the total again, or press Escape, to close it. The total is saved with the
 
 A `+` after a number means "at least this much". It appears when a request never reported its count, for example when you pressed **Stop** while Joe was still writing; the receipt says which step and why. The command-line brains (Claude, Codex, Grok, Gemini CLI, Antigravity) don't report token counts to FlowJoe, so their replies show a total only for the steps that did report (such as a TypeSafe request), with a `+`, or no total at all. Work that happens after the reply (attachment memories, compacting the chat) is not included.
 
+Guests in a shared Flow never see what a reply cost. Every reply in a shared chat is paid for by the owner, so the total and its receipt stay on the owner's computer, including for the guest's own questions.
+
 <Note>
 The bar is this send against the model's context window. Your provider's separate tokens-per-minute limit can still block a large request if you used a lot of tokens recently.
 </Note>
