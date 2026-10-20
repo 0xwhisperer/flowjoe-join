@@ -33,9 +33,9 @@ To adjust your model config:
 - For an API brain, add its key in **Settings → APIs**. For a CLI brain, install and sign into its tool first, as described below.
 - Click the model settings button inside the Joe panel — or the brain name in the status bar — to pick the brain behind Joe:
 - **OpenAI models (API key):** **Sol 6.1**, **Luna 6** (the default), **Sol 6**, and **Astra 6**, plus **Luna**, **Terra**, and **Sol** from the GPT-5.6 family.
-- **Anthropic API:** **Claude Fable 5.1**, **Claude Opus 5.5** and **Claude Sonnet 5.5** use your own Anthropic API key. This is separate from a Claude Code login: you can have both.
+- **Anthropic API:** **Claude Fable 5.1**, **Claude Opus 5.5**, **Claude Sonnet 5.5** and **Claude Haiku 5.5** use your own Anthropic API key. This is separate from a Claude Code login: you can have both.
 - **xAI API:** **Grok 4.7** uses your own xAI API key. This is separate from a Grok terminal login.
-- **Gemini API:** **Gemini 3.8 Flash** uses a separate Google Gemini API key. See setup below.
+- **Gemini API:** **Gemini 3.8 Flash** and **Gemini 4 Argon** use a separate Google Gemini API key. See setup below.
 - **Temperature and response length are managed automatically per model** — there is no manual temperature dial, and GPT-5.6 / GPT-6 models run at their fixed default temperature.
 
 Also covered in the full docs for this area: How the brain menu is arranged; Where to get an OpenAI key; Set up Gemini chat; Set up Claude or Grok with an API key; What CLI brains need first; Which brains can work with your Flow?; A CLI brain, Agent Bridge, or Forge?; What happens with no key and no CLI brain; Your keys in Settings → APIs; Viewing, copying and removing a key; Making Joe faster: the optional TypeSafe key; It also trims a big flow map; Checking that a key works; CLI brains in shared conversations.
@@ -44,7 +44,7 @@ Also covered in the full docs for this area: How the brain menu is arranged; Whe
 
 Let a local coding assistant work with your Flow while you stay in control.
 
-Joe works the same on every brain that uses Flow tools (OpenAI, Gemini, Claude, Grok, Codex, Gemini CLI): in his own chat he can hand the owner a restore, export, import or outside-changes review, find pictures, read shared terminal lines, read a browser page in parts, and undo or list his changes.
+Joe works the same on every brain that uses Flow tools (OpenAI, Gemini, Claude, Grok, Codex): in his own chat he can hand the owner a restore, export, import or outside-changes review, find pictures, read shared terminal lines, read a browser page in parts, and undo or list his changes.
 Antigravity has them on a Mac only; Agent Bridge assistants and the FlowJoe CLI never get these tools.
 A page the owner explicitly asks about still reaches every brain.
 The **Agent Bridge** connects your active Flow to compatible AI assistants and developer tools on your computer. A coding assistant can work with your plan, references, and notes—not just the files in a code folder. MCP is the connection format these tools use.

@@ -65,7 +65,7 @@ Press the total to open the receipt under the reply:
 
 Press the total again, or press Escape, to close it. The total is saved with the conversation, so it is still there after you restart FlowJoe.
 
-A `+` after a number means "at least this much". It appears when a request never reported its count, for example when you pressed **Stop** while Joe was still writing; the receipt says which step and why. The command-line brains (Claude, Codex, Grok, Gemini CLI, Antigravity) report their own token counts too, so their replies show real numbers: in, cached, out, and thinking where the brain reports it. A step shows "no count" (or the reply shows no total at all) only when that brain's run reported nothing, or when you stopped it before it could. Work that happens after the reply (attachment memories, compacting the chat) is not included.
+A `+` after a number means "at least this much". It appears when a request never reported its count, for example when you pressed **Stop** while Joe was still writing; the receipt says which step and why. The command-line brains (Claude, Codex, Grok, Antigravity) report their own token counts too, so their replies show real numbers: in, cached, out, and thinking where the brain reports it. A step shows "no count" (or the reply shows no total at all) only when that brain's run reported nothing, or when you stopped it before it could. Work that happens after the reply (attachment memories, compacting the chat) is not included.
 
 Guests in a shared Flow never see what a reply cost. Every reply in a shared chat is paid for by the owner, so the total and its receipt stay on the owner's computer, including for the guest's own questions.
 
@@ -82,12 +82,11 @@ When **Smart context loading** is on (Settings → Joe AI; it is on by default),
 | Joe's brain | Who makes that decision |
 | :--- | :--- |
 | OpenAI | A small, cheap OpenAI model (Luna). |
-| Gemini 3.8 Flash (Gemini API key) | Gemini 3.5 Flash-Lite, a cheaper Gemini model on the same key. This works in the browser too. |
+| Gemini 3.8 Flash or Gemini 4 Argon (Gemini API key) | Gemini 3.5 Flash-Lite, a cheaper Gemini model on the same key. This works in the browser too. |
 | Claude | Haiku, through your Claude sign-in. |
 | Antigravity | Gemini 3.8 Flash (Low), through your Antigravity sign-in. |
 | Grok | Grok 4.7. Grok's command-line tool offers no cheaper model, so a TypeSafe key saves the most here. |
 | Codex | GPT-5.6 Luna, through your ChatGPT sign-in. |
-| Gemini CLI | The Gemini tool's Flash-Lite model, through your Google sign-in. |
 
 With a TypeSafe key, in the desktop app, TypeSafe answers first on every brain (see below). If you run FlowJoe yourself in a plain web browser, TypeSafe can't be reached, so Gemini uses its own model from the table. Guests who join your shared Flow from a browser still get TypeSafe, because their requests go through your computer. If TypeSafe can't answer, OpenAI falls back to Luna. Other brains load everything for that message rather than also waiting for the model in the table.
 
@@ -103,7 +102,7 @@ Spell-check, conversation compaction and the decision above use the cheaper help
 
 ### How much Gemini thinks
 
-On **Gemini 3.8 Flash**, Joe asks for **low** thinking on ordinary chat and **high** thinking when he is about to change your Flow or is recovering from a failed action. With **Smart context loading** off, or on a message where that decision fails, Joe can't tell whether you want a change, so every such message uses **high** thinking. This matches what he does on OpenAI.
+On **Gemini 3.8 Flash** and **Gemini 4 Argon**, Joe asks for **low** thinking on ordinary chat and **high** thinking when he is about to change your Flow or is recovering from a failed action. With **Smart context loading** off, or on a message where that decision fails, Joe can't tell whether you want a change, so every such message uses **high** thinking. This matches what he does on OpenAI.
 
 ---
 
@@ -119,7 +118,7 @@ The same TypeSafe window has two switches, both on by default. **Use TypeSafe** 
 
 Joe is told plainly that the map was narrowed, so he will not tell you a node is missing — he looks up the full structure himself when a question needs it.
 
-**It helps Joe find the right pictures.** Picture names like "IMG_4821.jpg" say nothing about what a picture shows. When you ask about your pictures — "compare the warm, minimal interiors in my moodboard", "find more like this one" — Joe can ask TypeSafe to rank the pictures in that part of your flow by what they show, then open only the best matches to answer. This works in your own desktop chat only, on every brain that uses Flow tools (OpenAI, Gemini, and CLI brains such as Claude, Grok, Codex and Gemini CLI); assistants connected from outside cannot use it. On a Mac this includes Antigravity; on Windows and Linux, Antigravity can't use Flow tools yet. If TypeSafe can't help (a picture it can't read, the service is slow, or it stops accepting pictures), Joe simply picks pictures by their names, as he does without a key.
+**It helps Joe find the right pictures.** Picture names like "IMG_4821.jpg" say nothing about what a picture shows. When you ask about your pictures — "compare the warm, minimal interiors in my moodboard", "find more like this one" — Joe can ask TypeSafe to rank the pictures in that part of your flow by what they show, then open only the best matches to answer. This works in your own desktop chat only, on every brain that uses Flow tools (OpenAI, Gemini, and CLI brains such as Claude, Grok and Codex); assistants connected from outside cannot use it. On a Mac this includes Antigravity; on Windows and Linux, Antigravity can't use Flow tools yet. If TypeSafe can't help (a picture it can't read, the service is slow, or it stops accepting pictures), Joe simply picks pictures by their names, as he does without a key.
 
 <Warning>
 **This sends data to TypeSafe.** To rank your flow, your message plus your node names and summaries — each name paired with the name of the node it sits under, so two nodes called "Packing list" in different trips can be told apart — go to TypeSafe's API. To double-check Joe's claims on turns where you asked for a change, your message, **Joe's reply exactly as written** (so anything he quotes from your notes or files goes with it), and a short description of each change the turn made (which node, and the start of any new name or text) go there too. To point out changes you didn't ask for, your message, Joe's message just before it, anything you typed into "Revise…" (or, for a scheduled task, its instructions), and a short description of each proposed change — with node, scheduled-task, and tag names — are sent. To spot instructions aimed at AI, the text of files you attach — and of items Joe reads himself, such as a document or an imported calendar — is sent too. When Joe searches your pictures, small previews of the pictures in that part of your flow are sent — never the original files, and never pictures in private nodes or nodes hidden from Joe. No other media is sent. If that is not something you want, leave the key out — everything works without it.
