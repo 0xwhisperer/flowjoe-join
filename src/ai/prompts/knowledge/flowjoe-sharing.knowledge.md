@@ -42,7 +42,7 @@ The same removal permission protects shared Joe conversations in Joe's history p
 Choose the additional removal permission in the invitation to let an Edit guest remove other people's shared content. It never reveals private content and never turns a View invitation into Edit access. Editing a title or note does not change who created the item. Older items without a recorded creator count as yours.
 Making a shared node private removes guest access. Currently, making it public again can require you to confirm the newly available content in Sharing before guests see it again. This extra confirmation is under review; it is not an additional guest permission.
 
-Also covered in the full docs for this area: Repositories and History; Top-level nodes, tags and schedules; Pictures made by guests; Settings; Browse guest turns; See who is here; Transfer sharing choices to another Flow; Present your Flow; Locked follow links; When something is wrong; Link-card pictures.
+Also covered in the full docs for this area: Repositories and History; Top-level nodes, tags and schedules; Pictures made by guests; Settings; Browse guest turns; If an access change cannot be saved; See who is here; Transfer sharing choices to another Flow; Present your Flow; Locked follow links; When something is wrong; Link-card pictures.
 
 ## Manual links
 

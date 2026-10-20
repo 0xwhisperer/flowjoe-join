@@ -55,9 +55,9 @@ Create one at [platform.openai.com/api-keys](https://platform.openai.com/api-key
 
 ### Set up Gemini chat
 
-Open **Settings → APIs → Gemini API Key**, paste a key from Google AI Studio, choose **Test**, then **Save**. Select **Gemini 3.8 Flash** or **Gemini 4 Argon** in Joe’s brain picker. Both use the same key. Gemini 4 Argon is Google's larger model; a free Gemini key has no Gemini 4 Argon allowance, so use a key whose Google Cloud project has a paid Gemini API tier and Argon quota. Either one supports chat and writing assistance. This connection can read permitted Flow content and propose Flow, memory and task changes through the existing approval cards. It cannot search the web or use Code interpreter. Small background jobs (choosing which manual chapters to load, spell-check, compaction and attachment memories) run on **Gemini 3.5 Flash-Lite**, a cheaper model on the same key. See [Token usage](/joe/token-usage#a-second-request-per-send-the-context-director).
+Open **Settings → APIs → Gemini API Key**, paste a key from [Google AI Studio](https://aistudio.google.com/apikey), choose **Test**, then **Save**. A successful key test does not give the project an allowance for every model. Select **Gemini 3.8 Flash** or **Gemini 4 Argon** in Joe’s brain picker. Both use the same key. Gemini 4 Argon is Google's larger model; a free Gemini key has no Gemini 4 Argon allowance, so use a key whose Google Cloud project has a paid Gemini API tier and Argon quota. Either one supports chat and writing assistance. This connection can read permitted Flow content and propose Flow, memory and task changes through the existing approval cards. It cannot search the web or use Code interpreter. Small background jobs (choosing which manual chapters to load, spell-check, compaction and attachment memories) run on **Gemini 3.5 Flash-Lite**, a cheaper model on the same key. See [Token usage](/joe/token-usage#a-second-request-per-send-the-context-director).
 
-If Google says your account or project has **no allowance** for the selected model, waiting or shortening the message will not create one. Check that key's project, **Billing Tier**, and model quota in Google AI Studio, then retry after the project has access. Google documents [model limits by tier](https://ai.google.dev/gemini-api/docs/rate-limits) and [billing status and upgrades](https://ai.google.dev/gemini-api/docs/billing). Joe returns this refusal immediately instead of waiting through retries.
+If Google says your account or project has **no allowance** for the selected model, waiting or shortening the message will not create one. Check that key's project, **Billing Tier**, and model quota in Google AI Studio, then retry after the project has access. Google documents [model limits by tier](https://ai.google.dev/gemini-api/docs/rate-limits) and [billing status and upgrades](https://ai.google.dev/gemini-api/docs/billing). Joe returns this refusal immediately instead of waiting through retries. Antigravity’s Google login uses its own plan and limits; it does not give a Gemini API key paid project quota.
 
 ### Set up Claude or Grok with an API key
 
@@ -146,7 +146,7 @@ Under each name, a short line shows where that key stands:
 * An empty dot and **No key yet**.
 * A red dot and **Key rejected at last check**, when the last **Test** of the saved key failed. Saving a different key or removing it clears the red line.
 
-Before you have saved any AI key, a sentence at the top explains what keys are for, and that Claude Code, Grok and Antigravity logins from your terminal work without one.
+Before you have saved any AI key, a sentence at the top explains what keys are for, and that supported terminal logins work without one.
 
 ## Viewing, copying and removing a key
 
@@ -159,11 +159,11 @@ Before you have saved any AI key, a sentence at the top explains what keys are f
 
 ## Making Joe faster: the optional TypeSafe key
 
-Before Joe answers, he first works out what he needs to look at — whether you are asking him to change something, whether he needs the shape of your flow, which part of the manual is relevant. That step normally takes about a second.
+Before Joe answers, he first works out what he needs to look at — whether you are asking him to change something, whether he needs the shape of your flow, which part of the manual is relevant. Its wait depends on the selected brain; a command-line helper also has to start its tool.
 
 Add a **TypeSafe API key** and that decision runs on a model built purely for fast structured judgments, taking roughly a fifth of a second instead — on every message, whichever brain you are using.
 
-The difference is largest on the CLI brains (Claude, Grok, Antigravity, Codex). Those used to start up a second copy of the command-line tool just to ask that one question, and wait up to fifteen seconds for it. That no longer happens.
+The difference is largest on the CLI brains (Claude, Grok, Antigravity, Codex). When TypeSafe answers, Joe avoids starting a second copy of the command-line tool just to pick the manual chapters. If TypeSafe cannot answer or is unsure, the selected brain’s own helper tries within the time left; it never switches to another company’s model. See [the chapter picker and its waits](/joe/token-usage#a-second-request-per-send-the-context-director).
 
 * It is **entirely optional.** Without a key, everything works exactly as it does today — including the flow map, which is then never trimmed (see below).
 * If the key is missing, wrong, expired, or the service is unreachable, FlowJoe **quietly falls back** to the normal path. Nothing breaks — Joe is simply not faster, and the map is not trimmed.

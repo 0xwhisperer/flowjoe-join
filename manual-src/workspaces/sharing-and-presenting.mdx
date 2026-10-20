@@ -96,6 +96,16 @@ The coffee-mug logo also opens the same personal coffee-break game for View and 
 
 In the Share window the **People with access** heading has a **Joe conversations** button, and each guest's row (ended ones too) has a speech-bubble button. Either opens **Joe conversations with guests**: a read-only record of guest turns grouped by guest, with the guest who spoke to Joe most recently first. It is a browsing view of contributions to your ordinary chat, not a separate conversation. Choose **Everyone** or one guest's name to narrow the list. When a guest applied one of Joe's suggestions, it shows "Applied by" followed by the guest's name. This record stays on your computer after a share ends. Clearing ended invitations never removes it: the **Joe conversations** button stays, and on the first-time screen (no invitations left) it appears whenever saved conversations exist.
 
+## If an access change cannot be saved
+
+Changing a guest to View or revoking an invitation reduces their access immediately in the running
+app. If FlowJoe cannot save that change, it shows an error instead of reporting success. Check the
+guest's current access; a failed save may not survive closing and reopening FlowJoe. A successful
+save is needed before you can rely on the change after a restart.
+
+**Get a new link** stops if the old invitation's revocation cannot be saved, so it does not issue a
+replacement invitation after reporting that failure.
+
 ## See who is here
 
 When people are in your Flow you see them as avatars in the header: you first, then everyone else. Choose the **+** button to open **Everyone here**, grouped as Owner, Can edit and Can view, with what each person is doing.

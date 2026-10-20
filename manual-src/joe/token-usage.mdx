@@ -21,9 +21,9 @@ A typical Joe send is a bundle:
 - **The current slot's notes** — and, for a stack, every item's notes.
 - **Joe Memories**, compacted chat memory, and any attached files or images.
 - Joe's built-in instructions (the same on every send).
-- **Tool definitions** — the list of actions Joe is allowed to take this send (propose changes, read the flow, look up the manual, web search, code interpreter), each described to the model. This rides on every send and is one of the larger fixed costs: at full flow permission it is about 15 definitions, roughly 6–8k tokens; at read-only about half that; at **Off** only the manual-lookup tool remains, about 1k tokens.
+- **Tool definitions** — the list of actions Joe is allowed to take this send (propose changes, read the flow, look up the manual, web search, code interpreter), each described to the model. This rides on every send and is one of the larger fixed costs: the size depends on your permission level, available features and the model’s tokenizer. Descriptions are kept short without removing Joe’s actions. At **Off**, only the manual-lookup tool remains.
 
-You are billed for the whole bundle. On a large tree, the flow map is usually the biggest slice; after that, the tool definitions and Joe's instructions are the biggest fixed pieces. When **Smart context loading** is on there is also one small, separate request per send — see [A second request per send](#a-second-request-per-send-the-context-director) below.
+You are billed for the whole bundle. On a large tree, the flow map is usually the biggest slice; after that, the tool definitions and Joe's instructions are the biggest fixed pieces. When **Smart context loading** is on there is also a small chapter-picking step before the reply, with a second request if its first helper misses — see [A second request per send](#a-second-request-per-send-the-context-director) below.
 
 ---
 
@@ -72,7 +72,7 @@ Press the total again, or press Escape, to close it. The total is saved with the
 
 A `+` after a number means "at least this much". It appears when a request never reported its count, for example when you pressed **Stop** while Joe was still writing or the network connection was lost before a retry; the receipt says which step and why. The command-line brains (Claude, Codex, Grok, Antigravity) report their own token counts too, so their replies show real numbers: in, cached, out, and thinking where the brain reports it. A step shows "no count" (or the reply shows no total at all) only when that brain's run reported nothing, or when you stopped it before it could. Work that happens after the reply (attachment memories, compacting the chat) is not included.
 
-Guests in a shared Flow never see what a reply cost. Every reply in a shared chat is paid for by the owner, so the total and its receipt stay on the owner's computer, including for the guest's own questions.
+Guests in a shared Flow never see what a reply cost. Every reply in a shared chat is paid for by the owner, so the total and its receipt stay on the owner's computer, including for the guest's own questions. The cost total, receipt and helper-miss tip are also left out when you present Joe’s chat to guests.
 
 ### What the dollar amounts are
 
@@ -88,7 +88,7 @@ Your provider's bill is always the real number; the receipt is an estimate.
 
 ### What each brain costs
 
-Joe's brain menu shows a short price scale after each API-key brain, from **$** (cheapest) to **$$$$** (most expensive), based on its price per million tokens with input and output weighed 3 to 1: **$** under $1, **$$** $1 to $4, **$$$** $4 to $10, **$$$$** over $10. Login brains say **plan** instead.
+Joe's brain menu shows a short price scale after each API-key brain, from **$** (cheapest) to **$$$$** (most expensive), based on its price per million tokens with input and output weighed 3 to 1: **$** under $1, **$$** from $1 to under $4, **$$$** from $4 through $10, **$$$$** over $10. Login brains say **plan** instead.
 
 The brain list in the status bar at the bottom of the window shows the same scale beside each name (hover it for the numbers) and the exact list price under it, for example "OpenAI API key · sk-proj…Q7f2 · $0.10 / $0.50 per 1M" (input / output per million tokens). A signed-in login brain says "signed in · included in your plan".
 
@@ -108,18 +108,20 @@ The bar is this send against the model's context window. Your provider's separat
 
 ## A second request per send: the Context Director
 
-When **Smart context loading** is on (Settings → Joe AI; it is on by default), each send first makes one small, separate request that decides which manual chapters and skills to load for your message. Every brain has one. Without a TypeSafe key, this model decides:
+When **Smart context loading** is on (Settings → Joe AI; it is on by default), each send first asks a small helper which manual chapters and skills to load for your message; a fallback helper or a retry can add another request. Every brain has one. Without a TypeSafe key, this model decides:
 
 | Joe's brain | Who makes that decision |
 | :--- | :--- |
-| OpenAI | A small, cheap OpenAI model (Luna). |
+| OpenAI API key | A small, cheap OpenAI model (GPT-5.6 Luna). |
+| Anthropic API key | Claude Haiku 5.5, on the same Anthropic key. |
+| xAI API key | Grok 4.20 non-reasoning, on the same xAI key. |
 | Gemini 3.8 Flash or Gemini 4 Argon (Gemini API key) | Gemini 3.5 Flash-Lite, a cheaper Gemini model on the same key. This works in the browser too. |
-| Claude | Haiku, through your Claude sign-in. |
+| Claude Code login | Haiku, through your Claude sign-in. |
 | Antigravity | Gemini 3.8 Flash (Low), through your Antigravity sign-in. |
 | Grok | Grok 4.7. Grok's command-line tool offers no cheaper model, so a TypeSafe key saves the most here. |
 | Codex | GPT-5.6 Luna, through your ChatGPT sign-in. |
 
-With a TypeSafe key, in the desktop app, TypeSafe answers first on every brain (see below). If you run FlowJoe yourself in a plain web browser, TypeSafe can't be reached, so Gemini uses its own model from the table. Guests who join your shared Flow from a browser still get TypeSafe, because their requests go through your computer. If TypeSafe can't answer, or isn't sure which manual chapter fits your message, the brain's own model from the table decides instead, on every brain. That second decision always stays with the same provider as Joe's brain; it never borrows another company's model.
+With a TypeSafe key, in the desktop app, TypeSafe answers first on every brain (see below). It gets up to 4.5 seconds, within the brain’s total wait. If you run FlowJoe yourself in a plain web browser, TypeSafe can't be reached, so Gemini uses its own model from the table. Guests who join your shared Flow from a browser still get TypeSafe, because their requests go through your computer. If TypeSafe can't answer, or isn't sure which manual chapter fits your message, the brain's own model from the table decides instead, on every brain. That second decision always stays with the same provider and connection as Joe’s brain when you pressed **Send**. Changing the brain while Joe is working applies to your next send, including when the chapter picker is still waiting; the current turn keeps its original brain and context/output limits. Pressing **Stop** also ends a wait for TypeSafe immediately.
 
 Each brain waits as long as its own model usually needs to decide, measured on real sends: about 4 seconds on OpenAI, 9 on Gemini, 6 on the Claude and Grok API keys, and longer on command-line brains, whose helper has to start up first (up to 15 seconds on Antigravity, 19 on Claude, 20 on Codex and 24 on Grok, which usually takes about 13). That time is the total for the decision, TypeSafe included: if TypeSafe answers late or isn't sure, the brain's own model only gets what is left, and none at all once the time is used up. If the provider has a server-side problem or says it is overloaded, Joe tries once more within that time (not when you've hit a rate limit).
 
@@ -131,7 +133,7 @@ In an offline test with an empty Flow and a sample decision that picked one manu
 
 ### Cheaper models for small jobs
 
-Spell-check, conversation compaction and the decision above use the cheaper helper model listed in the table, not your main chat model. Attachment memories use it too, on OpenAI (Luna) and on the Gemini API key (Gemini 3.5 Flash-Lite); command-line brains don't write attachment memories. Writing actions in documents and notes still use the chat model you picked.
+Spell-check, conversation compaction and the decision above use the helper model listed in the table; if you already picked that helper as the chat brain, it is the same model. Attachment memories use it too, on OpenAI (GPT-5.6 Luna), Gemini, Anthropic and xAI API keys; command-line brains don’t write attachment memories. Writing actions in documents and notes still use the chat model you picked.
 
 ### How much Gemini thinks
 

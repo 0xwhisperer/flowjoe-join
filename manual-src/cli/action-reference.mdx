@@ -28,8 +28,7 @@ A desktop without one of those services lists fewer actions. These action totals
 the **62 editing verb names** returned by `describe_patch_protocol`: 61 distinct changes, because
 `setNodeReadOnly` is an older name for `setNodeFrozen`. That catalog includes `editRepoFileText`.
 Read can inspect the editing catalog but cannot apply its changes.
-Since then, [virtual slots](/gallery/virtual-slots) added three editing verbs — `makeVirtualSlotReal`,
-`removeVirtualMaster` and `addVirtualSlot` — so the same catalog now returns 63 names (62 distinct changes). In
+The current catalog returns **63 names (62 distinct changes)** and includes the three [virtual-slot](/gallery/virtual-slots) verbs: `makeVirtualSlotReal`, `removeVirtualMaster` and `addVirtualSlot`. In
 `get_flow_snapshot`, a virtual slot carries `virtualSlot: true` and its master's place (`virtualOf`, `masterNodeId`,
 `masterSlotIndex`) instead of content, or `virtualMaster: "hidden_from_joe"` when the master can't be seen; a master
 carries `virtualCount` and `virtualPlaces`. Read actions aimed at a virtual slot read its master and say so in `readFrom`.
