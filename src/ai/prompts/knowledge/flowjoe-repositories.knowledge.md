@@ -3,7 +3,7 @@
 <!-- GENERATED FILE — do not edit by hand. Built from the mintlify user docs by
 scripts/build-app-help-knowledge.js (deterministic digest; re-run it after editing any source page).
 Source pages: tree/repositories.mdx
-Generated: 2026-10-19 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
+Generated: 2026-10-20 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
 Sync guard: tests/unit/appHelpKnowledgeSync.test.js fails when mintlify/**/*.mdx or this digest drifts
 from scripts/app-help-knowledge.manifest.json. -->
 
@@ -42,7 +42,7 @@ Unknown or changed host keys are rejected. FlowJoe never offers a prompt that tr
 **Preview repository files.**
 HTML and Markdown previews show saved content without running scripts or contacting websites. Images and styles from the same repository can load within preview limits. A preview does not start your app or development server, and custom fonts may not appear.
 
-Also covered in the full docs for this area: Create or open a repo node; Browse and edit repository files; Review and commit files; Explore history and ask Joe; Keyboard controls; Work with branches; Sync with a Git remote; Sign in to GitHub over HTTPS; Set changes aside (Stash); Bring FlowJoe into your IDE; What Joe can read; Ask Joe to change a file.
+Also covered in the full docs for this area: Create or open a repo node; Browse and edit repository files; Review and commit files; Private folders in a repository; Explore history and ask Joe; Keyboard controls; Work with branches; Sync with a Git remote; Sign in to GitHub over HTTPS; Set changes aside (Stash); Bring FlowJoe into your IDE; What Joe can read; Ask Joe to change a file.
 
 ## Manual links
 

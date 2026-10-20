@@ -1050,6 +1050,27 @@ button.scm-pill:hover {
   white-space: nowrap;
 }
 
+/* S0: files in a Private folder — a read-only group, dimmed, with the key in its heading and one plain line under it. */
+.scm-private-key,
+.scm-repo-row-icon.scm-repo-row-icon-private {
+  color: var(--accent-color);
+}
+
+.scm-private-key {
+  margin-right: 6px;
+}
+
+.scm-change-row-private {
+  opacity: 0.72;
+}
+
+.scm-private-hint {
+  margin: 2px 12px 6px 16px;
+  padding: 4px 0;
+  color: var(--text-secondary);
+  font-size: var(--font-meta);
+}
+
 .scm-change-group.is-collapsed .scm-change-row {
   display: none;
 }

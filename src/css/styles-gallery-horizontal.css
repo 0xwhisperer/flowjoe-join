@@ -1988,6 +1988,32 @@ button.orphan-media-modal-close.context-menu-corner-close {
   justify-content: flex-end;
 }
 
+/* F15: "this repository is private" in the New Node window — the message, then Sign in with GitHub (or Try Again / Use a different GitHub account). */
+#modal.modal-add-node .add-node-clone-access {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+}
+
+#modal.modal-add-node .add-node-clone-access p {
+  margin: 0;
+}
+
+#modal.modal-add-node .add-node-clone-access-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+#modal.modal-add-node .add-node-clone-access-note {
+  color: var(--text-secondary);
+}
+
 #modal.modal-add-node #modal-message {
   max-width: 100%;
 }

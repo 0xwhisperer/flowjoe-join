@@ -66,6 +66,14 @@ If you discard a folder deletion, FlowJoe restores its recorded folder protectio
 
 The **Changes** section lists files that differ from the last commit. Its menu offers **View as Folders** to group the list by folder and **Open Changed Files** to open every changed file. Stage the files you want to include, write a commit message, then choose **Commit**. **Generate** can draft a message from the changes. Generate and Joe reviews leave out Private and Hidden-from-Joe file contents, including protected folders; unlocking a Private folder for yourself does not share it with Joe. You can also review a changed file before committing, discard a change, or use the split button for commit-and-push or commit-and-sync actions.
 
+### Private folders in a repository
+
+A Private (password-protected) folder inside a repository stays on your computer. Its files appear in **Changes** under **Private · stays out of commits**: you can open them, but they are never staged or committed, and pushing never sends them. A file that was committed before its folder became Private stays at that committed version.
+
+If commits made earlier already include files from a Private folder and haven't been pushed yet, **Push stopped** explains what was found and offers **Remove Them and Push**. FlowJoe rewrites only those unpushed commits without the Private files (tags on them move along), then pushes; your files stay on this computer. Merging a branch that changed a file in a folder you later made Private doesn't stop the push: the merge keeps your version. Nothing changes if FlowJoe can't reach the remote to check what it already has. **Push Tags** also stops if a tag points at an unpushed commit with Private files.
+
+A branch opened as its own node follows the same Private folders. If the repository itself is Private, the whole repository is yours to commit and push as before; Source Control shows a key on it.
+
 New files added through the repo node's gallery appear in **Changes** so you can stage them. Imported executable-permission changes also appear, even when the file text is unchanged. A Git commit records repository files; slot notes stay with the Flow.
 
 When a merge leaves conflicts, the Changes menu offers **Mark All Resolved**, which becomes available once you have resolved every conflict yourself; FlowJoe never picks a side for you.
@@ -108,7 +116,7 @@ Use the divider’s arrow keys to resize the Explorer; hold **Shift** to move it
 
 The branch pill opens the repository's branch list. You can create a branch, rename or delete one, or merge it into another branch. **Delete Branch** asks you to confirm and warns you when the branch holds commits that exist only on this computer, when they are not on GitHub, or when FlowJoe could not check. A branch that a node is open on cannot be deleted until you close that node.
 
-Choose **Open Branch as Node** to put a branch in the Flow tree as its own node. Each open branch node shares the repository's history. To work on another branch, select its node in the tree; **Switch Branch** opens that same branch picker. To remove a branch node from the tree without touching the branch, choose **Close Branch Node…** and confirm; the branch and its commits stay in the repository. You get 5 seconds to **Undo**, which brings the node back with its automations and keeps its media safe.
+Choose **Open Branch as Node** to put a branch in the Flow tree as its own node. Each open branch node shares the repository's history. A folder that is Private in the repository opens locked in the branch node too, with the same password; removing the password from one copy doesn't change the other. If the whole repository is Private, its branch node is Private as well. To work on another branch, select its node in the tree; **Switch Branch** opens that same branch picker. To remove a branch node from the tree without touching the branch, choose **Close Branch Node…** and confirm; the branch and its commits stay in the repository. You get 5 seconds to **Undo**, which brings the node back with its automations and keeps its media safe.
 
 ## Sync with a Git remote
 
@@ -117,6 +125,8 @@ Use **Fetch** to check the remote for new commits. The repository row and Graph 
 ### Sign in to GitHub over HTTPS
 
 For private GitHub repositories over HTTPS, choose **Sign in with GitHub** in Source Control. FlowJoe opens Git Credential Manager's sign-in flow. This signs in HTTPS GitHub access; SSH remotes use your SSH agent instead. Your GitHub account also lives in the Source Control **…** menu, which shows **Signed in as …** and offers **Sign Out of GitHub**.
+
+Cloning a private repository from the **New Node** window works the same way. If GitHub says the repository is private or can't be found, the window says so and offers **Sign in with GitHub** right there; once you're signed in, the clone runs again by itself. If you're already signed in and that account has no access, the window names the account and offers **Try Again** (after the owner adds you as a collaborator) or **Use a different GitHub account**. FlowJoe never opens a sign-in by itself.
 
 ### Use an SSH remote (macOS and Linux)
 
