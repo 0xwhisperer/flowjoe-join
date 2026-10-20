@@ -18,7 +18,7 @@ Sections (one per `## <id>` heading; everything under it up to the next heading,
   flow-read    — the brain may read the flow (get_flow_snapshot / describe_patch_protocol) but every
                  propose_flow_patch is refused by the bridge (permission Read-Only).
   flow-off     — the brain has no flow tools at all this turn (permission Off, or a brain the bridge
-                 is not wired to, e.g. Antigravity).
+                 is not wired to, e.g. Antigravity until its Flow tools are verified).
   closing      — the last line.
 The bridge enforces the same levels server-side (mcpBridgeMain.js); this note only keeps the brain's
 picture of itself truthful. A missing section is simply omitted by the code — never replaced with

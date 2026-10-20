@@ -74,7 +74,7 @@ If a brain is greyed out, check the explanation in the picker. The tool may be m
 | **OpenAI API** | Read permitted content and propose Flow changes. Web search and hosted Code interpreter are available when enabled. |
 | **Claude-family CLI** | Read permitted content, use Flow tools, inspect supported images, and propose changes. Replies appear as they arrive. |
 | **Grok CLI** | Read permitted content, use Flow tools, inspect supported images, and propose changes. Replies arrive together when ready. |
-| **Antigravity** | Discuss the context supplied with the conversation. It cannot fetch more Flow content on demand, propose Flow changes, or inspect image inputs through this connection. Owner only; replies arrive together when ready. |
+| **Antigravity** | For now, chat only: it can discuss the context supplied with the conversation, but it cannot fetch more Flow content on demand, propose Flow changes, or inspect image inputs through this connection. It runs with your own Antigravity settings. Flow tools are coming once they've been checked. Owner only; replies arrive together when ready. |
 | **Gemini API** | Chat, permitted Flow reads, and proposals through the existing approval cards. No hosted web search or Code interpreter. |
 
 For brains with Flow tools, **Off / Read / Propose** sets the limit on what they can access through FlowJoe. Choosing a stronger brain does not unlock private content. Whichever brain you choose, Joe’s own changes always come to you as a card to approve; Agent Bridge’s **Auto-apply agent edits** setting only affects outside assistants. Guest Joe has separate invitation-based approval rules. See [Permissions & privacy](/joe/permissions).
@@ -93,7 +93,7 @@ These three features fit together without being the same thing:
 - **Agent Bridge** lets an outside assistant work with the active Flow, using its own connection and approval controls.
 - **Forge** is FlowJoe’s [integrated terminal](/gallery/terminal), where you run commands or an interactive assistant yourself.
 
-Joe’s chat history belongs to FlowJoe. Choosing a CLI brain does not resume a terminal conversation you already have open in Forge. **Stop** cancels the current CLI request; it does not undo changes already applied. Asking Joe to undo his last change works across the whole conversation on every brain that uses Flow tools (OpenAI, Gemini, and CLI brains such as Claude, Grok, Codex and Gemini CLI); Antigravity can't use Flow tools yet (that's being fixed). If a turn fails, FlowJoe shows the actual error or explains that the conversation is too large for that brain.
+Joe’s chat history belongs to FlowJoe. Choosing a CLI brain does not resume a terminal conversation you already have open in Forge. **Stop** cancels the current CLI request; it does not undo changes already applied. Asking Joe to undo his last change works across the whole conversation on every brain that uses Flow tools (OpenAI, Gemini, and CLI brains such as Claude, Grok, Codex and Gemini CLI); Antigravity can't use Flow tools yet. If a turn fails, FlowJoe shows the actual error or explains that the conversation is too large for that brain.
 
 FlowJoe’s access settings control its Flow tools. They are not a general restriction on everything an owner’s installed command-line tool can do on the computer; that tool has its own permissions and configuration.
 
@@ -147,3 +147,5 @@ A guest's Joe can use shared Flow tools and web tools, but cannot use the CLI to
 Grok uses a temporary connection for each Joe request. Guests can ask Joe to read shared content and propose changes for approval without approving a folder in Grok first. Their requests do not load your Grok, Claude Code, Cursor or Codex integrations, hooks, skills or instructions, or skills you keep in your home folder's `.agents` folder.
 
 When you use Grok yourself, Joe uses your Grok sign-in and the models you set up, but none of your other Grok settings, tools or integrations. Like Claude, Joe on Grok can use only FlowJoe's Flow tools and, when Web search is on, web search. It cannot run commands, read or change files on your computer, or use your other connected tools. Joe uses the Flow access you selected for that request; choosing chat-only keeps Flow tools off even if you have also connected Grok through Agent Bridge. FlowJoe does not add temporary folders to Grok's saved trusted folders.
+
+If you have connected Antigravity to FlowJoe under Agent Bridge, Joe will not use Antigravity as his brain, on any computer: that connection would let him reach your Flow outside the access you chose for the chat. Disconnect Antigravity under **Settings → Joe AI → Agent Bridge (MCP)**, or pick another brain.
