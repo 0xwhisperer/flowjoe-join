@@ -61,11 +61,11 @@ Press the total to open the receipt under the reply:
 
 - **Totals first:** tokens in, tokens out, and how many requests there were.
 - **How much was cached:** the bar shows how much of the input the provider had already seen recently. Cached input costs less.
-- **Each step in order,** with the model that ran it and its own in and out counts.
+- **Each step in order,** with who ran it and how it was reached — the provider first, the model in brackets, then the connection, for example "OpenAI (Luna 6) · API key", "xAI (Grok 4.7) · Grok login" or "TypeSafe (jev-1.14.0) · API" — and its own in and out counts. Hover over that line to see the model's exact id.
 
 Press the total again, or press Escape, to close it. The total is saved with the conversation, so it is still there after you restart FlowJoe.
 
-A `+` after a number means "at least this much". It appears when a request never reported its count, for example when you pressed **Stop** while Joe was still writing; the receipt says which step and why. The command-line brains (Claude, Codex, Grok, Gemini CLI, Antigravity) don't report token counts to FlowJoe, so their replies show a total only for the steps that did report (such as a TypeSafe request), with a `+`, or no total at all. Work that happens after the reply (attachment memories, compacting the chat) is not included.
+A `+` after a number means "at least this much". It appears when a request never reported its count, for example when you pressed **Stop** while Joe was still writing; the receipt says which step and why. The command-line brains (Claude, Codex, Grok, Gemini CLI, Antigravity) report their own token counts too, so their replies show real numbers: in, cached, out, and thinking where the brain reports it. A step shows "no count" (or the reply shows no total at all) only when that brain's run reported nothing, or when you stopped it before it could. Work that happens after the reply (attachment memories, compacting the chat) is not included.
 
 Guests in a shared Flow never see what a reply cost. Every reply in a shared chat is paid for by the owner, so the total and its receipt stay on the owner's computer, including for the guest's own questions.
 
@@ -215,7 +215,7 @@ Private nodes and **Hidden from Joe** nodes have their content sealed from Joe �
 
 A conversation turn can make several provider requests: the reply, context selection, checks, tool follow-ups, compaction, and attachment summaries. FlowJoe keeps temporary usage metadata for these calls separately from the token bar. This record contains provider/model names, timings, request sizes and returned token counts; it contains no message or file content, credentials or reply text.
 
-Some providers and command-line tools do not return complete usage. Those totals stay unknown. A cancelled request may already have used tokens, and cached input still occupies context. The token bar continues to describe the next reply request's estimated context, rather than all charges for the turn.
+Some requests do not return complete usage (for example one you stopped, or a command-line run that printed no counts). Those totals stay unknown. A cancelled request may already have used tokens, and cached input still occupies context. The token bar continues to describe the next reply request's estimated context, rather than all charges for the turn.
 
 ## Looking up a specific manual page
 

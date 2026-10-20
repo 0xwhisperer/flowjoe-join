@@ -83,15 +83,24 @@ A master that has virtual slots can't be merged into a stack, because its virtua
 When you share a node with a guest, its virtual slots show their master's picture, title, notes and tags, just as they do for you.
 
 - If the guest can also see the node the master is in, the hover card looks exactly like yours, with working links.
-- If the master's node isn't shared with them, they still see the content, but the hover card says they don't have access to the node the master is on. It never shows that node's name or where it sits in your Flow, and it lists only the places the guest can see.
-- A master in a **Private** node, or in a part of the Flow you excluded from that guest's share, is never shown to them.
+- If the master's node isn't shared with them (including a part of the Flow you left out of their share), they still see the content, but the hover card says they don't have access to the node the master is on. It never shows that node's name or where it sits in your Flow, and it lists only the places the guest can see.
+- A master in a **Private** node, or a hidden master slot, is never shown to them.
 
-A guest can change what a virtual slot shows only when they can edit the node its master is in. They can still use **Make Real Slot** to get their own copy in the node they're working in, with its own copy of the picture or file, and change that copy as they like — unless the master sits somewhere kept from them. They can still move it, reorder it, connect it or remove it in the node they're working in. For now, only you can remove a master slot that is shown in other places.
+A guest can change what a virtual slot shows only when they can edit the node its master is in. They can still use **Make Real Slot** to get their own copy in the node they're working in, with its own copy of the picture or file, and change that copy as they like — unless the master is in a Private node or hidden. They can still move it, reorder it, connect it or remove it in the node they're working in. A guest can remove a master slot too, with the same choice you get (make one of its virtual slots the new master, or remove them all), as long as every virtual slot of it is in a part of the Flow they can see and change. If any sits outside what you shared with them, or in a frozen node, only you can remove it, and FlowJoe tells them so. When a guest edits a master that has a virtual slot in a frozen node outside their share, they get the frozen-node warning without that node's name.
 
 ## Exporting a node with virtual slots
 
 When you export a node on its own (or use Copy Node JSON), a virtual slot whose master lives elsewhere in your Flow brings that master's picture, title, notes and tags along with it, so the export never points at something that isn't there. A master that is hidden, or sits in a hidden or Private node, is never included in the export; that virtual slot travels as a bare pointer.
 
+## Making a node Private
+
+A virtual slot can't point into or out of a Private node. So when you make a node Private and some of its slots are shown in other nodes, FlowJoe asks first, before the password step:
+
+- **A master shown in other nodes:** make one of those virtual slots the new master (it gets its own copy), or turn them all into real slots. Either way, the Private node keeps its own copy. A virtual slot that is itself in a Private node can't become the new master.
+- **A virtual slot whose master is outside:** it becomes a real slot, a copy of its master.
+
+Every copy gets its own copy of the picture or file, so nothing is shared between the Private node and the rest of your Flow. The one exception is a rich document's embedded pictures: they stay shared with the master, the same as when you make a real copy. **Cancel** changes nothing, and undoing Make Private puts the slots back as they were. If nothing crosses the edge, Make Private works exactly as before. If one of the slots is in a locked Private node, FlowJoe asks you to unlock that node first.
+
 ## Coming soon
 
-Choosing what happens to those slots when you import the file again, and the Make Private choices, are on their way and will be documented here as they arrive.
+Bringing virtual slots back in when you import a node, and Joe working with virtual slots, are on their way and will be documented here as they arrive.

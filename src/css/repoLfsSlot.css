@@ -1,0 +1,62 @@
+/* repoLfsSlot.css — a Git LFS file that is not downloaded yet (repo nodes S8a, repoLfsDownload.js). A standard slot: the slot's own media surface, its
+   type badge, and the app's themed centre disc as the Download button, with the file's name, size and "Not downloaded yet" under it. Nothing of the
+   file's media shows until it is downloaded (the pointer text is never content). Tokens only, no forced-priority declarations. */
+@layer app {
+  /* The slot's media would be missing (no bytes yet): the card covers it, and the missing-media badge and info never show. */
+  .image-item[data-repo-lfs] .missing-image-badge,
+  .image-item[data-repo-lfs] .missing-info-card {
+    display: none;
+  }
+
+  .image-item[data-repo-lfs] .image-frame {
+    min-height: 160px;
+  }
+
+  .repo-lfs-card {
+    position: absolute;
+    inset: 0;
+    z-index: 18;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px; /* the linked-file placecard's rhythm (linkedFileGallery.js buildFileCard) */
+    padding: var(--pad-card-compact);
+    text-align: center;
+    cursor: pointer;
+    color: var(--text-primary);
+    /* The slot's own media surface, so nothing of the empty media shows through. */
+    background: var(--gallery-media-card-surface), var(--bg-secondary);
+    border-radius: var(--radius-lg, 8px);
+  }
+
+  .repo-lfs-card .repo-lfs-download {
+    position: relative;
+    inset: auto;
+    translate: none;
+    opacity: 1;
+    margin: 0 auto;
+    pointer-events: auto;
+  }
+
+  .repo-lfs-card .repo-lfs-download:disabled {
+    cursor: progress;
+    opacity: 0.6;
+  }
+
+  .repo-lfs-name {
+    max-width: 100%;
+    font-size: var(--font-control);
+    line-height: 1.3;
+    word-break: break-word;
+  }
+
+  .repo-lfs-status {
+    font-size: var(--font-meta);
+    color: var(--text-muted);
+  }
+
+  .image-item[data-repo-lfs="downloading"] .repo-lfs-state {
+    color: var(--accent-color);
+  }
+}
