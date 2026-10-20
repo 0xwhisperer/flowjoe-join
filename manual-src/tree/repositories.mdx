@@ -315,10 +315,12 @@ For another way to stay close to your project, the optional **FlowJoe extension 
 
 If you have the FlowJoe source checkout:
 
-1. In your editor, run **Extensions: Install from VSIX…** and select the supplied `integrations/vscode-flowjoe/vscode-flowjoe-0.0.3.vsix` file.
+1. In your editor, run **Extensions: Install from VSIX…** and select the supplied `integrations/vscode-flowjoe/vscode-flowjoe-0.0.4.vsix` file.
 2. Open FlowJoe’s desktop app and enable **Settings → Joe AI → Agent Bridge (MCP)**.
 3. Choose **Connect to FlowJoe** in the editor’s FlowJoe panel. If prompted, use the bridge token shown in FlowJoe.
 4. Use **Refresh Flow** to bring in changes made in FlowJoe.
+
+Use version **0.0.4 or later**. Earlier installers do not include the connection protection added in this audit. The extension connects only to FlowJoe on your own computer and refuses redirects. Change its connection settings in your editor’s user or machine settings; a project’s workspace settings cannot override them.
 
 Edits wait for approval in FlowJoe unless you enable **Apply changes without asking** (Agent Bridge → Advanced). This extension edits Flow content; repository working-file editing happens in the FlowJoe workbench. It uses refresh rather than a continuous stream of updates. Browser guests use the shared repository workbench in their browser.
 
