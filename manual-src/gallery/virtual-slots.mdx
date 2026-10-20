@@ -23,17 +23,71 @@ Every place in the card is a link. Click one to go to that node and slot. Press 
 
 If a virtual slot's master is no longer in the Flow, the card says so. You can remove the virtual slot, or keep it until the master comes back. A virtual slot whose master is in a **Private** node never shows the master's content.
 
+## Adding a virtual slot
+
+1. Click **+** on a slot (or the **+** in the canvas toolbar) to open **Add Slot**, and choose **Virtual Slot**.
+2. Pick a node on the left. Its slots appear on the right.
+3. Pick the slot you want to show here, and choose **Add Virtual Slot**.
+
+The slot you picked becomes the **master**. If you pick a slot that is itself a virtual slot, the new one points at its master. You can pick a slot from the node you're adding to. Private nodes are listed but can't be opened, and a Private node doesn't offer the **Virtual Slot** card. A virtual slot can't be moved or copied into a Private node either, and a master whose virtual slots live in other nodes can't be moved into one: FlowJoe tells you why and leaves everything where it was.
+
 ## What you can do with a virtual slot today
 
 - **Move** it within its node, resize it on the canvas, and connect it to other slots. Where it sits belongs to that node.
-- **Remove** it from its node with the trash button or **Remove…**. The master and any other virtual slots are not touched.
+- **Remove** it from its node with the trash button or **Remove from This Node…**. The master and any other virtual slots are not touched.
+- **Go to Master** (right-click the slot) opens the master's node and slot.
+- **Make Real Slot** (right-click the slot) turns it into its own real slot: a copy of the master as it is now, with its own copy of the picture or file. After that it no longer changes with the master. Undo turns it back into a virtual slot.
+- **Copy** it (for example with the copy button on the next slot): the copy is another virtual slot of the same master.
 
-Editing a virtual slot's picture, title, notes or tags is not available yet; those controls are greyed out. Clicking a virtual slot's picture opens its card (with the link to the master) instead of the preview window. A virtual slot also can't go into a stack, and other slots can't be merged into it. **Stack everything** leaves virtual slots out and keeps them as they are.
+Right-clicking a virtual slot shows the usual slot menu with **Go to Master** and **Make Real Slot** on top. Tags, Crop and Replace change its master. A few actions are greyed out for now: building or changing a stack (Convert to Stack, adding, removing or reordering its items), renaming the file, converting to PDF, inserting clipboard media, Joe and the wireframe tool.
+
+Right-click a **master** to see every place it is shown. Each one is a link.
+
+A virtual slot can't go into a stack, and other slots can't be merged into it. **Stack everything** leaves virtual slots out and keeps them as they are.
+
+## Editing through a virtual slot
+
+Changing a virtual slot changes its master, and with it every other place the master is shown. You can edit a virtual slot's **title**, **notes** and **tags**, turn **Hide from Joe** on or off, **replace** or **crop** its picture, **compress** it, and step through a stack to choose which item is on top, right where it is. Clicking its picture opens the master's preview window, where you can edit it too. Which item is on top of a stack belongs to the master, so changing it at a virtual slot changes it everywhere the master is shown.
+
+**Undo** works wherever you are: an edit made at a virtual slot can be undone there, or from the master. Pressing <kbd>Cmd</kbd>+<kbd>Z</kbd> inside the master's notes also undoes notes you typed at one of its virtual slots, because they're the same notes.
+
+If the master is in a **frozen** node, its virtual slots can't be changed either: they say so when you hover over the **V**. To change it, unfreeze the master's node.
+
+If one of the master's virtual slots sits in a frozen node, FlowJoe asks before you change the master: **Change Master Slot?** names the frozen node, because the change will show there too. It asks as soon as you click into the title or notes (or before a tag change), so nothing changes until you choose. Choose **Save Change** to go ahead or **Cancel** to leave everything as it was. Once you've said yes, it doesn't ask again for that slot while you stay on the same node.
+
+A virtual slot that sits in a frozen node can't be changed there, just like everything else in that node. Clicking its picture shows where its master is.
+
+Tagging a whole node from the node menu leaves its virtual slots as they are, so a tag added to one node never changes a master somewhere else.
 
 ## Search
 
 Searching by tag or text lists every place a slot appears: the master and each of its virtual slots, each in its own node. Virtual slots match on their master's tags, title and notes. Tag filters work the same way: a virtual slot counts as carrying its master's tags.
 
+## Removing slots and nodes
+
+Removing a virtual slot (**Remove from This Node**) takes away only that virtual slot. Its master and every other place it is shown stay as they are.
+
+Removing a master that still has virtual slots elsewhere asks what should happen to them, before anything is removed. This happens whether you remove the slot itself, a selection, every slot in a node, or a whole node. Each master gets its own row with two choices:
+
+- **Make a new master:** one of its virtual slots (you pick which; the first is chosen for you) becomes a real slot with the master's picture, title, notes and tags, and the other virtual slots now show that one. Nothing is lost.
+- **Remove all its virtual slots:** they go along with the master.
+
+A virtual slot inside a **Private** node is never offered as the new master; if it's the only place left, the row removes it. If one of those virtual slots sits in a **locked** Private node, FlowJoe names the node and asks you to unlock it first, before anything is removed.
+
+If one of those virtual slots sits in a frozen node, the row says so, and confirming changes that node too. **Cancel** removes nothing. **Undo** brings back the master and every virtual slot as they were.
+
+A master that has virtual slots can't be merged into a stack, because its virtual slots would lose it.
+
+## Virtual slots and guests
+
+When you share a node with a guest, its virtual slots show their master's picture, title, notes and tags, just as they do for you.
+
+- If the guest can also see the node the master is in, the hover card looks exactly like yours, with working links.
+- If the master's node isn't shared with them, they still see the content, but the hover card says they don't have access to the node the master is on. It never shows that node's name or where it sits in your Flow, and it lists only the places the guest can see.
+- A master in a **Private** node, or in a part of the Flow you excluded from that guest's share, is never shown to them.
+
+A guest can change what a virtual slot shows only when they can edit the node its master is in. They can still use **Make Real Slot** to get their own copy in the node they're working in, with its own copy of the picture or file, and change that copy as they like — unless the master sits somewhere kept from them. They can still move it, reorder it, connect it or remove it in the node they're working in. For now, only you can remove a master slot that is shown in other places.
+
 ## Coming soon
 
-Creating virtual slots (from the **Add Slot** window), **Make Real Slot**, editing through a virtual slot, removing a master that has virtual slots, sharing with guests, and moving virtual slots between Flows in exports are on their way and will be documented here as they arrive.
+Making a real copy for guests, the Make Private choices, and moving virtual slots between Flows in exports are on their way and will be documented here as they arrive.

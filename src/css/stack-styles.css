@@ -1330,19 +1330,48 @@
     font-weight: 800;
     line-height: 1;
     cursor: pointer;
+    position: relative;
+    margin: 0;
   }
 
-  .vslot-chip--virtual {
+  /* buttons.css repaints every button on hover and strips box-shadow on :focus with !important, so the chip
+     keeps its own surface on hover and draws its rings on a pseudo-element that rule doesn't reach. */
+  .vslot-chip:hover {
+    background-color: var(--bg-primary);
+    color: var(--accent-color);
+  }
+
+  .vslot-chip--v,
+  .vslot-chip--v:hover {
     background-color: color-mix(in srgb, var(--accent-color) 16%, var(--bg-primary));
   }
 
-  .vslot-chip:hover,
-  .vslot-chip[aria-expanded="true"] {
+  .vslot-chip::after,
+  .vslot-card-link::after,
+  .vslot-tile::after,
+  .vslot-pick-primary::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+  }
+
+  .vslot-chip::after {
+    inset: -1.5px;
+  }
+
+  /* Outside the accent border, or the ring would paint accent on accent and not show. */
+  .vslot-pick-primary::after {
+    inset: -1px;
+  }
+
+  .vslot-chip:hover::after,
+  .vslot-chip[aria-expanded="true"]::after {
     box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-color) 35%, transparent);
   }
 
-  .vslot-chip:focus-visible {
-    outline: none;
+  .vslot-chip:focus-visible::after {
     box-shadow:
       var(--focus-ring),
       0 0 0 2px color-mix(in srgb, var(--accent-color) 35%, transparent);
@@ -1395,6 +1424,13 @@
     font-weight: 600;
     text-align: left;
     cursor: pointer;
+    position: relative;
+    border-radius: var(--radius-sm, 4px);
+  }
+
+  .vslot-card-link:hover {
+    background: transparent;
+    color: var(--accent-color);
   }
 
   .vslot-card-link:hover .vslot-card-path,
@@ -1402,10 +1438,8 @@
     text-decoration: underline;
   }
 
-  .vslot-card-link:focus-visible {
-    outline: none;
+  .vslot-card-link:focus-visible::after {
     box-shadow: var(--focus-ring);
-    border-radius: var(--radius-sm, 4px);
   }
 
   .vslot-card-link i {
@@ -1435,6 +1469,390 @@
   .vslot-card-hint {
     margin-top: 8px;
     color: var(--text-secondary);
+  }
+
+  /* Slot picker (S2, mockup state `choose-master`): the app's node picker widened to two panes —
+     nodes on the left, the chosen node's slots as tiles on the right. */
+  .vslot-pick {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+    gap: 12px;
+    min-height: 0;
+    flex: 1 1 auto;
+    margin-bottom: 16px;
+  }
+
+  .vslot-pick-slots {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+    max-height: 50vh;
+    overflow-y: auto;
+  }
+
+  .vslot-pick-head,
+  .vslot-pick-empty {
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  .vslot-pick-head b {
+    color: var(--text-primary);
+  }
+
+  .vslot-tiles {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .vslot-tile {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 6px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg, 8px);
+    background: transparent;
+    color: var(--text-primary);
+    cursor: pointer;
+    text-align: left;
+    font: inherit;
+    margin: 0;
+  }
+
+  .vslot-tile:hover {
+    background: var(--hover-bg);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+  }
+
+  .vslot-tile:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .vslot-tile:disabled:hover {
+    background: transparent;
+  }
+
+  .vslot-tile.is-picked,
+  .vslot-tile.is-picked:hover {
+    border-color: var(--accent-color);
+  }
+
+  .vslot-tile.is-picked::after {
+    box-shadow: inset 0 0 0 1px var(--accent-color);
+  }
+
+  .vslot-tile:focus-visible::after {
+    box-shadow: var(--focus-ring);
+  }
+
+  .vslot-tile.is-picked:focus-visible::after {
+    box-shadow: inset 0 0 0 2px var(--accent-color);
+  }
+
+  .vslot-tile-thumb {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    border-radius: var(--radius-md, 6px);
+    overflow: hidden;
+    background: var(--bg-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    font-size: 22px;
+  }
+
+  .vslot-tile-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .vslot-tile-name {
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .vslot-tile-meta {
+    font-size: var(--font-meta, 11px);
+    color: var(--text-secondary);
+  }
+
+  .vslot-tile .vslot-tile-chip,
+  .vslot-tile .vslot-tile-count {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    height: 20px;
+    min-width: 20px;
+  }
+
+  /* The picker's chip is a label, not a control: fixed size, no halo, clicks go to the tile. */
+  .vslot-tile .vslot-tile-chip {
+    font-size: var(--font-meta, 11px);
+    border-radius: var(--radius-md, 6px);
+    cursor: inherit;
+    pointer-events: none;
+  }
+
+  .vslot-tile .vslot-tile-count {
+    padding: 0 6px;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-md, 6px);
+    background: var(--bg-primary);
+    font-size: var(--font-meta, 11px);
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .vslot-tile.has-count .vslot-tile-chip {
+    left: 38px;
+  }
+
+  .vslot-pick-primary {
+    position: relative;
+    margin: 0 8px 0 0;
+    padding: 8px 16px;
+    border: 1px solid var(--accent-color);
+    border-radius: var(--radius-sm, 4px);
+    background: var(--bg-tertiary);
+    color: var(--accent-color);
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  .vslot-pick-primary:hover {
+    background: var(--hover-bg);
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+  }
+
+  .vslot-pick-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .vslot-pick-primary:disabled:hover {
+    background: var(--bg-tertiary);
+  }
+
+  .vslot-pick-primary:focus-visible::after {
+    box-shadow:
+      var(--focus-ring),
+      0 0 0 2px color-mix(in srgb, var(--accent-color) 35%, transparent);
+  }
+
+  .node-selector-item.vslot-pick-refused,
+  .node-selector-item.vslot-pick-refused * {
+    cursor: not-allowed;
+  }
+
+  /* Slot menus (S2, mockup states `virtual-menu` / `master-menu`). */
+  .vslot-menu-header {
+    position: relative;
+    padding: 8px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .vslot-menu-header-text {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .vslot-menu-heading {
+    font-size: 13px;
+    line-height: 1.25;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .vslot-menu-header .context-menu-slot-label,
+  .vslot-menu-header .context-menu-active-file-label {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .vslot-menu-header .context-menu-active-file-label {
+    color: var(--text-primary);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  /* The master line a slot with no file name gets in its menu header (mockup `master-menu`). */
+  .vslot-menu-file-line {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--text-primary);
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .vslot-menu-section {
+    padding: 6px 12px 2px;
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+  }
+
+  .vslot-menu-list {
+    max-height: 112px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  /* Fade the last row only while the list actually scrolls (a mask uses only the alpha of currentColor). */
+  .vslot-menu-list.is-overflowing {
+    mask-image: linear-gradient(to bottom, currentColor 78%, transparent);
+  }
+
+  .vslot-menu-list.is-overflowing.is-scrolled-end {
+    mask-image: none;
+  }
+
+  /* Deleting a master (S4, mockups `remove-master` / `delete-node-many`): one row per master being deleted,
+     each with its own choice — make one of its virtuals the new master, or remove them all. */
+  #modal > div.modal-panel-compact.vslot-delete-panel {
+    width: min(600px, calc(100vw - 32px));
+    max-width: none;
+  }
+
+  .vslot-delete-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 12px;
+    text-align: left;
+    font-size: calc(13px * var(--font-scale, 1)); /* matches #modal-message above it */
+    color: var(--text-primary);
+  }
+
+  .vslot-delete-body p {
+    margin: 0;
+    line-height: 1.5;
+    color: var(--text-secondary);
+  }
+
+  .vslot-master-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 300px;
+    overflow: auto;
+  }
+
+  .vslot-master {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg, 8px);
+    background: var(--bg-secondary);
+  }
+
+  .vslot-master-head {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .vslot-master-num {
+    flex: 0 0 auto;
+    font-size: var(--font-meta);
+    color: var(--text-secondary);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .vslot-master-name {
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .vslot-master-where {
+    font-size: calc(12px * var(--font-scale, 1));
+    color: var(--text-secondary);
+  }
+
+  .vslot-master-note {
+    font-size: var(--font-meta);
+    color: var(--text-secondary);
+  }
+
+  .vslot-choice {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: var(--font-control);
+    color: var(--text-primary);
+    cursor: pointer;
+  }
+
+  .vslot-choice input {
+    accent-color: var(--accent-color);
+    margin: 0;
+  }
+
+  .vslot-choice select {
+    margin-left: 4px;
+    padding: 3px 6px;
+    border-radius: var(--radius-md, 6px);
+    border: 1px solid var(--border-color);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font: inherit;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .vslot-menu-sub {
+    margin-left: auto;
+    padding-left: 12px;
+    font-size: var(--font-meta, 11px);
+    color: var(--text-secondary);
+  }
+
+  .vslot-menu-sep {
+    height: 1px;
+    margin: 4px 10px;
+    background: var(--border-color);
   }
 }
 

@@ -2561,3 +2561,360 @@ button.scm-pill:hover {
   outline: 1px solid var(--border-focus);
   outline-offset: -1px;
 }
+
+/* ============================== Update Gallery (Git repo nodes S4, approved mockup states 7 and 8) ============================== */
+/* The incoming row is built on .scm-repo-row, so its edges, height, padding, radius and type match the repository row above it. */
+.scm-repo-row.scm-incoming-row {
+  background: transparent;
+  cursor: default;
+}
+
+.scm-repo-row.scm-incoming-row:hover {
+  background: var(--hover-bg);
+}
+
+.scm-incoming-row .scm-repo-row-icon {
+  color: var(--accent-color);
+}
+
+.scm-incoming-row .scm-repo-row-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: none;
+  color: var(--text-secondary);
+}
+
+.scm-incoming-row .scm-repo-row-name b {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* The Review window: the app's standard window frame (title left, grip centred, close right) on the Export window's body. */
+#modal > div.modal-panel-export.scm-update-window {
+  width: min(700px, calc(100vw - (2 * var(--modal-viewport-margin))));
+  max-width: none;
+  max-height: calc(100vh - (2 * var(--modal-viewport-margin)));
+  padding: 0;
+}
+
+#modal > div.scm-update-window > #modal-message,
+#modal > div.scm-update-window > #modal-button-container {
+  padding-left: var(--pad-modal);
+  padding-right: var(--pad-modal);
+}
+
+#modal > div.scm-update-window > #modal-message {
+  min-height: 0;
+  margin-top: var(--pad-modal);
+  overflow-y: auto;
+}
+
+#modal > div.scm-update-window > #modal-button-container {
+  padding-bottom: var(--pad-modal);
+}
+
+.scm-update-titlebar {
+  position: relative;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--header-gap);
+  min-height: var(--modal-header-min-height);
+  padding: var(--modal-header-padding);
+  border-bottom: var(--modal-panel-border);
+  border-radius: var(--modal-panel-radius) var(--modal-panel-radius) 0 0;
+  background: linear-gradient(90deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+  color: var(--text-primary);
+  box-sizing: border-box;
+  cursor: grab;
+  user-select: none;
+}
+
+.scm-update-titlebar.is-dragging {
+  cursor: grabbing;
+}
+
+#modal-title.scm-update-heading {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 0;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--text-primary);
+  font-size: var(--modal-title-font-size);
+  font-weight: var(--modal-title-font-weight);
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scm-update-grip {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 0;
+  margin: 0;
+  translate: -50% -50%;
+  pointer-events: none;
+}
+
+.scm-update-close {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: var(--icon-btn-size);
+  min-width: var(--icon-btn-size);
+  height: var(--icon-btn-size);
+  min-height: var(--icon-btn-size);
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--border-color);
+  border-radius: var(--icon-btn-radius, 4px);
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.scm-update-group-title {
+  margin-top: 10px;
+  color: var(--text-secondary);
+  font-size: var(--font-meta);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.scm-update-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2px;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.scm-update-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 5px 6px;
+  border-radius: var(--radius-sm, 4px);
+  color: var(--text-primary);
+  font-size: var(--font-control);
+}
+
+.scm-update-item:hover {
+  background: var(--hover-bg);
+}
+
+.scm-update-item > i {
+  flex-shrink: 0;
+  width: 16px;
+  color: var(--accent-color);
+  text-align: center;
+}
+
+.scm-update-item.scm-update-added > i {
+  color: var(--success-color);
+}
+
+.scm-update-item.scm-update-removed > i {
+  color: var(--danger-color);
+}
+
+.scm-update-item.scm-update-choice > i {
+  color: var(--warning-color);
+}
+
+.scm-update-what {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scm-update-detail {
+  color: var(--text-secondary);
+  font-size: var(--font-meta);
+  white-space: nowrap;
+}
+
+.scm-update-note {
+  margin-top: 6px;
+  color: var(--text-secondary);
+  font-size: var(--font-meta);
+}
+
+/* Make This a Repository (approved mockup states 2–5): the Review window's frame and lists, with the counts in a row of small tiles, the hidden-file
+   rows in two columns, the Private nodes with their password field and warning, and the repository link. App tokens only. */
+.make-repo-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.make-repo-stat {
+  padding: 8px 10px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md, 6px);
+  min-width: 0;
+}
+
+.make-repo-stat b {
+  display: block;
+  color: var(--text-primary);
+  font-size: var(--font-make-repo-stat);
+  font-variant-numeric: tabular-nums;
+}
+
+.make-repo-stat span {
+  display: block;
+  overflow: hidden;
+  color: var(--text-secondary);
+  font-size: var(--font-meta);
+  text-overflow: ellipsis;
+}
+
+.scm-update-list.make-repo-two-col {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.scm-update-list.make-repo-two-col .scm-update-item {
+  align-items: flex-start;
+}
+
+.scm-update-list.make-repo-two-col .scm-update-what {
+  overflow: visible;
+  white-space: normal;
+}
+
+.scm-update-list.make-repo-two-col .scm-update-item > i {
+  margin-top: 2px;
+}
+
+.scm-update-item.make-repo-fix > i {
+  color: var(--warning-color);
+}
+
+.make-repo-private-row .export-modal-option-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.make-repo-key {
+  color: var(--accent-color);
+}
+
+.make-repo-password {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0 4px;
+}
+
+.make-repo-password-input,
+.make-repo-url {
+  box-sizing: border-box;
+  padding: 8px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm, 4px);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: var(--font-control);
+}
+
+.make-repo-password-input {
+  flex: 1 1 220px;
+  min-width: 0;
+}
+
+.make-repo-url {
+  width: 100%;
+  margin-top: 6px;
+}
+
+.make-repo-error {
+  margin-top: 4px;
+  color: var(--danger-color);
+  font-size: var(--font-meta);
+}
+
+.make-repo-warning {
+  margin-top: 10px;
+}
+
+/* The question window (approved mockup state 9): yours and theirs side by side, the choices under them. */
+.scm-question-progress {
+  --scm-row-h: 24px; /* the panel's icon-button size, outside the panel */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary);
+  font-size: var(--font-meta);
+  font-variant-numeric: tabular-nums;
+}
+
+.scm-question-compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.scm-question-side {
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+}
+
+.scm-question-side.is-picked {
+  border-color: var(--accent-color);
+}
+
+.scm-question-side h4 {
+  margin: 0 0 6px;
+  color: var(--text-secondary);
+  font-size: var(--font-meta);
+  font-weight: 600;
+}
+
+.scm-question-side p {
+  margin: 0;
+  max-height: 40vh;
+  overflow-y: auto;
+  color: var(--text-primary);
+  font-size: var(--font-control);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.scm-question-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.scm-question-note {
+  margin-top: 6px;
+  color: var(--text-secondary);
+  font-size: var(--font-meta);
+}

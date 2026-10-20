@@ -28,7 +28,7 @@ A repo node is the Git boundary for a project. A **Workspace Folder** chooses wh
 
 Guests use the same Explorer, editor and Source Control surfaces. **Can view** allows reading shared files and their associated history. **Can edit** allows creating, editing, renaming, saving and committing shared files through the owner's computer. Saving and committing are separate actions. Credentials and native filesystem paths stay with the owner, and a scoped commit preserves private and unshared files.
 
-The Graph includes branches in the shared repository, including branches not yet open as Flow nodes. A branch represented by a private or unshared node stays unavailable. Guests can read admitted branch history, tags and stashes. Edit guests can create branches and tags, open a branch as a node where that keeps it inside the shared area, merge shared changes, and use Fetch, Pull and Push through the owner's computer.
+The Graph includes branches in the shared repository, including branches not yet open as Flow nodes. A branch represented by a private or unshared node stays unavailable. Guests can read admitted branch history, tags and stashes. Edit guests can create branches and tags, open a branch as a node where that keeps it inside the shared area, merge shared changes, and use Fetch, Pull and Push through the owner's computer. An Edit guest can't merge a branch in which FlowJoe's notes or layout changed (slot notes, folder notes, order, tags and the like); FlowJoe says so, and the owner does that merge from their own Source Control.
 
 Discarding working changes, saving a stash that puts files back to their last commit, applying or popping a stash over existing work, rewriting the last commit, renaming or deleting branches, deleting tags or stashes, and replacing or removing a remote require the owner's additional removal permission. Linking a new remote does not. Private and unshared file contents stay protected when changes are merged, pulled, committed or restored. A guest push stops if the branch or tag history contains private or unshared files, because Git would send that history to the remote. Fully shared repositories can be pushed normally. A partially completed stash operation reports that some files could not be changed; the saved stash remains available.
 
@@ -43,6 +43,21 @@ Use the **New Node** window to create an empty repository or clone from a Git re
 For a remote, use its HTTPS address or, on macOS and Linux, either SSH form shown by the Git host, such as `https://host/owner/project.git`, `ssh://git@host/owner/project.git`, or `git@host:owner/project.git`. FlowJoe uses one remote named `origin` for each repo node. A repository imported from a local Git folder can keep its existing SSH origin on macOS and Linux. On Windows, SSH addresses are not supported yet: use an `https://` address instead.
 
 When you open a repo node, choose **Source Control** in the app rail. The repository appears with its current branch and any changes waiting to pull or push. The panel is available to the owner and to browser guests with repository access. View guests read shared files and history; Edit guests save and commit through the owner.
+
+## Make a branch a repository
+
+Any branch of your tree can become a repository: right-click its top node and choose **Make This a Repository…** in the menu's **Organize** section (desktop app, owner only). Nothing changes until you confirm. A window shows first:
+
+- **What goes in:** how many nodes, files and links. Every node becomes a folder, every item becomes a file (pictures and documents as they are, a link as a `.url` shortcut), and FlowJoe's small hidden files keep titles, notes, order, canvas layout, themes, tags and automations (switched off for anyone who clones).
+- **What stays on this computer:** where you are scrolled and zoomed, and your app-wide fonts, text size, line spacing and density. A linked file (one that points at a file elsewhere on your computer) stays here too.
+- **Private nodes:** each Private node starts unticked and stays out, with everything in it. To include one, tick it and enter its password. FlowJoe then warns you plainly: the lock only works inside FlowJoe, so anyone who opens the repository's files directly (on GitHub or in an editor) can read that node, because it is not encrypted, and Git keeps it in the history even if you delete it later or the repository becomes public. An included node keeps its lock: someone who clones the repository sees it locked in FlowJoe and opens it with the same password. Your password itself never goes into the repository. A Private node inside one you included stays out unless you tick it as well. When anything Private goes in, the repository's history stays on this computer, never in a shared Workspace Folder.
+- **History:** **Include picture prompts** (off) adds the prompt that made each AI picture. The repository remembers this choice, and so does every copy someone clones.
+- **Names to fix first:** in a repository a title is also its file or folder name, so two titles that would clash (capitals don't count) or a title with characters files can't have are listed with a suggested name. **Accept Fixes and Make Repository** renames them (each rename can be undone like any other) and then makes the repository. To pick your own names, cancel, rename them, and start again.
+- **Where it goes:** **Keep it on this computer for now**, or **Link a GitHub repository** with its link (or `owner/name`). Linking only connects it; push from **Source Control** when you're ready.
+
+**Make Repository** makes the first commit straight away, signed with your Git name like any other commit, and **Source Control** shows the new repository with nothing left to commit. **Undo** turns it back into an ordinary node.
+
+A branch that already holds a repository can't become one (a repository can't hold another one). FlowJoe says which repository is inside it and offers **Show** to select it, so you can move it out first or choose a different branch.
 
 ## Browse and edit repository files
 
@@ -74,6 +89,8 @@ If commits made earlier already include files from a Private folder and haven't 
 
 A branch opened as its own node follows the same Private folders. If the repository itself is Private, the whole repository is yours to commit and push as before; Source Control shows a key on it.
 
+A Private folder you included when you made the repository (see **Make a branch a repository**) is committed and pushed like any other folder, with its lock. When someone clones it, it arrives locked (the same password opens it) and stays included, so their changes to it are committed and pulled like any other folder's, and a merge never puts an older version back. If you remove its password and later set a new one, it stays out of Git from then on: its later changes are held back like any Private folder's.
+
 New files added through the repo node's gallery appear in **Changes** so you can stage them. Imported executable-permission changes also appear, even when the file text is unchanged.
 
 ### What goes into the repository
@@ -83,16 +100,42 @@ Besides your files, a commit can record what you arranged in FlowJoe, so teammat
 - folder titles, node summaries, status, and slot and stack notes,
 - the order of slots and folders, the gallery layout, a chosen canvas arrangement and where you placed slots on the canvas, slot colours and connections,
 - tags on nodes and slots (each tag travels with its name, colour and description),
-- placeholder slots and link slots, and which picture a stack shows,
+- placeholder slots, and which picture a stack shows,
 - automations, which arrive switched off on the other computer.
 
-Where you are looking on the canvas, your Joe chats, Memories and picture prompts stay with you. A plain code repository gets no FlowJoe files until you add something like a note. A folder with no files but with a note or a placeholder is kept in Git through its FlowJoe file.
+Where you are looking on the canvas, your Joe chats and Memories stay with you, and so do picture prompts unless the repository includes them (a choice when you make a branch a repository). A plain code repository gets no FlowJoe files until you add something like a note. A folder with no files is kept in Git through its FlowJoe file.
 
-When you change only notes or layout, **Changes** shows one row per folder: the folder's name with **Notes and layout** (the repository's name for the top level). Stage and commit it like a file. These rows can't be opened or discarded yet. A Private folder's notes are never committed, and if the whole repository is Private, FlowJoe leaves its notes and layout out of commits for now.
+### Everything you add becomes a file
+
+In a repository, everything in a gallery is committed as a file that opens outside FlowJoe too, and comes back as the same kind of slot when someone clones the repository:
+
+| In FlowJoe | In the repository |
+|---|---|
+| A link | `Title.url`, an ordinary internet shortcut |
+| A spreadsheet, rich document or calendar | `Title.fjsheet`, `Title.fjdoc` or `Title.fjcal`: FlowJoe's own file, the same data a `.fj` export carries |
+| A calendar event | `Title.fjevent` |
+| A picture you generated, pasted or copied in | the picture file itself (its prompt stays with you unless the repository includes picture prompts) |
+| A placeholder | nothing extra: it lives in the folder's FlowJoe file |
+
+When you edit a spreadsheet, document, calendar or link, its file changes too and shows in **Changes**. These files are written from their slots, so the file editor shows them read-only: change a link's address or a spreadsheet in its own slot. The first time you open **Changes** in a repository you cloned or made before this, its links and other items show up once as new files. Every node inside a repository node is a folder: a node you add, or move in from elsewhere in the tree, gets a folder named after its title. If a node made before this already holds files, they move into its own folder, so your next commit shows them as renamed. A folder you move in from another repository keeps its files as they are (executable scripts and symlinks included), and a folder you move out and back in comes back unchanged. Undoing such a move puts everything back as it was. If a moved-in file's picture or bytes aren't on this computer, it stays out of commits and **Changes** says so. **Discard Changes**, stashes and **Pop** bring a link, spreadsheet, document or calendar back as itself.
+
+**Limits:** a linked file (one that points at a file elsewhere on your computer) stays on this computer and is not added; **Changes** says so in a line under the list. A Private node you move in stays out of every commit and push, as any Private folder does. A virtual slot is a pointer to its original, so only the original is a file. Automation slots aren't committed yet.
+
+### Titles are file and folder names
+
+In a repository a title is also its file or folder name, as in a code editor. Renaming a node in the tree renames its folder, and everything inside moves with it; renaming a file slot renames its file. If you leave off the extension, FlowJoe keeps it: retitling `photo.png` to "Hero" names the file `Hero.png`. Git records these as renames, and notes stay with the renamed files.
+
+A folder that holds a locked Private folder can't be renamed or moved to another folder until you unlock it, because the Private folder's files have to move with it. A name that another file or folder beside it already has is refused, even with different capitals ("Notes" and "notes" are the same name on macOS and Windows), and so is a name with characters files can't have, such as `: / \ * ? " < > |`. FlowJoe tells you why and keeps the old name, the same way from the tree, a slot's title and the Explorer.
+
+When you change only notes or layout, **Changes** shows one row per folder: the folder's name with **Notes and layout** (the repository's name for the top level). Stage and commit it like a file. These rows can't be opened or discarded yet. A Private folder's notes are committed only if you included that folder when you made the repository, and if the whole repository is Private, FlowJoe leaves its notes and layout out of commits for now.
 
 When you clone a repository made in FlowJoe, its notes, order, layout, tags, placeholders and links appear in the new node. Tags you already have keep your own colour. If FlowJoe can't read those details (for example, they were saved by a newer FlowJoe), the files still arrive and a notice says what couldn't be used; FlowJoe never overwrites details it can't read.
 
 When a merge leaves conflicts, the Changes menu offers **Mark All Resolved**, which becomes available once you have resolved every conflict yourself; FlowJoe never picks a side for you.
+
+### Merging FlowJoe's notes and layout
+
+When you merge a branch, FlowJoe's own files are merged as FlowJoe things, never as text: slot by slot and field by field, against the point where the two branches split. Notes on one slot and tags on another, or a teammate's notes on a different slot, simply combine. Tags added on both sides are all kept. When both branches reordered a gallery and the moves fit together, both are kept. What both branches changed in different ways (the same slot's notes, a folder's status, two orders that contradict, a slot removed on one branch and edited on the other) becomes a question in the same window as above, with **Yours, on main** and **From feature** side by side and **Finish Merge** at the end. Closing the window leaves the merge waiting under **Merge Changes**, where the folder's **Notes and layout** row opens the questions again. Plain files that Git can't merge still open the file editor afterwards; if a choice there raises a new question (for example you keep deleted the only file of a folder whose notes you changed), FlowJoe asks it before the merge is committed. Before the merge commit is made, FlowJoe checks that the merged notes and layout read back correctly. A Private folder's notes are never read or merged, and if the other branch renamed it, it stays where it is here instead of arriving a second time under the new name. If the other branch renamed or moved that folder, FlowJoe still recognises it when it keeps FlowJoe's own id for it or still holds most of the same files; a folder that was renamed and also had most of its files changed can't be recognised. Automations merged in stay switched off. An edit guest can't merge a branch that changes FlowJoe's notes and layout; FlowJoe says so, and the owner merges it from their own Source Control.
 
 Right-click a file, folder, or tab for actions that fit what you selected:
 
@@ -137,6 +180,34 @@ Choose **Open Branch as Node** to put a branch in the Flow tree as its own node.
 ## Sync with a Git remote
 
 Use **Fetch** to check the remote for new commits. The repository row and Graph toolbar also provide **Pull**, **Push**, and sync actions. The row's counts show changes waiting to come in or go out. Link, change, or remove the remote from the repo node's **…** menu under **Remote**.
+
+### Bring a teammate's changes into your gallery
+
+Pulling (or merging another branch) downloads the new commits, but your gallery is not changed on its own. A row appears under the repository saying who sent changes, for example **3 changes** from Sam, with a **Review** button.
+
+**Review** opens a window that lists, in FlowJoe terms, what will change:
+
+- **Added**: new slots and folders.
+- **Changed**: pictures or files replaced, notes edited, slots moved on the canvas, a folder's layout or order.
+- **Renamed**: files and folders with a new name. Their notes, chats and Memories stay with them.
+- **Removed**: slots and folders your teammate removed.
+- **Needs your choice**: things you both changed in different ways, and files you have open in the editor with unsaved changes.
+
+Choose **Update Gallery** to bring everything in at once, or **Cancel** to leave the gallery as it is. If something needs your choice, FlowJoe then asks about it, one question at a time (see [Answer FlowJoe's questions](#answer-flowjoes-questions)); **Finish Update** applies the update with your answers. Your own changes that aren't committed yet are kept. Before the update, FlowJoe saves a restore point in Version History named *Before updating "…" from Git*, and **Undo** takes the whole update back in one step.
+
+Private and frozen folders are left exactly as they are, even if your teammate renamed or removed the folder they are in. The window only says how many of their changes were left out, without naming them. If you change the gallery while the update is downloading, FlowJoe stops and asks you to review again rather than overwrite your work.
+
+Once every question is answered, the row leaves and the gallery is up to date. If you cancel the questions, nothing changes and the row stays, so you can review again later.
+
+### Answer FlowJoe's questions
+
+When you and someone else changed the same thing in different ways, FlowJoe asks in its own terms, never as text with conflict markers. Each question names the slot or folder (for example *You and Sam both changed “brief.pdf”*) and what changed (**Slot notes**, **Name**, **Order of slots**, **Tags**, a canvas place…), shows your version and theirs side by side, and offers:
+
+- **Keep Mine**: your version stays.
+- **Keep Theirs** (or **Keep Sam's** when FlowJoe knows who sent it): their version replaces yours.
+- **Keep Both**, for notes and other text: their text goes under yours, so you can edit them together.
+
+A slot one of you removed while the other changed it is kept until you answer: **Keep Mine** or **Keep Theirs** decides whether it stays. For a file you have open with unsaved typing, **Keep Theirs** puts their version in place (or removes the file, if they removed it), throws your unsaved typing away and closes its tab; your own notes and tags on that slot stay. **Keep Mine** keeps the typing. **Previous** and **Next** go back to a question you already answered, to change it. Where taking theirs isn't possible (it would move a Private or frozen folder, or a name is already used here), only **Keep Mine** is offered. **Cancel**, the ✕ or Esc close the window without changing anything.
 
 ### Sign in to GitHub over HTTPS
 

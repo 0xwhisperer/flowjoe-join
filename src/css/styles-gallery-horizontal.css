@@ -2215,6 +2215,22 @@ button.orphan-media-modal-close.context-menu-corner-close {
   color: var(--text-primary);
 }
 
+/* Caution variant (showDangerConfirmDialog({caution: true}), e.g. the Virtual Slots frozen-node warning): the same
+   box in the accent colour — a heads-up, not a destructive act. The warning triangle keeps its amber so its "!"
+   stays readable on every theme. */
+#modal-message .danger-confirm-shell.danger-confirm-shell--caution {
+  --danger-confirm-color: var(--accent-color);
+  --danger-confirm-warning: var(--accent-color);
+}
+
+#modal-message .danger-confirm-shell--caution .danger-confirm-icon {
+  --danger-confirm-warning: initial;
+}
+
+#modal-message .danger-confirm-shell--caution .danger-confirm-eyebrow {
+  color: var(--accent-color);
+}
+
 #modal-button-container .danger-confirm-button {
   --danger-confirm-color: var(--danger-color, #dc3545);
   border-color: color-mix(in srgb, var(--danger-confirm-color) 74%, var(--border-color));
