@@ -9,6 +9,11 @@ Normally FlowJoe keeps your Flow in its own storage inside the app. **Workspace 
 Workspace Folders are available in the desktop app.
 </Note>
 
+Media reads stay tied to the opened Workspace folder. Replacing a media folder or file
+with a symbolic link does not redirect a read to files elsewhere. If a file changes during reading,
+FlowJoe stops that read. Closing or switching Workspaces also stops a waiting media read from being
+returned to the previous Flow. Hardlinked files still work.
+
 ## Why use a Workspace Folder?
 
 Use a Workspace Folder when you want to choose where your Flow lives and manage its files with your

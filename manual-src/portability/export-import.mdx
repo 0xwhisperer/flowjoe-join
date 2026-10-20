@@ -24,9 +24,17 @@ Linked local files remain references; their original files are not bundled. Copy
 
 ---
 
+## Choose Private nodes
+
+Every Private node starts left out of an export. To include one, tick its row, enter its password and read the warning. A Private node inside another Private node needs its own choice. Exporting a selected child also requires including its Private ancestors. These choices reset when you reopen Export or change its scope.
+
+Included nodes keep their FlowJoe locks and carry their contents. Their chats, picture history, transcripts and undo notes follow the history options below; records you keep on this computer stay here. Private-only tags and Memories travel only with their node. A Flow-wide Memory proposed from an excluded Private chat stays home too.
+
+**A node’s lock works inside FlowJoe; it does not encrypt the exported file.** Without **Protect package with a password**, someone who opens the file directly can read included Private content. Send it only to people you want to have it. If the Flow, access or Private protection changes while you are choosing, reopen Export to review it. Leaving out a Private branch produces a partial copy and does not clear the Flow’s unsaved reminder.
+
 ## Transcript history
 
-The export window’s **Include transcript history** option is enabled by default for JSON and full packages, including password-protected exports. It includes completed transcript text and retained edits, even if you have not saved a gallery copy. Turn it off to omit this history. Private-source transcripts and records marked **Keep on this computer only** are always excluded. A gallery copy is part of the gallery’s ordinary data and follows that data’s export rules.
+The export window’s **Include transcript history** option is enabled by default for JSON and full packages, including password-protected exports. It includes completed transcript text and retained edits, even if you have not saved a gallery copy. Turn it off to omit this history. Transcripts from a Private node travel only when you explicitly include that node. Records marked **Keep on this computer only** remain excluded. A gallery copy is part of the gallery’s ordinary data and follows that data’s export rules.
 
 Whole-Flow imports restore included history under the imported Flow’s local identity. Merge imports remap its source links to the imported nodes and slots. **Import Node(s)** includes history only for the selected imported branches. History can still be opened, copied, and saved when its original recording is missing; a JSON export does not carry the recording’s media file.
 
@@ -89,7 +97,7 @@ the completed file stays on disk; check that destination before starting another
 
 ## Conversations and sharing choices
 
-Use **Include AI chat and image history** to carry eligible history with the exported work. Private-node and computer-only conversations are excluded, together with their chat-only backup pictures and image-history prompts. A picture independently saved in an ordinary gallery follows the gallery’s export rules. A branch export includes only eligible chat and image history belonging to that branch.
+Use **Include AI chat and image history** to carry eligible history with the exported work. Conversations from an excluded Private node stay home, together with their chat-only backup pictures and image-history prompts. If you explicitly include the Private node, its history follows this checkbox like any other node. Current and older conversations marked **Keep on this computer only** remain excluded independently. A picture independently saved in a gallery follows its node’s export choices. Its prompt copy travels only when **Include AI chat and image history** is on. A branch export includes only eligible chat and image history belonging to that branch.
 
 Full packages include the backup pictures that eligible current and older chats still use, even after you delete their separate Image History rows. Plain JSON keeps the references but does not carry picture bytes. Imported image history follows the imported Flow, nodes and slots instead of attaching itself to an older Flow with matching identifiers.
 

@@ -21,7 +21,7 @@ Keys appear masked in Settings. Use the eye button to reveal or copy them. Keys 
 
 ## Private and Hidden-from-Joe nodes
 
-**Private** nodes protect access in the app with a password. Their contents stay on the owner’s computer and are excluded from the shared Workspace Folder and browser guests. Unlocking one for yourself does not give Joe access to its contents.
+**Private** nodes protect access in the app with a password. Their contents are excluded from the shared Workspace Folder and browser guests. You can explicitly include individual Private nodes in a portable export or repository after entering their passwords and reading the warning; otherwise their contents stay on your computer. Unlocking one for yourself does not give Joe access to its contents.
 
 A Private folder inside a Git repository stays out of every commit and push. The one exception is your own choice: when you make a branch a repository you can include a Private node after entering its password and reading the warning. Its contents then go into the repository unencrypted, readable by anyone who opens the files outside FlowJoe, and Git keeps them in the history. Only the lock’s check value travels with it, never the password, so it stays locked inside FlowJoe for whoever clones it. It stays included for whoever clones it. If you later remove its password and set a new one, it stays out of Git from then on. See [Repositories](/tree/repositories#make-a-branch-a-repository).
 
@@ -31,7 +31,7 @@ Your Joe chats, picture history, transcripts, undo notes history and Memories go
 
 **Hidden from Joe** seals a node’s contents from Joe while leaving them available to you. Sealed node names and positions can still appear in Joe’s outline, so keep secrets out of names. A media read still waiting for its result checks these protections again before returning it. Hidden from Joe is a preference for your own Joe: a guest’s Joe can still read content that guest is allowed to see. Neither setting recalls information already sent in an earlier message.
 
-Private-node passwords do not encrypt all data at rest. A normal portable package can carry private content and its protection settings. Use package encryption when you need a protected backup.
+Private-node passwords do not encrypt all data at rest. A portable export includes Private content only after your per-node choice and password check. Included nodes keep their FlowJoe protection settings, but the exported bytes are readable outside FlowJoe unless you enable package encryption. Use **Protect package with a password** for a protected backup.
 
 ## Review changes
 
@@ -42,3 +42,10 @@ Joe normally proposes Flow changes for you to approve, reject, or revise. Schedu
 When exporting a **.fj** package, you can protect that package with a password. The recipient needs the password to import it. This protects the exported file; it does not encrypt the live Workspace Folder or replace your computer’s disk protection.
 
 Existing virtual slots can remain together inside one unlocked Private area for your own use; Joe and guests still cannot read their Private master. Making separate branches Private treats each branch as a separate area and converts pointers between them to real copies. Moves that would separate a retained pair across a Private boundary are refused without moving any of the selection. See [Virtual slots](/gallery/virtual-slots#making-a-node-private).
+
+
+### GitHub access when sharing a Flow
+
+The owner can ask Joe to list and clone all repositories accessible to the owner’s signed-in GitHub account, including private GitHub repositories. A guest can list or clone that account’s public repositories, plus repositories already visible in their shared Flow even if private on GitHub. Other private GitHub repositories are withheld. A View guest can read the permitted list; creating or cloning a repository node requires Edit access to its destination. The owner’s computer rechecks this access before the clone is attached.
+
+Joe uses named FlowJoe repository actions. Downloads, commits, pushes, merges and branch changes require an approval slot on every brain, including external assistants with ordinary edit autoapproval. GitHub credentials remain on the owner’s computer and are never sent to Joe or guests. A repository marked private on GitHub is different from a password-protected **Private node** in a Flow: the Flow’s normal Private and sharing rules still apply.

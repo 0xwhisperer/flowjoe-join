@@ -329,7 +329,7 @@ Edits wait for approval in FlowJoe unless you enable **Apply changes without ask
 
 With Joe's Read access in the desktop app, using an OpenAI or Gemini API model or a tool-capable CLI brain, you can ask about saved repository changes and commit identities, or ask for a saved-versus-committed file comparison. Joe can distinguish staged and unstaged files when the current Changes list is available. A read does not open or refresh that list. If its state cannot be verified, Joe reports staging as unavailable.
 
-Ask explicitly for saved text, an open unsaved draft, or an already-open historical file. Joe labels the source and checks that the file and draft version have not changed while reading. If a draft is not open, Joe reports that it is unavailable. Private and Hidden-from-Joe contents remain excluded. Large results are read in bounded parts; unverified deleted paths and oversized files are unavailable. These reads do not edit, save, stage, commit or run commands. External agents connected through the Agent Bridge, including the [FlowJoe CLI](/cli/action-reference#read-repository-state--read_repository), can make the same reads with Read or Propose access. Guest sessions and scheduled tasks cannot.
+Ask explicitly for saved text, an open unsaved draft, or an already-open historical file. Joe labels the source and checks that the file and draft version have not changed while reading. If a draft is not open, Joe reports that it is unavailable. Private and Hidden-from-Joe contents remain excluded. Large results are read in bounded parts; unverified deleted paths and oversized files are unavailable. These reads do not edit, save, stage, commit or run commands. External agents connected through the Agent Bridge, including the [FlowJoe CLI](/cli/action-reference#read-repository-state--read_repository), can make the same reads with Read or Propose access. Guests can make these reads for files and repositories visible in their shared Flow when Joe is enabled. Scheduled tasks cannot.
 
 
 An open historical tab can be read only while the file is still present and readable in that repository. Deleting the current file or making it private revokes the old tab's read access. FlowJoe checks again before each provider request, including after a wait for approval or a reference chapter; changed files or access cancel the response instead of sending stale text.
@@ -343,3 +343,29 @@ Joe's answer is a review card, not a change. The card names the file and branch,
 If you type in that file after the preview, Apply turns off and the card says **The file changed after this preview. Ask Joe for a fresh proposal.** The old text must also appear exactly once in the file; if it is missing or appears more than once, Joe is told and can propose again. A file edit comes on its own card, never mixed with other changes.
 
 Applying saves the file in FlowJoe, the same as pressing **Save**. It does not write to a folder on your computer and does not commit or push; use **Source Control** for that. If the save cannot be completed, the edit stays in memory with FlowJoe's recovery copy and the open tab shows Joe's text until storage is available again. Undo (the card's undo or "undo your last change") puts back the previous version and the text your editor showed before, unless you saved that file again or typed in its open tab since, in which case nothing is undone.
+
+
+## Ask Joe to work with repositories
+
+You can ask Joe to create a repository, clone a link, list your GitHub repositories, or clone several into separate nodes. For example: “List my GitHub repositories and clone the ones I choose under Projects.” Your signed-in account can access private repositories as well as public ones; Joe never asks for or receives your token.
+
+Joe lists the repository name, whether it is private on GitHub, its default branch and its estimated size. Reading the list or repository status makes no change. Before downloading or changing anything, Joe shows an approval slot. Untick repositories you do not want; the count and size update. Nothing starts with none selected.
+
+Clones run one at a time. Each successful repository appears as its own node, with a link you can select. A failed clone names the repository and leaves the others free to continue. Stop ends the current download and the remaining work; completed repositories remain. A failed save is reported rather than presented as saved.
+
+You can also ask Joe to fetch, pull, sync, commit, push, create a branch, open a branch as another node, or merge branches. Joe can first prepare the current Changes list when needed; a commit proposal then shows its exact files and drafted message before you approve. Branches open as separate nodes so the current one is preserved. Merge questions use the same review windows as Source Control. An unfinished merge says **Needs your choice**; closing its question or conflict window does not commit it. Stop also prevents the next step of other Git actions while a confirmation or preparation is waiting; work already completed keeps its actual result. A push changes the remote repository and has no ordinary Flow undo.
+
+### Guests and GitHub repositories
+
+As the owner, you can list and clone every repository your signed-in GitHub account can access, including private ones.
+
+Guests can list your account’s **public** repositories and any repository already visible in their shared Flow, even if it is private on GitHub. Your other private GitHub repositories stay unavailable to them. A View guest can read the permitted list and status; an Edit guest can ask Joe to create and clone nodes within their shared area. Your computer checks the guest’s current access again before creating each node. Private Flow folders and folders hidden from that guest stay hidden.
+
+## Local folder import safety
+
+When importing a repository folder, FlowJoe reads working files through the folder it opened.
+Replacing a subfolder with a symbolic link cannot redirect those reads elsewhere. A symbolic-link
+file is saved as its link text rather than loading its target. Files that change while being read
+are skipped; ordinary hardlinked files remain supported.
+
+Portable `.fj` and `.json` exports use the same per-Private-node password choice and warning as **Make This a Repository**. Every Private node starts excluded; included nodes carry history under the export’s ordinary history choices. See [Export & import](/portability/export-import#choose-private-nodes).
