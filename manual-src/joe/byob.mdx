@@ -42,7 +42,7 @@ To adjust your model config:
 2. Click the model settings button inside the Joe panel — or the brain name in the status bar — to pick the brain behind Joe:
    - **OpenAI models (API key):** **Sol 6.1**, **Luna 6** (the default), **Sol 6**, and **Astra 6**, plus **Luna**, **Terra**, and **Sol** from the GPT-5.6 family.
    - **Gemini API:** **Gemini 3.8 Flash** uses a separate Google Gemini API key. See setup below.
-   - **CLI brains (no API key):** route Joe through an agent CLI you have already installed and signed into on your own machine — **Fable 5.1**, **Opus 5.5**, **Opus 5**, **Sonnet 5.5**, **Sonnet 5**, **Haiku**, **Grok**, **Antigravity (4 Argon)**, or **Antigravity (3.8)**. CLI installation and sign-in belong to the owner’s desktop. Authorized browser guests use a supported, isolated version of that selected owner CLI through Joe; they do not install it or receive its credentials. Antigravity is currently available only to the owner.
+   - **CLI brains (no API key):** route Joe through an agent CLI you have already installed and signed into on your own machine — **Fable 5.1**, **Opus 5.5**, **Opus 5**, **Sonnet 5.5**, **Sonnet 5**, **Haiku**, **Grok**, **Antigravity (4 Argon)**, **Antigravity (3.8)**, **Codex (6.1 Sol)**, **Codex (6 Sol)**, **Codex (6 Luna)**, **Codex (5.6 Sol)**, **Codex (5.6 Terra)**, **Codex (5.6 Luna)**, or **Gemini CLI (3.8 Flash)**. CLI installation and sign-in belong to the owner’s desktop. Authorized browser guests use a supported, isolated version of that selected owner CLI through Joe; they do not install it or receive its credentials. Antigravity is currently available only to the owner.
    - **Temperature and response length are managed automatically per model** — there is no manual temperature dial, and GPT-5.6 / GPT-6 models run at their fixed default temperature.
 
 ### Where to get an OpenAI key
@@ -62,6 +62,12 @@ FlowJoe does not install a CLI brain for you. Install its tool and finish sign-i
 | Fable 5.1 / Opus 5.5 / Opus 5 / Sonnet 5.5 / Sonnet 5 / Haiku | the `claude` CLI | `claude` |
 | Grok | the `grok` CLI | `grok` |
 | Antigravity | the `agy` CLI | `agy` |
+| Codex (6.1 Sol, 6 Sol, 6 Luna, 5.6 Sol / Terra / Luna) | the `codex` CLI | `codex login` (your ChatGPT account) |
+| Gemini CLI (3.8 Flash) | the `gemini` CLI | `gemini` (your Google account) |
+
+**Codex** lets Joe run on your ChatGPT plan instead of an OpenAI API key. It offers the same OpenAI models as the API-key menu, except Astra: GPT-6.1 Sol, GPT-6 Sol, GPT-6 Luna and GPT-5.6 Sol, Terra and Luna. Quick helper tasks use GPT-5.6 Luna. Before Joe can use Codex for the first time, run `codex` once in a terminal so it saves its list of models on your computer; until then Joe tells you to do that. Which of these models your ChatGPT plan includes is up to OpenAI: if Codex doesn't offer the one you picked, Joe says so and you can pick another.
+
+**Gemini CLI** lets Joe run on your Google account through Google's own `gemini` tool. It uses Gemini 3.8 Flash; quick helper tasks use the tool's Flash-Lite model. Whether your Google account can use 3.8 Flash through this tool is up to Google; if it can't, Joe shows the tool's own error and you can pick another brain. This is separate from **Gemini 3.8 Flash** with an API key and from Antigravity.
 
 Antigravity offers **4 Argon** and **3.8 Flash**, both at Medium thinking. Quick helper tasks use 3.8 Flash Low. An older saved 3.7 choice now uses 3.8. Model access depends on your Google plan and installed Antigravity version.
 
@@ -74,16 +80,18 @@ If a brain is greyed out, check the explanation in the picker. The tool may be m
 | **OpenAI API** | Read permitted content and propose Flow changes. Web search and hosted Code interpreter are available when enabled. |
 | **Claude-family CLI** | Read permitted content, use Flow tools, inspect supported images, and propose changes. Replies appear as they arrive. |
 | **Grok CLI** | Read permitted content, use Flow tools, inspect supported images, and propose changes. Replies arrive together when ready. |
+| **Codex CLI** | Read permitted content, use Flow tools, inspect supported images, and propose changes. Replies arrive together when ready. |
+| **Gemini CLI** | Read permitted content, use Flow tools, and propose changes. It does not see attached images. Replies arrive together when ready. |
 | **Antigravity** | For now, chat only: it can discuss the context supplied with the conversation, but it cannot fetch more Flow content on demand, propose Flow changes, or inspect image inputs through this connection. It runs with your own Antigravity settings. Flow tools are coming once they've been checked. Owner only; replies arrive together when ready. |
 | **Gemini API** | Chat, permitted Flow reads, and proposals through the existing approval cards. No hosted web search or Code interpreter. |
 
 For brains with Flow tools, **Off / Read / Propose** sets the limit on what they can access through FlowJoe. Choosing a stronger brain does not unlock private content. Whichever brain you choose, Joe’s own changes always come to you as a card to approve; Agent Bridge’s **Auto-apply agent edits** setting only affects outside assistants. Guest Joe has separate invitation-based approval rules. See [Permissions & privacy](/joe/permissions).
 
-Claude and Grok use the same supported [Flow actions](/joe/propose-approve#what-you-can-ask-joe-to-change) as OpenAI. They connect to those actions through MCP, the connection format used by compatible AI tools. FlowJoe sets up this temporary connection for Joe automatically; you do **not** need to enable an outside assistant under Agent Bridge first.
+Claude, Grok, Codex and Gemini CLI use the same supported [Flow actions](/joe/propose-approve#what-you-can-ask-joe-to-change) as OpenAI. They connect to those actions through MCP, the connection format used by compatible AI tools. FlowJoe sets up this temporary connection for Joe automatically; you do **not** need to enable an outside assistant under Agent Bridge first.
 
 The **Web search** switch also applies to CLI brains; their available search tools depend on the selected provider. FlowJoe’s hosted **Code interpreter** is an OpenAI feature, separate from running commands in a terminal. On launch, Web search starts on and Code interpreter starts off.
 
-Codex and standalone Gemini CLI are not choices in the current Joe brain picker. A compatible outside assistant can still connect through [Agent Bridge](/joe/agent-bridge); that is a separate way to work with your Flow.
+Choosing Codex or Gemini CLI as Joe's brain is separate from connecting those tools as outside assistants through [Agent Bridge](/joe/agent-bridge); you don't need one for the other.
 
 ### A CLI brain, Agent Bridge, or Forge?
 
@@ -109,7 +117,7 @@ Before Joe answers, he first works out what he needs to look at — whether you 
 
 Add a **TypeSafe API key** and that decision runs on a model built purely for fast structured judgments, taking roughly a fifth of a second instead — on every message, whichever brain you are using.
 
-The difference is largest on the CLI brains (Claude, Grok, Antigravity). Those used to start up a second copy of the command-line tool just to ask that one question, and wait up to fifteen seconds for it. That no longer happens.
+The difference is largest on the CLI brains (Claude, Grok, Antigravity, Codex, Gemini CLI). Those used to start up a second copy of the command-line tool just to ask that one question, and wait up to fifteen seconds for it. That no longer happens.
 
 * It is **entirely optional.** Without a key, everything works exactly as it does today — including the flow map, which is then never trimmed (see below).
 * If the key is missing, wrong, expired, or the service is unreachable, FlowJoe **quietly falls back** to the normal path. Nothing breaks — Joe is simply not faster, and the map is not trimmed.
@@ -142,10 +150,12 @@ The key panels have a **Test** button. Press it and FlowJoe makes one tiny real 
 
 ### CLI brains in shared conversations
 
-A guest's Joe can use shared Flow tools and web tools, but cannot use the CLI to read your computer's unrelated files, run commands, or reach your other installed integrations. FlowJoe checks the installed CLI version before sending the guest's request. An unsupported version or a brain unavailable to guests stops that request; FlowJoe does not silently choose another provider. For the selectable CLI brains, supported guest release families are Claude 2.1.302 or later within 2.1, and Grok 1.0.52 or later within 1.0. Antigravity is not available to guests.
+A guest's Joe can use shared Flow tools and web tools, but cannot use the CLI to read your computer's unrelated files, run commands, or reach your other installed integrations. FlowJoe checks the installed CLI version before sending the guest's request. An unsupported version or a brain unavailable to guests stops that request; FlowJoe does not silently choose another provider. For the selectable CLI brains, supported guest release families are Claude 2.1.302 or later within 2.1, Grok 1.0.52 or later within 1.0, Codex 0.162.1 or later within 0.162 and 0.163.0 or later within 0.163, and Gemini CLI 0.64. When a tool updates to a newer family, guests see a message that Joe can't use that brain in the shared conversation right now, until FlowJoe checks the new version; your own use is unaffected. Antigravity is not available to guests.
 
 Grok uses a temporary connection for each Joe request. Guests can ask Joe to read shared content and propose changes for approval without approving a folder in Grok first. Their requests do not load your Grok, Claude Code, Cursor or Codex integrations, hooks, skills or instructions, or skills you keep in your home folder's `.agents` folder.
 
 When you use Grok yourself, Joe uses your Grok sign-in and the models you set up, but none of your other Grok settings, tools or integrations. Like Claude, Joe on Grok can use only FlowJoe's Flow tools and, when Web search is on, web search. It cannot run commands, read or change files on your computer, or use your other connected tools. Joe uses the Flow access you selected for that request; choosing chat-only keeps Flow tools off even if you have also connected Grok through Agent Bridge. FlowJoe does not add temporary folders to Grok's saved trusted folders.
+
+Codex and Gemini CLI work the same way, for you and for guests. Joe uses your sign-in, but none of that tool's other settings: not its instructions files (such as Codex's `AGENTS.md` or Gemini's `GEMINI.md`), skills, plugins, extensions, hooks, memories or other connected tools, and not skills kept in your home folder's `.agents` folder. Joe can use only FlowJoe's Flow tools at the access you chose and, when Web search is on, web search. He cannot run commands or read or change files on your computer. If Codex refreshes your ChatGPT sign-in during a request, FlowJoe saves the refreshed sign-in back once the request ends, so you stay signed in. On Gemini CLI, text in the conversation that looks like a file reference (`@` followed by a path) is passed as plain text, so it never makes Gemini read a file from your computer.
 
 If you have connected Antigravity to FlowJoe under Agent Bridge, Joe will not use Antigravity as his brain, on any computer: that connection would let him reach your Flow outside the access you chose for the chat. Disconnect Antigravity under **Settings → Joe AI → Agent Bridge (MCP)**, or pick another brain.
