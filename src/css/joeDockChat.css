@@ -1417,8 +1417,7 @@
   }
 
   /* --jd-attachment-margin / --jd-attachment-pad's per-tier docked values live in
-     dropin/06-joe-dock-density.css (Step 4a) — --jd-attachment-margin is shared with the token
-     popover title below (both were the identical `0 0 8px`). */
+     dropin/06-joe-dock-density.css (Step 4a). */
   #ai-spell-check-modal.joe-docked #ai-chat-attachment {
     margin: var(--jd-attachment-margin);
     padding: var(--jd-attachment-pad);
@@ -1946,15 +1945,17 @@
     border: 1px solid var(--danger-color);
   }
 
-  /* ── Token breakdown popover (the existing breakdown bar + legend, moved in) ── */
+  /* ── Token breakdown popover: the one-column breakdown (joeTokenMeterPanel.js; approved mockup
+     flowjoe-token-meter-popover.html, variant A). The bar the floating window shows is still moved in (so popping out
+     restores it exactly) but stays out of sight here. ── */
   /* --jd-popover-pad's per-tier docked values live in dropin/06-joe-dock-density.css (Step 4a). */
   .joe-dock-token-popover {
     position: absolute;
     right: 0;
     bottom: calc(100% + 6px);
     z-index: 30;
-    width: min(340px, 100%);
-    max-height: min(420px, 60vh);
+    width: min(380px, 100%);
+    max-height: min(440px, 62vh);
     overflow: auto;
     padding: var(--jd-popover-pad);
     border: 1px solid var(--jd-line);
@@ -1969,61 +1970,11 @@
     display: none;
   }
 
-  /* --jd-attachment-margin's per-tier docked values (shared with #ai-chat-attachment above — both
-     were the identical `0 0 8px`) live in dropin/06-joe-dock-density.css (Step 4a). */
-  .joe-dock-token-popover-title {
-    margin: var(--jd-attachment-margin);
-    color: var(--jd-text-3);
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.4px;
-  }
-
-  #ai-spell-check-modal.joe-docked .joe-dock-token-popover #ai-chat-token-bar {
-    gap: 10px;
-    margin: 0;
-  }
-
-  #ai-spell-check-modal.joe-docked .joe-dock-token-popover .ai-chat-token-bar-row {
-    box-sizing: border-box;
-    padding-right: 30px;
-  }
-
-  #ai-spell-check-modal.joe-docked .joe-dock-token-popover .ai-chat-token-bar-track {
-    background: var(--jd-well);
-  }
-
-  #ai-spell-check-modal.joe-docked .joe-dock-token-popover .ai-chat-token-bar-legend-row {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 6px;
-  }
-
-  #ai-spell-check-modal.joe-docked .joe-dock-token-popover .ai-chat-token-bar-legend {
-    flex-direction: column;
-    flex-wrap: nowrap;
-    overflow: visible;
-    gap: 3px;
-    font-size: 12px;
-    color: var(--jd-text-1);
-  }
-
-  #ai-spell-check-modal.joe-docked .joe-dock-token-popover .ai-chat-token-legend-item {
-    gap: 8px;
-    white-space: normal;
-  }
-
-  #ai-spell-check-modal.joe-docked .joe-dock-token-popover .ai-chat-token-legend-item.is-empty {
-    opacity: 0.5;
-  }
-
-  #ai-spell-check-modal.joe-docked .joe-dock-token-popover .ai-chat-token-legend-popover {
-    position: static;
-    width: auto;
-    max-height: none;
-    margin-top: 8px;
-    box-shadow: none;
-    background: var(--jd-bg);
+  /* The old title (#joe-dock-token-popover-title, a stable id that keeps the meter's label) is not drawn: the panel's
+     own head names the send. */
+  #ai-spell-check-modal.joe-docked .joe-dock-token-popover #ai-chat-token-bar,
+  #ai-spell-check-modal.joe-docked .joe-dock-token-popover .joe-dock-token-popover-title {
+    display: none;
   }
 
   /* ── Chip row under the composer: Model · Permissions · Memories · Compact ── */

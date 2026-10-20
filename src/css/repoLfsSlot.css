@@ -59,4 +59,34 @@
   .image-item[data-repo-lfs="downloading"] .repo-lfs-state {
     color: var(--accent-color);
   }
+
+  /* Cancel a running download (S8b, approved mockup 6b): a small icon button right after "Downloading…". */
+  .repo-lfs-cancel {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    margin-left: 4px;
+    padding: 0;
+    vertical-align: middle;
+    border: 1px solid transparent;
+    border-radius: var(--icon-btn-radius, 4px);
+    background: transparent;
+    color: var(--text-muted);
+    font-size: var(--font-meta);
+    cursor: pointer;
+  }
+
+  .repo-lfs-cancel:hover,
+  .repo-lfs-cancel:focus-visible {
+    color: var(--text-primary);
+    background: var(--bg-tertiary);
+    border-color: var(--border-color);
+  }
+
+  .repo-lfs-cancel:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 1px;
+  }
 }

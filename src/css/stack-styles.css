@@ -1842,6 +1842,185 @@
     max-width: 100%;
   }
 
+  /* Imported Virtual Slots (S6b, mockup `reimport`): the shared #modal at the delete window's width; one row
+     per imported virtual whose master changed, each with a two-way Stay virtual / Own slot choice. Picking
+     only changes the picked border (no motion), as in the other choice windows. */
+  .vslot-import-legend {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 4px 10px;
+    padding: 10px 12px;
+    border-radius: var(--radius-lg, 8px);
+    background: var(--bg-secondary);
+    font-size: calc(12px * var(--font-scale, 1));
+    color: var(--text-secondary);
+  }
+
+  .vslot-import-legend b {
+    color: var(--text-primary);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .vslot-import-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: calc(12px * var(--font-scale, 1));
+    color: var(--text-secondary);
+  }
+
+  .vslot-import-setall {
+    position: relative;
+    padding: 0 4px;
+    border: 0;
+    border-radius: var(--radius-sm, 4px);
+    background: none;
+    color: var(--accent-color);
+    font: inherit;
+    cursor: pointer;
+  }
+
+  /* The app's generic button:hover would give these text links a hover box. */
+  .vslot-import-setall:hover {
+    background: none;
+    color: var(--accent-color);
+    text-decoration: underline;
+  }
+
+  .vslot-import-list {
+    display: flex;
+    flex-direction: column;
+    max-height: 260px;
+    overflow: auto;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg, 8px);
+  }
+
+  .vslot-import-row {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr) auto;
+    gap: 10px;
+    align-items: center;
+    padding: 8px 10px;
+  }
+
+  .vslot-import-row + .vslot-import-row {
+    border-top: 1px solid var(--border-color);
+  }
+
+  .vslot-import-thumb {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    overflow: hidden;
+    border-radius: var(--radius-md, 6px);
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+  }
+
+  .vslot-import-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .vslot-import-text {
+    min-width: 0;
+  }
+
+  .vslot-import-name {
+    overflow: hidden;
+    font-weight: 600;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .vslot-import-meta {
+    overflow: hidden;
+    font-size: calc(11.5px * var(--font-scale, 1));
+    color: var(--text-secondary);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .vslot-import-seg {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 2px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg, 8px);
+  }
+
+  .vslot-import-seg button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border: 1px solid transparent;
+    border-radius: var(--radius-md, 6px);
+    background: transparent;
+    color: var(--text-secondary);
+    font: inherit;
+    font-size: calc(12px * var(--font-scale, 1));
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  /* Font Awesome's own (unlayered) sheet sets the icon's display through --fa-display, so that is the switch:
+     only the picked choice shows its check. */
+  .vslot-import-seg button i {
+    --fa-display: none;
+    font-size: calc(10px * var(--font-scale, 1));
+  }
+
+  .vslot-import-seg button.is-on i {
+    --fa-display: inline-block;
+  }
+
+  .vslot-import-seg button.is-on {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+  }
+
+  /* Hover never makes an unpicked choice look picked (the generic button:hover loads later). */
+  .vslot-import-seg button:hover {
+    border-color: transparent;
+    background: var(--hover-bg);
+    color: var(--text-primary);
+  }
+
+  .vslot-import-seg button.is-on:hover {
+    border-color: var(--accent-color);
+    background: transparent;
+    color: var(--accent-color);
+  }
+
+  .vslot-import-setall::after,
+  .vslot-import-seg button::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+  }
+
+  .vslot-import-setall:focus-visible::after,
+  .vslot-import-seg button:focus-visible::after {
+    box-shadow: var(--focus-ring);
+  }
+
+  .vslot-import-seg button.is-on:focus-visible::after {
+    box-shadow:
+      var(--focus-ring),
+      inset 0 0 0 1px var(--accent-color);
+  }
+
   .vslot-menu-sub {
     margin-left: auto;
     padding-left: 12px;

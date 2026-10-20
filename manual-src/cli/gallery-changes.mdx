@@ -26,7 +26,7 @@ A gallery position (`slotIndex`, `index`, `sourceIndex`, `fromIndex`, `toIndex`)
 Only use examples whose targets exist and have the required content type. Examples with two or
 three positions need at least that many items. Read fresh data after an edit that changes positions.
 
-The required inputs below come from the editing catalog measured on 2026-10-19: 60 verb names for 59 distinct changes, because `setNodeReadOnly` is an older name for `setNodeFrozen` (discover the running build’s catalog for updates). Where an alternative stable entry
+The required inputs below come from the editing catalog measured on 2026-10-20: 62 verb names for 61 distinct changes, because `setNodeReadOnly` is an older name for `setNodeFrozen` (discover the running build’s catalog for updates). Where an alternative stable entry
 ID is listed, supply that instead of its positional field, not both. Read IDs with a gallery snapshot;
 not every verb supports the same ID alternative. `removeEntryContexts` uses nested positional
 references. The live catalog is authoritative for your installed desktop version:
@@ -841,6 +841,50 @@ Choose the target gallery position and the selected indices. Omit indices to con
 ```
 
 **Result:** The selected items are combined in the target stack.
+
+## Turn a virtual slot into its own real slot — `makeVirtualSlotReal`
+
+A virtual slot shows the content of one master slot elsewhere in the same Flow. This gives the virtual slot at that position its own copy of the master as it is now, including its own copy of every stored file, and keeps its place (canvas position, collapsed state). It is refused when the slot is not a virtual slot, when its master is missing or in a Private node, or when the master is, or holds, a linked local file or a repository file.
+
+**Required inputs:** `nodeId`, `slotIndex`.
+
+**Stable IDs:** `slotEntryId` can replace `slotIndex`.
+
+```json
+[
+  {
+    "verb": "makeVirtualSlotReal",
+    "args": {
+      "nodeId": "YOUR_NODE_ID",
+      "slotIndex": 0
+    }
+  }
+]
+```
+
+**Result:** The virtual slot becomes an independent real slot; later edits to the master no longer show in it.
+
+## Remove a master slot and decide for its virtual slots — `removeVirtualMaster`
+
+Removes the master slot named by `entryId` (the master’s entry ID, read from a gallery snapshot) and, in the same step, decides what happens to the virtual slots that show it. `mode` is `promote` or `remove`. With `promote`, add `promoteEntryId`, the entry ID of one of its virtual slots: that slot takes the master’s content and files, keeps its own place, and every other virtual slot follows it. With `remove`, every virtual slot of the master is removed too. This is a deletion. It is refused when the slot is not a master, has no virtual slots, the promoted slot is in a Private node, or any node it would change is blocked.
+
+**Required inputs:** `nodeId`, `entryId`, `mode`.
+
+```json
+[
+  {
+    "verb": "removeVirtualMaster",
+    "args": {
+      "nodeId": "YOUR_NODE_ID",
+      "entryId": "YOUR_MASTER_ENTRY_ID",
+      "mode": "promote",
+      "promoteEntryId": "YOUR_VIRTUAL_ENTRY_ID"
+    }
+  }
+]
+```
+
+**Result:** The master is removed; the promoted virtual slot (or, with `remove`, nothing) is left in its place, and the result reports the mode and the promoted entry ID.
 
 ## Change text in one repository file — `editRepoFileText`
 

@@ -35,7 +35,7 @@ To adjust your model config:
    - **Anthropic API:** **Claude Fable 5.1**, **Claude Opus 5.5**, **Claude Sonnet 5.5** and **Claude Haiku 5.5** use your own Anthropic API key. This is separate from a Claude Code login: you can have both.
    - **xAI API:** **Grok 4.7** uses your own xAI API key. This is separate from a Grok terminal login.
    - **Gemini API:** **Gemini 3.8 Flash** and **Gemini 4 Argon** use a separate Google Gemini API key. See setup below.
-   - **CLI brains (no API key):** route Joe through an agent CLI you have already installed and signed into on your own machine — **Fable 5.1**, **Opus 5.5**, **Opus 5**, **Sonnet 5.5**, **Sonnet 5**, **Haiku**, **Grok**, **Antigravity (4 Argon)**, **Antigravity (3.8)**, **Codex (6.1 Sol)**, **Codex (6 Sol)**, **Codex (6 Luna)**, **Codex (5.6 Sol)**, **Codex (5.6 Terra)**, or **Codex (5.6 Luna)**. CLI installation and sign-in belong to the owner’s desktop. Authorized browser guests use a supported, isolated version of that selected owner CLI through Joe; they do not install it or receive its credentials. Antigravity is currently available only to the owner.
+   - **CLI brains (no API key):** route Joe through an agent CLI you have already installed and signed into on your own machine — **Fable 5.1**, **Opus 5.5**, **Opus 5**, **Sonnet 5.5**, **Sonnet 5**, **Haiku**, **Grok**, **Antigravity (4 Argon)**, **Antigravity (3.8)**, **Codex (6.1 Sol)**, **Codex (6 Sol)**, **Codex (6 Luna)**, **Codex (5.6 Sol)**, **Codex (5.6 Terra)**, **Codex (5.6 Luna)**, or **Codex (6 Astra)**. CLI installation and sign-in belong to the owner’s desktop. Authorized browser guests use a supported, isolated version of that selected owner CLI through Joe; they do not install it or receive its credentials. Antigravity is currently available only to the owner.
    - **Temperature and response length are managed automatically per model** — there is no manual temperature dial, and GPT-5.6 / GPT-6 models run at their fixed default temperature.
 
 ### How the brain menu is arranged
@@ -44,6 +44,8 @@ Joe's brain menu groups the brains by company: **OpenAI** first, then **Anthropi
 
 * **· API key** — it uses the key you saved in **Settings → APIs**.
 * **· Claude Code login ✓**, **· Codex login ✓**, **· Grok login ✓**, **· Antigravity login ✓** — it uses a terminal tool you are signed into.
+
+An API-key line ends with a price scale from **$** to **$$$$**, a login line with **plan**; the status bar's brain list shows the exact price per million tokens. See [What each brain costs](/joe/token-usage#what-each-brain-costs).
 
 A company you have no key for shows one dimmed line instead of one line per model, for example **Grok 4.7 — needs an xAI key**, **Gemini — needs a Gemini key** or **OpenAI — needs an OpenAI key**. Once you save that key, the line opens up into the company's models. The brain list in the status bar shows the same brains in the same order; under each API-key brain it shows the account and the start and end of the key, and a company without a key reads **Needs an … API key**.
 
@@ -80,9 +82,9 @@ FlowJoe does not install a CLI brain for you. Install its tool and finish sign-i
 | Fable 5.1 / Opus 5.5 / Opus 5 / Sonnet 5.5 / Sonnet 5 / Haiku | the `claude` CLI | `claude` |
 | Grok | the `grok` CLI | `grok` |
 | Antigravity | the `agy` CLI | `agy` |
-| Codex (6.1 Sol, 6 Sol, 6 Luna, 5.6 Sol / Terra / Luna) | the `codex` CLI | `codex login` (your ChatGPT account) |
+| Codex (6.1 Sol, 6 Sol, 6 Luna, 5.6 Sol / Terra / Luna, 6 Astra) | the `codex` CLI | `codex login` (your ChatGPT account) |
 
-**Codex** lets Joe run on your ChatGPT plan instead of an OpenAI API key. It offers the same OpenAI models as the API-key menu, except Astra: GPT-6.1 Sol, GPT-6 Sol, GPT-6 Luna and GPT-5.6 Sol, Terra and Luna. Quick helper tasks use GPT-5.6 Luna. Before Joe can use Codex for the first time, run `codex` once in a terminal so it saves its list of models on your computer; until then Joe tells you to do that. Which of these models your ChatGPT plan includes is up to OpenAI: if Codex doesn't offer the one you picked, Joe says so and you can pick another.
+**Codex** lets Joe run on your ChatGPT plan instead of an OpenAI API key. It offers the same OpenAI models as the API-key menu: GPT-6.1 Sol, GPT-6 Sol, GPT-6 Luna, GPT-5.6 Sol, Terra and Luna, and GPT-6 Astra. Quick helper tasks use GPT-5.6 Luna. Before Joe can use Codex for the first time, run `codex` once in a terminal so it saves its list of models on your computer; until then Joe tells you to do that. Which of these models your ChatGPT plan includes is up to OpenAI: if Codex doesn't offer the one you picked, Joe says so and you can pick another.
 
 **Gemini CLI** is no longer one of Joe's brains: Google no longer lets individuals use that tool with a personal Google sign-in. Signed in to Google? Pick **Antigravity**, which uses the same Google account. Have a Gemini API key? Pick **Gemini 3.8 Flash** or **Gemini 4 Argon**. If Gemini CLI was Joe's brain, FlowJoe switched it to **Antigravity (3.8)** for you; if Antigravity isn't installed and signed in, Joe moves on to the first brain that works.
 

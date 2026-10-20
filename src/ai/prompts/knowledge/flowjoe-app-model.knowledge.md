@@ -57,4 +57,3 @@ A FlowJoe manual reference chip linking the page(s) below is already attached un
 - [Flow Summary](flowjoe-docs:tree/flow-summary)
 - [Plugins & Verticals](flowjoe-docs:concepts/plugins-verticals)
 - [Plugin Architecture](flowjoe-docs:concepts/plugin-architecture)
-- [Sharing, Guests and Presenting](flowjoe-docs:workspaces/sharing-and-presenting)

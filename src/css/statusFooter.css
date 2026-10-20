@@ -574,6 +574,29 @@ body.surface-effects-disabled .status-footer-brain-menu {
   display: none;
 }
 
+/* Menu B prices (approved mockup flowjoe-token-meter-popover.html, menu-b-footer): the name and a quiet $–$$$$ scale
+   share one line; the filled part of the scale is bright, the rest dim. A login brain shows "plan" instead. */
+.status-footer-brain-name-row {
+  display: flex;
+  align-items: baseline;
+  min-width: 0;
+}
+.status-footer-brain-name-row .status-footer-brain-label {
+  min-width: 0;
+}
+.status-footer-brain-scale {
+  flex: 0 0 auto;
+  margin-left: 6px;
+  font-size: var(--font-meta);
+  letter-spacing: 0.5px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary);
+}
+.status-footer-brain-scale b {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
 .status-footer-brain-check {
   flex: 0 0 auto;
   color: var(--accent-color);

@@ -1105,6 +1105,18 @@ button.scm-pill:hover {
   white-space: nowrap;
 }
 
+/* A Git LFS file in Changes (S8b): a small note after its name. */
+.scm-file-note {
+  flex: none;
+  padding: 0 4px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-size: var(--font-meta);
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
 .scm-file-dir {
   flex: 1 1 0;
   min-width: 0;

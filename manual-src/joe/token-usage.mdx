@@ -29,7 +29,11 @@ You are billed for the whole bundle. On a large tree, the flow map is usually th
 
 ## The token bar
 
-At the bottom of the Joe panel is a segmented **token bar**. It shows how much of the model's context window this send would use. Click it to open the legend.
+At the bottom of the Joe panel is a segmented **token bar**. It shows how much of the model's context window this send would use.
+
+In the docked Joe panel the bar is the small token count beside **Send**. Hover over it to peek at the breakdown; press it to keep the breakdown open (it then has a close button). The breakdown is one column: **This send** with its total and its share of the context window, the bar, then one line per part with its tokens and its share of this send. Parts with nothing in them are listed together on one line ("Not in this send: …"). Press **What each part is** to open a sentence under each part — Joe system also lists its modules with their counts — plus the Draft line and the tokens-per-minute note; press **Hide what each part is** or Escape to fold them away again. In the floating Joe window, the **?** next to the bar opens the same breakdown with the explanations already open.
+
+The breakdown never covers a reply's cost receipt: while a receipt is open, hovering the count does not open the breakdown (so you can reach **Send**), pressing the count folds the receipt away first, and opening a receipt closes the breakdown.
 
 The bar is split into the same labels the legend uses:
 
@@ -55,19 +59,44 @@ The bar is an estimate: FlowJoe counts characters with per-script ratios, not th
 
 ### What a reply cost
 
-The bar estimates your next send. To see what a reply actually cost, look at the small line under the reply, just above its buttons: after `+N tok/send` it shows the whole reply's total, for example `80.2k in · 420 out`. That counts every request Joe made for the reply: the small "choosing what to read" request, Joe's own request, and each extra round after a tool step. The numbers are the ones your AI provider reported, not estimates.
+The bar estimates your next send. To see what a reply actually cost, look at the small line under the reply, just above its buttons: after `+N tok/send` it shows the whole reply's estimated cost and token total, for example `≈ $0.004 · 74.5k in · 566 out`. That counts every request Joe made for the reply: the small "choosing what to read" request, Joe's own request, and each extra round after a tool step. The token numbers are the ones your AI provider reported; the dollar amount is an estimate from them (see [What the dollar amounts are](#what-the-dollar-amounts-are)).
 
 Press the total to open the receipt under the reply:
 
-- **Totals first:** tokens in, tokens out, and how many requests there were.
-- **How much was cached:** the bar shows how much of the input the provider had already seen recently. Cached input costs less.
-- **Each step in order,** with who ran it and how it was reached — the provider first, the model in brackets, then the connection, for example "OpenAI (Luna 6) · API key", "xAI (Grok 4.7) · Grok login" or "TypeSafe (jev-1.14.0) · API" — and its own in and out counts. Hover over that line to see the model's exact id.
+- **Totals first:** the estimated cost, tokens in and tokens out. On a login brain (Claude Code, Codex, Grok, Antigravity) the first total reads **Plan · included in your plan** instead of dollars, because your subscription pays for it.
+- **Where the tokens went:** one bar for the whole reply's input, split into Joe's **standing package from cache**, his **standing package sent new**, **Joe's own work**, and the helper requests (for example TypeSafe).
+- **Why so many tokens:** every request to Joe resends his **standing package** — his instructions, his tools, your Flow map and this chat. It is the first Joe request's input. A reply where Joe took two steps sends it twice; from the second request on most of it usually comes from cache, at a fraction of the price (the receipt says how much of the price, and how much the cache saved).
+- **Each step in order,** with who ran it and how it was reached — the provider first, the model in brackets, then the connection, for example "OpenAI (Luna 6) · API key", "xAI (Grok 4.7) · Grok login" or "TypeSafe (jev-1.14.0) · API" — and, on the right, what that step cost: `≈ $0.003`, **included in your plan** for a login brain, or **billed by TypeSafe**. Under it, a bar and a line split Joe's step into his standing package and that step's own work (what his earlier steps brought in, such as the part of the flow he asked to read), then what he wrote. Hover over the route to see the model's exact id.
 
 Press the total again, or press Escape, to close it. The total is saved with the conversation, so it is still there after you restart FlowJoe.
 
 A `+` after a number means "at least this much". It appears when a request never reported its count, for example when you pressed **Stop** while Joe was still writing; the receipt says which step and why. The command-line brains (Claude, Codex, Grok, Antigravity) report their own token counts too, so their replies show real numbers: in, cached, out, and thinking where the brain reports it. A step shows "no count" (or the reply shows no total at all) only when that brain's run reported nothing, or when you stopped it before it could. Work that happens after the reply (attachment memories, compacting the chat) is not included.
 
 Guests in a shared Flow never see what a reply cost. Every reply in a shared chat is paid for by the owner, so the total and its receipt stay on the owner's computer, including for the guest's own questions.
+
+### What the dollar amounts are
+
+FlowJoe multiplies the token counts your provider reported by the provider's published list prices, which FlowJoe last checked on **2026-10-20**. Cached input is counted at the provider's cached-input price; thinking (reasoning) tokens are part of the output and count at the output price; Anthropic's cache writes count at its cache-write price. A very long prompt is counted at the higher long-prompt price where the provider has one. Each reply is priced at the prices of the day it was written, so a scheduled price change (Gemini 4 Argon's promotional price ends on 2026-11-30 and doubles on 2026-12-01; Gemini 3.8 Flash doubles on 2027-01-01) does not reprice older replies.
+
+- Only **API-key** models get a dollar amount. Login brains (Claude Code, Codex, Grok, Antigravity) say **included in your plan**: their tokens count toward your plan's usage limits.
+- **TypeSafe** publishes no price, so its steps say **billed by TypeSafe** and are not in the dollar total.
+- A model FlowJoe has no price for shows no dollar amount, and the total gets a `+` ("at least").
+
+Your provider's bill is always the real number; the receipt is an estimate.
+
+### What each brain costs
+
+Joe's brain menu shows a short price scale after each API-key brain, from **$** (cheapest) to **$$$$** (most expensive), based on its price per million tokens with input and output weighed 3 to 1: **$** under $1, **$$** $1 to $4, **$$$** $4 to $10, **$$$$** over $10. Login brains say **plan** instead.
+
+The brain list in the status bar at the bottom of the window shows the same scale beside each name (hover it for the numbers) and the exact list price under it, for example "OpenAI API key · sk-proj…Q7f2 · $0.10 / $0.50 per 1M" (input / output per million tokens). A signed-in login brain says "signed in · included in your plan".
+
+## When the helper misses
+
+Before each send, a small helper picks which chapters of the FlowJoe manual Joe should read for your message (see [A second request per send](#a-second-request-per-send-the-context-director)). Sometimes it misses: it doesn't answer in time, the request fails, or it isn't sure. Joe is then given a short summary of every chapter instead and opens a full chapter himself when he needs it. The reply still works; it usually costs more tokens.
+
+When that happens, the reply's receipt says so on the helper's step: **Choosing what to read · didn't answer in time; Joe used the chapter summaries** (or **wasn't sure** when it answered without a usable pick). A request that never reported its count makes the totals "at least" (`+`).
+
+The first time it ever happens, a tip appears under that reply with a **Learn more** link to this section and an **Open Settings → APIs** button. Without a TypeSafe key, adding one makes the helper faster and cheaper (see [The optional TypeSafe key](#the-optional-typesafe-key)); with one, Settings → APIs is where its key and switches are. Press **Got it** or ✕ and the tip never comes back; later misses only show the line in the receipt.
 
 <Note>
 The bar is this send against the model's context window. Your provider's separate tokens-per-minute limit can still block a large request if you used a lot of tokens recently.
@@ -88,9 +117,11 @@ When **Smart context loading** is on (Settings → Joe AI; it is on by default),
 | Grok | Grok 4.7. Grok's command-line tool offers no cheaper model, so a TypeSafe key saves the most here. |
 | Codex | GPT-5.6 Luna, through your ChatGPT sign-in. |
 
-With a TypeSafe key, in the desktop app, TypeSafe answers first on every brain (see below). If you run FlowJoe yourself in a plain web browser, TypeSafe can't be reached, so Gemini uses its own model from the table. Guests who join your shared Flow from a browser still get TypeSafe, because their requests go through your computer. If TypeSafe can't answer, OpenAI falls back to Luna. Other brains load everything for that message rather than also waiting for the model in the table.
+With a TypeSafe key, in the desktop app, TypeSafe answers first on every brain (see below). If you run FlowJoe yourself in a plain web browser, TypeSafe can't be reached, so Gemini uses its own model from the table. Guests who join your shared Flow from a browser still get TypeSafe, because their requests go through your computer. If TypeSafe can't answer, or isn't sure which manual chapter fits your message, the brain's own model from the table decides instead, on every brain. That second decision always stays with the same provider as Joe's brain; it never borrows another company's model.
 
-If the decision fails on any brain other than OpenAI (no answer, a garbled answer, or too slow), Joe gets a short summary of every manual chapter and every skill for that message, and opens any full chapter he needs himself. A failure can cost tokens, but it never leaves Joe without the instructions he needs to edit your Flow.
+Each brain waits as long as its own model usually needs to decide, measured on real sends: about 4 seconds on OpenAI, 9 on Gemini, 6 on the Claude and Grok API keys, and longer on command-line brains, whose helper has to start up first (up to 15 seconds on Antigravity, 19 on Claude, 20 on Codex and 24 on Grok, which usually takes about 13). That time is the total for the decision, TypeSafe included: if TypeSafe answers late or isn't sure, the brain's own model only gets what is left, and none at all once the time is used up. If the provider has a server-side problem or says it is overloaded, Joe tries once more within that time (not when you've hit a rate limit).
+
+If the decision still fails (no answer, a garbled answer, or too slow), Joe gets a short summary of every manual chapter and every skill for that message, and opens any full chapter he needs himself. A failure can cost tokens, but it never leaves Joe without the instructions he needs to edit your Flow.
 
 That request is billed like any other, but it is **not** part of Joe's context window, so it does not appear on the token bar. It is roughly 2k input tokens, plus a short answer: up to 200 output tokens on OpenAI, and more room on Gemini, because Gemini always thinks a little first. On a command-line brain your own provider's limits apply. Turn **Smart context loading** off to remove it. Joe then loads a short summary of every chapter, and every skill, inline instead, which usually costs more on the main send than the director saves; he opens a full chapter when a summary isn't enough.
 

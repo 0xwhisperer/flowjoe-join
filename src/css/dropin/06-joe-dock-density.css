@@ -189,7 +189,7 @@ body.density-dense #ai-spell-check-modal.joe-docked #ai-chat-input {
   --jd-target-pad: 5px 5px 5px 15px;
   --jd-target-gap: 9px;
   --jd-inset-margin: 0 18px; /* .joe-context-tray AND .joe-dock-composer-box */
-  --jd-attachment-margin: 0 0 12px; /* #ai-chat-attachment AND .joe-dock-token-popover-title */
+  --jd-attachment-margin: 0 0 12px; /* #ai-chat-attachment */
   --jd-attachment-pad: 15px 18px;
   --jd-attachment-content-gap: 12px 15px;
   --jd-pill-row-gap: 9px; /* chat's attachment checkbox-group AND generate's mode-switch row */

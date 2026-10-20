@@ -53,11 +53,11 @@ Changing a virtual slot changes its master, and with it every other place the ma
 
 If the master is in a **frozen** node, its virtual slots can't be changed either: they say so when you hover over the **V**. To change it, unfreeze the master's node.
 
-If one of the master's virtual slots sits in a frozen node, FlowJoe asks before you change the master: **Change Master Slot?** names the frozen node, because the change will show there too. It asks as soon as you click into the title or notes (or before a tag change), so nothing changes until you choose. Choose **Save Change** to go ahead or **Cancel** to leave everything as it was. Once you've said yes, it doesn't ask again for that slot while you stay on the same node.
+If one of the master's virtual slots sits in a frozen node, FlowJoe asks before you change the master: **Change Master Slot?** names the frozen node, because the change will show there too. Clicking into the title or notes and back out never asks. It asks when you leave the title or notes after actually changing them (or before a tag change); until you answer, nothing is changed anywhere. Choose **Save Change** to keep your change or **Cancel** to put the master's text back as it was. Once you've said yes, it doesn't ask again for that slot while you stay on the same node.
 
 A virtual slot that sits in a frozen node can't be changed there, just like everything else in that node. Clicking its picture shows where its master is.
 
-Tagging a whole node from the node menu leaves its virtual slots as they are, so a tag added to one node never changes a master somewhere else.
+Tagging a whole node from the node menu tags the master of each virtual slot in it too, wherever that master lives, the same as tagging the virtual slot itself. A virtual slot whose master can't be changed (frozen, missing or in a Private node) is skipped. If any of those masters also shows in a frozen node, FlowJoe asks once before tagging, and **Cancel** tags nothing. **Undo** puts every slot's tags back, masters included.
 
 ## Search
 
@@ -101,6 +101,21 @@ A virtual slot can't point into or out of a Private node. So when you make a nod
 
 Every copy gets its own copy of the picture or file, so nothing is shared between the Private node and the rest of your Flow. The one exception is a rich document's embedded pictures: they stay shared with the master, the same as when you make a real copy. **Cancel** changes nothing, and undoing Make Private puts the slots back as they were. If nothing crosses the edge, Make Private works exactly as before. If one of the slots is in a locked Private node, FlowJoe asks you to unlock that node first.
 
+## Importing a node with virtual slots
+
+When you import that file again — with **File › Import** (adding it to your Flow or replacing it), **Import Node(s)**, or by dropping the `.fj` file on the tree — FlowJoe decides for each virtual slot in it:
+
+- **Its master is in the file too:** it stays a virtual slot of that master.
+- **Its master is still in this Flow and hasn't changed:** it quietly reattaches to it as a virtual slot again.
+- **Its master is still in this Flow but has changed since you exported:** the **Imported Virtual Slots** window lists each one, with a small picture of the master, where the master is ("Master in Rose Hartley · Slot 1") and what changed (for example "notes changed" or "picture replaced"). For each one choose:
+  - **Stay virtual** (the default): shows the master as it is now, and follows it from here on.
+  - **Own slot:** keeps the version you exported as a separate real slot.
+
+  **Set all** switches every row at once. **Import N Slots** goes ahead; **Cancel** stops the whole import and nothing is added.
+- **Its master isn't in this Flow** (another Flow, or the master was deleted), **or it's now in a Private node, or the slot lands in a Private node:** it comes in as its own real slot, with the picture, title, notes and tags it had when you exported. If the master's node was hidden from Joe, the new slot's notes are hidden from Joe too. If the file has no pictures packed in it and the picture isn't on this computer either, that slot comes in as a virtual slot with its master missing instead, so the import still goes ahead.
+
+A virtual slot can't live inside a Private node, so one that lands in a Private node becomes its own real slot even when its master came in the same file. Several virtual slots of the same missing master stay together: the first becomes the real slot and the others show it. A virtual slot whose master was Private when you exported carried nothing, so it comes in as a virtual slot with its master missing.
+
 ## Coming soon
 
-Bringing virtual slots back in when you import a node, and Joe working with virtual slots, are on their way and will be documented here as they arrive.
+Joe working with virtual slots is on its way and will be documented here as it arrives.
