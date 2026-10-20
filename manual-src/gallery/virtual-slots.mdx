@@ -39,7 +39,7 @@ The slot you picked becomes the **master**. If you pick a slot that is itself a 
 - **Make Real Slot** (right-click the slot) turns it into its own real slot: a copy of the master as it is now, with its own copy of the picture or file. After that it no longer changes with the master. Undo turns it back into a virtual slot. If a file can't be copied, nothing changes and FlowJoe tells you, so the copy never shares the master's file. A file that was already missing is skipped.
 - **Copy** it (for example with the copy button on the next slot): the copy is another virtual slot of the same master.
 
-Right-clicking a virtual slot shows the usual slot menu with **Go to Master** and **Make Real Slot** on top. Tags, Crop and Replace change its master. A few actions are greyed out for now: building or changing a stack (Convert to Stack, adding, removing or reordering its items), renaming the file, converting to PDF, inserting clipboard media, Joe and the wireframe tool.
+Right-clicking a virtual slot shows the usual slot menu with **Go to Master** and **Make Real Slot** on top. Tags, Crop and Replace change its master. A few actions are greyed out for now: building or changing a stack (Convert to Stack, adding, removing or reordering its items), renaming the file, converting to PDF, inserting clipboard media and the wireframe tool.
 
 Right-click a **master** to see every place it is shown. Each one is a link.
 
@@ -116,6 +116,20 @@ When you import that file again — with **File › Import** (adding it to your 
 
 A virtual slot can't live inside a Private node, so one that lands in a Private node becomes its own real slot even when its master came in the same file. Several virtual slots of the same missing master stay together: the first becomes the real slot and the others show it. A virtual slot whose master was Private when you exported carried nothing, so it comes in as a virtual slot with its master missing.
 
-## Coming soon
+## Joe and virtual slots
 
-Joe working with virtual slots is on its way and will be documented here as it arrives.
+Joe works with virtual slots the same way on every AI model you pick.
+
+- **Joe reads a virtual slot as a pointer.** He knows which slot it shows and where that master lives, and he reads the master's picture, title and notes once, at the master, rather than once for every place it appears.
+- **A master Joe can't see stays hidden.** If the master sits in a node you've hidden from Joe (or a Private node), Joe only knows the slot is a "virtual slot of a slot hidden from Joe". He sees nothing about it, can't read it, and can't add another virtual slot of it.
+- **A guest's Joe sees what the guest sees, and never anything hidden from Joe.** In a shared Flow, the guest's Joe reads a virtual slot's master whenever the guest can see it, including a master outside what you shared that the guest is shown, but never one in a node you've hidden from Joe; it never learns where an outside master lives. It can copy such a virtual slot and use **Make Real Slot** on it, just as the guest can, except when its master is hidden from Joe.
+- **Ask Joe to show a slot in another node** ("put the wedding portrait in Walter too") and he proposes a new virtual slot of it. Asking him to copy a virtual slot makes another virtual slot of the same master. He can also propose **Make Real Slot** when you want one place to stop changing with the master.
+- **Changes go to the master.** When Joe changes what a virtual slot shows (its title, notes, tags or picture), he changes the master, so every place it is shown changes. If the master is also shown in a frozen node, the proposal card says so, and choosing **Apply** is your go-ahead.
+- **Joe's button on a virtual slot** opens Joe on its master. Pictures Joe makes, text you send into the slot, and dictation corrections all land on the master. If the master is shown in a frozen node, FlowJoe asks first, just as it does when you edit the master yourself. If the virtual slot can't change its master (the master is frozen, missing or Private), Joe isn't opened on it.
+- **Removing a master is your choice.** Joe can propose removing a master slot that has virtual slots, but he never decides what happens to them. The proposal card says you'll choose, and when you choose **Apply**, FlowJoe shows the same **Remove Master Slot** window you get yourself: make one of its virtual slots the new master, or remove them all. **Cancel** leaves everything as it was. Joe can't remove such a master when one of its virtual slots is in a node hidden from him or in a frozen node, and a scheduled task never removes one on its own. A guest's Joe works the same way for the guest: the guest makes the choice in the same window, and a master that is also shown somewhere the guest can't change gets the same "only the owner can remove it" message the guest sees when removing it themselves.
+
+The FlowJoe command line and outside assistants connected over the Agent Bridge get the same actions and the same rules. Removing a master is held until you choose in the app when you approve it. A command-line session you started with `--autoapprove` applies the choice it sent (make a new master, or remove them all) without asking.
+
+
+
+What you hide from Joe stays hidden from every Joe, including a guest’s Joe and scheduled tasks. This keeps your guest’s own view and actions available: a guest can still use Make Real Slot and remove a master when their normal edit and removal rights allow it. Joe keeps the node’s name and place, but receives none of its hidden content.

@@ -28,7 +28,7 @@ A repo node is the Git boundary for a project. A **Workspace Folder** chooses wh
 
 Guests use the same Explorer, editor and Source Control surfaces. **Can view** allows reading shared files and their associated history. **Can edit** allows creating, editing, renaming, saving and committing shared files through the owner's computer. Saving and committing are separate actions. Credentials and native filesystem paths stay with the owner, and a scoped commit preserves private and unshared files.
 
-The Graph includes branches in the shared repository, including branches not yet open as Flow nodes. A branch represented by a private or unshared node stays unavailable. Guests can read admitted branch history, tags and stashes. Edit guests can create branches and tags, open a branch as a node where that keeps it inside the shared area, merge shared changes, and use Fetch, Pull and Push through the owner's computer. An Edit guest can't merge a branch in which FlowJoe's notes or layout changed (slot notes, folder notes, order, tags and the like); FlowJoe says so, and the owner does that merge from their own Source Control.
+The Graph includes branches in the shared repository, including branches not yet open as Flow nodes. A branch represented by a private or unshared node stays unavailable. Guests can read admitted branch history, tags and stashes. Edit guests can create branches and tags, open a branch as a node where that keeps it inside the shared area, merge shared changes, and use Fetch, Pull and Push through the owner's computer. An Edit guest merges exactly as the owner does, FlowJoe's notes, layout and history included, and answers FlowJoe's questions about what they can see. Folders kept from them keep the owner's version and are never shown to them. An Edit guest can also change a repository's history choices, and reads and writes the history of the items and folders they can see. Their Changes list shows FlowJoe's notes, layout and history for what they can see, and their commits write them, as the owner's do. An Edit guest can run **Update Gallery** too and answer questions about conflicting changes they can see. It runs on the owner's computer, so folders kept from them are brought up to date without being shown to them.
 
 Discarding working changes, saving a stash that puts files back to their last commit, applying or popping a stash over existing work, rewriting the last commit, renaming or deleting branches, deleting tags or stashes, and replacing or removing a remote require the owner's additional removal permission. Linking a new remote does not. Private and unshared file contents stay protected when changes are merged, pulled, committed or restored. A guest push stops if the branch or tag history contains private or unshared files, because Git would send that history to the remote. Fully shared repositories can be pushed normally. A partially completed stash operation reports that some files could not be changed; the saved stash remains available.
 
@@ -46,12 +46,14 @@ When you open a repo node, choose **Source Control** in the app rail. The reposi
 
 ## Make a branch a repository
 
+An Edit guest can make a shared branch a repository through the owner's computer. The owner's complete branch is converted, including folders hidden from the guest; those folders are never shown to the guest. Private folders stay home. Names that need fixing are fixed on the owner's computer.
+
 Any branch of your tree can become a repository: right-click its top node and choose **Make This a Repository…** in the menu's **Organize** section (desktop app, owner only). Nothing changes until you confirm. A window shows first:
 
 - **What goes in:** how many nodes, files and links. Every node becomes a folder, every item becomes a file (pictures and documents as they are, a link as a `.url` shortcut), and FlowJoe's small hidden files keep titles, notes, order, canvas layout, themes, tags and automations (switched off for anyone who clones).
 - **What stays on this computer:** where you are scrolled and zoomed, and your app-wide fonts, text size, line spacing and density. A linked file (one that points at a file elsewhere on your computer) stays here too.
 - **Private nodes:** each Private node starts unticked and stays out, with everything in it. To include one, tick it and enter its password. FlowJoe then warns you plainly: the lock only works inside FlowJoe, so anyone who opens the repository's files directly (on GitHub or in an editor) can read that node, because it is not encrypted, and Git keeps it in the history even if you delete it later or the repository becomes public. An included node keeps its lock: someone who clones the repository sees it locked in FlowJoe and opens it with the same password. Your password itself never goes into the repository. A Private node inside one you included stays out unless you tick it as well. When anything Private goes in, the repository's history stays on this computer, never in a shared Workspace Folder.
-- **History:** **Include picture prompts** (off) adds the prompt that made each AI picture. The repository remembers this choice, and so does every copy someone clones.
+- **History:** the same choices as `.fj` export, all off to begin with: **Include AI chat and image history** (your Joe chats and the pictures Joe made), **Include picture prompts** (the prompt that made each AI picture), **Include Transcript History** (kept transcripts and their edits), **Include undo notes history** (the undo and redo steps of notes, titles and summaries) and **Include Memories** (what Joe remembers about these nodes and items, and the Flow's own Memories). See [History in the repository](#history-in-the-repository). The repository remembers these choices, and so does every copy someone clones.
 - **Names to fix first:** in a repository a title is also its file or folder name, so two titles that would clash (capitals don't count) or a title with characters files can't have are listed with a suggested name. **Accept Fixes and Make Repository** renames them (each rename can be undone like any other) and then makes the repository. To pick your own names, cancel, rename them, and start again.
 - **Where it goes:** **Keep it on this computer for now**, or **Link a GitHub repository** with its link (or `owner/name`). Linking only connects it; push from **Source Control** when you're ready.
 
@@ -103,7 +105,32 @@ Besides your files, a commit can record what you arranged in FlowJoe, so teammat
 - placeholder slots, and which picture a stack shows,
 - automations, which arrive switched off on the other computer.
 
-Where you are looking on the canvas, your Joe chats and Memories stay with you, and so do picture prompts unless the repository includes them (a choice when you make a branch a repository). A plain code repository gets no FlowJoe files until you add something like a note. A folder with no files is kept in Git through its FlowJoe file.
+Where you are looking on the canvas stays with you. Your Joe chats, picture history, transcripts, undo notes history, Memories and picture prompts stay with you too, unless the repository includes them (see below). A plain code repository gets no FlowJoe files until you add something like a note. A folder with no files is kept in Git through its FlowJoe file.
+
+### History in the repository
+
+A repository can carry the history around its items, the same history a `.fj` export can carry. Each kind is a separate choice, and each starts off:
+
+| Choice | What goes in |
+|---|---|
+| **Include AI chat and image history** | Joe chats about each slot and node, and the pictures Joe made, with their pictures |
+| **Include picture prompts** | the prompt that made each AI picture |
+| **Include Transcript History** | kept transcripts and their edits |
+| **Include undo notes history** | the undo and redo steps of notes, titles and summaries |
+| **Include Memories** | Memories saved on a node or slot, and the Flow's own Memories |
+
+You choose when you make a branch a repository. To change the choices later, open **Source Control**, choose **…** on the repository row, then **History in This Repository…**, and **Save** (an Edit guest can too). Turning a choice off stops adding new history. What is already committed stays in the repository's history, because Git keeps everything it has recorded.
+
+What goes in, and what doesn't:
+
+- **History travels with its item.** Each item's history is kept beside its folder, in a hidden `.flowjoe-history` folder that FlowJoe never shows as a folder or slot. When the item moves, its history moves with it. When the item is removed, its history is removed too.
+- **Stays on this computer:** a conversation or transcript you marked to keep on this computer, and everything in a Private folder you didn't include. A Flow-wide Memory made from a chat in such a folder (or in a Private node elsewhere in the Flow) also stays here. A Private folder you included shares its history like everything else in it.
+- **Someone who clones** gets the history on the same items, as their own copy. A Flow-wide Memory arrives as a Memory of the repository node, so it doesn't spread across their whole Flow. **Open Branch as Node** copies the history into the new node, as **Duplicate** does, and your Flow's own Memories are not copied twice.
+- **Two people's history is always kept.** When you merge or update the gallery, both sides' messages, transcripts and Memories are kept, in date order, and the same message is never doubled. FlowJoe never asks a question about history. If the same Memory or transcript was edited in two ways, both versions are kept.
+- **Deleting removes it.** Delete a chat, a message, a transcript or a Memory, and your next commit takes it out of the repository; teammates lose it too when they update their gallery. If a teammate changed that same entry in the meantime, their version is kept. Past commits still hold it, as they hold any deleted file.
+- **Pictures stored with Git LFS.** If the repository sends pictures to Git LFS, a history picture that arrives as an LFS file is not downloaded with the history: the entry keeps naming it and nothing is lost.
+
+**Update Gallery** brings a teammate's new history in, and takes out what they deleted, even when nothing else changed. Its **Undo** puts the gallery back, but history that arrived stays with you. **Undo** of a clone or of **Open Branch as Node** takes the history that came with it away again.
 
 ### Everything you add becomes a file
 
@@ -135,7 +162,7 @@ When a merge leaves conflicts, the Changes menu offers **Mark All Resolved**, wh
 
 ### Merging FlowJoe's notes and layout
 
-When you merge a branch, FlowJoe's own files are merged as FlowJoe things, never as text: slot by slot and field by field, against the point where the two branches split. Notes on one slot and tags on another, or a teammate's notes on a different slot, simply combine. Tags added on both sides are all kept. When both branches reordered a gallery and the moves fit together, both are kept. What both branches changed in different ways (the same slot's notes, a folder's status, two orders that contradict, a slot removed on one branch and edited on the other) becomes a question in the same window as above, with **Yours, on main** and **From feature** side by side and **Finish Merge** at the end. Closing the window leaves the merge waiting under **Merge Changes**, where the folder's **Notes and layout** row opens the questions again. Plain files that Git can't merge still open the file editor afterwards; if a choice there raises a new question (for example you keep deleted the only file of a folder whose notes you changed), FlowJoe asks it before the merge is committed. Before the merge commit is made, FlowJoe checks that the merged notes and layout read back correctly. A Private folder's notes are never read or merged, and if the other branch renamed it, it stays where it is here instead of arriving a second time under the new name. If the other branch renamed or moved that folder, FlowJoe still recognises it when it keeps FlowJoe's own id for it or still holds most of the same files; a folder that was renamed and also had most of its files changed can't be recognised. Automations merged in stay switched off. An edit guest can't merge a branch that changes FlowJoe's notes and layout; FlowJoe says so, and the owner merges it from their own Source Control.
+When you merge a branch, FlowJoe's own files are merged as FlowJoe things, never as text: slot by slot and field by field, against the point where the two branches split. Notes on one slot and tags on another, or a teammate's notes on a different slot, simply combine. Tags added on both sides are all kept. When both branches reordered a gallery and the moves fit together, both are kept. What both branches changed in different ways (the same slot's notes, a folder's status, two orders that contradict, a slot removed on one branch and edited on the other) becomes a question in the same window as above, with **Yours, on main** and **From feature** side by side and **Finish Merge** at the end. Closing the window leaves the merge waiting under **Merge Changes**, where the folder's **Notes and layout** row opens the questions again. Plain files that Git can't merge still open the file editor afterwards; if a choice there raises a new question (for example you keep deleted the only file of a folder whose notes you changed), FlowJoe asks it before the merge is committed. Before the merge commit is made, FlowJoe checks that the merged notes and layout read back correctly. A Private folder's notes are never read or merged, and if the other branch renamed it, it stays where it is here instead of arriving a second time under the new name. If the other branch renamed or moved that folder, FlowJoe still recognises it when it keeps FlowJoe's own id for it or still holds most of the same files; a folder that was renamed and also had most of its files changed can't be recognised. Automations merged in stay switched off. An Edit guest merges these the same way, answering only questions about what they can see.
 
 Right-click a file, folder, or tab for actions that fit what you selected:
 
@@ -190,6 +217,8 @@ Pulling (or merging another branch) downloads the new commits, but your gallery 
 - **Added**: new slots and folders.
 - **Changed**: pictures or files replaced, notes edited, slots moved on the canvas, a folder's layout or order.
 - **Renamed**: files and folders with a new name. Their notes, chats and Memories stay with them.
+
+If the repository includes history, a teammate's new chats, transcripts and Memories come in at the same time (see [History in the repository](#history-in-the-repository)).
 - **Removed**: slots and folders your teammate removed.
 - **Needs your choice**: things you both changed in different ways, and files you have open in the editor with unsaved changes.
 
@@ -305,7 +334,7 @@ An open historical tab can be read only while the file is still present and read
 
 ## Ask Joe to change a file
 
-You can ask Joe to make one exact text change to one existing file in a repository, for example "in `src/main.js`, change `retries = 3` to `retries = 5`". Joe can base the change on the saved file or on your open unsaved draft, and he says which. This works in the desktop app for your own chats. An external agent with Propose access, including the FlowJoe CLI, can propose the same edit; it arrives on an **Agent request** card for you to review, unless that CLI command uses `--autoapprove` (see [the CLI guide](/cli/gallery-changes#change-text-in-one-repository-file--editrepofiletext)). It is not available to scheduled tasks or guest sessions.
+You can ask Joe to make one exact text change to one existing file in a repository, for example "in `src/main.js`, change `retries = 3` to `retries = 5`". Joe can base the change on the saved file or on your open unsaved draft, and he says which. This works in the desktop app for your own chats, and for an Edit guest's Joe: the change is saved on the owner's computer, the same way as the guest's own Save, and only for files the guest can see. An external agent with Propose access, including the FlowJoe CLI, can propose the same edit; it arrives on an **Agent request** card for you to review, unless that CLI command uses `--autoapprove` (see [the CLI guide](/cli/gallery-changes#change-text-in-one-repository-file--editrepofiletext)). It is not available to scheduled tasks, since no one reviews the change.
 
 Joe's answer is a review card, not a change. The card names the file and branch, says what the change is based on, and states **Apply saves this file** and **No commit or push is included**. A read-only before-and-after comparison opens in the repository editor, labeled **Saved file · before** (or **Your unsaved draft · before**) and **Joe’s proposed edit · after**. Look at the exact lines, then choose **Apply**, **Revise** to ask Joe for something different, or **Reject**. Nothing is written until you apply.
 

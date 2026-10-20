@@ -378,7 +378,69 @@ Copy a complete gallery item. Omit targetNodeId to copy within the source node; 
 ]
 ```
 
-**Result:** A copy appears; the original remains.
+**Result:** A copy appears; the original remains. Copying a [virtual slot](/gallery/virtual-slots) makes another virtual slot of the same master.
+
+## Show a slot in another node — `addVirtualSlot`
+
+Add a [virtual slot](/gallery/virtual-slots) to a node: it shows an existing slot (its master) and stores no content of its own. `masterEntryId` is the master slot's entry ID from anywhere in the Flow; naming a virtual slot points at its master. Optional `slotIndex` chooses the position (default: the end). Refused into a frozen or Private node, for a master that isn't in the Flow or sits in a Private node, and for a master in a node hidden from Joe.
+
+**Required inputs:** `nodeId`, `masterEntryId`.
+
+```json
+[
+  {
+    "verb": "addVirtualSlot",
+    "args": {
+      "nodeId": "OTHER_NODE_ID",
+      "masterEntryId": "MASTER_ENTRY_ID"
+    }
+  }
+]
+```
+
+**Result:** A virtual slot appears in the node, showing the master. Changing the master changes it too.
+
+## Turn a virtual slot into its own slot — `makeVirtualSlotReal`
+
+Make Real Slot: the virtual slot becomes a real copy of its master as it is now, with its own copy of every file, and keeps its place. Refused when the slot isn't a virtual slot, its master is missing, Private or in a node hidden from Joe, or a file can't be copied.
+
+**Required inputs:** `nodeId`, `slotIndex`.
+
+**Stable IDs:** `slotEntryId` can replace `slotIndex`.
+
+```json
+[
+  {
+    "verb": "makeVirtualSlotReal",
+    "args": {
+      "nodeId": "YOUR_NODE_ID",
+      "slotIndex": 0
+    }
+  }
+]
+```
+
+**Result:** The slot no longer changes with the master.
+
+## Remove a master slot that has virtual slots — `removeVirtualMaster`
+
+`deleteSlots` and `deleteNode` refuse a master that still has virtual slots elsewhere. Use this instead: when you approve it, FlowJoe shows the **Remove Master Slot** window in the app, and you choose whether one of its virtual slots becomes the new master or they are all removed. Any `mode` an assistant sends is ignored and the removal is held for your choice. A session started with `--autoapprove` applies its own `mode` (`promote` with `promoteEntryId`, or `remove`) without asking and opens nothing in the app; without a `mode` it is refused. It is held for review like other removals, and refused when one of its virtual slots is in a frozen node or a node hidden from Joe.
+
+**Required inputs:** `nodeId`, `entryId`.
+
+```json
+[
+  {
+    "verb": "removeVirtualMaster",
+    "args": {
+      "nodeId": "YOUR_NODE_ID",
+      "entryId": "MASTER_ENTRY_ID"
+    }
+  }
+]
+```
+
+**Result:** The master is gone and its virtual slots were handled as you chose.
 
 ## Crop an image — `cropImage`
 
@@ -913,3 +975,6 @@ Read the file first with [read_repo_file](/cli/action-reference#read-a-repositor
 **Result:** Held for your review on the approval card, which shows the exact before/after, even when FlowJoe’s Auto-apply setting is on — unless you started this CLI command with `--autoapprove`, which approves its changes for you. Applying saves the file in FlowJoe only; it does not write your working folder and makes no commit or push. Undo (`undo_last_change` in the same run list) restores the previous version unless the file was saved again or the open editor tab has newer typing.
 
 `--preview` changes nothing and reports the same refusals the change would get: whether the request is valid, sent alone, and whether `oldText` appears exactly once in the current saved file or open draft. An ordinary proposal is checked the same way before any card appears, so a stale or non-matching edit is refused right away instead of waiting for review. The card’s own preview and Apply check again; if the file was saved or typed in after the card appeared, Approve stays unavailable or Apply writes nothing, and you reject the card and propose a fresh edit. Refusals: `file_edit_must_be_alone`, `old_text_not_found`, `old_text_not_unique`, `draft_changed`, `changed_meanwhile`, `not_a_repository_file`, `editing_blocked` (the file is Frozen, Private or read-only) and `no_change`.
+
+
+For a master removal in an explicit `--autoapprove` session, send `mode: "remove"` or `mode: "promote"` with `promoteEntryId`. If you omit the choice, `virtual_slot_mode_required` asks you to send it.

@@ -595,6 +595,7 @@ Each verb's REQUIRED args and shapes are in `propose_flow_patch`'s generated sig
 - `setAudioCover` — set or replace the album art on an audio item. `coverSrc` is an `indexeddb:` key of a picture already in FlowJoe (stage one first). `coverSrc: ""` clears the art. Not audio → `not_audio`.
 - `setSlotColor` — color a slot on the canvas board. `color` is `red`, `green`, `blue`, `violet`, `pink`, or `cyan`. `""`, `none`, or `clear` removes the color. Top-level slots only.
 - `connectSlots` — draw a one-way line from one slot to another on the SAME node's canvas board. `disconnectSlots` uses the same args to remove that line. A line to itself is `same_slot`; drawing one that already exists is `already_connected`; removing one that is not there is `not_connected`.
+- `addVirtualSlot` — `{ nodeId, masterEntryId, slotIndex? }` — add a virtual slot that shows an existing slot (see "Virtual slots" below). · `makeVirtualSlotReal` — `{ nodeId, slotIndex }` (or `slotEntryId`) — turn a virtual slot into its own real copy of its master. · `removeVirtualMaster` — `{ nodeId, entryId, mode?, promoteEntryId? }` — remove a master slot that has virtual slots; the user chooses what happens to them when applying. CLI `--autoapprove` applies `mode` (`remove` or `promote` with `promoteEntryId`) as sent; missing mode returns `virtual_slot_mode_required`.
 
 **Tags (the taxonomy itself — global, not per-node)**
 - `createTag` — optional `color`, `description` — makes a NEW tag. "Create tag X and put it on slot N" is
@@ -626,6 +627,24 @@ Each verb's REQUIRED args and shapes are in `propose_flow_patch`'s generated sig
 - `removeStackItem` · `flattenStackSlot`
 - `copyStackItem` — optional `targetNodeId`, `targetIndex` — copy ONE stack item out as its own slot beside the stack (or onto another node). The stack keeps the original. This is not "copy into another stack". A repository file is refused.
 - `addEntriesToSlot` (merge/append into a slot) · `insertEntriesIntoStack` — optional `options:{itemIndex, makeActive}` (insert at a position). Both bootstrap slot 0 of an EMPTY gallery (e.g. a brand-new `skipPlaceholder` node) — any other missing index fails `slot_out_of_range`
+
+## Virtual slots
+A **virtual slot** shows another slot (its **master**) in another node, or the same node, of this flow. There is one real
+slot: the snapshot marks a virtual `virtualSlot: true` with its master's place (`virtualOf`, `masterNodeId`,
+`masterSlotIndex`) and no content of its own; the master lists where it is shown (`virtualCount`, `virtualPlaces`).
+Read the content once, at the master. A virtual marked `virtualMaster: "hidden_from_joe"` shows a slot you can't see —
+say only that; never guess what it holds. In a shared flow, `virtualMaster: "outside_share"` carries the master's content
+(`master`) but no place: read it there; to change it, `makeVirtualSlotReal`. Read tools aimed at a virtual read its master.
+- "Show this slot in X too" / "put the same slot in X" → `addVirtualSlot` with the master's `entryId` (never a copy, and
+  never a raw `{sourceType:"virtual-slot"}` entry — refused `virtual_slot_use_add_verb`). Copying a virtual makes another virtual.
+- To change what a virtual shows (title, notes, tags, picture, stack), change its MASTER at `masterNodeId` /
+  `virtualOf`: an edit aimed at the virtual is refused (`virtual_slot_content_write`, the detail names the master).
+  Changing the master changes every place it is shown. "Only here" → `makeVirtualSlotReal` first, in its own proposal.
+- Removing a virtual (`deleteSlots`) removes only that place. A master WITH virtual slots can't be removed by
+  `deleteSlots`/`deleteNode` (`virtual_slot_master_has_virtuals`): propose `removeVirtualMaster` (before any delete of
+  its node, in the same proposal). Never decide for the user whether its virtual slots get a new master or go: the
+  app asks them when they apply. Say so in your reply.
+- A node marked frozen can't take a virtual; a Private node can't hold or show one.
 
 ## Rules
 - A change is real only after the user approves and you get an applied result.

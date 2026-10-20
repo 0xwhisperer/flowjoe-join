@@ -28,6 +28,11 @@ A desktop without one of those services lists fewer actions. These action totals
 the **62 editing verb names** returned by `describe_patch_protocol`: 61 distinct changes, because
 `setNodeReadOnly` is an older name for `setNodeFrozen`. That catalog includes `editRepoFileText`.
 Read can inspect the editing catalog but cannot apply its changes.
+Since then, [virtual slots](/gallery/virtual-slots) added three editing verbs — `makeVirtualSlotReal`,
+`removeVirtualMaster` and `addVirtualSlot` — so the same catalog now returns 63 names (62 distinct changes). In
+`get_flow_snapshot`, a virtual slot carries `virtualSlot: true` and its master's place (`virtualOf`, `masterNodeId`,
+`masterSlotIndex`) instead of content, or `virtualMaster: "hidden_from_joe"` when the master can't be seen; a master
+carries `virtualCount` and `virtualPlaces`. Read actions aimed at a virtual slot read its master and say so in `readFrom`.
 A second measurement later on 2026-10-19, after Joe’s [workflow hand-offs](#only-in-joes-chat) and picture search landed, returned the same totals, and a direct MCP connection was offered exactly the same actions as the CLI at both access levels.
 
 Observational tools in both profiles were `get_flow_snapshot`, `describe_patch_protocol`,
