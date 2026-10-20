@@ -3,7 +3,7 @@
 <!-- GENERATED FILE — do not edit by hand. Built from the mintlify user docs by
 scripts/build-app-help-knowledge.js (deterministic digest; re-run it after editing any source page).
 Source pages: joe/byob.mdx, joe/agent-bridge.mdx, joe/permissions.mdx
-Generated: 2026-10-19 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
+Generated: 2026-10-20 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
 Sync guard: tests/unit/appHelpKnowledgeSync.test.js fails when mintlify/**/*.mdx or this digest drifts
 from scripts/app-help-knowledge.manifest.json. -->
 
@@ -48,7 +48,7 @@ Also covered in the full docs for this area: Where to get an OpenAI key; Set up 
 Let a local coding assistant work with your Flow while you stay in control.
 
 Joe works the same on every brain that uses Flow tools (OpenAI, Gemini, Claude, Grok, Codex, Gemini CLI): in his own chat he can hand the owner a restore, export, import or outside-changes review, find pictures, read shared terminal lines, read a browser page in parts, and undo or list his changes.
-Antigravity cannot use Flow tools yet (coming once checked); Agent Bridge assistants and the FlowJoe CLI never get these tools.
+Antigravity has them on a Mac only; Agent Bridge assistants and the FlowJoe CLI never get these tools.
 A page the owner explicitly asks about still reaches every brain.
 The **Agent Bridge** connects your active Flow to compatible AI assistants and developer tools on your computer. A coding assistant can work with your plan, references, and notes—not just the files in a code folder. MCP is the connection format these tools use.
 
