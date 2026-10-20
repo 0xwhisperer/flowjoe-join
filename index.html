@@ -22,7 +22,7 @@
     <link rel="preload" as="font" type="font/woff2" crossorigin="anonymous" href="vendor/fontawesome-free-6.5.0/webfonts/fa-regular-400.woff2" />
     <!-- App typography families -->
     <link rel="stylesheet" href="vendor/fonts/fonts.css" />
-    <script src="boot/prebootstrap.aca46a799978166f.js"></script>
+    <script src="boot/prebootstrap.389210b328b39263.js"></script>
     <!-- canvas-confetti is now bundled (see VENDOR_GLOBALS in scripts/build-bundle-esm.js) — no CDN dependency. -->
   </head>
   <body>
@@ -1444,6 +1444,7 @@
                 </label>
               </div>
               <p class="setting-description" data-i18n="settings.ai.mcpBridge.helper.toggleDescription">Lets an agent already running in your terminal ask FlowJoe to turn the bridge on with one command, instead of you switching back to Settings. You still approve every request.</p>
+              <p class="setting-description" id="agent-bridge-helper-unavailable-note" hidden data-i18n="settings.ai.mcpBridge.helper.unavailableFirstApp">Another FlowJoe app opened first and is using the terminal shortcut, so it only works in that app. Use the shortcut from that app, or quit it and restart this one.</p>
             </div>
             <div id="agent-bridge-helper-details" hidden>
               <p class="setting-description" data-i18n="settings.ai.mcpBridge.helper.copyCommandDescription">Paste this into the terminal your agent is running in — it can then ask FlowJoe to turn the bridge on. Only works while FlowJoe is running; this does not launch it.</p>
@@ -2097,6 +2098,6 @@
         </div><!-- /settings-content -->
       </div><!-- /settings-body -->
     </div><!-- /settings-panel -->
-    <script src="boot/progress.6b896f327c188f7a.js"></script>
+    <script src="boot/progress.07cfd45cdfbaccf1.js"></script>
   </body>
 </html>

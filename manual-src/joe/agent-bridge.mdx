@@ -39,6 +39,10 @@ Connected assistants use the same [supported Flow changes](/joe/propose-approve#
 
 Choosing a CLI brain for Joe is the other direction: the installed tool answers **inside Joe chat**. FlowJoe automatically supplies that supported brain with a temporary connection; you do not need to connect it here first. The **Connect** controls and the **Auto-apply** setting are for assistants working **outside** Joe chat; Joe’s own changes always ask you first, as explained above.
 
+## Two FlowJoe apps open at once
+
+Only one FlowJoe app on a computer can use Agent Bridge’s usual address. If another FlowJoe app already has it, this app uses a temporary address until you quit it: Joe’s own tools still work here, Joe chat tells you once, and outside assistants you connected keep talking to the other app. Connect and copying the setup are turned off here meanwhile; connect outside assistants from the app that opened first. If no connection can open at all, Joe answers without Flow tools and suggests closing other FlowJoe apps. Next launch tries the usual address again.
+
 ## What connected tools can do
 
 Compatible tools can inspect and search permitted Flow content, read supported documents and media, supply files, generate images with your configured OpenAI connection, and propose changes. Joe himself, on every brain that uses Flow tools (OpenAI, Gemini, and CLI brains such as Claude, Grok, Codex and Gemini CLI), can do a few things that assistants connected from outside cannot: hand you a restore, export, import or outside-changes review, find pictures by what they show, read terminal lines you share, or keep reading a browser page in parts (a page you explicitly ask about still reaches every assistant as context). Each of these still follows Joe’s permission level: cards need Propose and reads need Read. See [Only in Joe’s chat](/cli/action-reference#only-in-joes-chat). On a Mac this includes Antigravity; on Windows and Linux, Antigravity can't use Flow tools yet.

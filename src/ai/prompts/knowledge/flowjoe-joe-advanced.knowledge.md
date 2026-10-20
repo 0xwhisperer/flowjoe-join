@@ -57,8 +57,9 @@ The **Agent Bridge** connects your active Flow to compatible AI assistants and d
 - Turn the bridge on.
 - Find your assistant under **Assistants on this machine** and turn on **Connect**. Follow any confirmation shown.
 - If FlowJoe offers **Copy setup command**, copy it and run it in that assistant’s terminal instead.
+The bridge starts again on launch if you left it enabled. Turn it off here to stop access.
 
-Also covered in the full docs for this area: Choose how changes are approved; How MCP relates to Joe’s actions; What connected tools can do.
+Also covered in the full docs for this area: Choose how changes are approved; How MCP relates to Joe’s actions; Two FlowJoe apps open at once; What connected tools can do.
 
 ## Permissions & privacy
 
