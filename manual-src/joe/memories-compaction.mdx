@@ -21,7 +21,7 @@ The **Flow map** slice is the tree outline plus your Flow Summary. That is the s
 
 ## Compaction Modes
 
-Compaction folds older messages in your chat transcript into a single consolidated text summary, saving token usage while preserving narrative memory.
+Compaction folds older messages in your chat transcript into a single consolidated text summary, saving token usage while preserving narrative memory. With your own OpenAI API key, these summary requests explicitly disable provider storage.
 
 ### 1. Automatic Compaction (Default)
 When your active chat approaches the model's token limit, FlowJoe compacts the oldest turns in the background, updating your context footprint automatically.
@@ -37,6 +37,9 @@ Click the **Compact Now** button in the chat options:
 - **Pin for Joe:** Keeps a specific message verbatim forever. It will never be folded into a compaction summary.
 - **Omit from Joe:** Temporarily drops a message from AI uploads while leaving it visible in your user transcript.
 - **Attachment Memories:** When large images or documents are compacted out of verbatim history, Joe distills a permanent text summary (e.g. a layout description for a mockup). This summary carries forward so you don't need to re-upload massive image bytes on every follow-up question.
+
+On OpenAI, Gemini, Anthropic and xAI API-key brains, attachment summaries have a 30-second request limit. An empty, cut-off, refused or invalid answer is not saved as memory: an image summary is skipped, while a document can keep a clearly marked metadata-only description. OpenAI summary requests disable response storage; FlowJoe keeps its attachment memories locally. For readable text and extracted document text, OpenAI uses Luna 6 to create the saved summary. In an eight-document comparison it preserved the checked facts and uncertainty with lower estimated helper cost and a shorter median wait. Native PDFs and images keep their current summary model; your existing and edited memories stay intact.
+
 
 ---
 
@@ -61,6 +64,10 @@ If you've edited the saved summary yourself, automatic compaction never throws y
 
 ## Save a memory for later
 
+<Frame caption="A proposed style memory for this game. This capture shows the draft editor before Save memory.">
+  <img src="/images/joe/memory-draft.png" alt="The real Add Memory editor contains a draft style instruction about a lantern silhouette and warm active glow." />
+</Frame>
+
 Open **Memories** in Chat and choose **Add memory**. Write what Joe should remember, choose whether it applies to this Flow, this node and its descendants, or this slot, then **Save**.
 
 To keep part of a reply, select the relevant words and choose its brain-shaped **Remember this** button. Review the text and scope before saving. In **Memories**, switch a memory off to stop sending it without deleting it, or edit or delete it.
@@ -74,5 +81,7 @@ Joe Memories are sent up to a per-turn cap (a handful per flow, node, and slot).
 Remembering and recalling memories works the same way in every language FlowJoe ships (see [Language settings](/reference/settings-map)) — asking Joe "what did we decide about the budget?" in Chinese, Arabic, Thai, or any of the other 16 languages finds the same relevant memory it would in English, instead of only working for space-separated Latin-script text.
 
 Compaction uses your selected provider: the configured small model for OpenAI, Gemini 3.5 Flash-Lite on the Gemini API key, or your selected command-line provider's helper model. Attachment memories are written on OpenAI and on the Gemini API key alike; on Gemini they use your Gemini key and nothing is sent to OpenAI. Changing providers while compaction is running affects the next job.
+
+Each API request used to compact a conversation has a one-minute limit, including reading the answer. A longer conversation may need several requests. If a request times out, FlowJoe keeps your existing history and memory and does not save a late summary. Refused, non-final or invalid summary answers are not saved either. An answer cut off at the token limit can still use the existing single retry with a larger allowance.
 
 If Joe needs to compact before sending your message, **Stop** also stops that compaction. Joe keeps your existing history and memory; a late summary from the stopped job is not saved.

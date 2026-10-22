@@ -2142,3 +2142,32 @@
     }
   }
 }
+
+/* A detached transcription stays visible without owning the Chat composer. */
+.joe-transcription-job {
+  flex: 0 0 auto;
+  margin: 8px 16px;
+  max-height: 42%;
+  overflow: auto;
+}
+.joe-transcription-job .ai-chat-bubble {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-secondary);
+}
+.joe-transcription-job p {
+  margin: 4px 0;
+  overflow-wrap: anywhere;
+}
+.joe-transcription-job progress {
+  width: 100%;
+  height: 5px;
+  accent-color: var(--accent-color);
+  border: 0;
+}
+.joe-transcription-job .joe-transcription-excerpt {
+  max-height: 140px;
+  overflow: auto;
+}

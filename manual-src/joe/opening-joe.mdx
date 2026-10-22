@@ -20,20 +20,44 @@ You can invoke Joe's assistant panel from multiple places:
 
 ## The Joe panel
 
-![Joe Assistant Panel Chat Modal](/images/05-joe-chat-modal.png)
+<Frame caption="A draft question for the Lantern Vale board. It has not been sent; the greeting and suggestions are the app’s actual opening state.">
+  <img src="/images/joe/lantern-vale-chat.png" style={{maxWidth: "420px", width: "100%"}} alt="The real Joe panel with a draft question asking what to test before adding another indie-game level." />
+</Frame>
 
 When Joe is active, his interface is clean and lightweight:
 
 - **Docked or floating:** Joe normally opens beside the gallery. Drag the divider to resize the column, use **Widen** for more room, or pop Joe out into a floating window. All four docked tabs share your chosen column width; the default is 280 pixels.
 - **Streaming replies:** Joe's answers appear as they're written, not all at once at the end — including replies that come after he reads or checks something (a multi-step answer streams in each step). On the Claude-family CLI brains (see [Bring Your Own Brain](/joe/byob)), the terminal agent's own reply streams too; Gemini API replies also stream. Grok and Antigravity currently show their full reply at once instead.
+- **Multi-step desktop replies:** With Luna 6 and your OpenAI key, Joe automatically reuses a connection while reading or checking things for your answer. Your model, token prices and approval choices stay the same. Stop also ends connection startup.
 - **Stop really stops.** Clicking **Stop** cancels the current reply, including a wait for the chapter picker or TypeSafe. On a CLI brain (Claude Code, Codex, Grok or Antigravity), it also cancels the running CLI request and closes any temporary Flow connection. It does not undo changes already applied.
 - **Voice Dictation:** Click the microphone icon or hold your voice shortcut key to dictate prompts. Joe supports a robust voice command set (e.g. saying _"comma"_, _"new line"_, or _"delete last word"_ inserts the correct characters).
 - **Clickable prompt suggestions:** Ask Joe for ideas or prompts you could try next, and he can show them as buttons below his reply. Clicking one puts it in the message box; review or edit it before sending.
-- **Read-Aloud Voice:** In Settings, you can configure Joe's voice. When enabled, Joe streams his replies out loud via OpenAI's text-to-speech engine.
+- **Read-Aloud Voice:** Choose Joe's voice in **Settings → AI → Joe voice**. Every voice has **Mini** and **Full** choices, with the audio price shown in the dropdown. See the vendor pricing card below for rates. Choosing a voice or pressing its speaker button generates a **billed preview**. Existing choices stay on Mini until you explicitly select Full. This affects spoken replies, including manual read-aloud; it does not change Joe's chat brain. Enable **Auto-read Joe replies aloud** if you want new replies spoken automatically.
+- **Stopping read-aloud:** Stopping speech also cancels startup. A late voice-session connection cannot restart it, and incomplete generation is rejected before its audio plays.
 - **Honest waits and clear errors.** If a request needs to retry (a brief provider hiccup), Joe's status shows **Retrying…** instead of looking stuck on "thinking". If something goes wrong — you're out of quota, your key was rejected, or the provider is having trouble — the chat shows a plain-language reason instead of a raw technical error, with the original provider text available underneath if you need it for support. If a chat message genuinely fails to save (for example, storage is full), you see a one-time warning toast instead of silently losing it.
 - **Regenerate stays available.** After starting a new conversation and reopening FlowJoe, the **Regenerate** option on Joe's last reply keeps working, instead of silently disappearing.
 
+
+<Card title="OpenAI voice pricing · October 2026" icon="tag">
+  **Vendor pricing, not FlowJoe pricing.** USD list rates checked October 22, 2026; OpenAI bills your API account.
+
+  | **Voice choice** | **Model** | **Generated audio / 1M tokens** | **Text input / 1M tokens** |
+  | :--- | :--- | ---: | ---: |
+  | Mini | `gpt-realtime-2.1-mini` | $20 | $0.60 |
+  | Full | `gpt-realtime-2.1` | $64 | $4 |
+
+  Text input is charged in addition to generated audio. Full’s audio rate is 3.2× Mini’s. Voice previews are billed too.
+
+  [Check current OpenAI voice pricing](https://developers.openai.com/api/docs/pricing#realtime-and-audio-generation-models) before use; rates can change.
+</Card>
+
 ---
+
+### What Joe received
+
+Use **What Joe received this turn** beside a sent message to see its recorded context. **Included tools** lists tool instructions included for that turn; it does not mean Joe used every tool. **Available on demand** appears only when that request actually offered tool groups to load as needed. Skills and Knowledge appear when there is something to show.
+
+This view explains a past turn. The **Off / Read / Propose** selector still controls Joe’s Flow access, and the wrench beside the prompt still opens extra-context options.
 
 ## Choosing Joe's target
 
@@ -48,7 +72,13 @@ The target section below the tabs shows the node and, when selected, its slot. C
 
 Unsent Chat text stays with its conversation. Unapplied Spelling text stays with its slot while you change tabs, choose another slot or visit Flow Chat and return. These unfinished text drafts are kept for this session; apply or save them before closing the app. The recent-visit badge is a separate remembered preference, not a saved Spelling draft. Replacing or reopening a Flow starts a new document session; unfinished drafts from the previous document are not inserted into the new one. Ordinary updates to the same shared Flow keep your session drafts.
 
+Send stays dimmed and disabled until your message contains text beyond spaces or blank lines. While Joe is preparing or answering, the button becomes Stop and stays available even when the message box is empty.
+
 While Joe is preparing a reply, answering, compacting a conversation or waiting for a proposal decision, target choices keep the current work in place. Clicking Chat during a reply keeps that reply running. A chosen slot follows its identity when slots are reordered; if it disappears, choose a live destination before sending again. Loading an older conversation only updates the place you are still viewing. Replacing the Flow ends work that belonged to the previous document.
+
+With OpenAI, spelling uses the lower-cost Luna 6 helper independently of your chosen chat model.
+
+Spelling protects embedded images and other media during correction. If Joe returns an incomplete or damaged media reference, FlowJoe rejects that correction instead of offering it for Apply. Notes containing only media are left unchanged without an AI request.
 
 Spelling checks the destination again when you press Apply. If the node or an ancestor is now frozen or password-locked, your role is View, or the workspace is temporarily unable to accept edits, the correction is not written and the review remains available.
 

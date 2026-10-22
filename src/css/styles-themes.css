@@ -1868,7 +1868,7 @@ input[type="text"].breadcrumb-node-edit-input {
 .virtual-gallery-edit-notice {
   position: absolute;
   left: 50%;
-  top: 50%;
+  top: calc(50% + var(--native-titlebar-height, 0px) / 2);
   transform: translate(-50%, -50%) scale(0.96);
   z-index: 120;
   display: inline-flex;

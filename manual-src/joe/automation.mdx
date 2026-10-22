@@ -5,13 +5,18 @@ description: "Schedule recurring background AI tasks to keep your outlines, link
 
 FlowJoe features a powerful **Background Scheduler** that allows Joe to run automated task loops on a repeating schedule. If you want to refresh a node's research links every morning, rotate reference images on an interval, or audit a campaign checklist weekly, you can write the rule once and let Joe execute it in the background.
 
+
+<Frame caption="Choose the approval policy when you create the task and review held results in the inbox.">
+  <img src="/images/diagrams/automation-review.svg" alt="A scheduled task runs while its owning Flow is open and Scheduled runs is enabled, then applies permitted routine changes or holds results for review according to policy." />
+</Frame>
+
 ---
 
 ## How Scheduling Works
 
 A scheduled task gives Joe instructions to repeat while you work. He can read the outline, search the web, generate images, update notes, and manage tags using the available tools and permissions.
 
-In the owner's OpenAI API chat, **Read** access is enough to ask which permitted tasks are scheduled and when they last ran or will run next. This does not allow Joe to create, edit or run tasks. Tasks aimed at private or Hidden from Joe content are left out of the answer, including their titles and counts. Missing run information is marked unavailable. This new read capability does not change the browser guest or external-agent tool catalog.
+With **Read** or **Propose** access, a tool-capable Joe or authorized external CLI/MCP connection can inspect permitted scheduled tasks and their available last/next-run status. This does not grant permission to create, edit or run tasks. Guests see only tasks permitted within their shared scope. Tasks aimed at Private or Hidden from Joe content are left out, including titles and counts; missing run information is marked unavailable.
 
 > [!IMPORTANT]
 > Schedules run while the owning Flow is open in FlowJoe and **Scheduled runs** is enabled. Closing the app or browser stops them. A missed occurrence normally runs when you reopen the Flow, unless the task is set to skip it. FlowJoe does not replay every missed interval in a burst.
@@ -45,6 +50,10 @@ For short intervals, the interface shows an estimated number of runs per day to 
 ---
 
 ## 🛠️ Task Creation & Management
+
+<Frame caption="Ask Joe to create a task, then manage it here. This new example Flow has no tasks or run results yet.">
+  <img src="/images/joe/tasks-settings.png" style={{maxWidth: "420px", width: "100%"}} alt="The real Tasks settings show Scheduled runs, an empty Tasks list, Review Inbox and Recent Runs." />
+</Frame>
 
 You can configure and manage scheduled tasks in two ways:
 

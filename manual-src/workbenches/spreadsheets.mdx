@@ -16,6 +16,10 @@ The **Spreadsheet Workbench** is an interactive, editable island powered by Univ
 
 ## Workbench Features
 
+<Frame caption="An imported CSV becomes an editable launch budget. These illustrative totals are imported values, not a demonstrated formula calculation.">
+  <img src="/images/workbenches/northstar-budget.png" alt="Northstar launch budget open in the real spreadsheet workbench, with owners, planned spending, committed spending and remaining amounts." />
+</Frame>
+
 - **Formulas & Math:** Supports standard spreadsheet formulas (SUM, IF, etc.).
 - **Multi-Tab Sheets:** Add, rename, and delete multiple tabs inside a single spreadsheet slot.
 - **Formatting:** Edit font styling, backgrounds, borders, alignment, and column widths.
@@ -35,7 +39,7 @@ Joe and external terminal agents can read spreadsheet content using the `get_isl
 - **Write-back:** Joe can set the value of a single cell at a time (for example *"Put 1200 in B3"*). He does not write formulas, change formatting, or add rows and columns.
 
 > [!NOTE]
-> **Resource Isolation:** The spreadsheet workbench only loads its UI dependencies when you double-click to open it, keeping the rest of the gallery fast and lightweight.
+> **Resource Isolation:** The spreadsheet workbench only loads its UI dependencies when you open it, keeping the rest of the gallery fast and lightweight.
 
 
 Joe can list the sheets and read a specific range, such as A2001:C2050, then continue through larger results in pages. He reports which cells were actually read; stored formulas do not prove a fresh calculation.

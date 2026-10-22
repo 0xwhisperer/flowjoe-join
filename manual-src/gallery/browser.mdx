@@ -5,6 +5,11 @@ description: "Research, bookmark, and clip web references directly into outline 
 
 The desktop app includes an **In-App Browser**. Browser guests open web links in their own browser rather than using the owner’s browser panel. Because research shouldn't force you to toggle between your workspace and external browsers, FlowJoe embeds web browsing directly into the visual shell, allowing you to clip content, capture screenshots, and save bookmarks in one click.
 
+
+<Frame caption="Keep the source and the reason you saved it together.">
+  <img src="/images/diagrams/browser-reference.svg" alt="Browse a page in the desktop app, save a gallery reference, then add notes or explicitly request Joe’s current-page reading." />
+</Frame>
+
 ---
 
 ## 🌐 The Browser Interface
@@ -61,3 +66,7 @@ Joe can read the captured page in parts and receives its title, URL and capture 
 
 
 The existing page context continues to work with each selectable Joe provider. Before sending it, FlowJoe checks that the page and your access still match the request. If either changed while Joe was preparing, that response is cancelled. In Joe’s chat, on every brain that uses Flow tools (OpenAI, Gemini, and CLI brains such as Claude, Grok and Codex), the page-reading tool can continue the same capture in parts. On a Mac this includes Antigravity; on Windows and Linux, Antigravity can't use Flow tools yet. External agents, including the FlowJoe CLI, cannot use that page-reading tool, because they have no way to receive your page approval; the page you explicitly ask about still reaches every provider as context.
+
+## Unsaved web changes
+
+When a web page warns that leaving could lose changes, FlowJoe shows its Leave/Stay warning in your selected app language. Choose **Stay** to return to the page or **Leave** to continue.

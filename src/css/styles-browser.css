@@ -975,7 +975,7 @@ body.browser-view-active .header-bg-right {
   gap: var(--header-gap);
   align-items: center;
   left: calc(280px + 12px); /* Default tree width + resizer, will be updated via JS */
-  top: 0;
+  top: var(--native-titlebar-height, 0px);
   bottom: 0;
   z-index: 5;
   transition: none;

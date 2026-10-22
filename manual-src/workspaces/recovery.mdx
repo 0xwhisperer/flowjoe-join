@@ -8,6 +8,11 @@ FlowJoe keeps two different safety nets, and it helps to know which one you want
 - **Restore points** let you deliberately jump back to how your Flow looked at an earlier moment. Use it after a change you regret.
 - The **Local Recovery Copy** is an automatic backup that exists only in Workspace Folder mode, for when the folder itself becomes unreachable.
 
+
+<Frame caption="Review the saved version before restoring it. Keep portable backups as well.">
+  <img src="/images/diagrams/restore-points.svg" alt="Choose a retained version, confirm restoration after a protective restore point is saved, then inspect the result and use Go back if needed." />
+</Frame>
+
 ## A Workspace folder becomes unavailable
 
 FlowJoe automatically keeps working and saving locally, with a small save-status warning. You do
@@ -52,7 +57,7 @@ The History window has three tabs, **Versions**, **Chats** and **Images**, and i
 - Conversations whose node or slot was deleted are kept under **No longer in your flow**. They open read-only: you can read and copy from them, and start a new conversation somewhere else to keep talking. One whose node was private, or whose old place FlowJoe can't tell, shows without its words and can't be read.
 - Ordinary conversations travel with your Workspace folder, including the picture backups needed to reopen pictures in a chat. Anyone who opens that folder can read those conversations.
 - Use the desktop icon on a conversation row to toggle **Keep on this computer only**. The current conversation and each older conversation have their own setting. A conversation with this setting, and its chat-only picture backups, stay on that computer and are excluded from the Workspace folder, history exports and browser sharing.
-- Conversations about password-protected (Private) nodes also stay on their original computer, including their chat-only picture backups. Moving a slot into a private node applies the same restriction to its conversation immediately; you do not need to reopen the chat. Unlocking the node lets you read it locally; it does not make it travel or share it.
+- Automatic Workspace storage and browser sharing exclude conversations about password-protected (Private) nodes, including their chat-only picture backups. Moving a slot into a private node applies the same restriction to its conversation immediately; you do not need to reopen the chat. A portable export may include eligible history when you explicitly select that Private node with password confirmation. Unlocking alone does not include it in a transfer.
 - Each Flow has its own conversations and Flow-summary chat. When upgrading older history, the former computer-wide summary is assigned once to the Flow open when that migration runs. Later Flows get their own summary conversations.
 - Conversations on a password-protected (Private) node are not listed until you unlock that node.
 - The trash icon on a row deletes that one conversation. **Delete all shown** deletes only the conversations currently shown, after any search or filter. Every delete asks first and tells you how many will be removed. Deleting cannot be undone.
@@ -68,7 +73,7 @@ The **Saved** label follows the picture’s current destinations. It hides the n
 
 Standalone Image History stays on this computer when you copy a Workspace folder. A generated picture saved into an ordinary gallery slot can travel with the Workspace folder as gallery media; its separate Image History record does not.
 
-A `.fj` export with **Include AI chat and image history** selected includes only eligible conversations from the Flow you are exporting. It excludes private-node and computer-only conversations, including their chat-only picture backups and image-history prompts. A picture independently saved in an ordinary gallery follows the gallery’s export rules. Eligible chat pictures still travel in a full package after their standalone Image History rows have been deleted. A selected-node export includes only eligible chat and image history in that branch. Import keeps conversations anchored in the imported Flow. Conversation sharing also respects private-node and computer-only exclusions, even when ordinary Joe conversations are enabled for an invitation.
+A `.fj` export with **Include AI chat and image history** selected includes only eligible conversations from the Flow you are exporting. Private-node conversations start excluded; explicitly selecting their Private nodes with password confirmation can include eligible conversations, chat picture backups and prompts according to the export options. Computer-only conversations remain excluded. A picture independently saved in an ordinary gallery follows the gallery’s export rules. Eligible chat pictures still travel in a full package after their standalone Image History rows have been deleted. A selected-node export includes only eligible chat and image history in that branch. Import keeps conversations anchored in the imported Flow. Conversation sharing also respects private-node and computer-only exclusions, even when ordinary Joe conversations are enabled for an invitation.
 
 ### Making one
 
@@ -181,4 +186,4 @@ If a change from another computer is waiting for your decision (the status bar s
 - [Export & Import](/portability/export-import) — `.fj` packages and JSON, the portable backup
 - [Storage & Diagnostics](/portability/storage-diagnostics) — what is taking up room
 
-Conversations keep following their original slot when it becomes part of a stack. Moving that stack into a private node keeps those conversations out of portable history, even when the private node is unlocked.
+Conversations keep following their original slot when it becomes part of a stack. Moving that stack into a Private node excludes those conversations from automatic Workspace storage and browser sharing, and from exports by default. An export can include eligible conversations if you explicitly include that Private node with password confirmation; unlocking alone does not include it.

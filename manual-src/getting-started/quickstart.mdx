@@ -11,6 +11,10 @@ Here is what to expect during your first run, and how to get back to those setti
 
 ## 1. The Welcome Wizard
 
+<Frame caption="Start with your language, then follow the setup screens to name and shape your first Flow.">
+  <img src="/images/getting-started/welcome-wizard.png" alt="The actual first-run welcome screen introduces Flows, tags and Joe, with a language choice, Skip setup and Let’s go." />
+</Frame>
+
 The onboarding wizard helps you seed your project and select your interface preferences.
 
 <Steps>
@@ -23,7 +27,7 @@ The onboarding wizard helps you seed your project and select your interface pref
     * **Media Library:** Seeds `Images`, `Audio`, and `Video` nodes.
     * **People / Clients:** Seeds `Clients`, `Meetings`, and `Deliverables` nodes.
     * **Blank Flow:** Seeds a single root node only.
-    * **Let Joe design it:** Type a prompt describing your project (e.g. *"Indie game art pipeline"*), and Joe will automatically draft a custom outline tree for you.
+    * **Let Joe design it:** Type a prompt describing your project (e.g. *"Indie game art pipeline"*), and Joe will automatically draft a custom outline tree for you. If the request fails or takes more than about 20 seconds, FlowJoe explains that the draft could not be completed and opens a blank Flow instead. Cut-off drafts are not applied. The outline uses the low-cost Luna 6 helper on your OpenAI API key; your later chat-model choice is independent.
   </Step>
   <Step title="Optionally Link Joe AI">
     If you want to use Joe's AI capabilities, you can paste in an OpenAI API key. This unlocks inline image analysis, document summarization, AI artwork generation, and side-by-side spelling/grammar diffs. 
@@ -45,7 +49,9 @@ The onboarding wizard helps you seed your project and select your interface pref
 
 Once your flow is created, the app runs a **Coach-Mark Tour** pointing out the live components of the workspace. If you need to re-orient yourself, here are the 10 spots the tour highlights:
 
-![FlowJoe Workspace Layout](/images/01-current-shell-horizontal.png)
+<Frame caption="After the tour, your Flow grows around your own work. This café launch example shows a populated tree and the selected node’s references in Modern Ember with Compact density.">
+  <img src="/images/getting-started/daybreak-brand-direction.png" alt="A populated FlowJoe workspace for the Daybreak café launch, with Brand direction selected and three reference slots showing artwork and notes." />
+</Frame>
 
 1. **The Flow Tree (`[data-spot="tree"]`):** The left panel outline where your nodes, child nesting, task status dots, and sibling item counts reside.
 2. **Nodes (`[data-spot="node"]`):** Living containers that store notes, summaries, themes, and their own media galleries. Clicking a node opens its gallery on the right.

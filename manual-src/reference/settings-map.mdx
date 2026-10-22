@@ -5,9 +5,11 @@ description: "A comprehensive breakdown of all application settings in FlowJoe."
 
 Open Settings from the sidebar (gear) or the app rail. Sections appear as **tabs on the left** of the Settings panel. Cards inside each tab can be reordered with the grip handle (`⋮⋮`).
 
-For **live monitoring and one-click changes** (save state, Joe brain, theme, language, scheduled tasks, shortcuts), use the bottom **[Status Bar (Footer)](/reference/status-bar)** — it does not replace Settings, but it covers the most common switches without opening this panel.
+Use the bottom **[Status Bar (Footer)](/reference/status-bar)** to check save state or change Joe’s brain, theme, language, and scheduled tasks. It offers common controls without opening Settings.
 
-![FlowJoe Appearance Settings Profile](/images/03-settings-appearance.png)
+<Frame caption="These captures use Compact density and Modern Ember. Appearance settings apply to your view of the app.">
+  <img src="/images/reference/appearance-settings.png" style={{maxWidth: "420px", width: "100%"}} alt="The real Appearance settings panel with English language, Compact density, Filled surface style and Modern Ember selected." />
+</Frame>
 
 Tab order matches the app (top to bottom):
 
@@ -44,7 +46,26 @@ Shared-node themes require **Can edit**. Workspace storage, restore-point manage
 * **Surface Style:** Outlined or Filled (default) — chrome button borders vs fills.
 
 ### Theme & typography
+
+<Tabs>
+<Tab title="Modern Ember">
+<Frame caption="Modern Ember · Compact density.">
+  <img src="/images/examples/lantern-vale-connections.png" alt="The Lantern Vale board in the Modern Ember theme with Compact density." />
+</Frame>
+</Tab>
+<Tab title="Modern Paper">
+<Frame caption="Modern Paper · the same content and Compact density.">
+  <img src="/images/reference/theme-modern-paper.png" alt="The same Lantern Vale board captured in the real Modern Paper light theme." />
+</Frame>
+</Tab>
+<Tab title="Sage Storyboard">
+<Frame caption="Sage Storyboard · the same content and Compact density.">
+  <img src="/images/reference/theme-sage-storyboard.png" alt="The same Lantern Vale board captured in the real Sage Storyboard theme." />
+</Frame>
+</Tab>
+</Tabs>
 * **Theme:** Full global theme catalog in Appearance (Dark / Light / Sepia / Cozy and the rest of the theme list). Reset all nodes to the global theme when needed. Per-node overrides are available from the node Theme Manager and the status-bar Theme control.
+* On Mac, the window title bar follows the currently displayed theme, including per-node themes. The native window buttons stay in place; drag the title bar to move the window. The strip hides in full screen.
 * **Font style, justification, line height** for notes and readable surfaces.
 * **Visual effects:** optional surface / glass / visual-effect toggles, nav tooltips, toast notifications and toast theme-match.
 * **Status Bar:** show or hide the bottom status bar (default on). See [Status Bar (Footer)](/reference/status-bar).

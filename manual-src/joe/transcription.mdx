@@ -3,7 +3,70 @@ title: "Transcribe audio"
 description: "Turn a recording into text for free on your computer, or use your paid OpenAI API account."
 ---
 
-Turn interviews, voice notes and other recordings into editable text in Joe's **Transcribe** tab. You can use free transcription on your computer or keep using the paid online service. Local transcription is separate from Joe chat and does not need an API key.
+Turn interviews, voice notes and other recordings into editable text by asking Joe in Chat or using the **Transcribe** tab. You can use free transcription on your computer or the paid online service. The local transcription engine does not need an API key; chatting with Joe uses your selected brain as usual.
+
+
+<Frame caption="Choose the processing route before starting. Review the resulting transcript for errors.">
+  <img src="/images/diagrams/transcription-routes.svg" alt="Local transcription processes the recording on this computer after model setup; OpenAI transcription uploads audio through your configured paid API account." />
+</Frame>
+
+## Ask Joe to transcribe
+
+Keep the audio file in a gallery slot or stack, then ask **“Can you transcribe this recording?”**
+You can also name a recording in another accessible node. Joe uses your saved method, model,
+language and local output format. Your request starts the run without another approval.
+
+Joe starts a background job and becomes available for your next message. A compact card above
+the message box shows progress and elapsed time. Use **Stop transcription** on that card to
+cancel only the recording job; Chat’s usual Stop controls the current reply. Closing Joe’s panel
+does not stop transcription, but FlowJoe must stay open. Jobs do not resume after app restart. If the recording
+is unclear, choose the recording Joe offers. If local transcription needs setup, open the setup
+link, select or install a model in Transcribe, then ask again. Joe never switches from local to
+paid online transcription automatically.
+
+You can ask **“How is the transcription going?”** while discussing something else. Local jobs
+show approximate time remaining after enough recognition progress is available; until then, or
+when the engine provides no reliable progress, the card says **Estimating time remaining…**.
+Joe does not spend model calls polling. Completion arrives as an event; a chat notice waits until
+any active reply finishes and belongs only to the conversation that started the job.
+
+The full result is kept in **Recent transcripts**. Completion still shows the opening lines of
+the transcript, plus **Open** and **Copy**. Use **Open** beneath
+the result to edit that exact transcript in Transcribe, or **Copy** to copy the text. Joe can discuss
+the result afterward. A gallery copy is a separate save.
+
+Starting transcription from Chat requires the owner's **Propose & modify** Flow access. Guest
+transcription remains available through the existing Transcribe tab.
+
+## API, CLI and MCP
+
+The shared action **`transcribe_audio`** accepts the source `nodeId` and recording's stable
+`entryId` from the Flow snapshot. A stack recording uses its own entry ID. Joe's API brains,
+supported CLI brains and authenticated external Agent Bridge clients can use it with Propose
+access. External API/CLI/MCP calls keep their existing waiting behavior and retain results without opening or changing Chat.
+Native API Chat and native CLI brains start detached jobs by default. The same tool accepts
+`action: "status"` with the returned `jobId` (omit it for the latest job), or `action: "cancel"`
+with an exact job ID. Status includes state, measured progress and nullable `remainingMs`; only
+completed results report `saved` and a record ID. Background controls are native Chat only; an
+external session cannot inspect or cancel native Chat jobs.
+It is not offered to scheduled runs.
+
+For the standalone CLI, put the IDs in `input.json`:
+
+```json
+{"nodeId":"YOUR_NODE_ID","entryId":"YOUR_AUDIO_ENTRY_ID"}
+```
+
+```bash
+flowjoe-cli action transcribe_audio --file input.json --wait 3600 --json
+```
+
+Agent Bridge must be enabled and FlowJoe must remain open. Choose a wait long enough for your
+recording and computer; Ctrl+C cancels. Multiple external matches return `choose_audio` and IDs
+to resolve with the user. The result includes `recordId`, `saved`, `text` and `truncated`.
+The returned text is limited to 12,000 characters; the retained transcript is complete. For more,
+use `query_history` with `kind: "transcript"`, then `read_history` with the returned revision and
+continuation. See the [CLI action reference](/cli/action-reference#transcribe-a-recording--transcribe_audio).
 
 ## Choose a transcription method
 
@@ -64,9 +127,10 @@ The transcription method controls where speech recognition runs. Storage follows
 
 Transcript history is registered app data and is excluded from orphaned-media cleanup. Private transcripts become unavailable when their source is locked. A transcript whose source was removed remains available in history for copying or saving, subject to its privacy restrictions.
 
-In native owner/API chat, you can ask Joe to find or quote a retained transcript in the current Flow. He reads bounded text portions with source dates only when the recording still has an admitted public source. Private, Hidden from Joe, removed and uncertain sources stay unavailable to this reader, even if you can still copy them in the human history. A recording converted into a stack or moved to another public node keeps its retained source link. Ambiguous or newly private sources are withheld. Reading does not upload the audio or start recognition. Joe reads a bounded portion of history already loaded with the Flow; unusually large or unavailable retained collections can be unavailable to this reader while ordinary History remains readable. Results may be partial; guest and external history-tool exposure remains deferred.
+In owner chat and authorized external CLI/MCP sessions, you can ask Joe to find or quote a retained transcript in the current Flow. He reads bounded text portions with source dates only when the recording still has an admitted public source. Private, Hidden from Joe, removed and uncertain sources stay unavailable to this reader, even if you can still copy them in the human history. A recording converted into a stack or moved to another public node keeps its retained source link. Ambiguous or newly private sources are withheld. Reading does not upload the audio or start recognition. Joe reads a bounded portion of history already loaded with the Flow; unusually large or unavailable retained collections can be unavailable to this reader while ordinary History remains readable. Results may be partial; guests and scheduled runs do not receive these readers. Authorized external CLI/MCP sessions can use them with Read or Propose access; see [the action reference](/cli/action-reference).
 
-Exports have an **Include transcript history** option, enabled by default. Private-source and computer-only transcripts are excluded even when the option is enabled. See [Export & Import](/portability/export-import).
+Exports have an **Include transcript history** option, enabled by default. Private-source transcripts start excluded; explicitly include their Private nodes with password confirmation to include eligible transcripts. Computer-only transcripts remain excluded. See [Export & Import](/portability/export-import).
+
 ### Shared guests
 
 Open **Recent transcripts** in Transcribe to read the retained results shared with you. Private sources and transcripts the owner keeps on their computer are excluded. Removing a recording does not remove its retained text when its shared origin is known. Selecting a recording still restores its retained text after the owner merges it into a stack or reopens the Flow. Hiding the recording or moving it outside your share also withholds its retained words, even when other pictures in the same stack remain shared.
@@ -77,12 +141,11 @@ Open **Recent transcripts** in Transcribe to read the retained results shared wi
 
 The owner keeps the authoritative history with the Flow. Ending or losing access to the share clears the guest browser's shared data and pending drafts; it does not delete the owner's history. **Keep on this computer only** is controlled by the owner. Reading existing results does not require permission to run Joe; new online recognition uses the owner's enabled connection. Personal drafts are cleared when their audio is hidden or removed, the guest’s role changes, or the share ends. Local model setup remains a desktop function.
 
-
 ### Plain text, timestamps and speaker labels
 
 - **Plain text:** readable recognized text without added time markers.
 - **Whisper - Timestamps:** each segment includes a start time such as `[01:24]`.
-- **Speaker Labels + Timestamps:** an online OpenAI option. The local Whisper models currently offered do not identify different speakers. A bigger local model does not add that feature.
+- **Speaker Labels + Timestamps:** separates voices into numbered speakers, with a time marker on each line. Local transcription includes its speaker detector with FlowJoe: no account, token or extra download is needed. The ordinary Whisper speech model setup is still required. Speaker numbers distinguish voices; they do not identify people.
 
 Local plain text and timestamps use the same recognition model. Choose the model for speed and accuracy, and choose Options for how the transcript should look. All local model sizes have no per-use API fee.
 
@@ -96,7 +159,7 @@ A model downloaded by FlowJoe can be removed from this screen after confirmation
 
 New model choices may arrive with FlowJoe updates. You choose whether to download a bigger or different model; FlowJoe does not replace your selected model automatically.
 
-Transcripts keep following their original recording when you merge audio into a stack. Moving that stack into a private node keeps its retained transcripts out of exports. An Edit guest with export permission can include eligible retained transcripts; FlowJoe checks access again before saving the export.
+Transcripts keep following their original recording when you merge audio into a stack. Moving that stack into a Private node excludes its retained transcripts from exports by default. The owner can explicitly include eligible transcripts by selecting the Private node with password confirmation; unlocking alone does not include it. An Edit guest with export permission can include eligible retained transcripts; FlowJoe checks access again before saving the export.
 
 ## Privacy, limits and troubleshooting
 
@@ -114,3 +177,17 @@ Local transcription has **no length or file-size limit** — a long meeting or l
 Online transcription accepts recordings up to **25 MB**. Use a shorter or compressed recording if yours exceeds that limit.
 
 For online transcription, the app shows the selected model and its published cost estimate. OpenAI bills API usage separately from any ChatGPT subscription. See [Token usage with Joe](/joe/token-usage) for other paid AI activity.
+
+## Remove a downloaded model
+
+Open **Manage local models**, choose a model downloaded by FlowJoe, and expand **More options**. Choose **Remove downloaded model**, then confirm in FlowJoe's dialog. **Cancel** or Escape keeps it. You can download it again later. Models found outside FlowJoe remain untouched, and removing a model does not remove your recordings or saved transcripts.
+
+### Add finished transcripts beside their recordings
+
+After a background Chat transcription finishes, Joe offers **Add to gallery** or **Not now** using his usual proposal card. You can keep chatting while deciding. Nothing is added before you accept.
+
+**Add to gallery** saves each complete transcript as a text document in a stack with its matching audio, on the same node. The audio stays first. Joe confirms where he put the documents; **Show in gallery** selects the matching transcript. The confirmation remains available in conversation history.
+
+**Not now** leaves the results in **Recent transcripts**, with their opening lines and separate **Open** buttons. Opening one does not replace or remove another. **Keep on this computer only** controls the retained result; accepting Add to gallery creates a separate gallery copy that follows the node’s sharing rules.
+
+If the gallery changes appear but saving fails, Joe says they are still unsaved. The confirmation keeps **Show in gallery**; the same proposal cannot add another copy. Use FlowJoe’s normal Save or Undo to recover. The opening transcript preview, **Open**, and **Copy** remain available after adding it to a stack.

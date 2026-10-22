@@ -220,7 +220,7 @@ button:hover {
   align-items: center;
   justify-content: flex-start;
   background: var(--topbar-bg);
-  padding: 14px 16px 14px 4px;
+  padding: calc(14px + var(--native-titlebar-height, 0px)) 16px 14px 4px;
   border: none;
   gap: var(--header-gap); /* owner call: pill + global audio player share the header button rhythm */
   position: sticky;
@@ -241,6 +241,30 @@ button:hover {
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
   overflow: visible; /* Allow tooltips to escape */
+}
+
+/* Native Mac buttons remain owned by Electron. Only this empty strip can drag the window.
+   Theme colors change in the same paint as the header; no independent animation or timers. */
+.native-titlebar {
+  display: none;
+}
+html[data-native-titlebar]:not([data-native-titlebar-fullscreen]) {
+  --native-titlebar-height: 28px;
+}
+html[data-native-titlebar]:not([data-native-titlebar-fullscreen]) .native-titlebar {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  inset: 0 0 auto;
+  height: var(--native-titlebar-height);
+  box-sizing: border-box;
+  padding-left: 78px;
+  /* Let the parent paint show through: gradients must not restart in this shorter box. */
+  background: transparent;
+  color: inherit;
+  font: 12px -apple-system, BlinkMacSystemFont, sans-serif;
+  letter-spacing: normal;
+  -webkit-app-region: drag;
 }
 
 /* Left background - matches tree color when open, tertiary when closed */

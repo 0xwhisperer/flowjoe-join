@@ -3,7 +3,7 @@
 <!-- GENERATED FILE — do not edit by hand. Built from the mintlify user docs by
 scripts/build-app-help-knowledge.js (deterministic digest; re-run it after editing any source page).
 Source pages: reference/keyboard-shortcuts.mdx, reference/status-bar.mdx, reference/settings-map.mdx, reference/limitations.mdx, reference/glossary.mdx
-Generated: 2026-10-18 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
+Generated: 2026-10-22 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
 Sync guard: tests/unit/appHelpKnowledgeSync.test.js fails when mintlify/**/*.mdx or this digest drifts
 from scripts/app-help-knowledge.manifest.json. -->
 
@@ -52,7 +52,7 @@ Also covered in the full docs for this area: What you can change quickly (click)
 A comprehensive breakdown of all application settings in FlowJoe.
 
 Open Settings from the sidebar (gear) or the app rail. Sections appear as **tabs on the left** of the Settings panel. Cards inside each tab can be reordered with the grip handle (`⋮⋮`).
-For **live monitoring and one-click changes** (save state, Joe brain, theme, language, scheduled tasks, shortcuts), use the bottom **Status Bar (Footer)** — it does not replace Settings, but it covers the most common switches without opening this panel.
+Use the bottom **Status Bar (Footer)** to check save state or change Joe’s brain, theme, language, and scheduled tasks. It offers common controls without opening Settings.
 Tab order matches the app (top to bottom):
 - **Appearance**
 - **Tree**
@@ -64,7 +64,7 @@ Tab order matches the app (top to bottom):
 - **Data**
 - **Tasks**
 
-Also covered in the full docs for this area: Settings when you join someone else's Flow; Appearance; Language (localization); Layout; Theme & typography; Tree; Gallery; Audio; Browser (desktop); Joe AI; APIs; Data; Tasks; Tips.
+Also covered in the full docs for this area: Settings when you join someone else's Flow; Appearance; Language (localization); Layout; Theme & typography; Modern Ember; Modern Paper; Sage Storyboard; Tree; Gallery; Audio; Browser (desktop); Joe AI; APIs; Data; Tasks; Tips.
 
 ## Honest Limitations
 

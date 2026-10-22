@@ -3,7 +3,7 @@
 <!-- GENERATED FILE — do not edit by hand. Built from the mintlify user docs by
 scripts/build-app-help-knowledge.js (deterministic digest; re-run it after editing any source page).
 Source pages: workbenches/calendars.mdx, workbenches/spreadsheets.mdx, workbenches/rich-documents.mdx
-Generated: 2026-10-18 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
+Generated: 2026-10-22 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
 Sync guard: tests/unit/appHelpKnowledgeSync.test.js fails when mintlify/**/*.mdx or this digest drifts
 from scripts/app-help-knowledge.manifest.json. -->
 
@@ -19,19 +19,21 @@ The **Calendar Workbench** integrates FullCalendar into a slot, letting you sche
 
 **Intakes & Imports.**
 You can import schedules in several shapes:
-- **Import ICS/iCal:** Drag-and-drop a `.ics` or `.ical` calendar file. FlowJoe displays a prompt letting you import it as:
-- A **Calendar Slot** (interactive FullCalendar workbench).
-- A **Stack** of event cards.
-- Individual **Event Nodes** created under the selected parent.
+- **Import ICS/iCal:** Drop a `.ics` or `.ical` file onto the tree or gallery to create a calendar slot directly. To choose its shape, use **Add Slot → Image or File** and select the calendar file.
 - **New Blank Calendar:** Click **New Calendar** from the gallery menu.
 
 **Interactive Timeline Editing.**
-Double-click a Calendar slot to open the FullCalendar workbench:
+Open a Calendar slot to use the FullCalendar workbench:
 - **Multiple Views:** Switch between Month, Week, Day, and Agenda List views.
 - **Manage Events:** Create new events, rename titles, or delete events.
 - **Drag & Resize:** Drag event cards to change dates, or drag block edges to resize duration. Changes save in the FlowJoe calendar; download an `.ics` copy to use elsewhere.
+- **Exporting:** Save calendars back to a standard `.ics` file.
 
-Also covered in the full docs for this area: Joe Integration; Calendar boundaries.
+**Joe Integration.**
+Joe receives calendar agendas as parsed, readable text:
+- **Planning:** Ask Joe *"Find conflicts in my schedule next week"* or *"Draft an itinerary for Tuesday."*
+
+Also covered in the full docs for this area: Calendar boundaries.
 
 ## Spreadsheet Workbench
 
@@ -66,7 +68,6 @@ The **Rich Document Workbench** utilizes Univer Docs to provide a real word-proc
 - **Typography styling:** Change headers, font weights, colors, text alignment, and spacing.
 - **Image Integration:** Paste images directly from your clipboard into the body of the document.
 - **Headers & Footers:** Double-click the top or bottom margin of a page to edit its header or footer. Tables from imported files are kept when you save, but they cannot be edited in the editor yet.
-- **Appearance:** The editor always uses a light look, even when the app is in a dark theme.
 
 Also covered in the full docs for this area: Collaborative AI Writing.
 

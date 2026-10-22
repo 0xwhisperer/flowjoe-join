@@ -3,7 +3,7 @@
 <!-- GENERATED FILE — do not edit by hand. Built from the mintlify user docs by
 scripts/build-app-help-knowledge.js (deterministic digest; re-run it after editing any source page).
 Source pages: getting-started/quickstart.mdx, getting-started/mental-model.mdx, getting-started/hemispheres.mdx, concepts/local-first.mdx, concepts/structure-references-meaning.mdx
-Generated: 2026-10-18 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
+Generated: 2026-10-22 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
 Sync guard: tests/unit/appHelpKnowledgeSync.test.js fails when mintlify/**/*.mdx or this digest drifts
 from scripts/app-help-knowledge.manifest.json. -->
 
@@ -29,7 +29,6 @@ To prevent staring at a blank screen, pick one of our pre-designed outline shape
 - **Project:** Seeds `Planning`, `Tasks`, and `Assets` nodes.
 - **Media Library:** Seeds `Images`, `Audio`, and `Video` nodes.
 - **People / Clients:** Seeds `Clients`, `Meetings`, and `Deliverables` nodes.
-- **Blank Flow:** Seeds a single root node only.
 
 Also covered in the full docs for this area: Optionally Link Joe AI; Choose a Swatch Theme; The Interactive Coach-Mark Tour; Retours & Customizations.
 
@@ -38,9 +37,10 @@ Also covered in the full docs for this area: Optionally Link Joe AI; Choose a Sw
 Structure, references, and meaning — the three first-class ideas behind every FlowJoe workspace.
 
 FlowJoe is easier once you stop treating it like a folder app or a linear note app. Three ideas do almost all the work.
+In the café example, **Brand direction** gives the work a place in the tree. Its gallery holds the visual references. Notes explain the choices behind them.
 
 **Structure.**
-The **tree** is structure: roots, child nodes, multi-select, status, themes, frozen nodes, and private nodes. Structure answers *where does this belong?* and *how does this branch relate to that one?*
+A node is not just a label. It is a container that can hold meaning and references.
 
 Also covered in the full docs for this area: References; Meaning; Why keep them separate; Related.
 
@@ -57,7 +57,7 @@ Use it when you need:
 - People, chapters, milestones, research threads
 - Clear place for a body of work
 
-Also covered in the full docs for this area: Right — references; The divider; Related.
+Also covered in the full docs for this area: Right — references; Choose a different node; The divider; Related.
 
 ## Local-first storage
 
@@ -79,7 +79,6 @@ FlowJoe is designed differently. Every workspace is built around a powerful, uni
 
 **The Triad at a Glance.**
 - **Structure** — **The Tree** (Left Hemisphere) — *Where does this live?* — Hierarchy, nesting, task status, visual branch colors
-- **References** — **The Gallery** (Right Hemisphere) — *What am I citing or looking at?* — Images, audio, videos, PDFs, spreadsheets, calendars
 
 Also covered in the full docs for this area: Structure: The Hierarchy; References: The Media Gallery; Meaning: Intent & Synthesis.
 

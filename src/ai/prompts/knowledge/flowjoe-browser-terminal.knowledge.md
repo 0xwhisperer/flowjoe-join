@@ -3,7 +3,7 @@
 <!-- GENERATED FILE — do not edit by hand. Built from the mintlify user docs by
 scripts/build-app-help-knowledge.js (deterministic digest; re-run it after editing any source page).
 Source pages: gallery/browser.mdx, gallery/terminal.mdx
-Generated: 2026-10-19 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
+Generated: 2026-10-22 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
 Sync guard: tests/unit/appHelpKnowledgeSync.test.js fails when mintlify/**/*.mdx or this digest drifts
 from scripts/app-help-knowledge.manifest.json. -->
 
@@ -41,7 +41,7 @@ Organize your web references with a powerful bookmarks system:
 FlowJoe records a chronological log of all your visits, saved locally in IndexedDB:
 - **Retention Controls:** Configure history cleanup intervals in Settings (keep visits forever, or prune after 30, 90, or 365 days).
 
-Also covered in the full docs for this area: Security & Privacy Gating; Asking Joe about the page.
+Also covered in the full docs for this area: Security & Privacy Gating; Asking Joe about the page; Unsaved web changes.
 
 ## Integrated terminal (Forge)
 

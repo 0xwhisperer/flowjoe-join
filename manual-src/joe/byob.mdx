@@ -7,7 +7,16 @@ description: "Choose Joe’s connection, set up your keys, and use a brain that 
 
 A command-line tool, or **CLI**, is an app you run by typing commands in a terminal. FlowJoe can use some of these tools behind the scenes, so you keep talking to Joe in the familiar chat panel.
 
+
+<Frame caption="The connection direction determines where you converse and which approval settings apply.">
+  <img src="/images/diagrams/connection-directions.svg" alt="Compare a CLI brain inside Joe chat, an outside assistant connected through Agent Bridge, and a shell running in Forge." />
+</Frame>
+
 ---
+
+When you use OpenAI, automatic image titles and archived-chat titles use Luna 6 to keep these short
+labeling tasks inexpensive, independently of your selected chat model. A title request that cannot
+finish keeps the existing fallback; it does not change your main reply or generated image.
 
 ## Why BYOB?
 
@@ -45,7 +54,7 @@ Joe's brain menu groups the brains by company: **OpenAI** first, then **Anthropi
 * **· API key** — it uses the key you saved in **Settings → APIs**.
 * **· Claude Code login ✓**, **· Codex login ✓**, **· Grok login ✓**, **· Antigravity login ✓** — it uses a terminal tool you are signed into.
 
-An API-key line ends with a price scale from `$` to `$$$$`, a login line with **plan**; the status bar's brain list shows the exact price per million tokens. See [What each brain costs](/joe/token-usage#what-each-brain-costs).
+**More dollar signs mean a more expensive AI choice:** `$` is the lowest-cost group and `$$$$` is the highest. These symbols help you compare choices; they are not the price of a message. **Plan** means usage counts toward the account you signed into. See [What the dollar signs mean](/joe/token-usage#what-each-brain-costs).
 
 A company you have no key for shows one dimmed line instead of one line per model, for example **Grok 4.7 — needs an xAI key**, **Gemini — needs a Gemini key** or **OpenAI — needs an OpenAI key**. Once you save that key, the line opens up into the company's models. The brain list in the status bar shows the same brains in the same order; under each API-key brain it shows the account and the start and end of the key, and a company without a key reads **Needs an … API key**.
 

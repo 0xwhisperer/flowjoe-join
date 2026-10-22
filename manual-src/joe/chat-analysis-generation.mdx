@@ -9,13 +9,18 @@ Each send includes more than the prompt you typed. To see the cost and to shrink
 
 Chat, Spelling, Transcribe and Images share the target controls below their tabs. Use the crosshair for Flow Chat, or right-click a node inside Joe's target tree to choose Flow, Node or Slot. Choosing a slot in a tool keeps that tab and carries the choice into Chat. See [Choosing Joe's target](/joe/opening-joe#choosing-joes-target) for the slot list, Last used badge and draft behavior.
 
+
+<Frame caption="Choose the context that helps Joe answer the question; do not send unrelated material.">
+  <img src="/images/diagrams/context-bundle.svg" alt="A send combines your question and chosen extra context with permitted Flow information for the selected Joe connection." />
+</Frame>
+
 ---
 
 ## Ask Joe about earlier work
 
-In native owner/API chat, Read or Propose permission lets Joe look up permitted history in the current Flow: earlier conversations, generated-image prompts and model details, retained transcripts, and dates/revisions of verified public changes. Try “Find the chat where we chose the launch name” or “Which image prompt did I use yesterday?” He reads longer results in portions and gives their source dates and conversation/message references. The current chat stays open.
+In owner chat and authorized external CLI/MCP sessions, Read or Propose permission lets Joe look up permitted history in the current Flow: earlier conversations, generated-image prompts and model details, retained transcripts, and dates/revisions of verified public changes. Try “Find the chat where we chose the launch name” or “Which image prompt did I use yesterday?” He reads longer results in portions and gives their source dates and conversation/message references. The current chat stays open.
 
-Private or Hidden from Joe sources, deleted or uncertain owners and unavailable older copies are excluded. Unlocking a private node does not grant Joe access. Computer-only history stays local to its owner. Results can be partial, so an empty search does not prove something never existed. Image lookup returns prompt/details without fetching the picture, and requires every recorded source and reference picture to remain available to Joe; version lookup does not restore anything. Guests, scheduled runs and external CLI/MCP connections do not receive these new history readers yet.
+Private or Hidden from Joe sources, deleted or uncertain owners and unavailable older copies are excluded. Unlocking a private node does not grant Joe access. Computer-only history stays local to its owner. Results can be partial, so an empty search does not prove something never existed. Image lookup returns prompt/details without fetching the picture, and requires every recorded source and reference picture to remain available to Joe; version lookup does not restore anything. Authorized external CLI/MCP connections receive these history readers with Read or Propose access. Guests and scheduled runs do not receive them. See [the action reference](/cli/action-reference).
 
 ---
 

@@ -24,6 +24,9 @@ const storeRemove = (key) => {
   } catch (_) {}
 };
 
+// Reserve native chrome before the first paint; browsers and other desktop windows stay unchanged.
+if (window.electronAPI?.hasThemedTitlebar === true) document.documentElement.setAttribute("data-native-titlebar", "");
+
 // Block 1: Theme class stamp
 // One-time hard reset (2026-08-17, user-directed): every user — existing or new — is moved to
 // the new default global theme, Modern Ember, exactly once. Runs pre-paint so the reset theme
@@ -153,7 +156,7 @@ root.style.setProperty("--tree-resizer-width", resizerPx + "px");
 // Block 5: Asset URL helper (cache-busting) + CSS link injection via document.write.
 // document.write here is correct and necessary — it must run synchronously in <head>
 // to inject CSS <link> tags before <body> renders. Do NOT replace with appendChild.
-const cacheToken = "00324ee2eae7131f"; // join-site guest build: stylesheets carry the build id (scripts/build-join-site-app.js)
+const cacheToken = "2956ecfd098a7486"; // join-site guest build: stylesheets carry the build id (scripts/build-join-site-app.js)
 window.__flowjoeAssetUrl = function (path) {
   const safePath = String(path || "");
   if (!cacheToken || !safePath) return safePath;

@@ -5,6 +5,11 @@ description: "Let a local coding assistant work with your Flow while you stay in
 
 The **Agent Bridge** connects your active Flow to compatible AI assistants and developer tools on your computer. A coding assistant can work with your plan, references, and notes—not just the files in a code folder. MCP is the connection format these tools use.
 
+
+<Frame caption="The connection direction determines where you converse and which approval settings apply.">
+  <img src="/images/diagrams/connection-directions.svg" alt="Compare a CLI brain inside Joe chat, an outside assistant connected through Agent Bridge, and a shell running in Forge." />
+</Frame>
+
 ## Turn it on
 
 1. Open **Settings → Joe AI → Agent Bridge (MCP)** in the desktop app.
@@ -54,3 +59,7 @@ File requests appear in FlowJoe even when Joe chat is closed. Files uploaded by 
 Each connection has its own recent-change history, supplied files, and approval results. It does not inherit Joe’s chat attachments or conversation history. Its undo action works only if the Flow has not changed since that connection’s last applied change.
 
 Run the connected assistant in [Forge](/gallery/terminal) or another terminal. This desktop connection is separate from [Joe’s choice of brain](/joe/byob) and from [browser sharing](/workspaces/sharing-and-presenting).
+
+## Global connection consent
+
+If a connection asks to add FlowJoe to an assistant's global configuration, the warning uses your selected app language and shows the file it will change. The connection applies across that assistant's projects. Its access token is a password: someone with that file can control your Flow while the bridge is on. **Cancel** leaves the configuration unchanged.

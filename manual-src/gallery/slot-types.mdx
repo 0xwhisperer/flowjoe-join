@@ -26,7 +26,17 @@ FlowJoe displays many media types in a full-size preview. Click a slot to open i
 - **PDFs:** Rendered using a scrollable inline PDF frame with text search.
 - **Ordinary gallery Markdown, text & code:** Open the slot and choose **Edit** in its preview to open the gallery code editor (see below). For a repository-owned file, the repository Explorer opens the repository workbench; **Edit** on its gallery slot hands off to that workbench for the exact selected file.
 - **Office Previews:** Read-only previews for DOCX, PPTX, XLSX, RTF, EPUB, and open formats (ODT, ODP, ODS) when they are not opened as interactive workbenches.
+
+Markdown document previews keep each source line on its own line, including saved transcripts and
+text saved from Joe. The same line breaks appear in repository Markdown previews and when converting
+Markdown to PDF. Previously saved files benefit when reopened if their source still contains the breaks.
 - *Note:* Legacy `.doc`, `.xls`, and `.ppt` files extract text natively if LibreOffice is installed and configured in your settings.
+
+<Frame caption="A fictional civil-case Flow mixes two PDF exhibits with an image-based condition sketch. The slot notes explain how each source relates to the case.">
+  <img src="/images/gallery/hartwell-evidence-gallery.png" alt="FlowJoe in Modern Ember and Compact density, with Evidence and exhibits selected in the Hartwell Legal case tree. Its gallery shows an inspection-record PDF, a condition-sketch image, and a repair-estimate PDF, each with notes." />
+</Frame>
+
+The **Evidence & exhibits** node keeps the source documents together. Open a slot when you want to read it at a larger size and work on its notes; see [Slot Preview](/gallery/preview).
 
 ### Editing text and code
 For an ordinary gallery item—not a repository-owned file—open a Markdown, plain text, JSON, HTML, JavaScript/TypeScript, Python, YAML, shell, log, or similar native text/code slot, then choose **Edit** in the preview.

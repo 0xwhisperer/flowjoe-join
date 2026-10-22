@@ -3,7 +3,7 @@
 <!-- GENERATED FILE — do not edit by hand. Built from the mintlify user docs by
 scripts/build-app-help-knowledge.js (deterministic digest; re-run it after editing any source page).
 Source pages: joe/byob.mdx, joe/agent-bridge.mdx, joe/permissions.mdx
-Generated: 2026-10-20 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
+Generated: 2026-10-22 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
 Sync guard: tests/unit/appHelpKnowledgeSync.test.js fails when mintlify/**/*.mdx or this digest drifts
 from scripts/app-help-knowledge.manifest.json. -->
 
@@ -17,6 +17,7 @@ Choose Joe’s connection, set up your keys, and use a brain that suits your wor
 
 **Bring Your Own Brain (BYOB)** lets you choose the intelligence behind Joe. Use your own provider API key, or connect a supported command-line assistant you already use. Your workspace lives locally; the context needed for an AI request goes to the chosen provider.
 A command-line tool, or **CLI**, is an app you run by typing commands in a terminal. FlowJoe can use some of these tools behind the scenes, so you keep talking to Joe in the familiar chat panel.
+When you use OpenAI, automatic image titles and archived-chat titles use Luna 6 to keep these short labeling tasks inexpensive, independently of your selected chat model. A title request that cannot finish keeps the existing fallback; it does not change your main reply or generated image.
 
 **Why BYOB?**
 - **Your account, your usage:** API brains use your provider key and its usage charges. CLI brains use that tool’s account, plan, and limits. FlowJoe adds no markup to either connection. How much context you send affects usage; see Token usage with Joe.
@@ -47,6 +48,7 @@ Let a local coding assistant work with your Flow while you stay in control.
 Joe works the same on every brain that uses Flow tools (OpenAI, Gemini, Claude, Grok, Codex): in his own chat he can hand the owner a restore, export, import or outside-changes review, find pictures, read shared terminal lines, read a browser page in parts, and undo or list his changes.
 Antigravity has them on a Mac only; Agent Bridge assistants and the FlowJoe CLI never get these tools.
 A page the owner explicitly asks about still reaches every brain.
+FlowJoe asks once before turning on connections to assistants. Look again asks the same question first. Cancel leaves their configuration unchanged.
 The **Agent Bridge** connects your active Flow to compatible AI assistants and developer tools on your computer. A coding assistant can work with your plan, references, and notes—not just the files in a code folder. MCP is the connection format these tools use.
 
 **Turn it on.**
@@ -55,7 +57,7 @@ The **Agent Bridge** connects your active Flow to compatible AI assistants and d
 - Kimi needs one step: run its copied command in a terminal.
 - To skip one, untick it under **Choose assistants**.
 
-Also covered in the full docs for this area: Advanced; Choose how changes are approved; How MCP relates to Joe’s actions; Two FlowJoe apps open at once; What connected tools can do.
+Also covered in the full docs for this area: Advanced; Choose how changes are approved; How MCP relates to Joe’s actions; Two FlowJoe apps open at once; What connected tools can do; Global connection consent.
 
 ## Permissions & privacy
 

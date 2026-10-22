@@ -14,6 +14,11 @@ with a symbolic link does not redirect a read to files elsewhere. If a file chan
 FlowJoe stops that read. Closing or switching Workspaces also stops a waiting media read from being
 returned to the previous Flow. Hardlinked files still work.
 
+
+<Frame caption="A live Workspace folder and a portable exported copy serve different purposes.">
+  <img src="/images/diagrams/workspace-storage.svg" alt="Local storage is managed by FlowJoe; a Workspace folder holds the Flow and shared files. Private content stays on its original computer." />
+</Frame>
+
 ## Why use a Workspace Folder?
 
 Use a Workspace Folder when you want to choose where your Flow lives and manage its files with your
@@ -223,6 +228,10 @@ The **Open on another computer** note is only information. It never stops you fr
 ---
 
 ## When a folder becomes unavailable
+
+<Frame caption="You can keep working during a temporary folder outage. Review conflicting changes before deciding what to keep.">
+  <img src="/images/diagrams/workspace-recovery.svg" alt="When a folder becomes unavailable, work saves locally; on its return FlowJoe checks changes and either resumes safely or asks for conflict review." />
+</Frame>
 
 If the drive disconnects, the folder refuses a save, or its disk fills up, FlowJoe automatically
 continues saving your current Flow on this computer. You can keep editing. The status bar says

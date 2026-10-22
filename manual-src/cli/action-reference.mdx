@@ -43,6 +43,33 @@ not counted as observational reads. These are dated measurements, not permanent 
 your running app’s catalog before scripting. Native Joe, external MCP and guests can have different
 services and authority; an owner endpoint does not establish guest or shared-Flow support.
 
+Transcription was added after the dated catalog measurements above. Discover the running catalog
+for current totals.
+
+## Transcribe a recording — `transcribe_audio`
+
+Transcribe an audio recording already in the Flow using saved Transcribe settings. The complete
+result is kept in Recent transcripts. Propose access is required. Local setup never falls back to
+paid service. This action is available in Joe's API and CLI brains and authenticated external MCP.
+
+```json
+{"nodeId":"YOUR_NODE_ID","entryId":"YOUR_AUDIO_ENTRY_ID"}
+```
+
+```bash
+flowjoe-cli action transcribe_audio --file input.json --wait 3600 --json
+```
+
+Use stable snapshot IDs: `entryId` names the recording leaf, including inside a stack. No path,
+URL or provider-setting override is accepted. Missing or sealed recordings are refused.
+`choose_audio` returns accessible recording identities: ask the user and retry with one exact entry.
+`local_setup_required` means select/install a model in Transcribe and retry. Ctrl+C cancels the run.
+
+Success returns `saved: true`, `recordId`, method/model and up to 12,000 characters of `text`.
+When `truncated` is true, query transcript history and continue with `read_history` using its
+revision/cursor. The same inputs work over MCP. External calls do not open or write to Joe's chat.
+See [Transcribe audio](/joe/transcription).
+
 ## Only in Joe’s chat
 
 Joe works the same on every brain that uses Flow tools (OpenAI, Gemini, and CLI brains such as Claude, Grok and Codex). On a Mac this includes Antigravity; on Windows and Linux, Antigravity can't use Flow tools yet. His chat inside FlowJoe, whether an OpenAI or Gemini model or an installed tool such as Claude Code answering as Joe, uses most of the actions on this page, plus the FlowJoe actions below that the CLI and other assistants connected from outside cannot call. Those actions never appear in `flowjoe-cli actions` or in the tools a connected assistant is given, and asking for one by name is refused (`unknown_action` in the CLI). The last row lists tools built into some brains, not FlowJoe actions.
