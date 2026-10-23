@@ -47,7 +47,7 @@ The bar is split into the same labels the legend uses:
 | **Joe system** | Joe's built-in instructions. |
 | **Tools** | The tool definitions Joe is handed this send, plus the short usage notes that come with **Web search** and **Code interpreter** when they are on. Shrinks when you lower Joe's flow permission; **Off** still sends the manual-lookup tool. |
 | **Flow map** | The tree outline and your Flow Summary. This is what **Omit entire flow map** removes from the automatic send. |
-| **Location** | Where you are — current node, current slot, flow name, small counts. Sent every turn. |
+| **Location** | Where you are — current node, current slot, flow name, small counts, and any recent transcription-job status Joe is sent. |
 | **Slot data** | The current slot's full notes (and every stack item's notes). |
 | **FlowJoe manual** | App-help chapters loaded for this send. |
 | **Joe Memories** | Notes you asked Joe to remember. |
@@ -55,6 +55,8 @@ The bar is split into the same labels the legend uses:
 | **Chat messages** | The visible turns in this session. Empties when you clear the conversation. |
 | **Attachments** | Images, files, JSON, or extra items you attached. |
 | **Estimate buffer** | A fixed 4% safety margin on top of everything counted, for request framing and tokenizer differences. It is padding, not a measurement — it does not stand in for anything the bar has not counted. |
+
+While a transcription runs, Joe’s automatic context identifies the job and any requested time range. He checks live status when asked about progress; a changing percentage is not repeated with every chat message. The progress card still shows the current measurements.
 
 Each chat message also shows a small cost chip (for example `+150 tok/send`). Pinning, omitting, or deleting a message updates the bar immediately.
 

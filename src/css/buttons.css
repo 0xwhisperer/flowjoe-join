@@ -220,7 +220,7 @@ button:hover {
   align-items: center;
   justify-content: flex-start;
   background: var(--topbar-bg);
-  padding: calc(14px + var(--native-titlebar-height, 0px)) 16px 14px 4px;
+  padding: 14px 16px 14px 4px;
   border: none;
   gap: var(--header-gap); /* owner call: pill + global audio player share the header button rhythm */
   position: sticky;
@@ -248,23 +248,34 @@ button:hover {
 .native-titlebar {
   display: none;
 }
-html[data-native-titlebar]:not([data-native-titlebar-fullscreen]) {
-  --native-titlebar-height: 28px;
+/* Approved unified Mac header: native buttons, branding and controls share one row. */
+html[data-native-titlebar] .topbar {
+  padding: 0 16px 0 96px;
+  -webkit-app-region: drag;
+}
+html[data-native-titlebar] .topbar > :not(.native-titlebar),
+html[data-native-titlebar] .topbar > :not(.native-titlebar) * {
+  -webkit-app-region: no-drag;
+}
+html[data-native-titlebar] .topbar .logo-svg {
+  width: 36px;
+  height: 36px;
+  margin-right: 4px;
+}
+html[data-native-titlebar] .topbar .topbar-brand-stack {
+  margin: 0 8px 0 0;
 }
 html[data-native-titlebar]:not([data-native-titlebar-fullscreen]) .native-titlebar {
-  display: flex;
-  align-items: center;
+  display: block;
   position: absolute;
-  inset: 0 0 auto;
-  height: var(--native-titlebar-height);
-  box-sizing: border-box;
-  padding-left: 78px;
-  /* Let the parent paint show through: gradients must not restart in this shorter box. */
+  inset: 0;
+  pointer-events: none;
   background: transparent;
   color: inherit;
-  font: 12px -apple-system, BlinkMacSystemFont, sans-serif;
-  letter-spacing: normal;
   -webkit-app-region: drag;
+}
+html[data-native-titlebar][data-native-titlebar-fullscreen] .topbar {
+  padding-left: 4px;
 }
 
 /* Left background - matches tree color when open, tertiary when closed */

@@ -935,3 +935,7 @@ audio and video files cannot be uploaded through `upload_attachment`; use the no
 for them. A raw `dataUrl` can prepare a supported non-workbench kind when its MIME and size are
 valid; it does not bypass the workbench restriction. Do not invent an attachment ID or relabel a
 file’s MIME type. Staging is preparation, not placement; see the [working example](/cli/scripting).
+
+### Transcribe an excerpt
+
+For `transcribe_audio`, pass `startSeconds` and `endSeconds` alongside the source identities. For example, `startSeconds: 0` and `endSeconds: 60` transcribes only the first minute. The audio is clipped before recognition or upload; the source file is unchanged. The completed result includes the actual time range.

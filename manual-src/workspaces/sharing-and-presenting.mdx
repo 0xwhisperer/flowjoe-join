@@ -37,6 +37,8 @@ A guest sees only what you shared with them. Their theme, their language and the
 | Use Joe when enabled for the invitation | Questions and conversation; no shared-content changes | Ordinary Joe features within their shared access |
 | Generate pictures in the Images tab when enabled for the invitation | Read only | Yes |
 | Export, download, copy or print | No | Only when you enable **Let guests export** |
+| Chat in the group and message you, when **Chat with each other** is on | Yes | Yes |
+| Message other guests privately | When you also allow **Guests can message each other** | When you also allow **Guests can message each other** |
 | Change their own appearance, language, layout and audio preferences | Yes | Yes |
 | Manage your invitations, credentials, workspace storage or native computer tools | No | No |
 
@@ -68,7 +70,7 @@ When Joe is enabled for an invitation, that guest joins the same Joe conversatio
 
 When someone else is typing to Joe in the conversation you are viewing, their avatar and a typing notice appear just above the message box. The typing avatar is the same size as the avatars beside messages. The notice stays outside the input border, whether Joe is docked or in a floating window.
 
-The conversation is saved with your ordinary Joe chat on your computer, so it remains there after the guest leaves, sharing stops or FlowJoe restarts. The **Joe conversations with guests** screen is a separate, read-only way to browse the guest turns grouped by guest; it does not hold a separate live conversation. Joe access is set per invitation. There is no additional all-participants chat switch in the current Share window. If you remove a node or slot from a guest's access, retrying an earlier Joe request cannot retrieve a saved answer about content they can no longer see. Pending requests also stop before releasing more content or changing a conversation or memory after that access changes. A saved computer-only conversation stays private even when someone knows an older conversation or message id.
+The conversation is saved with your ordinary Joe chat on your computer, so it remains there after the guest leaves, sharing stops or FlowJoe restarts. The **Joe conversations with guests** screen is a separate, read-only way to browse the guest turns grouped by guest; it does not hold a separate live conversation. Joe access is set per invitation. Joe does not read the people chat described under **Chat with each other** below; that switch is about people talking to each other, not about Joe. If you remove a node or slot from a guest's access, retrying an earlier Joe request cannot retrieve a saved answer about content they can no longer see. Pending requests also stop before releasing more content or changing a conversation or memory after that access changes. A saved computer-only conversation stays private even when someone knows an older conversation or message id.
 
 Native Browser and Terminal windows belong to your computer and are unavailable to guests. Source Control works through your computer for shared repositories; settings that manage your storage, accounts and credentials remain yours.
 
@@ -90,6 +92,15 @@ Shared Image History includes only pictures recorded for this Flow. Copying a Fl
 Gallery files, link-preview pictures and the media list also follow current access. Ending the invitation or removing a shared slot while a file is loading prevents that pending request from delivering it.
 
 Image history and its pictures follow the guest’s current access. If you remove access to a node, make it private, or end the invitation while a picture or history request is waiting, that request cannot deliver the content afterwards.
+
+### Chat with each other
+
+The Share window has a **Chat with each other** switch. It covers everyone you share this Flow with and is on unless you turn it off. Under it are two choices that only apply while Chat is on:
+
+- **Guests can message each other**: guests can send each other private messages. When this is off, guests can message only you and the group.
+- **Save group chat with the Flow**: the group conversation is kept with the Flow and is there next time you share. When this is off, it's gone when sharing ends.
+
+Private messages are never saved in the Flow; each person keeps their own copy on their own device. Messages between two guests pass through your FlowJoe, which doesn't show them to you or keep them. You can change these switches while people are connected. How to open and use Chat is in [Chat](/workspaces/chat).
 
 ### Settings
 

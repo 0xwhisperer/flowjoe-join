@@ -549,6 +549,13 @@
   #modal-message .cx-switch-row .toggle-switch {
     margin-top: 2px;
   }
+  /* People chat (mockup moment 5a): the two choices that only apply while "Chat with each other" is on sit indented under it. */
+  #modal-message .cx-switch-row.cx-sub-switch {
+    margin-top: 10px;
+    margin-inline-start: 22px;
+    padding-inline-start: 12px;
+    border-inline-start: 2px solid var(--border-light);
+  }
   /* Motion (mockup "Share window"): the switches flip on the quick spring while share motion is on (shareMotion.js keeps .fj-motion-share and the
      spring curve current on the window); with it off the app's own instant flip is untouched. */
   #modal.fj-motion-share .toggle-switch .toggle-slider {

@@ -2161,11 +2161,13 @@
   margin: 4px 0;
   overflow-wrap: anywhere;
 }
-.joe-transcription-job progress {
-  width: 100%;
-  height: 5px;
-  accent-color: var(--accent-color);
-  border: 0;
+.joe-transcription-job .ai-transcribe-progress-bar[data-measured] {
+  animation: none;
+  background: var(--accent-color);
+}
+.joe-transcription-job .joe-transcription-progress-static:not([data-measured]) {
+  animation: none;
+  left: 29%;
 }
 .joe-transcription-job .joe-transcription-excerpt {
   max-height: 140px;

@@ -1,0 +1,851 @@
+@layer app {
+  /* ── People chat (docs/REFERENCE/BROWSER_COLLAB_CHAT.md; approved mockup browser-collaboration-people-chat.html) ──────────────
+     The Chat panel is a SIBLING of #joe-dock in the same grid cell (column 6, row 2), never inside it: presenting copies #joe-dock
+     to followers, and chat must never travel with it. With Joe open, the panel covers Joe's column (same z tier, later in the page);
+     with Joe closed, body.people-chat-open opens the column on its own. Every colour is a theme token; rhythm 4 / 6 / 8 / 12 / 16. */
+
+  body.people-chat-open .container {
+    --joe-dock-width: var(--joe-dock-open-width, 280px);
+    --joe-dock-resizer-width: var(--tree-resizer-width, 8px);
+  }
+
+  body.people-chat-open .joe-dock-resizer {
+    display: block;
+  }
+
+  .pc-chat {
+    grid-column: 6;
+    grid-row: 2;
+    display: none;
+    flex-direction: column;
+    position: relative;
+    z-index: var(--flowjoe-z-people-chat);
+    min-width: 0;
+    min-height: 0;
+    height: calc(100vh - var(--topbar-height, 56px) - var(--status-footer-height, 0px));
+    overflow: hidden;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border-left: 1px solid var(--border-color);
+    box-shadow: -14px 0 30px -18px var(--shadow-heavy, rgba(0, 0, 0, 0.45));
+    font-size: var(--font-control, 13px);
+  }
+
+  body.people-chat-open .pc-chat {
+    display: flex;
+  }
+
+  /* The closing slide's inert copy: pinned to where the panel was (its inline left/top/width/height), outside the grid, so neither a
+     closing column nor the narrow layout squashes it while it slides out. */
+  .pc-chat.pc-exit-copy {
+    display: flex;
+    position: fixed;
+    height: auto;
+    grid-column: auto;
+    grid-row: auto;
+    pointer-events: none;
+  }
+
+  /* Hidden parts stay hidden: several parts set their own display (the message box is flex), which beats the browser's [hidden]. */
+  .pc-chat [hidden] {
+    display: none;
+  }
+
+  /* Narrow windows: while docked Joe floats over the gallery (body.joe-dock-overlay; joeDock.css already gives the column no width and
+     ducks the native browser view), Chat floats over Joe in the same place. With Joe closed, Chat opens the column like any open
+     dock: the gallery narrows and the browser view follows it (browserShellController.js watches the content area's size). */
+  body.people-chat-open.joe-dock-overlay .pc-chat {
+    position: fixed;
+    inset-block: var(--topbar-height, 56px) calc(var(--status-footer-height, 22px) + var(--joe-pet-safe-space, 0px));
+    height: auto;
+    right: 0;
+    width: var(--joe-dock-open-width, 280px);
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  /* ---- Unread: a green speech-bubble count. Not a dot: an avatar's bottom-right dot already means "here now". ---- */
+  .pc-unread {
+    position: absolute;
+    top: -6px;
+    left: -7px;
+    z-index: 6;
+    display: inline-grid;
+    place-items: center;
+    min-width: 16px;
+    height: 15px;
+    padding: 0 4px;
+    box-sizing: border-box;
+    border-radius: 8px 8px 8px 2px;
+    background: var(--success-color);
+    color: var(--text-on-accent, #fff);
+    font:
+      750 9.5px/1 system-ui,
+      -apple-system,
+      "Segoe UI",
+      sans-serif;
+    box-shadow: 0 0 0 2px var(--bg-secondary);
+    pointer-events: none;
+  }
+
+  #app-rail-chat-btn {
+    position: relative;
+  }
+
+  /* ---- Slots in Chat (slice 5a, approved mockup): the drop area, the message box's chips, and the card in a message. ---- */
+  .pc-drop {
+    position: absolute;
+    inset: 6px;
+    z-index: 5;
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 8px;
+    border-radius: var(--radius-lg, 9px);
+    border: 2px dashed var(--accent-color);
+    background: color-mix(in srgb, var(--accent-color) 12%, color-mix(in srgb, var(--bg-secondary) 55%, transparent));
+    backdrop-filter: blur(1.5px);
+    color: var(--text-primary);
+    text-align: center;
+    font-weight: 650;
+    pointer-events: none;
+  }
+
+  .pc-drop i {
+    font-size: 22px;
+    color: var(--accent-color);
+  }
+
+  .pc-drop small {
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  .pc-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+
+  .pc-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    max-width: 100%;
+    min-width: 0;
+    padding: 3px 4px 3px 8px;
+    border-radius: var(--radius-md, 7px);
+    border: 1px solid var(--border-color);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: var(--font-meta);
+  }
+
+  .pc-chip > i {
+    color: var(--accent-color);
+  }
+
+  .pc-chip-name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .pc-chip-remove {
+    display: inline-grid;
+    place-items: center;
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+  }
+
+  .pc-chip-remove:hover,
+  .pc-chip-remove:focus-visible {
+    color: var(--text-primary);
+    background: var(--bg-tertiary);
+  }
+
+  .pc-pic {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+    max-width: 240px;
+    margin-top: 6px;
+    padding: 0;
+    border-radius: var(--radius-md, 7px);
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    background: var(--bg-primary);
+    color: inherit;
+    font: inherit;
+    text-align: start;
+    cursor: zoom-in;
+  }
+
+  .pc-pic.is-off {
+    cursor: default;
+  }
+
+  .pc-pic:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+  }
+
+  .pc-pic img,
+  .pc-pic .ph {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+
+  .pc-pic .ph {
+    background: linear-gradient(135deg, color-mix(in srgb, var(--accent-color) 40%, var(--bg-tertiary)), var(--bg-tertiary));
+  }
+
+  .pc-pic.is-off .ph {
+    aspect-ratio: 8 / 3;
+    background: var(--bg-tertiary);
+  }
+
+  .pc-pic-cap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    padding: 6px 8px;
+    color: var(--text-secondary);
+    font-size: var(--font-meta);
+  }
+
+  .pc-pic-cap > span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .pc-pic-cap i {
+    color: var(--accent-color);
+  }
+
+  /* A picture sent as a file saves when clicked (no viewer of its own). */
+  .pc-pic.is-file {
+    cursor: pointer;
+  }
+
+  .pc-pic.is-file.is-off {
+    cursor: default;
+  }
+
+  /* Any other file in a message: its name and size, and a save button. */
+  .pc-file {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    max-width: 280px;
+    margin-top: 6px;
+    padding: 6px 6px 6px 10px;
+    border-radius: var(--radius-md, 7px);
+    border: 1px solid var(--border-color);
+    background: var(--bg-primary);
+  }
+
+  .pc-file > i {
+    color: var(--accent-color);
+  }
+
+  .pc-file-words {
+    display: grid;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .pc-file-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--text-primary);
+  }
+
+  .pc-file-size {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--text-secondary);
+    font-size: var(--font-meta);
+  }
+
+  .pc-file.is-off .pc-file-save {
+    display: none;
+  }
+
+  /* ---- Profile cards: Message (and, for the owner, Mute in Chat); or the reason a guest cannot message this person. ---- */
+  .pc-card-actions {
+    display: flex;
+    gap: 6px;
+    margin-top: 10px;
+  }
+
+  .pc-card-btn {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    height: 30px;
+    padding: 0 10px;
+    border-radius: var(--radius-md, 7px);
+    border: 1px solid var(--border-color);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: var(--font-control, 12.5px);
+    font-weight: 600;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .pc-card-btn.is-primary {
+    background: var(--accent-color);
+    border-color: var(--accent-color);
+    color: var(--text-on-accent);
+  }
+
+  .pc-card-btn.is-danger {
+    background: var(--danger-color);
+    border-color: var(--danger-color);
+    color: var(--text-on-danger);
+  }
+
+  .pc-card-btn:hover {
+    filter: brightness(1.06);
+  }
+
+  .pc-card-btn:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+  }
+
+  .pc-card-btn.is-quiet {
+    flex: none;
+    width: 30px;
+    padding: 0;
+    color: var(--text-secondary);
+  }
+
+  .pc-card-btn.is-quiet.is-on {
+    color: var(--warning-color, var(--text-primary));
+  }
+
+  .pc-card-btn:disabled {
+    opacity: var(--disabled-opacity-control);
+    cursor: default;
+  }
+
+  .pc-card-note {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    margin-top: 10px;
+    color: var(--text-secondary);
+    font-size: var(--font-meta);
+    line-height: 1.4;
+  }
+
+  .pc-card-note i {
+    margin-top: 2px;
+  }
+
+  /* ---- The new-message toast (the app's own .notification) ---- */
+  .pc-toast {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    min-width: 0;
+  }
+
+  .pc-toast .t {
+    min-width: 0;
+  }
+
+  .pc-toast .t b {
+    display: block;
+  }
+
+  .pc-toast .t span {
+    display: block;
+    color: var(--text-secondary);
+    overflow-wrap: anywhere;
+  }
+
+  .pc-toast-actions {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+  }
+
+  #app-rail-chat-btn .pc-unread {
+    top: 2px;
+    left: auto;
+    right: 6px;
+  }
+
+  .pc-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 10px 8px 14px;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .pc-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 14px;
+  }
+
+  .pc-title i {
+    color: var(--accent-color);
+  }
+
+  .pc-head .pc-grow {
+    flex: 1;
+  }
+
+  .pc-icon {
+    display: inline-grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border: 0;
+    border-radius: var(--radius-md, 7px);
+    background: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+  }
+
+  .pc-icon:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+  }
+
+  .pc-icon:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 1px;
+  }
+
+  .pc-strip {
+    position: relative;
+    display: flex;
+    gap: 4px;
+    padding: 8px 10px 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .pc-convo {
+    position: relative;
+    flex: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    width: 54px;
+    padding: 4px 0 8px;
+    border: 0;
+    background: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font:
+      600 10.5px/1.1 system-ui,
+      -apple-system,
+      "Segoe UI",
+      sans-serif;
+  }
+
+  .pc-convo .pc-label {
+    max-width: 52px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .pc-convo[aria-selected="true"] {
+    color: var(--text-primary);
+  }
+
+  .pc-convo:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: -2px;
+    border-radius: 6px;
+  }
+
+  .pc-convo .pc-unread {
+    top: -2px;
+    left: 6px;
+  }
+
+  .pc-convo.is-off {
+    opacity: var(--disabled-opacity-control, 0.45);
+    cursor: not-allowed;
+  }
+
+  .pc-face {
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    box-shadow: inset 0 0 0 1px var(--border-color);
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .pc-marker {
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    height: 2px;
+    width: 30px;
+    border-radius: 2px;
+    background: var(--accent-color);
+    pointer-events: none;
+  }
+
+  .pc-save {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin: 10px 12px 0;
+    padding: 7px 10px;
+    border-radius: var(--radius-md, 7px);
+    background: var(--bg-primary);
+    color: var(--text-secondary);
+    font-size: var(--font-meta, 11.5px);
+    line-height: 1.4;
+  }
+
+  .pc-save i {
+    margin-top: 2px;
+  }
+
+  .pc-save.is-warn {
+    background: color-mix(in srgb, var(--warning-color) 14%, var(--bg-primary));
+    color: var(--text-primary);
+  }
+
+  .pc-save.is-warn i {
+    color: var(--warning-color);
+  }
+
+  .pc-thread {
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 10px 12px 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .pc-empty {
+    align-self: center;
+    margin: 4px 0 8px;
+    padding: 2px 8px;
+    color: var(--text-secondary);
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+
+  .pc-msg {
+    position: relative;
+    display: grid;
+    grid-template-columns: 26px 1fr;
+    column-gap: 9px;
+    padding: 6px;
+    border-radius: var(--radius-md, 7px);
+  }
+
+  .pc-msg:hover {
+    background: var(--bg-primary);
+  }
+
+  /* Slice 6: Reply and Delete on hover or keyboard focus (approved mockup). */
+  .pc-tools {
+    position: absolute;
+    top: -10px;
+    right: 6px;
+    display: none;
+    gap: 2px;
+    padding: 2px;
+    border-radius: var(--radius-md, 7px);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--elev-floating);
+  }
+
+  .pc-msg:hover .pc-tools,
+  .pc-msg:focus-within .pc-tools {
+    display: flex;
+  }
+
+  .pc-msg:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: -2px;
+  }
+
+  /* Slice 6: the panel's own delete question (never the app's shared dialog, which presenting copies to followers). */
+  .pc-confirm-scrim {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    align-items: flex-end;
+    padding: 12px;
+    background: color-mix(in srgb, var(--bg-primary) 55%, transparent);
+  }
+
+  .pc-confirm {
+    flex: 1;
+    display: grid;
+    gap: 8px;
+    padding: 12px;
+    border-radius: var(--radius-lg, 9px);
+    border: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+    box-shadow: var(--elev-overlay);
+  }
+
+  .pc-confirm-title {
+    font-weight: 650;
+    color: var(--text-primary);
+  }
+
+  .pc-confirm-text {
+    color: var(--text-secondary);
+    font-size: var(--font-meta);
+  }
+
+  .pc-confirm-actions {
+    display: flex;
+    gap: 6px;
+  }
+
+  .pc-tools .pc-icon {
+    width: 24px;
+    height: 24px;
+    font-size: 11.5px;
+  }
+
+  .pc-tools .pc-icon.is-danger:hover,
+  .pc-tools .pc-icon.is-danger:focus-visible {
+    color: var(--danger-color);
+  }
+
+  .pc-msg.is-cont {
+    padding-top: 0;
+  }
+
+  .pc-msg.is-cont .pc-face {
+    visibility: hidden;
+    height: 0;
+  }
+
+  .pc-msg .pc-face {
+    width: 26px;
+    height: 26px;
+    font-size: 10px;
+    margin-top: 2px;
+  }
+
+  .pc-who {
+    display: flex;
+    align-items: baseline;
+    gap: 7px;
+    min-width: 0;
+  }
+
+  .pc-who b {
+    font-weight: 700;
+  }
+
+  .pc-who time,
+  .pc-who .pc-role {
+    color: var(--text-secondary);
+    font-size: 10.5px;
+  }
+
+  .pc-body {
+    min-width: 0;
+    color: var(--text-primary);
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+  }
+
+  .pc-body a {
+    color: var(--accent-color);
+  }
+
+  .pc-removed {
+    color: var(--text-secondary);
+    font-style: italic;
+  }
+
+  .pc-typing {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 2px 6px 6px 41px;
+    color: var(--text-secondary);
+    font-size: 11.5px;
+  }
+
+  .pc-typing .pc-dots {
+    display: inline-flex;
+    gap: 3px;
+  }
+
+  .pc-typing .pc-dots i {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: currentColor;
+    animation: pc-bob 1.2s infinite ease-in-out;
+  }
+
+  .pc-typing .pc-dots i:nth-child(2) {
+    animation-delay: 0.15s;
+  }
+
+  .pc-typing .pc-dots i:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+
+  @keyframes pc-bob {
+    0%,
+    60%,
+    100% {
+      translate: 0 0;
+      opacity: 0.5;
+    }
+    30% {
+      translate: 0 -3px;
+      opacity: 1;
+    }
+  }
+
+  /* pc-still: the Chat motion switch or the global one is off (set by the panel), or the system asks for reduced motion. */
+  .pc-chat.pc-still .pc-typing .pc-dots i {
+    animation: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pc-typing .pc-dots i {
+      animation: none;
+    }
+  }
+
+  .pc-compose {
+    padding: 8px 10px 10px;
+    border-top: 1px solid var(--border-light);
+  }
+
+  .pc-box {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    padding: 6px 6px 6px 10px;
+    border-radius: var(--radius-lg, 9px);
+    border: 1px solid var(--border-color);
+    background: var(--bg-primary);
+  }
+
+  .pc-box:focus-within {
+    border-color: var(--accent-color);
+  }
+
+  .pc-box textarea {
+    flex: 1;
+    min-height: 22px;
+    max-height: 120px;
+    resize: none;
+    border: 0;
+    outline: 0;
+    background: none;
+    color: var(--text-primary);
+    font: inherit;
+    line-height: 1.45;
+    padding: 3px 0;
+  }
+
+  .pc-box textarea::placeholder {
+    color: var(--text-secondary);
+  }
+
+  .pc-send {
+    display: inline-grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border: 0;
+    border-radius: var(--radius-md, 7px);
+    background: var(--accent-color);
+    color: var(--text-on-accent);
+    cursor: pointer;
+  }
+
+  .pc-send:disabled {
+    opacity: var(--disabled-opacity-control, 0.45);
+    cursor: not-allowed;
+  }
+
+  .pc-hint {
+    margin-top: 6px;
+    color: var(--text-secondary);
+    font-size: 10.5px;
+  }
+
+  .pc-hint.is-error {
+    color: var(--danger-color);
+  }
+
+  .pc-status {
+    margin-bottom: 6px;
+    color: var(--danger-color);
+    font-size: var(--font-meta);
+  }
+
+  /* The paperclip sits at the start of the message box (approved mockup). */
+  .pc-box .pc-attach {
+    flex: none;
+    margin-left: -4px;
+  }
+
+  .pc-note {
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+    padding: 10px 12px;
+    border-radius: var(--radius-lg, 9px);
+    background: var(--bg-primary);
+    color: var(--text-secondary);
+    font-size: 12px;
+  }
+}

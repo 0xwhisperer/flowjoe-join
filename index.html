@@ -22,7 +22,7 @@
     <link rel="preload" as="font" type="font/woff2" crossorigin="anonymous" href="vendor/fontawesome-free-6.5.0/webfonts/fa-regular-400.woff2" />
     <!-- App typography families -->
     <link rel="stylesheet" href="vendor/fonts/fonts.css" />
-    <script src="boot/prebootstrap.684a4f51aff9a9f7.js"></script>
+    <script src="boot/prebootstrap.43d5583dd8071366.js"></script>
     <!-- canvas-confetti is now bundled (see VENDOR_GLOBALS in scripts/build-bundle-esm.js) — no CDN dependency. -->
   </head>
   <body>
@@ -33,7 +33,7 @@
     
     <!-- Header -->
     <div class="topbar">
-      <div class="native-titlebar" aria-hidden="true">FlowJoe</div>
+      <div class="native-titlebar" aria-hidden="true"></div>
       <span class="logo-svg">
         <img src="src/assets/coffee-mug-logo.svg" alt="Coffee Mug Logo" />
       </span>
@@ -399,6 +399,11 @@
           <i class="app-rail-icon fa-solid fa-robot" aria-hidden="true"></i>
           <span class="app-rail-label" data-i18n="appRail.items.joe">Joe</span>
         </button>
+        <!-- People chat (BROWSER_COLLAB_CHAT.md): shown only while a share with chat on is running (peopleChatPanel.js). -->
+        <button type="button" class="app-rail-item" id="app-rail-chat-btn" title="Chat" data-i18n-attr="title:appRail.items.chat" aria-pressed="false" aria-controls="people-chat-panel" hidden>
+          <i class="app-rail-icon fa-solid fa-comments" aria-hidden="true"></i>
+          <span class="app-rail-label" data-i18n="appRail.items.chat">Chat</span>
+        </button>
         <button type="button" class="app-rail-item" id="app-rail-browser-btn" title="Browser" data-i18n-attr="title:appRail.items.browser">
           <i class="app-rail-icon fa-solid fa-globe" aria-hidden="true"></i>
           <span class="app-rail-label" data-i18n="appRail.items.browser">Browser</span>
@@ -501,6 +506,8 @@
            clicking it collapses the dock (joeDockLayout.js bindOverlayScrim). -->
       <div id="joe-dock-scrim" class="joe-dock-scrim" hidden></div>
       <aside id="joe-dock" class="joe-dock"></aside>
+      <!-- People chat panel: a sibling of #joe-dock in the same grid cell, never inside it (presenting copies #joe-dock to followers). -->
+      <section id="people-chat-panel" class="pc-chat" aria-labelledby="people-chat-title"></section>
     </div>
     <div id="modal">
       <div>
@@ -2164,6 +2171,6 @@
         </div><!-- /settings-content -->
       </div><!-- /settings-body -->
     </div><!-- /settings-panel -->
-    <script src="boot/progress.bed455f36a607271.js"></script>
+    <script src="boot/progress.ceb21af1f13b4363.js"></script>
   </body>
 </html>

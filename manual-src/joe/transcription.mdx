@@ -17,7 +17,9 @@ You can also name a recording in another accessible node. Joe uses your saved me
 language and local output format. Your request starts the run without another approval.
 
 Joe starts a background job and becomes available for your next message. A compact card above
-the message box shows progress and elapsed time. Use **Stop transcription** on that card to
+the message box shows progress and elapsed time. A moving highlight means the job is active
+but has no measured percentage yet; a solid fill shows measured progress. With reduced motion
+enabled, the activity highlight stays still. Use **Stop transcription** on that card to
 cancel only the recording job; Chat’s usual Stop controls the current reply. Closing Joe’s panel
 does not stop transcription, but FlowJoe must stay open. Jobs do not resume after app restart. If the recording
 is unclear, choose the recording Joe offers. If local transcription needs setup, open the setup
@@ -109,12 +111,14 @@ The size is disk space for the model file, not the amount of memory needed while
 
 1. Choose a node or slot in Joe’s target bar, then select the recording in **Source**. A node shows recordings grouped by slot, including the audio items in each stack. Choosing a recording targets its slot. A slot target shows only recordings in that slot; selecting the node again returns to all its slots.
 2. Choose your **Transcription method**.
-3. For local transcription, choose an installed **Local model**. Under **Options**, choose **Plain text** or **Whisper - Timestamps**. For online transcription, the original **Model** menu offers the paid choices.
+3. For local transcription, choose an installed **Local model**. Under **Options**, choose **Plain text**, **Whisper - Timestamps** or **Speaker Labels + Timestamps**. For online transcription, the original **Model** menu offers the paid choices.
 4. Leave **Language** on **Auto**, or choose **English** when appropriate.
 5. Click **Transcribe**. The button changes to **Stop**, with a working indicator. The status shows the current stage and elapsed time; a percentage appears only when the engine supplies one. Click Stop to cancel. While stopping, wait for the recording to be released. Your previous transcript and edits return after cancellation.
 6. Review or edit the result. **Copy** copies the text. **Save** opens the destination chooser so you can put the transcript in gallery notes or a summary. The history marks it saved only after the destination is saved successfully.
 
 Changing Options affects your next transcription. It does not rewrite text already in the transcript box.
+
+Online transcription saves a result only after the service confirms it is complete. If the connection ends early or stops sending data for 90 seconds, the run fails rather than saving a partial transcript as finished. You can retry the recording. Stop also works while the online result is arriving.
 
 ## Return to a transcript
 
@@ -191,3 +195,15 @@ After a background Chat transcription finishes, Joe offers **Add to gallery** or
 **Not now** leaves the results in **Recent transcripts**, with their opening lines and separate **Open** buttons. Opening one does not replace or remove another. **Keep on this computer only** controls the retained result; accepting Add to gallery creates a separate gallery copy that follows the node’s sharing rules.
 
 If the gallery changes appear but saving fails, Joe says they are still unsaved. The confirmation keeps **Show in gallery**; the same proposal cannot add another copy. Use FlowJoe’s normal Save or Undo to recover. The opening transcript preview, **Open**, and **Copy** remain available after adding it to a stack.
+
+## Transcribe part of a recording
+
+Ask Joe, “Transcribe only the first minute of this podcast,” or specify a start and end time. FlowJoe prepares that excerpt before speech recognition or an online upload; it does not transcribe the full recording and cut the text afterward. The recording stays unchanged. The background card shows the requested interval, and the retained result keeps its time range. Transcript timestamps are relative to the excerpt.
+
+If you correct a running job to a shorter interval, Joe can stop that job and start the requested excerpt after stopping finishes. Each new reply receives the current job state so Joe can check what is actually running.
+
+### Existing models after an update
+
+Your local model selection and installed model files stay on this computer across builds. FlowJoe also recognizes existing compatible Whisper models. On macOS, an existing Homebrew Whisper installation can use the matching installed library recorded by its PyTorch installation when Homebrew’s current library link has changed. This recovery is limited to the Whisper process. It does not download another model.
+
+If the engine cannot start, Joe reports an engine problem and directs you to repair Whisper or choose another installed model. That is distinct from a missing-model setup request. FlowJoe does not silently switch to paid transcription.

@@ -26,6 +26,7 @@
 :root {
   /* In-page layout tier (below all app chrome) */
   --flowjoe-z-joe-dock-scrim: 1000;        /* narrow-window overlay scrim behind the docked Joe column (Step 4c task C): above page content, below the column itself */
+  --flowjoe-z-people-chat: 1001;           /* People chat panel (#people-chat-panel): the docked Joe column's tier; it comes after #joe-dock in the page, so it covers Joe when both are open */
   --flowjoe-z-joe-dock: 1001;              /* docked Joe column (#joe-dock): above page content (.content-section 10, tree .resizer 1000) so Joe's in-panel popovers clear the gallery; below the topbar and every modal surface */
 
   /* App chrome + shared-modal tier (~100k) */

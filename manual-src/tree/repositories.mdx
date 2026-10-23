@@ -337,6 +337,8 @@ With Joe's Read access in the desktop app, using an OpenAI or Gemini API model o
 Ask explicitly for saved text, an open unsaved draft, or an already-open historical file. Joe labels the source and checks that the file and draft version have not changed while reading. If a draft is not open, Joe reports that it is unavailable. Private and Hidden-from-Joe contents remain excluded. Large results are read in bounded parts; unverified deleted paths and oversized files are unavailable. These reads do not edit, save, stage, commit or run commands. External agents connected through the Agent Bridge, including the [FlowJoe CLI](/cli/action-reference#read-repository-state--read_repository), can make the same reads with Read or Propose access. Guests can make these reads for files and repositories visible in their shared Flow when Joe is enabled. Scheduled tasks cannot.
 
 
+In your own OpenAI API chat, Joe can read two independent saved repository files together. For example, ask him to compare two named files using their saved text. Requests for changes and other actions still follow their normal order and approvals.
+
 An open historical tab can be read only while the file is still present and readable in that repository. Deleting the current file or making it private revokes the old tab's read access. FlowJoe checks again before each provider request, including after a wait for approval or a reference chapter; changed files or access cancel the response instead of sending stale text.
 
 ## Ask Joe to change a file

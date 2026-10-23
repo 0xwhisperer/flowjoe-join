@@ -50,6 +50,8 @@ You can generate graphics directly in your workspace:
 - **Reference Images:** Attach an existing gallery image as a reference to steer Joe's generation style or layout.
 - **Write-back Options:** Generated images render inside a chat card. You can click **Send to Gallery** to save it as a new slot, insert it into a stack, or replace an existing image.
 - **If generation fails:** Your previous generated picture and its prompt remain available. A failed replacement request does not clear that draft. The new request stays in the prompt box so you can retry it.
+- **Stop:** If you stop while the image response is arriving, that late response is not accepted as the finished replacement.
+- **Images request timeout:** In the **Images** tab, an image request that has not finished after three minutes stops with a timeout message. Your previous picture stays available, and you can try again. Pressing **Stop** still shows the normal stopped message.
 - **Survives a restart:** A generated image you haven't sent to the gallery yet still shows, and can still be sent or reused, after you close and reopen FlowJoe. If a generated image genuinely can't be recovered, the card says so with a plain note instead of showing a blank frame.
 
 ### Continue an older picture

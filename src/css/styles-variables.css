@@ -9,7 +9,7 @@
     1180px  — large (AI generate/transcribe grids)
    prefers-reduced-motion queries are not width-based and are not listed here. */
 :root {
-  --topbar-height: calc(56px + var(--native-titlebar-height, 0px)); /* .topbar's real height (buttons.css) — the single source layout-height calcs
+  --topbar-height: 56px; /* .topbar's real height (buttons.css) — the single source layout-height calcs
     elsewhere (.container in styles-search.css, #tree in styles-tree.css) subtract to fit under it.
     Those calcs had drifted to a stale 60px literal, leaving a 4px gap where the boot-time reserved
     status-footer strip showed through before the footer itself mounted. */

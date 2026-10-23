@@ -2,12 +2,12 @@
 
 <!-- GENERATED FILE — do not edit by hand. Built from the mintlify user docs by
 scripts/build-app-help-knowledge.js (deterministic digest; re-run it after editing any source page).
-Source pages: workspaces/sharing-and-presenting.mdx
-Generated: 2026-10-20 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
+Source pages: workspaces/sharing-and-presenting.mdx, workspaces/chat.mdx
+Generated: 2026-10-23 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
 Sync guard: tests/unit/appHelpKnowledgeSync.test.js fails when mintlify/**/*.mdx or this digest drifts
 from scripts/app-help-knowledge.manifest.json. -->
 
-This knowledge module teaches Joe sharing a Flow with guests in their browser — turning sharing on, invite links with Can view or Can edit, choosing which nodes a guest sees, what guests can and cannot do, seeing who is here, presenting and following, and what happens when sharing pauses.
+This knowledge module teaches Joe sharing a Flow with guests in their browser — turning sharing on, invite links with Can view or Can edit, choosing which nodes a guest sees, what guests can and cannot do, seeing who is here, presenting and following, chatting with the people in a shared Flow (the Everyone group chat and private messages, Cmd/Ctrl+Shift+X), and what happens when sharing pauses.
 
 Loading this knowledge is not evidence that sharing is on, that any guest is invited or connected, or that the owner is presenting.
 
@@ -36,16 +36,26 @@ A guest sees only what you shared with them. Their theme, their language and the
 - Use Joe when enabled for the invitation — Questions and conversation; no shared-content changes — Ordinary Joe features within their shared access
 - Generate pictures in the Images tab when enabled for the invitation — Read only — Yes
 - Export, download, copy or print — No — Only when you enable **Let guests export**
-- Change their own appearance, language, layout and audio preferences — Yes — Yes
-- Manage your invitations, credentials, workspace storage or native computer tools — No — No
-The same removal permission protects shared Joe conversations in Joe's history popup: an Edit guest can remove their own conversation only when it has no protected contributions from someone else. Clearing a conversation or saving a shortened message list cannot remove those protected contributions.
-Choose the additional removal permission in the invitation to let an Edit guest remove other people's shared content. It never reveals private content and never turns a View invitation into Edit access. Editing a title or note does not change who created the item. Older items without a recorded creator count as yours.
 Making a shared node private removes guest access. Currently, making it public again can require you to confirm the newly available content in Sharing before guests see it again. This extra confirmation is under review; it is not an additional guest permission.
 
-Also covered in the full docs for this area: Repositories and History; Top-level nodes, tags and schedules; Pictures made by guests; Settings; Browse guest turns; If an access change cannot be saved; See who is here; Transfer sharing choices to another Flow; Present your Flow; Locked follow links; When something is wrong; Link-card pictures.
+Also covered in the full docs for this area: Repositories and History; Top-level nodes, tags and schedules; Pictures made by guests; Chat with each other; Settings; Browse guest turns; If an access change cannot be saved; See who is here; Transfer sharing choices to another Flow; Present your Flow; Locked follow links; When something is wrong; Link-card pictures.
+
+## Chat
+
+Talk with the people you share a Flow with: one group conversation for everyone, and private messages between two people.
+
+While you share a Flow, you and your guests can talk to each other in FlowJoe. There is one group conversation, **Everyone**, and a private conversation between any two people. Chat is people only: Joe does not read it, and it is separate from your Joe conversations.
+Chat is on unless you turn it off in the Share window (see Chat with each other).
+
+**Open Chat.**
+- Choose **Chat** on the left rail, just under Joe. It appears while a Flow is shared with Chat on. As the owner you also have it when sharing is off and the open Flow has saved group chat, to read it.
+- Or press **Cmd+Shift+X** (Mac) or **Ctrl+Shift+X** (Windows and Linux). The same keys close it.
+
+Also covered in the full docs for this area: From someone's profile card; Conversations; Share a slot; Send a picture or file; Reply and delete; When the owner's FlowJoe is offline; What is saved, and where; Presenting.
 
 ## Manual links
 
 A FlowJoe manual reference chip linking the page(s) below is already attached under your reply for the user to click — do NOT also write a markdown link to any of them in your prose, and do NOT mention the chip; just answer normally. These are the only manual links that exist — never invent or alter one (no website URLs or paths like /joe/automation).
 
 - [Sharing, Guests and Presenting](flowjoe-docs:workspaces/sharing-and-presenting)
+- [Chat](flowjoe-docs:workspaces/chat)
