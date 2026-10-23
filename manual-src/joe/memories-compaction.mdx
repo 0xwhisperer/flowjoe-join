@@ -38,6 +38,8 @@ Click the **Compact Now** button in the chat options:
 - **Omit from Joe:** Temporarily drops a message from AI uploads while leaving it visible in your user transcript.
 - **Attachment Memories:** When large images or documents are compacted out of verbatim history, Joe distills a permanent text summary (e.g. a layout description for a mockup). This summary carries forward so you don't need to re-upload massive image bytes on every follow-up question.
 
+Joe checks that a background attachment summary still belongs to your conversation before starting or retrying it. If you leave or replace that conversation, work that has not yet been sent is skipped.
+
 On OpenAI, Gemini, Anthropic and xAI API-key brains, attachment summaries have a 30-second request limit. An empty, cut-off, refused or invalid answer is not saved as memory: an image summary is skipped, while a document can keep a clearly marked metadata-only description. OpenAI summary requests disable response storage; FlowJoe keeps its attachment memories locally. For readable text and extracted document text, OpenAI uses Luna 6 to create the saved summary. In an eight-document comparison it preserved the checked facts and uncertainty with lower estimated helper cost and a shorter median wait. Native PDFs and images keep their current summary model; your existing and edited memories stay intact.
 
 

@@ -418,8 +418,9 @@
     flex: 0 0 auto;
   }
 
+  /* The robot: chatting with Joe (AI). Speech bubbles are kept for people chat (BROWSER_COLLAB_CHAT.md). */
   #ai-spell-check-modal.joe-docked #ai-assist-mode-tabs > .ai-mode-tab[data-mode="chat"]::before {
-    content: "\f086" / "";
+    content: "\f544" / "";
   }
 
   #ai-spell-check-modal.joe-docked #ai-assist-mode-tabs > .ai-mode-tab[data-mode="spell-check"]::before {

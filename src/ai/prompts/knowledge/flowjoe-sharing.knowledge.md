@@ -48,7 +48,7 @@ While you share a Flow, you and your guests can talk to each other in FlowJoe. T
 Chat is on unless you turn it off in the Share window (see Chat with each other).
 
 **Open Chat.**
-- Choose **Chat** on the left rail, just under Joe. It appears while a Flow is shared with Chat on. As the owner you also have it when sharing is off and the open Flow has saved group chat, to read it.
+- Choose **Chat** (the speech bubbles) on the left rail or in the header, right after Joe (the robot). Guests have it while the Flow is shared with Chat on. As the owner you always have it in the desktop app, even with no guests and sharing off, so you can read the Flow's saved group chat at any time.
 - Or press **Cmd+Shift+X** (Mac) or **Ctrl+Shift+X** (Windows and Linux). The same keys close it.
 
 Also covered in the full docs for this area: From someone's profile card; Conversations; Share a slot; Send a picture or file; Reply and delete; When the owner's FlowJoe is offline; What is saved, and where; Presenting.

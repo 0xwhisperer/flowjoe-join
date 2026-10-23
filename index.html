@@ -22,7 +22,7 @@
     <link rel="preload" as="font" type="font/woff2" crossorigin="anonymous" href="vendor/fontawesome-free-6.5.0/webfonts/fa-regular-400.woff2" />
     <!-- App typography families -->
     <link rel="stylesheet" href="vendor/fonts/fonts.css" />
-    <script src="boot/prebootstrap.e44e0427e86a5639.js"></script>
+    <script src="boot/prebootstrap.2d338f695c153a4c.js"></script>
     <!-- canvas-confetti is now bundled (see VENDOR_GLOBALS in scripts/build-bundle-esm.js) — no CDN dependency. -->
   </head>
   <body>
@@ -270,6 +270,14 @@
             <i class="fa-solid fa-robot" aria-hidden="true"></i>
           </button>
           <span class="tooltip-content" data-i18n="tooltips.aiAssistModal.chatWithJoe">Chat with Joe</span>
+        </div>
+
+        <!-- People chat (BROWSER_COLLAB_CHAT.md): mirrors the rail's Chat button (Joe first, then Chat; peopleChatPanel.js shows, highlights and counts both). -->
+        <div class="tooltip-wrapper header-tooltip-wrapper" hidden>
+          <button class="icon-btn" id="header-chat-btn" data-tooltip-placement="bottom" data-tooltip-align="end" aria-label="Chat with people" data-i18n-attr="aria-label:collab.peopleChat.chatWithPeople" aria-pressed="false" aria-controls="people-chat-panel" hidden>
+            <i class="fa-solid fa-comments" aria-hidden="true"></i>
+          </button>
+          <span class="tooltip-content" data-i18n="collab.peopleChat.chatWithPeople">Chat with people</span>
         </div>
 
         <div class="topbar-settings-group">
@@ -2171,6 +2179,6 @@
         </div><!-- /settings-content -->
       </div><!-- /settings-body -->
     </div><!-- /settings-panel -->
-    <script src="boot/progress.455e7697110cda39.js"></script>
+    <script src="boot/progress.84eb791950043dbd.js"></script>
   </body>
 </html>

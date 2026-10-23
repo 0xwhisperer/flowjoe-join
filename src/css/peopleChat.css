@@ -88,8 +88,30 @@
     pointer-events: none;
   }
 
-  #app-rail-chat-btn {
+  #app-rail-chat-btn,
+  #header-chat-btn {
     position: relative;
+  }
+
+  /* Unavailable Chat is really gone from the header: .icon-btn and .tooltip-wrapper set their own display, which beats [hidden]. */
+  #header-chat-btn[hidden],
+  .tooltip-wrapper:has(> #header-chat-btn)[hidden] {
+    display: none;
+  }
+
+  /* The header's Joe and Chat buttons are highlighted while their panel is what the right-hand column shows (the same look as the
+     header's other active buttons, styles-browser.css #browser-btn.is-active). */
+  #header-joe-btn.is-active,
+  #header-chat-btn.is-active {
+    background-color: var(--hover-bg);
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+  }
+
+  #header-chat-btn .pc-unread {
+    top: -4px;
+    left: auto;
+    right: -4px;
   }
 
   /* ---- Slots in Chat (slice 5a, approved mockup): the drop area, the message box's chips, and the card in a message. ---- */
