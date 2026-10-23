@@ -3,7 +3,7 @@
 <!-- GENERATED FILE — do not edit by hand. Built from the mintlify user docs by
 scripts/build-app-help-knowledge.js (deterministic digest; re-run it after editing any source page).
 Source pages: getting-started/quickstart.mdx, getting-started/mental-model.mdx, getting-started/hemispheres.mdx, concepts/local-first.mdx, concepts/structure-references-meaning.mdx
-Generated: 2026-10-22 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
+Generated: 2026-10-23 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
 Sync guard: tests/unit/appHelpKnowledgeSync.test.js fails when mintlify/**/*.mdx or this digest drifts
 from scripts/app-help-knowledge.manifest.json. -->
 
@@ -27,8 +27,6 @@ Every project starts with a **Flow**—the whole document, containing one or mor
 **Pick a Starting Shape.**
 To prevent staring at a blank screen, pick one of our pre-designed outline shapes to seed your tree:
 - **Project:** Seeds `Planning`, `Tasks`, and `Assets` nodes.
-- **Media Library:** Seeds `Images`, `Audio`, and `Video` nodes.
-- **People / Clients:** Seeds `Clients`, `Meetings`, and `Deliverables` nodes.
 
 Also covered in the full docs for this area: Optionally Link Joe AI; Choose a Swatch Theme; The Interactive Coach-Mark Tour; Retours & Customizations.
 
@@ -67,8 +65,12 @@ FlowJoe is a desktop workspace that keeps your tree, notes, and imported media o
 
 **Work offline.**
 Your local outlines, notes, and saved files remain available without an internet connection. Free local audio transcription also works offline after its engine and model are installed.
+Websites, online AI, remote sharing, and model downloads need a connection. Recurring Joe tasks may contact an AI provider while the owning Flow is open and scheduled runs are enabled.
 
-Also covered in the full docs for this area: Choose how to store a Flow; Keep a portable copy; Choose what leaves your computer.
+**Choose how to store a Flow.**
+- **Local storage:** FlowJoe manages the Flow and its media in this computer’s app storage.
+
+Also covered in the full docs for this area: Keep a portable copy; Your mobile file explorer; Take a Flow with you; Choose what leaves your computer.
 
 ## Structure · References · Meaning
 

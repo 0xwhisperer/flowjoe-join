@@ -65,18 +65,21 @@ body.density-dense #ai-spell-check-modal.joe-docked #chat-panel {
    compact 12px, dense 9px (delta +8px / -3px from compact); gap comfy 12px, compact 8px, dense 6px
    (delta +4px / -2px from compact). Docked's asymmetric per-axis pairs each get the SAME delta added
    to both of their own components. */
-#ai-spell-check-modal.joe-docked #ai-chat-messages {
+#ai-spell-check-modal.joe-docked #ai-chat-messages,
+.pc-chat .pc-thread {
   --ai-chat-messages-pad-block: 14px 24px;
   --ai-chat-messages-pad-inline: 22px 20px;
   --ai-chat-messages-gap: 18px;
 }
-body.density-compact #ai-spell-check-modal.joe-docked #ai-chat-messages {
+body.density-compact #ai-spell-check-modal.joe-docked #ai-chat-messages,
+body.density-compact .pc-chat .pc-thread {
   /* design tier — unchanged from the removed pins */
   --ai-chat-messages-pad-block: 6px 16px;
   --ai-chat-messages-pad-inline: 14px 12px;
   --ai-chat-messages-gap: 14px;
 }
-body.density-dense #ai-spell-check-modal.joe-docked #ai-chat-messages {
+body.density-dense #ai-spell-check-modal.joe-docked #ai-chat-messages,
+body.density-dense .pc-chat .pc-thread {
   --ai-chat-messages-pad-block: 3px 13px;
   --ai-chat-messages-pad-inline: 11px 9px;
   --ai-chat-messages-gap: 12px;
@@ -137,13 +140,16 @@ body.density-dense #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-m
    dense) applies the vertical delta to its top AND bottom components separately (11→16/9, 4→9/2 —
    both +5/-2, matching the floating vertical delta), and the horizontal delta to left-right
    (12→14/10, +2/-2, matching the floating horizontal delta). */
-#ai-spell-check-modal.joe-docked #ai-chat-input {
+#ai-spell-check-modal.joe-docked #ai-chat-input,
+.pc-chat .pc-input {
   --chat-input-pad: 16px 14px 9px;
 }
-body.density-compact #ai-spell-check-modal.joe-docked #ai-chat-input {
+body.density-compact #ai-spell-check-modal.joe-docked #ai-chat-input,
+body.density-compact .pc-chat .pc-input {
   --chat-input-pad: 11px 12px 4px; /* design tier — unchanged from the removed pin */
 }
-body.density-dense #ai-spell-check-modal.joe-docked #ai-chat-input {
+body.density-dense #ai-spell-check-modal.joe-docked #ai-chat-input,
+body.density-dense .pc-chat .pc-input {
   --chat-input-pad: 9px 10px 2px;
 }
 
@@ -155,7 +161,10 @@ body.density-dense #ai-spell-check-modal.joe-docked #ai-chat-input {
    12/8/6). Declared once at the docked panel root; every consuming rule in joeDockTabs.css inherits
    them, so there is nothing to redeclare per element (unlike the Chat tokens above, these did not
    previously exist anywhere else, so there is no ambient value to override). */
-#ai-spell-check-modal.joe-docked {
+/* .pc-chat shares the docked column's tokens so Chat's matching parts (message box, send button, typing row) look
+   exactly like Joe's at every density (owner direction 2026-10-24: "where it calls for the same elements it should appear the same"). */
+#ai-spell-check-modal.joe-docked,
+.pc-chat {
   --jd-tab-panel-pad: 9px 18px 18px;
   --jd-tab-panel-gap: 22px;
   --jd-tab-card-pad: 15px 18px 18px;
@@ -219,7 +228,8 @@ body.density-dense #ai-spell-check-modal.joe-docked #ai-chat-input {
   --jd-tab-result-gap: 12px; /* .ai-transcribe-result-panel (and -controls' own header-to-first-card gap before the stack-gap override) */
   --jd-tab-wide-gap: 25px; /* the two-pane grid column gap, ≥620/640px container queries */
 }
-body.density-compact #ai-spell-check-modal.joe-docked {
+body.density-compact #ai-spell-check-modal.joe-docked,
+body.density-compact .pc-chat {
   /* design tier — the exact literals joeDockTabs.css used to hardcode */
   --jd-tab-panel-pad: 6px 12px 12px;
   --jd-tab-panel-gap: 14px;
@@ -268,7 +278,8 @@ body.density-compact #ai-spell-check-modal.joe-docked {
   --jd-tab-result-gap: 8px;
   --jd-tab-wide-gap: 16px;
 }
-body.density-dense #ai-spell-check-modal.joe-docked {
+body.density-dense #ai-spell-check-modal.joe-docked,
+body.density-dense .pc-chat {
   --jd-tab-panel-pad: 5px 9px 9px;
   --jd-tab-panel-gap: 11px;
   --jd-tab-card-pad: 8px 9px 9px;

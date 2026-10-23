@@ -59,7 +59,9 @@
 #ai-spell-check-panel,
 .ai-chat-history-popup,
 .ai-generate-prompt-history-popup,
-.ai-image-history-drawer {
+.ai-image-history-drawer,
+.pc-chat {
+  /* .pc-chat: the people-Chat panel shares Joe's text sizes, so both follow the app's font size the same way (peopleChat.css). */
   --ai-font-scale: 1;
   --ai-line-height: var(--notes-line-height, 1.42);
   --ai-panel-text-size: calc(14px * var(--font-scale, 1) * var(--ai-font-scale));

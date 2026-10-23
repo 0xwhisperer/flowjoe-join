@@ -13,6 +13,36 @@
     display: block;
   }
 
+  /* Opening or closing the column on its own (Joe closed) uses Joe's own wipe (joeDockLayout.wipeDockColumnForChat): while it runs, the
+     column stays open even as Chat closes, and the panel's parts are pinned at their final width, right-anchored, so the column's edge
+     reveals or hides them instead of squeezing them (joeDock.css does the same for Joe). */
+  body.people-chat-holding .container,
+  body.people-chat-closing .container {
+    --joe-dock-width: var(--joe-dock-open-width, 280px);
+    --joe-dock-resizer-width: var(--tree-resizer-width, 8px);
+  }
+
+  body.people-chat-holding .joe-dock-resizer,
+  body.people-chat-closing .joe-dock-resizer {
+    display: block;
+  }
+
+  body.people-chat-closing .pc-chat {
+    display: flex;
+  }
+
+  body.people-chat-opening .pc-chat,
+  body.people-chat-closing .pc-chat {
+    align-items: flex-end;
+  }
+
+  body.people-chat-opening .pc-chat > *,
+  body.people-chat-closing .pc-chat > * {
+    flex-shrink: 0;
+    box-sizing: border-box;
+    width: var(--joe-dock-final-open-width, 100%);
+  }
+
   .pc-chat {
     grid-column: 6;
     grid-row: 2;
@@ -24,11 +54,34 @@
     min-height: 0;
     height: calc(100vh - var(--topbar-height, 56px) - var(--status-footer-height, 0px));
     overflow: hidden;
+    /* Joe's docked panel look (AIAssistModalSpellCheckShell.css #ai-spell-check-panel): Joe's glass tint (::before) over the page colour
+       Joe's column sits on, so Chat looks exactly like Joe and nothing under it — Joe's own panel when Chat covers him — shows through. */
     background: var(--bg-secondary);
-    color: var(--text-primary);
+    color: var(--jd-text-1);
     border-left: 1px solid var(--border-color);
-    box-shadow: -14px 0 30px -18px var(--shadow-heavy, rgba(0, 0, 0, 0.45));
-    font-size: var(--font-control, 13px);
+    font-size: var(--ai-panel-text-size); /* Joe's base size, scaled with the app font size (AIAssistModalFontScale.css) */
+  }
+
+  .pc-chat::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--modal-glass-surface-background);
+    pointer-events: none;
+  }
+
+
+  /* The app's bare button rules (buttons.css: a 5px margin, padding, a grey hover with accent text; themes.css: its own transition)
+     must not reach Chat's buttons, just as they never reach Joe's docked ones. Each Chat button sets its own size and states. */
+  .pc-chat button,
+  .pc-toast button {
+    margin: 0;
+    font-family: inherit;
+    transition:
+      background-color var(--transition-speed) ease,
+      color var(--transition-speed) ease,
+      opacity var(--transition-speed) ease;
   }
 
   body.people-chat-open .pc-chat {
@@ -79,11 +132,10 @@
     border-radius: 8px 8px 8px 2px;
     background: var(--success-color);
     color: var(--text-on-accent, #fff);
-    font:
-      750 9.5px/1 system-ui,
-      -apple-system,
-      "Segoe UI",
-      sans-serif;
+    font-family: inherit;
+    font-size: 9.5px;
+    font-weight: 750;
+    line-height: 1;
     box-shadow: 0 0 0 2px var(--bg-secondary);
     pointer-events: none;
   }
@@ -420,20 +472,30 @@
     right: 6px;
   }
 
+  /* Joe's docked header (joeDockChat.css #ai-spell-check-header on the titlebar surface): same padding and gap at every density. */
   .pc-head {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 10px 10px 8px 14px;
-    border-bottom: 1px solid var(--border-light);
+    gap: var(--jd-header-gap);
+    padding: var(--jd-header-pad);
+    border-bottom: 1px solid var(--jd-line-soft);
+    background: var(--modal-glass-titlebar-background);
   }
 
+  /* Joe's title (joeDockChat.css .joe-dock-brand-text > h3). */
   .pc-title {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-weight: 700;
-    font-size: 14px;
+    gap: 9px;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: var(--jd-text-1);
+    font-size: calc(var(--ai-title-text-size) * 0.8);
+    font-weight: 650;
+    letter-spacing: 0.2px;
+    line-height: 1.2;
   }
 
   .pc-title i {
@@ -444,36 +506,52 @@
     flex: 1;
   }
 
+  /* Joe's shared 28px icon button (joeDockChat.css .joe-dock-icon-btn): quiet until hovered; keyboard focus looks like hover. */
   .pc-icon {
     display: inline-grid;
     place-items: center;
+    flex: 0 0 auto;
     width: 28px;
+    min-width: 28px;
     height: 28px;
+    min-height: 28px;
+    padding: 0;
     border: 0;
-    border-radius: var(--radius-md, 7px);
-    background: none;
-    color: var(--text-secondary);
+    border-radius: 7px;
+    background: transparent;
+    color: var(--jd-text-2);
+    font-size: 13px;
+    line-height: 1;
+    box-shadow: none;
     cursor: pointer;
   }
 
-  .pc-icon:hover {
-    background: var(--bg-tertiary);
-    color: var(--text-primary);
+  .pc-icon:hover,
+  .pc-icon:focus-visible {
+    background: var(--jd-hover);
+    color: var(--jd-text-1);
+    outline: none;
   }
 
-  .pc-icon:focus-visible {
-    outline: 2px solid var(--accent-color);
-    outline-offset: 1px;
+  /* Joe's close button turns accent on hover (dropin/03-shape-soft.css) and, on keyboard focus, only brightens; Chat's × does the same. */
+  .pc-head .pc-icon:hover {
+    color: var(--accent-color);
+  }
+
+  .pc-head .pc-icon:focus-visible {
+    background: transparent;
   }
 
   .pc-strip {
     position: relative;
     display: flex;
     gap: 4px;
-    padding: 8px 10px 0;
+    padding: var(--jd-row-margin-top); /* Joe's tab row inset, per density */
+    padding-bottom: 0;
     overflow-x: auto;
+    overflow-y: hidden; /* the marker sits 1px below the row's edge; without this the row scrolls up 1px when a tab takes focus */
     scrollbar-width: none;
-    border-bottom: 1px solid var(--border-light);
+    border-bottom: 1px solid var(--jd-line-soft);
   }
 
   .pc-convo {
@@ -487,13 +565,26 @@
     padding: 4px 0 8px;
     border: 0;
     background: none;
-    color: var(--text-secondary);
+    color: var(--jd-text-2);
     cursor: pointer;
-    font:
-      600 10.5px/1.1 system-ui,
-      -apple-system,
-      "Segoe UI",
-      sans-serif;
+    font-family: inherit;
+    font-size: calc(10.5px * var(--font-scale, 1) * var(--ai-font-scale));
+    font-weight: 600;
+    line-height: 1.1;
+  }
+
+  /* Like Joe's mode tabs: hover brightens the label with no fill; keyboard focus fills the tab with an accent tint, exactly as Joe's tabs
+     do (joeDockChat.css explains why it is not a ring). */
+  .pc-convo:hover {
+    background: none;
+    color: var(--jd-text-1);
+  }
+
+  .pc-convo:focus-visible {
+    border-radius: 7px;
+    background: color-mix(in srgb, var(--accent-color) 24%, transparent);
+    color: var(--jd-text-1);
+    outline: none;
   }
 
   .pc-convo .pc-label {
@@ -504,18 +595,14 @@
   }
 
   .pc-convo[aria-selected="true"] {
-    color: var(--text-primary);
+    color: var(--jd-text-1);
   }
 
-  .pc-convo:focus-visible {
-    outline: 2px solid var(--accent-color);
-    outline-offset: -2px;
-    border-radius: 6px;
-  }
-
+  /* Just off the face's top-right corner, clear of the initials. */
   .pc-convo .pc-unread {
-    top: -2px;
-    left: 6px;
+    top: -5px;
+    left: auto;
+    right: -9px;
   }
 
   .pc-convo.is-off {
@@ -534,7 +621,7 @@
     color: var(--text-primary);
     box-shadow: inset 0 0 0 1px var(--border-color);
     font-size: 12px;
-    font-weight: 700;
+    font-weight: 750;
   }
 
   /* A person's face takes their presence colour (the same --mark-N palette and ink as the avatars in the presence row). */
@@ -591,25 +678,34 @@
     pointer-events: none;
   }
 
-  .pc-save {
+  /* "Who sees this" lines read like Joe's note for guests (guestPresence.css .guest-joe-note): a dashed outline, no fill. */
+  .pc-save,
+  .pc-note {
     display: flex;
     align-items: flex-start;
     gap: 8px;
-    margin: 10px 12px 0;
-    padding: 7px 10px;
-    border-radius: var(--radius-md, 7px);
-    background: var(--bg-primary);
+    padding: 8px 10px;
+    border: 1px dashed var(--border-color);
+    border-radius: 8px;
+    background: transparent;
     color: var(--text-secondary);
-    font-size: var(--font-meta, 11.5px);
-    line-height: 1.4;
+    font-size: var(--ai-small-text-size);
+    line-height: 1.45;
   }
 
-  .pc-save i {
+  .pc-save {
+    margin: 10px 12px 0;
+  }
+
+  .pc-save i,
+  .pc-note i {
     margin-top: 2px;
+    font-size: 11px;
   }
 
   .pc-save.is-warn {
-    background: color-mix(in srgb, var(--warning-color) 14%, var(--bg-primary));
+    border-color: color-mix(in srgb, var(--warning-color) 70%, transparent);
+    background: color-mix(in srgb, var(--warning-color) 8%, transparent);
     color: var(--text-primary);
   }
 
@@ -622,10 +718,15 @@
     flex: 1 1 auto;
     min-height: 0;
     overflow-y: auto;
-    padding: 10px 12px 6px;
+    /* Joe's thread (AIAssistModal.css #ai-chat-messages): spacing at every density, the thin accent scrollbar. */
+    padding-block: var(--ai-chat-messages-pad-block);
+    padding-inline: var(--ai-chat-messages-pad-inline);
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: var(--ai-chat-messages-gap);
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--accent-color) 45%, transparent) transparent;
+    scrollbar-gutter: stable;
   }
 
   .pc-empty {
@@ -638,17 +739,20 @@
     letter-spacing: 0.04em;
   }
 
+  /* Laid out like Joe's replies (joeDockChat.css .ai-chat-message.assistant): a 24px mark, the words at --jd-reply-indent. The hover fill
+     reaches past the row without moving it. */
   .pc-msg {
     position: relative;
     display: grid;
-    grid-template-columns: 26px 1fr;
-    column-gap: 9px;
-    padding: 6px;
-    border-radius: var(--radius-md, 7px);
+    grid-template-columns: 24px 1fr;
+    column-gap: calc(var(--jd-reply-indent) - 24px);
+    padding: 4px 6px;
+    margin: -4px -6px;
+    border-radius: 8px;
   }
 
   .pc-msg:hover {
-    background: var(--bg-primary);
+    background: var(--jd-hover);
   }
 
   /* Slice 6: Reply and Delete on hover or keyboard focus (approved mockup). */
@@ -723,8 +827,9 @@
     color: var(--danger-color);
   }
 
+  /* A person's follow-on messages sit close under their first, so a group reads as one turn. */
   .pc-msg.is-cont {
-    padding-top: 0;
+    margin-top: calc(-4px - var(--ai-chat-messages-gap) + 4px);
   }
 
   .pc-msg.is-cont .pc-face {
@@ -733,10 +838,10 @@
   }
 
   .pc-msg .pc-face {
-    width: 26px;
-    height: 26px;
-    font-size: 10px;
-    margin-top: 2px;
+    width: 24px;
+    height: 24px;
+    font-size: 9px;
+    margin-top: 1px;
   }
 
   .pc-who {
@@ -744,22 +849,24 @@
     align-items: baseline;
     gap: 7px;
     min-width: 0;
+    font-size: var(--ai-small-text-size);
   }
 
   .pc-who b {
-    font-weight: 700;
+    font-weight: 650;
   }
 
   .pc-who time,
   .pc-who .pc-role {
-    color: var(--text-secondary);
-    font-size: 10.5px;
+    color: var(--jd-text-3);
+    font-size: calc(11px * var(--font-scale, 1) * var(--ai-font-scale));
   }
 
+  /* Joe's message text: the panel's base size and line height. */
   .pc-body {
     min-width: 0;
-    color: var(--text-primary);
-    line-height: 1.45;
+    color: var(--jd-text-1);
+    line-height: 1.35;
     overflow-wrap: anywhere;
     white-space: pre-wrap;
   }
@@ -773,121 +880,109 @@
     font-style: italic;
   }
 
-  .pc-typing {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 2px 6px 6px 41px;
-    color: var(--text-secondary);
-    font-size: 11.5px;
-  }
+  /* ── Where Chat has the same parts as Joe's docked chat, they look the same (owner direction 2026-10-24). The values come from the
+     docked column's own tokens (--jd-*, --chat-input-pad, --jd-inset-margin, --jd-composer-row-pad-*), which joeDockChat.css and
+     dropin/06-joe-dock-density.css also give .pc-chat, so Chat follows Joe at every density and theme. ── */
 
-  .pc-typing .pc-dots {
-    display: inline-flex;
-    gap: 3px;
-  }
-
-  .pc-typing .pc-dots i {
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    background: currentColor;
-    animation: pc-bob 1.2s infinite ease-in-out;
-  }
-
-  .pc-typing .pc-dots i:nth-child(2) {
-    animation-delay: 0.15s;
-  }
-
-  .pc-typing .pc-dots i:nth-child(3) {
-    animation-delay: 0.3s;
-  }
-
-  @keyframes pc-bob {
-    0%,
-    60%,
-    100% {
-      translate: 0 0;
-      opacity: 0.5;
-    }
-    30% {
-      translate: 0 -3px;
-      opacity: 1;
-    }
-  }
-
-  /* pc-still: the Chat motion switch or the global one is off (set by the panel), or the system asks for reduced motion. */
-  .pc-chat.pc-still .pc-typing .pc-dots i {
-    animation: none;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .pc-typing .pc-dots i {
-      animation: none;
-    }
+  /* The typing row is Joe's .ai-chat-shared-typing (AIAssistModal.css): avatar, then the words; inset like the docked one. */
+  .pc-typing.ai-chat-shared-typing {
+    margin: var(--jd-inset-margin);
+    margin-bottom: 7px;
+    padding: 0;
   }
 
   .pc-compose {
-    padding: 8px 10px 10px;
-    border-top: 1px solid var(--border-light);
+    margin: var(--jd-inset-margin);
+    padding: 0 0 10px;
   }
 
+  /* Joe's message box: text on top, a tool row beneath (paperclip at the start, Send at the end). */
   .pc-box {
-    display: flex;
-    align-items: flex-end;
-    gap: 6px;
-    padding: 6px 6px 6px 10px;
-    border-radius: var(--radius-lg, 9px);
-    border: 1px solid var(--border-color);
-    background: var(--bg-primary);
+    position: relative;
+    margin: 0;
+    padding: 0;
+    border: 1px solid var(--jd-line);
+    border-radius: 12px;
+    background: var(--jd-surface);
+    overflow: hidden;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
   }
 
   .pc-box:focus-within {
-    border-color: var(--accent-color);
+    border-color: var(--jd-accent-line);
+    box-shadow: 0 0 0 3px var(--jd-accent-soft);
   }
 
   /* By id: the app's global field rules (styles-gallery-notes.css `textarea:not(.image-notes)` and its :focus, which add a background,
      top/bottom borders, padding and an outline) must never draw a second box inside this one — the box itself shows focus. */
-  .pc-box #people-chat-input,
-  .pc-box #people-chat-input:focus {
-    width: auto;
-    border: 0;
-    border-radius: 0;
-    outline: 0;
-    background: none;
-    box-shadow: none;
-    padding: 3px 0;
-    font-size: inherit;
-  }
-
-  .pc-box textarea {
-    flex: 1;
-    min-height: 22px;
-    max-height: 120px;
+  .pc-box .pc-input,
+  .pc-box .pc-input:focus {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 64px;
+    max-height: 200px;
+    field-sizing: content;
     resize: none;
+    margin: 0;
+    padding: var(--chat-input-pad);
     border: 0;
+    border-radius: 12px 12px 0 0;
     outline: 0;
-    background: none;
-    color: var(--text-primary);
-    font: inherit;
-    line-height: 1.45;
-    padding: 3px 0;
+    background: transparent;
+    box-shadow: none;
+    color: var(--jd-text-1);
+    font-family: inherit;
+    font-size: var(--ai-control-text-size);
+    line-height: 1.5;
   }
 
-  .pc-box textarea::placeholder {
-    color: var(--text-secondary);
+  .pc-box .pc-input::placeholder {
+    color: var(--jd-text-3);
   }
 
+  .pc-box-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2px;
+    padding: 2px var(--jd-composer-row-pad-inline) var(--jd-composer-row-pad-block-end); /* Joe's tool row is 2px taller */
+  }
+
+  /* Joe's Send: a 30px accent square, 9px corners, a 12px up arrow; keyboard focus swaps the two colours (joeDockChat.css). */
   .pc-send {
-    display: inline-grid;
-    place-items: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
     width: 30px;
+    min-width: 30px;
     height: 30px;
+    padding: 0;
     border: 0;
-    border-radius: var(--radius-md, 7px);
+    border-radius: 9px;
     background: var(--accent-color);
     color: var(--text-on-accent);
+    box-shadow: none;
     cursor: pointer;
+  }
+
+  .pc-send > i {
+    font-size: 12px;
+  }
+
+  /* Joe's Send on hover stays the accent square, a touch lighter (AIAssistModalSpellCheckShell.css #ai-spell-check-modal .btn:hover). */
+  .pc-send:hover {
+    background: var(--accent-color);
+    color: var(--text-on-accent);
+    opacity: 0.9;
+  }
+
+  .pc-send:focus-visible {
+    background: var(--text-on-accent);
+    color: var(--accent-color);
   }
 
   .pc-send:disabled {
@@ -897,8 +992,8 @@
 
   .pc-hint {
     margin-top: 6px;
-    color: var(--text-secondary);
-    font-size: 10.5px;
+    color: var(--jd-text-3);
+    font-size: calc(11px * var(--font-scale, 1) * var(--ai-font-scale));
   }
 
   .pc-hint.is-error {
@@ -911,20 +1006,8 @@
     font-size: var(--font-meta);
   }
 
-  /* The paperclip sits at the start of the message box (approved mockup). */
+  /* The paperclip sits at the start of the tool row, like Joe's. */
   .pc-box .pc-attach {
     flex: none;
-    margin-left: -4px;
-  }
-
-  .pc-note {
-    display: flex;
-    gap: 8px;
-    align-items: baseline;
-    padding: 10px 12px;
-    border-radius: var(--radius-lg, 9px);
-    background: var(--bg-primary);
-    color: var(--text-secondary);
-    font-size: 12px;
   }
 }

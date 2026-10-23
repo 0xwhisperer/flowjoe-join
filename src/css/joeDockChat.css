@@ -17,7 +17,9 @@
      .joe-docked class so they outrank the floating rules (incl. the JS-injected
      <style id="joe-ai-modal-styles">, which sits later in the same @layer) without !important. */
 
-  #ai-spell-check-modal.joe-docked > #ai-spell-check-panel {
+  /* The docked column's colour ladder, shared with the people-Chat panel so the parts both have look the same. */
+  #ai-spell-check-modal.joe-docked > #ai-spell-check-panel,
+  .pc-chat {
     /* Surface ladder, mapped from the mockup's bg-0..bg-4 onto the theme's own tokens: the page is
        --bg-primary, the column sits one half-step up, raised surfaces (composer, target chip, cards,
        popovers) use --bg-secondary, wells (tab track, the user's bubbles) use --bg-tertiary. */
@@ -38,6 +40,9 @@
     --jd-radius: var(--radius-xl, 10px);
     --jd-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
     --jd-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, monospace;
+  }
+
+  #ai-spell-check-modal.joe-docked > #ai-spell-check-panel {
     /* The conversation reads at the panel's base size (a step under the floating window's chat text,
        toward the mockup's scale); the app font scale and A+ still scale it. */
     --ai-chat-text-size: var(--ai-panel-text-size);
@@ -450,8 +455,12 @@
     color: var(--accent-color);
   }
 
+  /* Keyboard focus fills the tab with an accent tint and brightens it — on the selected tab too (Chat's conversation tabs do the same,
+     peopleChat.css). A ring is not possible here: buttons.css's global `button:focus { … !important }` rules erase outline and shadow
+     rings and force a border colour on any focus, a mouse click included. A fill never changes the tab's size and never shows on a click. */
   #ai-spell-check-modal.joe-docked #ai-assist-mode-tabs > .ai-mode-tab:focus-visible {
-    box-shadow: 0 0 0 2px var(--jd-accent-line);
+    background: color-mix(in srgb, var(--accent-color) 24%, transparent); /* an accent tint: clear in light themes too, where the hover colour is faint */
+    color: var(--jd-text-1);
   }
 
   /* Short labels (the long label stays the tab's text + accessible name). Docked Joe always shows

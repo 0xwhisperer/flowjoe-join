@@ -5,7 +5,7 @@ description: "Check saved data, inspect unused media, and include your preferenc
 
 
 <Frame caption="Slots and media are different counts: a stack is one slot, while its members count as media.">
-  <img src="/images/reference/library-stats.png" alt="The actual Library Stats card for Lantern Vale counts six nodes, three slots and three images, with other media counts at zero." />
+  <img src="/images/reference/library-stats.png" alt="The actual Library Stats card for a mixed-media sample Flow shows six nodes, thirteen slots, three images, one video, two audio files, one URL, one document, two PDFs, one spreadsheet, one calendar and one other file." />
 </Frame>
 
 ## Check storage
@@ -20,6 +20,8 @@ Use the inspection controls before deleting anything:
 - **Inspect Stale References** checks references whose files may be missing.
 - **Inspect Orphaned Image Prompts** finds image-prompt records no longer attached to their images.
 - **View Diagnostics Log**, on desktop, opens troubleshooting information.
+
+For slow Joe replies, the desktop app also keeps bounded local support summaries of OpenAI request times and reported cache reuse. These summaries contain counts and timings, without conversation text or API keys. They help investigate delays; they do not measure the complete time you waited for a reply.
 
 Read the inspection results before choosing a cleanup. Export a backup first if you are unsure.
 
