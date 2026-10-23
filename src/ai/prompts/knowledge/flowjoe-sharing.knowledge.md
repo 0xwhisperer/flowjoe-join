@@ -50,6 +50,7 @@ Chat is on unless you turn it off in the Share window (see Chat with each other)
 **Open Chat.**
 - Choose **Chat** (the speech bubbles) on the left rail or in the header, right after Joe (the robot). Guests have it while the Flow is shared with Chat on.
 - Or press **Cmd+Shift+X** (Mac) or **Ctrl+Shift+X** (Windows and Linux). The same keys close it.
+A green count on the **Chat** button, and on each conversation at the top of the panel, shows how many messages you haven't read yet. Someone who has sent you a private message you haven't read also gets a green count on their picture at the top of the window.
 
 Also covered in the full docs for this area: From someone's profile card; Conversations; Share a slot; Send a picture or file; Reply and delete; When the owner's FlowJoe is offline; What is saved, and where; Presenting.
 
