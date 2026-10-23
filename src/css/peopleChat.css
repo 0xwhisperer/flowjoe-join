@@ -515,6 +515,49 @@
     font-weight: 700;
   }
 
+  /* A person's face takes their presence colour (the same --mark-N palette and ink as the avatars in the presence row). */
+  .pc-face.mk-1 {
+    --mk: var(--mark-1);
+  }
+  .pc-face.mk-2 {
+    --mk: var(--mark-2);
+  }
+  .pc-face.mk-3 {
+    --mk: var(--mark-3);
+  }
+  .pc-face.mk-4 {
+    --mk: var(--mark-4);
+  }
+  .pc-face.mk-5 {
+    --mk: var(--mark-5);
+  }
+  .pc-face.mk-6 {
+    --mk: var(--mark-6);
+  }
+  .pc-face.mk-7 {
+    --mk: var(--mark-7);
+  }
+  .pc-face.mk-8 {
+    --mk: var(--mark-8);
+  }
+  .pc-face.mk-9 {
+    --mk: var(--mark-9);
+  }
+  .pc-face.mk-10 {
+    --mk: var(--mark-10);
+  }
+  .pc-face.mk-11 {
+    --mk: var(--mark-11);
+  }
+  .pc-face.mk-12 {
+    --mk: var(--mark-12);
+  }
+  .pc-face[class*=" mk-"] {
+    background: var(--mk);
+    color: var(--avatar-ink);
+    box-shadow: none;
+  }
+
   .pc-marker {
     position: absolute;
     bottom: -1px;
@@ -779,6 +822,20 @@
 
   .pc-box:focus-within {
     border-color: var(--accent-color);
+  }
+
+  /* By id: the app's global field rules (styles-gallery-notes.css `textarea:not(.image-notes)` and its :focus, which add a background,
+     top/bottom borders, padding and an outline) must never draw a second box inside this one — the box itself shows focus. */
+  .pc-box #people-chat-input,
+  .pc-box #people-chat-input:focus {
+    width: auto;
+    border: 0;
+    border-radius: 0;
+    outline: 0;
+    background: none;
+    box-shadow: none;
+    padding: 3px 0;
+    font-size: inherit;
   }
 
   .pc-box textarea {
