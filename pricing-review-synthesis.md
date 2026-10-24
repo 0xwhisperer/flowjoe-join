@@ -1,5 +1,29 @@
 # FlowJoe Pricing & Product Strategy: Synthesis of Shalom's Feedback
 
+## Current launch terms — updated October 24, 2026
+
+This is a historical review of an earlier pricing draft. The discussion below is retained as background, including Shalom's original suggestions and historical competitor comparisons; it does not establish current prices, verified implementation, privacy guarantees or a decision to reduce launch scope. Where it differs, the current terms here and the [pricing page](https://join.flowjoe.app/pricing.html) take precedence. The complete planned launch offering remains the target; commercial implementation and release verification are still required.
+
+| Offering | Monthly payment | Annual or one-time payment |
+|---|---|---|
+| Solo | Free | Free |
+| Pro, standard | $10/month | $96/year ($8/month equivalent) |
+| Pro, Founder Forever | Standard $10/month if monthly is chosen; founder status retained | $72/year ($6/month equivalent, paid annually) |
+| Co-Host on Pro | $6/month; maximum one position | $56/year; maximum one position |
+| Team | $18/seat/month; two-seat minimum totals $36/month | $180/seat/year; two-seat minimum totals $360/year |
+| Project Pass | No recurring subscription | $15 one-time for 30 days of Pro sharing |
+| Project Pass with Co-Host | No recurring subscription | $21 one-time for the same 30 days with one assignable Co-Host |
+
+- Pro allows the owner plus three guest editors, with unlimited viewers. A Co-Host uses one guest-editor place, leaving two for other guest editors. The owner remains a leader alongside the Co-Host and retains final control.
+- A Pro account can add at most one paid Co-Host position. Assign it before or during a meeting; it can change between meetings or be replaced immediately. The new Co-Host gets a notification explaining the role. Removing or replacing the role preserves ordinary guest access unless the owner separately changes that access. Reconnecting restores Co-Host powers only while the person remains assigned.
+- The Founder Forever offer is Pro annual only, available during the first 30 launch days or first 1,000 subscribers, whichever comes first. The account retains its founder rate through cancellation, lapse and Team changes; returning to Pro annual restores $72/year. Team uses standard rates. No separate founder Co-Host discount has been defined.
+- Both Pass options are one-time 30-day purchases with no automatic renewal. The $21 option includes one Co-Host for its purchased term and does not start a Co-Host subscription. Same-option renewals add time rather than positions; mixed Pass purchases, mid-Pass upgrades and recurring-plan overlaps still need an entitlement contract before implementation. Existing paid-customer rules reserve the personal address for 12 months after paid access ends.
+- Annual savings differ: standard Pro saves $24/year (20%); Team saves $36/seat/year (about 16.7%); Co-Host saves $16/year (about 22.2%). “Save with Annual” avoids claiming one uniform discount. Standard annual Pro with one annual Co-Host totals $152/year; Founder annual Pro with the same add-on totals $128/year.
+- Team retains its existing “Everything in Pro, plus” and independent-hosting direction; its precise Co-Host role wording still needs clarification before adding new charges or allowances. Studio/Enterprise remains the already-planned post-launch offering. Sharing addresses use `name.flowjoe.live`; `flowjoe.app` is for FlowJoe-controlled pages.
+
+## Historical review — earlier draft, not current commercial terms
+
+
 This document reflects on the thoughtful review shared by Shalom, exploring her perspectives alongside the current FlowJoe architecture, recent pricing refinements, and product roadmap. Rather than a critique, this is a collaborative volley of ideas looking at where her instincts highlight sharp user insights, where our recent architectural breakthroughs address her questions, and how we can fold her best suggestions into our launch strategy.
 
 ---
