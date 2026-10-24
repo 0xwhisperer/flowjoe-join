@@ -3,7 +3,47 @@ title: "Move a Flow to another computer"
 description: "Take your tree, references, and optional preferences with you."
 ---
 
-A full **.fj** package is a convenient way to carry a Flow as one file.
+A full **.fj** package is a convenient way to carry a Flow as one file. What it can recover depends on your export choices. Automatic saves and recovery copies on the same computer do not protect you if that computer is lost.
+
+## What each copy preserves
+
+This inventory describes FlowJoe's current storage and export paths. Check your choices each time you make a backup, especially after changing Private protection or history settings.
+
+| Content | Copy of the whole Workspace folder | Full `.fj` package | Data-only JSON |
+|---|---|---|---|
+| Included tree, notes, summaries, tags and gallery layout | Yes, as last saved to the folder | Yes, within the chosen export scope | Yes, within the chosen export scope |
+| Imported images, audio, video, PDFs and other stored files | Copy `media/` with the folder | Included referenced media; unused stored files are omitted | Media references only; no bundled file bytes |
+| Saved spreadsheet, document and calendar workbenches | Keep the whole folder and its media | Included saved workbench assets travel with the package | Do not rely on it for workbench assets stored as media |
+| Private node text and media | Redacted placeholders; full content stays on the original computer | Only Private nodes you explicitly select and confirm with their passwords | Same explicit selection, but media bytes are omitted |
+| Joe conversations and their chat pictures | Eligible ordinary conversations and picture backups; Private and computer-only conversations stay local | Select **Include AI chat and image history**; eligible history and chat picture bytes travel | Selected eligible text/history and picture references, without picture bytes |
+| Standalone Image History and prompts | Stay local; a picture saved in an ordinary gallery travels as gallery media | Eligible records follow **Include AI chat and image history** | Eligible records follow that choice; no picture bytes |
+| Transcript history | Eligible records in `.flowjoe/transcript-history.json`; include the hidden `.flowjoe/` folder | **Include transcript history**, on by default, carries eligible text and retained edits | Same history option; original recording bytes are omitted |
+| Slot text and undo-note history | Do not treat the folder as a portable copy of the app's undo history | Follow **Include undo notes history** | Follow the same option |
+| Joe Memories | Stay local | Included for the exported Flow or branch, subject to Private exclusions | Same scope and exclusions |
+| Scheduled tasks | Travel with the Flow | Included unless you turn off their export option | Same option |
+| Saved Everyone chat and its attachments | Travel when **Save group chat with the Flow** was enabled | Saved messages and referenced attachment bytes travel | Saved messages and file references; no attachment bytes |
+| Private conversations between people and their files | Stay on each participant's device | Excluded | Excluded |
+| Preferences and saved playlists | Preferences stay local | Enable **Save Preferences With Exports** for supported preferences | Same setting |
+| Browser data | Stays local | Only the browser data offered by the explicit export option | Same option; not a backup of every browser profile or sign-in |
+| Sharing setup and guests' saved Joe conversations | Not a backup of working invitations or account access | Whole-Flow export has separate choices; imported sharing stays inactive until reviewed and freshly invited | Same choices |
+| Version History and restore points | Stay in this computer's app storage | Excluded | Excluded |
+| API keys | Not part of the Workspace folder | Excluded by default; only the explicit OpenAI-key option transfers that credential | Same option; leave it off for ordinary backups |
+
+Histories marked **Keep on this computer only** remain excluded even if you select their history option or include their Private node. Nested Private nodes each need their own inclusion choice. Exporting a branch leaves out work and histories outside that branch.
+
+**Linked files are separate.** A saved path is not a copy of the file. Copy linked originals separately and relink them on the destination. Live websites and external embeds still depend on their services. A Flow export is not a backup of a Git repository's complete commit history, your installed tools, AI models, account sign-ins or every app setting; back up those separately if you need them.
+
+Ordinary Workspace files, JSON and unprotected packages are readable outside FlowJoe. **Protect package with a password** encrypts the exported snapshot, including admitted Private content; it does not add missing content or encrypt the restored working Flow. A protected data-only export is still data-only, even though its encrypted container uses the `.fj` extension. See [Export & import](/portability/export-import).
+
+## Protect against losing this computer
+
+1. Finish saving your work. If saving is blocked or a folder is unavailable, resolve that state before treating a folder copy as current.
+2. Export the **whole Flow** as a full package with media. Explicitly include every Private node you need, and choose the histories, tasks and preferences you want to preserve. Leave API-key transfer off unless you deliberately need it.
+3. Enable **Protect package with a password** for sensitive content. Keep the package password and the included nodes' separate passwords or existing node recovery keys safe, separately from the backup. A node recovery key cannot unlock the outer package, and FlowJoe cannot recover a lost package password.
+4. Copy the completed package and any linked originals to another drive kept separately, or to a backup service you trust. A second file on the same computer is still vulnerable to loss of that computer. Keep an earlier dated copy as well; sync alone can propagate accidental deletion.
+5. Open a copy in a separate test installation before relying on it. Check ordinary and Private text, actual media files, saved workbenches and the histories you selected. Verify linked originals after relinking. Export any existing work before replacing it during an import.
+
+The Local Recovery Copy, restore points and the Workspace's retained `.flowjoe/` backups help with local mistakes or a folder outage. They are not a complete off-device backup of owner-only data. This guide is a contents inventory and procedure, not evidence that a clean-computer disaster-recovery rehearsal has been completed.
 
 
 <Frame caption="Choose a full package when the media needs to travel, and verify linked-file paths on the destination.">
@@ -14,7 +54,7 @@ A full **.fj** package is a convenient way to carry a Flow as one file.
 
 1. If you want your display settings and playlists included, choose **Settings → Data → Save Preferences With Exports**.
 2. Choose **File → Export Flow**.
-3. Export the whole Flow as a **.fj** package, including its media.
+3. Export the whole Flow as a **.fj** package, including its media. Private nodes start excluded: explicitly select each one you need and confirm its password. Choose the histories you want to carry.
 4. Keep the API-key option off unless you deliberately want to transfer that key. Choose package password protection if needed.
 5. Save the package, then copy it to the other computer or backup drive.
 

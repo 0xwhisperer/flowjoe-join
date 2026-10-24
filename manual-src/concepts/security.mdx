@@ -14,7 +14,7 @@ FlowJoe puts your work on your computer and gives you clear controls for bringin
 
 Normal desktop work stays in app storage, or in a **Workspace Folder** you choose. A Workspace Folder keeps the Flow and its shared media in files you can back up or sync with your own tools.
 
-Sharing deliberately sends permitted content to guests through the owner’s computer. Remote sharing can use a Cloudflare tunnel. AI features send the context they need to the selected provider; the provider’s account and data policies apply. Web browsing and link previews also contact websites.
+Sharing deliberately sends permitted content to guests through the owner’s computer. Remote sharing can use a Cloudflare tunnel. That connection is encrypted between each computer and Cloudflare, where traffic is decrypted before being forwarded; it is not end-to-end encrypted between owner and guest. AI features send the context they need to the selected provider; the provider’s account and data policies apply. Web browsing and link previews also contact websites.
 
 See [Workspace folders](/workspaces/folders), [Sharing](/workspaces/sharing-and-presenting), and [Token usage](/joe/token-usage).
 
@@ -51,6 +51,8 @@ Select **Protect package with a password** when exporting to encrypt the entire 
 The recipient needs the **package password** to import the file. Included Private nodes keep their separate **node passwords** and remain locked after import. Unlocking the package does not unlock those nodes.
 
 Package encryption protects that exported copy. Import restores its contents into FlowJoe’s normal storage; it does not create an encrypted live Flow or Workspace Folder. Keep using your computer’s disk protection. The outer file name and file size remain visible.
+
+A Workspace folder copy cannot recover Private content kept only on the lost computer. For an off-device backup, explicitly include each Private node and its needed history in a full, password-protected package, and keep its package password and separate node passwords safe. See [Backup contents and exclusions](/guides/portability#what-each-copy-preserves).
 
 Keep the package password safe: FlowJoe cannot recover a package if you lose it. See [Password-protected packages](/portability/export-import#password-protected-packages) for the export and import steps.
 

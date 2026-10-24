@@ -62,6 +62,8 @@ Each chat message also shows a small cost chip (for example `+150 tok/send`). Pi
 
 The number does not move while you type. Your unsent draft is shown separately as **draft +N on send** and is added to the total only when you send.
 
+The **FlowJoe manual** count starts with a short estimate, then updates when the selected chapters have loaded. If Joe selects different chapters or you switch conversations, an older lookup cannot replace the newer count.
+
 The bar is an estimate based on the text’s characters and scripts. Recognized decomposed accents and Korean syllables receive a conservative extra allowance. Context warnings or compaction can therefore appear earlier for that text. After each reply the app records the provider's real input-token count next to the estimate it made for that send (visible in the diagnostics/debug output), so a persistent gap can be spotted and fixed.
 
 With **Luna 6 on your own OpenAI API key**, Joe can ask for more thinking after a failed action and return to the normal level after recovery while keeping the earlier conversation available for cache reuse. This happens automatically during the reply. The receipt still shows the provider's actual cached tokens and estimated cost; savings vary with the conversation.

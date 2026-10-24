@@ -3,7 +3,7 @@
 <!-- GENERATED FILE — do not edit by hand. Built from the mintlify user docs by
 scripts/build-app-help-knowledge.js (deterministic digest; re-run it after editing any source page).
 Source pages: tree/status-theming.mdx
-Generated: 2026-10-18 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
+Generated: 2026-10-24 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
 Sync guard: tests/unit/appHelpKnowledgeSync.test.js fails when mintlify/**/*.mdx or this digest drifts
 from scripts/app-help-knowledge.manifest.json. -->
 
@@ -50,8 +50,7 @@ Marking a node as Frozen (padlock icon) keeps its gallery content from being cha
 - **Unfreeze Toggle:** Clicking the padlock badge in the gallery header opens a confirmation modal before unfreezing.
 
 **Private (Password-Protected) Nodes.**
-Private nodes hide sensitive content behind a password verifier.
-- **Temporary Unlock:** Right-click and enter your password. This starts an in-memory session. Leaving the node, reloading the app, or disconnecting the workspace immediately re-locks it.
+Private nodes require a password to view their contents in FlowJoe. Their saved content and media are not encrypted at rest. For a protected portable backup, explicitly include the Private node and enable package password protection; see Password-protected packages. Importing that backup preserves the node’s separate password lock.
 
 Also covered in the full docs for this area: Hidden from Joe Nodes.
 

@@ -3,7 +3,7 @@
 <!-- GENERATED FILE — do not edit by hand. Built from the mintlify user docs by
 scripts/build-app-help-knowledge.js (deterministic digest; re-run it after editing any source page).
 Source pages: workspaces/folders.mdx, workspaces/recovery.mdx
-Generated: 2026-10-19 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
+Generated: 2026-10-24 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
 Sync guard: tests/unit/appHelpKnowledgeSync.test.js fails when mintlify/**/*.mdx or this digest drifts
 from scripts/app-help-knowledge.manifest.json. -->
 
@@ -32,13 +32,12 @@ Also covered in the full docs for this area: Where to find it; Setting one up; W
 
 Restore points that let you jump back to an earlier version of your Flow, plus the safety nets that keep your work when something goes wrong.
 
-Restore points and History work; Local Recovery Copy is Workspace-only.
+Restore points and Local Recovery Copy stay on-device; the latter is Workspace-only. Folder copies omit Private content; export it explicitly in a protected package off-device.
 **History** in the app rail: **Versions**, **Chats**, **Images**. Guests read shared nonprivate history.
 **Chats**: this Flow’s conversations; search/filter, **Open** in Joe. Deleted places: **No longer in your flow**, read-only.
-Implemented source; release not implied.
-Ordinary chats/backups travel with the Workspace. **Keep on this computer only** applies per conversation. Private-node/computer-only chats, chat-only pictures and image-history prompts stay out of folders, exports and shares; moving a slot privately applies immediately.
-Each Flow owns its chats/summary; the old global summary is adopted once by the open Flow. Exports carry history for that Flow/branch. Failed reads block overwrite; switching Flows cancels deletion; New Chat cannot clear another target.
-Image History is local; gallery media travels. **Images**: Open, Send to slot, Copy prompt. Eligible chat pictures export after deleting Image History rows. Restores keep their prompt/details; failed generation keeps the prior draft. Failed deletion keeps card/picture; private destinations stay hidden.
+Ordinary chats/backups travel with the Workspace. Private chats stay local, but exports can include them with per-node password consent and selected history options. **Keep on this computer only** always excludes chats/pictures; moving a slot privately applies immediately.
+Each Flow owns its chats. Export scope limits history. Failed reads block overwrite; Flow switches cancel deletion; New Chat cannot clear another target.
+Image History is local; gallery media travels. **Images**: Open, Send to slot, Copy prompt. Full packages carry eligible chat pictures even after their Image History rows are deleted. Restores keep prompts/details; failed generation/deletion preserves prior data. Private destinations stay hidden.
 Trash deletes a row (unowned older read-only conversations have none); **Delete all shown** deletes shown eligible rows. Deletes confirm the count and cannot be undone.
 
 **Going back.**
@@ -47,7 +46,7 @@ A restore point includes your **whole Flow, galleries too**, so restoring puts i
 **What restore points do not cover.**
 **Importing a Flow over the current one, and starting a New Flow, do not take a restore point.** Both replace your Flow completely, so a restore point taken then would not survive.
 
-Also covered in the full docs for this area: A Workspace folder becomes unavailable; Restore points; Opening History; Ask Joe about a saved version; Ask Joe to restore a version; Chat History and Image History; Making one; How many are kept; The Local Recovery Copy (Workspace mode); When the folder and Local copy disagree; When a workspace file was changed elsewhere; Ask Joe to review outside changes; Related.
+Also covered in the full docs for this area: A Workspace folder becomes unavailable; Restore points; Opening History; Ask Joe about a saved version; Ask Joe to restore a version; Chat History and Image History; Making one; How many are kept; The Local Recovery Copy (Workspace mode); When the folder and Local copy disagree; When a workspace file was changed elsewhere; Ask Joe to review outside changes; Backups for a lost computer; Related.
 
 ## Manual links
 

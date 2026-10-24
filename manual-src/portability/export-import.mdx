@@ -3,7 +3,7 @@ title: "Export & Import"
 description: "Transfer workspaces, copy subtree JSON, and save password-protected archives."
 ---
 
-FlowJoe ensures your data is completely portable. You can move individual branches or entire workspaces between devices, and protect sensitive exports with whole-package encryption.
+FlowJoe exports the work you select, with the media and histories supported by your chosen options. You can move individual branches or entire workspaces between devices, and protect sensitive exports with whole-package encryption.
 
 
 <Frame caption="Review the export scope and history choices before choosing a format. This capture stops before exporting a file.">
@@ -65,6 +65,8 @@ When opening the backup, FlowJoe asks for the **package password** before import
 
 Import restores the contents into FlowJoe’s normal storage. Package encryption does not encrypt the live Flow, its saved Private content or the Workspace Folder. See [Security & privacy](/concepts/security#encrypted-backups).
 
+New protected exports use stronger password derivation to make password guessing more expensive. Older protected backups still open with their original passwords. Existing backup files keep their original protection; export a new protected copy to use the stronger setting. Choose a long, unique package password.
+
 There is no package-password recovery. Keep the password somewhere safe, separately from the backup. Protected packages currently need to fit in memory, and protected files of 2 GiB or larger cannot be imported.
 
 ---
@@ -119,5 +121,7 @@ Use **Include AI chat and image history** to carry eligible history with the exp
 Full packages include the backup pictures that eligible current and older chats still use, even after you delete their separate Image History rows. Plain JSON keeps the references but does not carry picture bytes. Imported image history follows the imported Flow, nodes and slots instead of attaching itself to an older Flow with matching identifiers.
 
 Whole-Flow exports can separately include **sharing setup** and **conversations guests had with Joe**. Review guest names and saved history before including them. Imported sharing choices are inactive until you review them in **Share** and send fresh invitations; old links do not open the imported Flow.
+
+For an off-device backup checklist and a comparison with Workspace copies, see [What each copy preserves](/guides/portability#what-each-copy-preserves).
 
 Version History and restore points stay with the app on the original computer. See [History & recovery](/workspaces/recovery) for the difference between portable conversation history and local restore points.
