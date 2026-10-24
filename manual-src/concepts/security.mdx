@@ -36,7 +36,9 @@ Your Joe chats, picture history, transcripts, undo notes history and Memories go
 
 **Hidden from Joe** seals a node’s contents from Joe while leaving them available to you. Sealed node names and positions can still appear in Joe’s outline, so keep secrets out of names. A media read still waiting for its result checks these protections again before returning it. Hidden from Joe is a preference for your own Joe: a guest’s Joe can still read content that guest is allowed to see. Neither setting recalls information already sent in an earlier message.
 
-Private-node passwords do not encrypt all data at rest. A portable export includes Private content only after your per-node choice and password check. Included nodes keep their FlowJoe protection settings, but the exported bytes are readable outside FlowJoe unless you enable package encryption. Use **Protect package with a password** for a protected backup.
+Private-node passwords do not encrypt the saved node content or its media on this computer. A portable export includes Private content only after your per-node choice and password check. Included nodes keep their FlowJoe protection settings, but the exported bytes are readable outside FlowJoe unless you enable package encryption. Use **Protect package with a password** for a protected backup.
+
+Existing virtual slots can remain together inside one unlocked Private area for your own use; Joe and guests still cannot read their Private master. Making separate branches Private treats each branch as a separate area and converts pointers between them to real copies. Moves that would separate a retained pair across a Private boundary are refused without moving any of the selection. See [Virtual slots](/gallery/virtual-slots#making-a-node-private).
 
 ## Review changes
 
@@ -44,9 +46,14 @@ Joe normally proposes Flow changes for you to approve, reject, or revise. Schedu
 
 ## Encrypted backups
 
-When exporting a **.fj** package, you can protect that package with a password. The recipient needs the password to import it. This protects the exported file; it does not encrypt the live Workspace Folder or replace your computer’s disk protection.
+Select **Protect package with a password** when exporting to encrypt the entire exported file, including any Private nodes, media and history you explicitly chose to include. Private nodes start excluded; entering a node password to include one does not turn on package encryption.
 
-Existing virtual slots can remain together inside one unlocked Private area for your own use; Joe and guests still cannot read their Private master. Making separate branches Private treats each branch as a separate area and converts pointers between them to real copies. Moves that would separate a retained pair across a Private boundary are refused without moving any of the selection. See [Virtual slots](/gallery/virtual-slots#making-a-node-private).
+The recipient needs the **package password** to import the file. Included Private nodes keep their separate **node passwords** and remain locked after import. Unlocking the package does not unlock those nodes.
+
+Package encryption protects that exported copy. Import restores its contents into FlowJoe’s normal storage; it does not create an encrypted live Flow or Workspace Folder. Keep using your computer’s disk protection. The outer file name and file size remain visible.
+
+Keep the package password safe: FlowJoe cannot recover a package if you lose it. See [Password-protected packages](/portability/export-import#password-protected-packages) for the export and import steps.
+
 
 
 ### GitHub access when sharing a Flow

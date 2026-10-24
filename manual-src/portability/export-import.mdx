@@ -55,11 +55,17 @@ In Local mode the restored history lives in local app/browser data. In Workspace
 
 ## Password-Protected Packages
 
-When exporting a full package or data-only JSON, you can secure your backup by checking **Protect this `.fj` with a password** in the export prompt:
+When exporting a full package or data-only JSON, select **Protect package with a password**, then enter and confirm a package password. A protected data-only export also uses the `.fj` extension; it still does not bundle the media bytes.
 
-The password protects the whole exported file, including its outline, included media, and filenames. FlowJoe asks for the password before opening it. A wrong password leaves the current Flow unchanged.
+This encrypts the entire exported file: the outline, selected content and history, included media, and filenames inside the package. The outer file name and file size remain visible. An ordinary `.fj` without this option is not encrypted.
 
-This protects the package, not your live Workspace Folder. Keep the password somewhere safe so you can open the backup later.
+To include a Private node, select its row and enter its node password before exporting. Those choices and package encryption are separate: you need both to put Private content into an encrypted backup.
+
+When opening the backup, FlowJoe asks for the **package password** before importing its contents. A wrong password or canceling that password prompt leaves the current Flow unchanged. After a successful import, included Private nodes remain locked and require their separate **node passwords**; the package password does not unlock them.
+
+Import restores the contents into FlowJoe’s normal storage. Package encryption does not encrypt the live Flow, its saved Private content or the Workspace Folder. See [Security & privacy](/concepts/security#encrypted-backups).
+
+There is no package-password recovery. Keep the password somewhere safe, separately from the backup. Protected packages currently need to fit in memory, and protected files of 2 GiB or larger cannot be imported.
 
 ---
 
