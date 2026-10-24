@@ -134,6 +134,27 @@ For text drafts:
 
 Turn recordings into text in Joe’s **Transcribe** tab. Choose free local Whisper for offline processing on your computer, or your paid OpenAI API account. FlowJoe discovers compatible installed models, walks you through optional downloads, and remembers your choices. Local output can be plain text or timestamped segments; speaker labels remain an online option. See [Transcribe audio](/joe/transcription) for setup, model sizes and the complete walkthrough.
 
+## Talk with Joe
+
+In a private desktop conversation, open the arrow beside the microphone and choose **Talk with Joe…**, then **Start voice**. An OpenAI API key and a supported Joe voice from **Settings → AI → Joe voice** are required. The microphone starts only after you choose Start voice.
+
+Choose a voice in **Settings → AI → Joe voice**. Additional Live voices show their language and, where applicable, regional accent. Choosing one or pressing its speaker button plays a short billed sample without using your microphone; press again to stop. Live-only voices work in Talk with Joe; Mini and Full choices also support ordinary read-aloud. A changed choice applies to the next voice conversation.
+
+Speak naturally. Your selected chat brain still handles requests and tools, with the conversation’s usual permissions and approval cards. Check the chat and review proposed changes before applying them. Spoken replies alone do not confirm that a change was applied.
+
+- **Mute microphone** stops Joe from hearing you while the conversation stays open.
+- **Quiet Joe** silences his voice; **Let Joe speak** turns it back on. This is separate from muting your microphone.
+- **End voice** finishes the voice conversation. If Joe is still working, choose whether that work continues in chat or stops.
+- Hiding or minimizing Joe, or leaving the Chat tab, ends voice. Work Joe has already started continues in that conversation.
+- Choosing **New Chat**, restoring a different conversation, or choosing another node or slot ends voice and stops its unfinished work. Joe saves the spoken transcript before switching. If saving fails, the original conversation stays open for recovery.
+- Replacing the Flow or switching between Local and Workspace storage also ends voice. Joe saves before the switch and waits until it finishes before another voice conversation can start.
+
+Live voice costs **$0.05 per minute**, plus your selected brain and tool usage. The voice display shows an estimate; missing final usage is marked unconfirmed. Live voice has no preset conversation-duration or silence limit. It is separate from the **Mini** and **Full** prices for ordinary read-aloud.
+
+Your spoken transcript stays in the conversation. If it cannot be saved, keep the conversation open and use **Try again**. Starting another voice session waits until the save succeeds. If microphone access is denied, allow it in your system settings and try again. If the voice connection is lost, work Joe has already started continues in chat; use the usual **Stop** control to stop it. A lost connection does not undo changes already completed; check the chat before repeating a request.
+
+For speech you want to edit before sending, choose **Dictate message** instead. The microphone’s ordinary dictation behavior and spoken punctuation commands remain available.
+
 ## Dictation Command Reference
 
 When voice dictation is active, you can use spoken commands to structure text:
@@ -158,3 +179,24 @@ A compact Researcher card shows the task and where it belongs. Select **Show ass
 The card’s details explain whether research was cancelled, timed out, lost access to its references, or encountered an AI service error. An unavailable reference can prevent research from starting. Ask Joe to try again when you want a new attempt; failed or stopped replies do not restart themselves.
 
 The first version supports one researcher over selected gallery references in owner OpenAI API chat. Other brains and shared guest conversations keep their existing Joe behavior. Research and Joe’s review are included in the review reply’s receipt; delegation does not guarantee lower token use or cost.
+
+
+## Get another perspective with the Reviewer
+
+Joe can ask an independent Reviewer to examine a candidate idea, plan, proposed change, or supplied code. He chooses an approach suited to your question, and you can ask for one explicitly:
+
+| Approach | What it helps with |
+| --- | --- |
+| **Critique** | Weak assumptions, unclear reasoning, feasibility, and tradeoffs. |
+| **Adversarial check** | Counterexamples and conditions under which a claim or plan fails. |
+| **Security review** | Specific risks visible in the code and context you provide. |
+| **Requirements check** | Whether the proposal meets each stated condition, with missing evidence kept unverified. |
+| **Explore alternatives** | Other approaches, their advantages, tradeoffs, assumptions, and open questions. |
+
+For example: “Have a Reviewer challenge this plan,” “Check the security of this supplied handler,” or “Explore other ways we could approach this.” Joe provides the candidate and criteria. The Reviewer receives a focused assignment and supplied material in a separate context; Joe considers the results and brings you his own answer. Routine questions can stay with Joe.
+
+You can use shared gallery references or a passage already in the conversation. The **Reviewer** card shows the assignment. Select **Show assignment**, **Show findings & references**, or **Show alternatives & references** to inspect the details. There is no approach menu or additional permission to manage. Keep talking to Joe while it runs, ask for progress, or use **Stop review** to cancel it. If you stop Joe’s returning explanation, completed results remain available while their material and access are still valid.
+
+A clean review means no supported issues were found within the supplied material. A security review looks at the code and context provided; it does not run the program or inspect unshared files. Exploration returns options rather than treating them as defects, and Joe should leave a choice open when important constraints are unknown. Reviews and suggested fixes do not apply changes or approve publication.
+
+The first version works in owner OpenAI API chat with Flow read access. One Researcher or Reviewer can run at a time in the same conversation; changing the assignment requires cancelling and replacing it. Other brains and shared guest conversations retain their existing behavior. Reviewer work and Joe’s synthesis are included in the returning reply’s receipt; the card shows available Reviewer token counts. An extra perspective does not guarantee correctness, lower token use, or lower cost.

@@ -1,0 +1,1 @@
+Approach: Critique. Examine weak assumptions, unclear reasoning, feasibility, practical prerequisites and tradeoffs against the supplied criteria. Return findings with consequences and useful corrections, citing evidence. Label missing evidence unverified. Do not force a negative verdict; zero findings is valid for a sound candidate.

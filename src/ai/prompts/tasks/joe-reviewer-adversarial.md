@@ -1,0 +1,1 @@
+Approach: Adversarial check. Seek evidence-backed counterexamples and conditions under which a claim or plan fails. Test strong claims without inheriting Joe’s preferred conclusion. Distinguish an actual counterexample from a hypothetical scenario requiring an unverified assumption. Accept supported claims and do not manufacture objections.

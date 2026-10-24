@@ -1991,3 +1991,20 @@
 .joe-research-card .joe-research-link:hover {color:var(--text-primary);background:none}.joe-research-link:focus-visible {outline:2px solid var(--accent-color);outline-offset:2px}
 .joe-research-details {border-top:1px solid var(--border-color);margin-top:10px;padding-top:8px}.joe-research-details ul {padding-left:19px;margin:8px 0}.joe-research-card [hidden] {display:none}
 }
+
+
+/* Approved Talk with Joe surface; the existing prompt controls retain their geometry. */
+@layer app {
+.jlv-pop :focus-visible,.jlv-session :focus-visible {outline:2px solid var(--accent-color);outline-offset:2px}
+#ai-spell-check-modal .jlv-mic-group {position:relative}
+#ai-spell-check-modal .jlv-mic-group .jlv-caret {position:absolute;left:100%;top:0;width:22px;height:28px;min-width:0;margin:0;padding:0;display:grid;place-items:center;border:0;background:transparent;color:var(--text-secondary)}
+#ai-spell-check-modal .jlv-caret[hidden] {display:none}
+.jlv-pop {position:fixed;box-sizing:border-box;width:330px;max-width:calc(100vw - 24px);padding:14px;background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border-color);border-radius:var(--radius-lg);box-shadow:var(--elev-floating);font:13px/1.5 system-ui;max-height:70vh;overflow:auto}
+.jlv-pop h3 {font:inherit;font-weight:600;margin:0 0 8px}.jlv-pop p {margin:6px 0 10px;color:var(--text-secondary)}
+.jlv-pop .jlv-menu-item {display:block;width:100%;text-align:left;margin:4px 0;padding:8px 10px}.jlv-pop .jlv-menu-item small {display:block;color:var(--text-secondary);font-size:inherit;font-weight:400}
+.jlv-actions {display:flex;gap:7px;justify-content:flex-end;flex-wrap:wrap;margin-top:12px}
+.jlv-session {display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:var(--pad-card-compact);border-bottom:1px solid var(--border-color);margin-bottom:5px;color:var(--text-secondary);font:13px/1.4 system-ui}
+.jlv-session[hidden] {display:none}.jlv-session .jlv-status {color:var(--text-primary);margin-right:auto;display:flex;align-items:center;gap:6px}.jlv-session .jlv-status i {color:var(--accent-color)}
+.jlv-session .jlv-price {width:100%;font-size:12px;font-variant-numeric:tabular-nums}.jlv-session button {font:inherit}
+.jlv-notice {color:var(--text-secondary);padding:7px 0;font:13px/1.5 system-ui}.jlv-notice>.btn {display:block;margin:6px 0 0}
+}
