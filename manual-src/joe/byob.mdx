@@ -30,7 +30,7 @@ finish keeps the existing fallback; it does not change your main reply or genera
 
 FlowJoe uses a multi-tier storage design for your keys to balance security and convenience:
 
-* **Desktop storage:** Supported keys are encrypted using your operating system’s secure-storage service when available and saved in FlowJoe’s app data. A standalone browser, or unavailable secure storage, uses local browser storage with weaker protection.
+* **Desktop storage:** Supported keys are encrypted using your operating system’s secure-storage service when available and saved in FlowJoe’s app data. A failed or weak service cannot silently save a new key as plain text. Failed reads and saves preserve an existing saved key; you can explicitly remove it. Standalone browsers still save keys in local browser storage as plain text; session-only storage is not yet available.
 * **Export choice:** Keys are excluded from portable exports by default. You can explicitly include an OpenAI key, so review that checkbox before sharing a package.
 
 ---
@@ -165,6 +165,8 @@ Before you have saved any AI key, a sentence at the top explains what keys are f
 4. To remove the key, click the **trash icon** (**Remove key**) beside the eye. FlowJoe asks first; **Cancel** is on the right and already selected, so pressing Enter keeps the key. The trash icon is dimmed while there is no saved key.
 
 ---
+
+In the OpenAI key window, saves and removals finish in the order you request them. If you edit the key or reopen its window while an earlier change is finishing, that change will not close the newer window or erase your entry. Closing the window does not undo a storage write already underway. If storage reports a failure, the window stays open so you can try again.
 
 ## Making Joe faster: the optional TypeSafe key
 

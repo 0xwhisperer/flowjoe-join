@@ -3,7 +3,14 @@ title: "Security & privacy"
 description: "Understand where your work stays and what you choose to share."
 ---
 
-FlowJoe puts your work on your computer and gives you clear controls for bringing AI and collaborators into it.
+FlowJoe gives you control over where your work lives, what Joe can read, and what you share.
+
+- **Local-first work:** keep your tree, notes and imported media on your computer, with a Workspace Folder you can back up yourself.
+- **Controlled sharing:** choose what guests can access through your computer; Private nodes stay out of browser sharing.
+- **AI access controls:** choose Joe's provider and permissions, and use Private or Hidden-from-Joe protection for sensitive content as described below.
+- **Encrypted portable backups:** protect an exported package with its own password, including the Private content you explicitly choose to include.
+
+Each control has a specific purpose. The details below explain what it protects and what to check when sharing or moving work.
 
 
 <Frame caption="Node locks, AI access, guest access and export encryption are separate controls; review the details below.">
@@ -14,13 +21,15 @@ FlowJoe puts your work on your computer and gives you clear controls for bringin
 
 Normal desktop work stays in app storage, or in a **Workspace Folder** you choose. A Workspace Folder keeps the Flow and its shared media in files you can back up or sync with your own tools.
 
-Sharing deliberately sends permitted content to guests through the owner’s computer. Remote sharing can use a Cloudflare tunnel. That connection is encrypted between each computer and Cloudflare, where traffic is decrypted before being forwarded; it is not end-to-end encrypted between owner and guest. AI features send the context they need to the selected provider; the provider’s account and data policies apply. Web browsing and link previews also contact websites.
+You choose which content guests can access, and sharing sends that permitted content through the owner's computer. Remote sharing can use a Cloudflare tunnel, with encryption between each computer and Cloudflare. Cloudflare decrypts traffic before forwarding it, so this is not end-to-end encryption between owner and guest.
+
+AI features send the context they need to your selected provider; that provider's account and data policies apply. Web browsing and link previews contact the websites you use.
 
 See [Workspace folders](/workspaces/folders), [Sharing](/workspaces/sharing-and-presenting), and [Token usage](/joe/token-usage).
 
 ## API keys
 
-On desktop, supported keys are encrypted using the operating system’s secure-storage service when available and saved in FlowJoe’s app data. In a standalone browser, or when secure storage is unavailable, keys use local browser storage with weaker protection.
+On desktop, supported keys are encrypted using the operating system’s secure-storage service when available and saved in FlowJoe’s app data. If that service fails or provides only weak protection, FlowJoe refuses a new saved key instead of silently saving it as plain text. A failed read or save preserves the existing saved key; Remove is an explicit deletion. In a standalone browser, keys still use local browser storage as plain text. Session-only storage is not yet available.
 
 Keys appear masked in Settings. Use the eye button to reveal or copy them. Keys are excluded from portable exports by default; the export dialog lets you explicitly include an OpenAI key. Review that option before sharing a package.
 
@@ -36,7 +45,7 @@ Your Joe chats, picture history, transcripts, undo notes history and Memories go
 
 **Hidden from Joe** seals a node’s contents from Joe while leaving them available to you. Sealed node names and positions can still appear in Joe’s outline, so keep secrets out of names. A media read still waiting for its result checks these protections again before returning it. Hidden from Joe is a preference for your own Joe: a guest’s Joe can still read content that guest is allowed to see. Neither setting recalls information already sent in an earlier message.
 
-Private-node passwords do not encrypt the saved node content or its media on this computer. A portable export includes Private content only after your per-node choice and password check. Included nodes keep their FlowJoe protection settings, but the exported bytes are readable outside FlowJoe unless you enable package encryption. Use **Protect package with a password** for a protected backup.
+For an encrypted portable copy of Private work, explicitly select each Private node, confirm its password, and enable **Protect package with a password**. Included nodes also keep their separate FlowJoe access locks. Those node locks control access inside the app; they do not encrypt the saved text or media on this computer. Without package encryption, an exported file's included content is readable outside FlowJoe.
 
 Existing virtual slots can remain together inside one unlocked Private area for your own use; Joe and guests still cannot read their Private master. Making separate branches Private treats each branch as a separate area and converts pointers between them to real copies. Moves that would separate a retained pair across a Private boundary are refused without moving any of the selection. See [Virtual slots](/gallery/virtual-slots#making-a-node-private).
 
@@ -52,7 +61,7 @@ The recipient needs the **package password** to import the file. Included Privat
 
 Package encryption protects that exported copy. Import restores its contents into FlowJoe’s normal storage; it does not create an encrypted live Flow or Workspace Folder. Keep using your computer’s disk protection. The outer file name and file size remain visible.
 
-A Workspace folder copy cannot recover Private content kept only on the lost computer. For an off-device backup, explicitly include each Private node and its needed history in a full, password-protected package, and keep its package password and separate node passwords safe. See [Backup contents and exclusions](/guides/portability#what-each-copy-preserves).
+To preserve Private work off-device, explicitly include each Private node and its needed history in a full, password-protected package, and keep its package password and separate node passwords safe. A Workspace folder copy alone leaves that owner-only content on the original computer and cannot recover it if the computer is lost. See [Backup contents and exclusions](/guides/portability#what-each-copy-preserves).
 
 Keep the package password safe: FlowJoe cannot recover a package if you lose it. See [Password-protected packages](/portability/export-import#password-protected-packages) for the export and import steps.
 
