@@ -29,7 +29,11 @@ See [Workspace folders](/workspaces/folders), [Sharing](/workspaces/sharing-and-
 
 ## API keys
 
-On desktop, supported keys are encrypted using the operating system’s secure-storage service when available and saved in FlowJoe’s app data. If that service fails or provides only weak protection, FlowJoe refuses a new saved key instead of silently saving it as plain text. A failed read or save preserves the existing saved key; Remove is an explicit deletion. In a standalone browser, keys still use local browser storage as plain text. Session-only storage is not yet available.
+On desktop, supported keys are encrypted using the operating system’s secure-storage service when available and saved in FlowJoe’s app data. If that service fails or provides only weak protection, you can enter a key **for this session only** while the existing saved key stays intact. You can also try opening secure storage again. FlowJoe never silently saves a desktop key as plain text.
+
+In a standalone browser, new keys default to **For this session only**. They disappear on refresh or close. To keep one, you must explicitly choose **Save on this computer as plain text**; anyone or anything with access to the browser’s storage could read it. If a plaintext key already exists, Cancel keeps it, and you can choose to keep the saved copy or remove it and use the key for this session.
+
+Desktop temporary keys last until you quit FlowJoe. After restarting, enter the key again before tasks using it can run; any previously saved encrypted key remains available instead. Remove is an explicit deletion. Including a key in an export still requires the separate opt-in.
 
 Keys appear masked in Settings. Use the eye button to reveal or copy them. Keys are excluded from portable exports by default; the export dialog lets you explicitly include an OpenAI key. Review that option before sharing a package.
 

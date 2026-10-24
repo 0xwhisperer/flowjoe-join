@@ -28,9 +28,10 @@ finish keeps the existing fallback; it does not change your main reply or genera
 
 ## 🔒 API Key Storage & Fallbacks
 
-FlowJoe uses a multi-tier storage design for your keys to balance security and convenience:
+Choose how FlowJoe keeps each key in **Settings → APIs**.
 
-* **Desktop storage:** Supported keys are encrypted using your operating system’s secure-storage service when available and saved in FlowJoe’s app data. A failed or weak service cannot silently save a new key as plain text. Failed reads and saves preserve an existing saved key; you can explicitly remove it. Standalone browsers still save keys in local browser storage as plain text; session-only storage is not yet available.
+* **Desktop storage:** Keys normally use OS encryption. If it fails or is weak, **Use for this session** keeps the saved key intact; **Try again** retries a failed read. Temporary keys end when you quit FlowJoe.
+* **Browser storage:** New keys last until refresh or close. **Save on this computer as plain text** requires an explicit choice. Existing plaintext copies stay until you choose to keep or remove them. Tasks need a key again after its session ends.
 * **Export choice:** Keys are excluded from portable exports by default. You can explicitly include an OpenAI key, so review that checkbox before sharing a package.
 
 ---

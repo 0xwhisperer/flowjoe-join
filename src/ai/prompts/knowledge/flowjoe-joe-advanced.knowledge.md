@@ -15,6 +15,7 @@ Loading this knowledge is not evidence that an API key, CLI brain, Agent Bridge 
 
 Choose Joe’s connection, set up your keys, and use a brain that suits your work.
 
+Temperature and response length are managed automatically per model. Gemini 4 Argon uses a paid Google Gemini API key with Argon quota.
 **Bring Your Own Brain (BYOB)** lets you choose the intelligence behind Joe. Use your own provider API key, or connect a supported command-line assistant you already use. Your workspace lives locally; the context needed for an AI request goes to the chosen provider.
 A command-line tool, or **CLI**, is an app you run by typing commands in a terminal. FlowJoe can use some of these tools behind the scenes, so you keep talking to Joe in the familiar chat panel.
 When you use OpenAI, automatic image titles and archived-chat titles use Luna 6 to keep these short labeling tasks inexpensive, independently of your selected chat model. A title request that cannot finish keeps the existing fallback; it does not change your main reply or generated image.
@@ -25,8 +26,9 @@ When you use OpenAI, automatic image titles and archived-chat titles use Luna 6 
 - **Privacy & Control:** Owner requests go from your desktop to the selected provider or installed tool, rather than through a FlowJoe AI service. Shared guests use the owner’s authorized connection; they do not receive its credentials.
 
 **API Key Storage & Fallbacks.**
-FlowJoe uses a multi-tier storage design for your keys to balance security and convenience:
-- **Desktop storage:** Supported keys are encrypted using your operating system’s secure-storage service when available and saved in FlowJoe’s app data. A failed or weak service cannot silently save a new key as plain text.
+Choose how FlowJoe keeps each key in **Settings → APIs**.
+- **Desktop storage:** Keys normally use OS encryption. If it fails or is weak, **Use for this session** keeps the saved key intact; **Try again** retries a failed read. Temporary keys end when you quit FlowJoe.
+- **Browser storage:** New keys last until refresh or close. **Save on this computer as plain text** requires an explicit choice. Existing plaintext copies stay until you choose to keep or remove them. Tasks need a key again after its session ends.
 - **Export choice:** Keys are excluded from portable exports by default. You can explicitly include an OpenAI key, so review that checkbox before sharing a package.
 
 **Configuring Your AI Brain.**
@@ -36,8 +38,6 @@ To adjust your model config:
 - **OpenAI models (API key):** **Sol 6.1**, **Luna 6** (the default), **Sol 6**, and **Astra 6**, plus **Luna**, **Terra**, and **Sol** from the GPT-5.6 family.
 - **Anthropic API:** **Claude Fable 5.1**, **Claude Opus 5.5**, **Claude Sonnet 5.5** and **Claude Haiku 5.5** use your own Anthropic API key. This is separate from a Claude Code login: you can have both.
 - **xAI API:** **Grok 4.7** uses your own xAI API key. This is separate from a Grok terminal login.
-- **Gemini API:** **Gemini 3.8 Flash** and **Gemini 4 Argon** use a separate Google Gemini API key. See setup below.
-- **Temperature and response length are managed automatically per model** — there is no manual temperature dial, and GPT-5.6 / GPT-6 models run at their fixed default temperature.
 
 Also covered in the full docs for this area: How the brain menu is arranged; Where to get an OpenAI key; Set up Gemini chat; Set up Claude or Grok with an API key; What CLI brains need first; Which brains can work with your Flow?; A CLI brain, Agent Bridge, or Forge?; What happens with no key and no CLI brain; Your keys in Settings → APIs; Viewing, copying and removing a key; Making Joe faster: the optional TypeSafe key; It also trims a big flow map; Checking that a key works; CLI brains in shared conversations.
 

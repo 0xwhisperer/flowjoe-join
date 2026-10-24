@@ -2979,3 +2979,24 @@
 }
 
 }
+
+/* Approved key-storage choice: same window, tokens and geometry as the provider key mockup. */
+.key-storage-choice {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--text-secondary);
+  font-size: 0.8em;
+  line-height: 1.5;
+}
+.key-storage-choice p { margin: 0 0 8px; }
+.key-storage-choice p:last-child { margin-bottom: 0; }
+.key-storage-choice strong { color: var(--text-primary); font-weight: 600; }
+.key-storage-choice label { display: flex; gap: 8px; align-items: flex-start; margin: 8px 0; cursor: pointer; }
+.key-storage-choice input { margin-top: 4px; accent-color: var(--accent-color); }
+.key-storage-choice small { display: block; font: inherit; color: var(--text-secondary); }
+
+.key-storage-choice[hidden], [data-key-storage-retry][hidden] { display: none; }
+
+.key-storage-choice input { transition: none; }
