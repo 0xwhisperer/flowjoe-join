@@ -310,6 +310,10 @@ Private nodes and **Hidden from Joe** nodes have their content sealed from Joe â
 - [Prompting & Best Practices](/joe/best-practices)
 - [Meeting Joe](/joe/opening-joe)
 
+## Updates sent during a reply
+
+A [text update while Joe works](/joe/chat-analysis-generation#add-a-requirement-while-joe-is-replying) waits outside the current request until Joe can include it in a follow-up. Its queued text is not counted as part of the request already in flight. It enters the chat count when that follow-up is admitted. Failed and unconfirmed updates remain excluded from future requests until you deliberately send them again. Each follow-up can add normal model charges; the token bar is a context estimate, not a bill.
+
 ## Whole-turn usage and unknown totals
 
 A conversation turn can make several provider requests: the reply, context selection, checks, tool follow-ups, compaction, and attachment summaries. FlowJoe keeps temporary usage metadata for these calls separately from the token bar. This record contains provider/model names, timings, request sizes and returned token counts; it contains no message or file content, credentials or reply text.

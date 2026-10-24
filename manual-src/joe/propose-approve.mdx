@@ -20,6 +20,8 @@ A proposal card lists additions, edits, and removals. Choose:
 
 Rejected and revised cards leave a collapsed outcome in the conversation. You can dismiss the card separately. Outcomes stay with the saved chat.
 
+In an eligible [private OpenAI chat](/joe/chat-analysis-generation#add-a-requirement-while-joe-is-replying), sending an update from the prompt replaces a waiting proposal. Its outcome says **Replaced by your update**, and Joe must prepare a new proposal for your approval. If you already chose Apply but the change has not started, the old proposal is not applied. A change that has already started finishes with its actual result; your update does not undo it.
+
 If the Flow changed while a proposal was waiting, FlowJoe refuses the stale proposal rather than overwriting your newer work. Only the first proposal you decide on in a turn takes effect; Joe must re-check the Flow before offering more changes.
 
 When a proposal removes a master slot that is shown in other places as [virtual slots](/gallery/virtual-slots#joe-and-virtual-slots), the card says you'll choose what happens to them. Approving opens the **Remove Master Slot** window first; Joe never makes that choice. A change to a master that is also shown in a frozen node names that node on the card.
