@@ -47,6 +47,18 @@
   max-width: calc(100vw - 32px);
 }
 
+.mcp-bridge-approvals:has(.fm-approval-note-detail) {
+  max-height: max(0px, calc(100dvh - var(--flowjoe-floating-stack-bottom, calc(20px + var(--status-footer-height, 0px))) - 20px));
+  overflow-y: auto;
+}
+
+.mcp-bridge-approval-card .fm-approval-note-detail {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: var(--font-approval-card-body);
+  margin-bottom: 6px;
+}
+
 .mcp-bridge-approvals[hidden] {
   display: none;
 }

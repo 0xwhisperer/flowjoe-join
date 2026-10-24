@@ -30,6 +30,12 @@ If the update hint is unavailable, keep your draft until Joe finishes or use Sto
 
 ---
 
+## Regenerate a reply
+
+Use **Regenerate** on Joe's latest reply to ask again with that earlier message and its saved references. The text and available attachment or context choices you are preparing for your next message stay in the prompt area, including choices changed while Joe replies. Regenerate does not add those unsent choices to the earlier request. References already included in the conversation keep their usual sent status. Unavailable references or context cannot remain selected. It uses your current selected brain and can incur normal provider charges.
+
+---
+
 ## Ask Joe about earlier work
 
 In owner chat and authorized external CLI/MCP sessions, Read or Propose permission lets Joe look up permitted history in the current Flow: earlier conversations, generated-image prompts and model details, retained transcripts, and dates/revisions of verified public changes. Try “Find the chat where we chose the launch name” or “Which image prompt did I use yesterday?” He reads longer results in portions and gives their source dates and conversation/message references. The current chat stays open.
@@ -141,10 +147,14 @@ When voice dictation is active, you can use spoken commands to structure text:
 | *"clear all"* | Clears the entire text field |
 
 
-## Research help inside your conversation
+## Keep chatting while Joe researches
+
+Keep your conversation moving while Joe researches in the background. Joe stays your collaborator and brings the findings back to you. You can keep talking, change direction, or cancel the research without managing another agent yourself.
 
 With an OpenAI API brain, Joe can ask a read-only Researcher to examine selected gallery references when that helps your task. There is nothing extra to enable or approve: Joe can delegate focused comparisons across several references he has not read yet and brings the findings into his final answer. Routine questions, single-reference lookups, and answers already supported by your conversation stay with Joe.
 
-A compact Researcher card shows the task and where it belongs. Select **Show assignment** while it runs, or **Show findings & references** after completion, to inspect the details and available usage. You can keep chatting with Joe while research runs. **Stop research** cancels that assignment; stopping a different Joe reply leaves research running. When findings arrive during a reply, Joe finishes that reply before reviewing and presenting them. You can ask Joe for progress or to cancel and replace the assignment. The researcher cannot edit your Flow, run commands or access references Joe cannot read. Normal approvals still apply to changes Joe later proposes.
+A compact Researcher card shows the task and where it belongs. Select **Show assignment** while it runs, or **Show findings & references** after completion, to inspect the details and available usage. You can keep chatting with Joe while research runs. **Stop research** cancels that assignment; stopping a different Joe reply leaves research running. If you stop Joe’s reply while he is presenting completed research, the findings stay available in the card. Changed references or access invalidate findings rather than keeping them as current evidence. When findings arrive during a reply, Joe finishes that reply before reviewing and presenting them. You can ask Joe for progress or to cancel and replace the assignment. The researcher cannot edit your Flow, run commands or access references Joe cannot read. Normal approvals still apply to changes Joe later proposes.
+
+The card’s details explain whether research was cancelled, timed out, lost access to its references, or encountered an AI service error. An unavailable reference can prevent research from starting. Ask Joe to try again when you want a new attempt; failed or stopped replies do not restart themselves.
 
 The first version supports one researcher over selected gallery references in owner OpenAI API chat. Other brains and shared guest conversations keep their existing Joe behavior. Research and Joe’s review are included in the review reply’s receipt; delegation does not guarantee lower token use or cost.

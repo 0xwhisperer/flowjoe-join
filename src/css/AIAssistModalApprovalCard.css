@@ -9,6 +9,7 @@
   font-size: 13px;
 }
 .flow-mutation-approval-card .fm-approval-headline {
+  overflow-wrap: anywhere;
   font-weight: 600;
   margin-bottom: 6px;
 }
@@ -30,6 +31,10 @@
   margin-bottom: 6px;
   font-size: var(--font-approval-card-body);
   opacity: 0.85;
+}
+/* Full approved note comparisons stay inside the existing card, even for unbroken text. */
+.flow-mutation-approval-card .fm-approval-note-detail {
+  overflow-wrap: anywhere;
 }
 /* G3/S38: "jump to node" links for every existing node this change targeted — real flowjoe-node: hrefs,
    handled by nodeLinkController's document-level click delegate (same navigation select_node uses). */

@@ -12,7 +12,9 @@ Joe can do more than describe a better workspace: he can help you build it. Ask 
 
 ## Review a proposal
 
-A proposal card lists additions, edits, and removals. Choose:
+A proposal card lists additions, edits, and removals. When a proposal changes only notes, its heading stays short. Each notes comparison names its target and shows the complete **Before** and **After** text. Read both before applying; empty quotation marks mean the note is empty. These details stay with the saved outcome so you can review them after reopening the chat. The same note review is available with a CLI brain and stays available in the floating approval if Joe is closed or minimized. Long comparisons scroll so you can read the full text.
+
+Choose:
 
 - **Approve** to apply the listed changes. The card shows **Applying…**, then **Applied** or **Not applied**, with a reason.
 - **Reject** to leave the Flow unchanged.
@@ -22,7 +24,7 @@ Rejected and revised cards leave a collapsed outcome in the conversation. You ca
 
 In an eligible [private OpenAI chat](/joe/chat-analysis-generation#add-a-requirement-while-joe-is-replying), sending an update from the prompt replaces a waiting proposal. Its outcome says **Replaced by your update**, and Joe must prepare a new proposal for your approval. If you already chose Apply but the change has not started, the old proposal is not applied. A change that has already started finishes with its actual result; your update does not undo it.
 
-If the Flow changed while a proposal was waiting, FlowJoe refuses the stale proposal rather than overwriting your newer work. Only the first proposal you decide on in a turn takes effect; Joe must re-check the Flow before offering more changes.
+If the Flow changed while a proposal was waiting, FlowJoe refuses the stale proposal rather than overwriting your newer work. With a CLI brain, reject that waiting card and ask Joe for a new proposal. Only the first proposal you decide on in a turn takes effect; Joe must re-check the Flow before offering more changes.
 
 When a proposal removes a master slot that is shown in other places as [virtual slots](/gallery/virtual-slots#joe-and-virtual-slots), the card says you'll choose what happens to them. Approving opens the **Remove Master Slot** window first; Joe never makes that choice. A change to a master that is also shown in a frozen node names that node on the card.
 
