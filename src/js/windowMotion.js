@@ -622,6 +622,21 @@ export function captureStep(panel, {layer = null, key} = {}) {
   return {h0, ghosts};
 }
 
+// A window whose top edge moves while its height glides (a centred dialog) would carry the new parts with it: they would show at the old top and then
+// ride the edge into place. The edge's real starting top is measured once the height animation is in effect, so a top that moved for another reason
+// between capture and play (a card whose scroller clamps) moves once and gets no offset. Its final top is where the new screen settles. Each part starts offset
+// by `fromOffset` (final top minus the edge's current top during the glide) and eases to 0 on the same spring, so it stays still at its final place.
+// The offset is added to (not replacing) the part's arrival translate. Each hold is also kept on the panel, so stopMotion(panel), which cancels the
+// height glide, cancels the holds with it instead of leaving the parts displaced.
+function holdContentStill(panel, fromOffset, {duration, easing, delay}) {
+  [...panel.children].forEach((c) => {
+    const a = c.animate([{translate: `0 ${fromOffset}px`}, {translate: "0 0"}], {duration, easing, delay, fill: "backwards", composite: "add"});
+    a.__fjHold = true;
+    keep(c, a);
+    keep(panel, a);
+  });
+}
+
 // Call right after the next screen is in: the old screen leaves to the left, then the window's height glides to the new screen's and the new parts
 // arrive from the right in reading order.
 export function playStep(panel, cap) {
@@ -629,15 +644,21 @@ export function playStep(panel, cap) {
   let wait = 0;
   cap.ghosts.forEach((g) => (wait = leaveGhost(g, {opacity: 0, translate: "-14px 0"})));
   if (!panel || !panel.isConnected) return;
-  const h1 = panel.getBoundingClientRect().height;
+  const r1 = panel.getBoundingClientRect();
+  const h1 = r1.height;
+  const top1 = r1.top;
+  let hold = null;
   if (Math.abs(h1 - cap.h0) > 0.5) {
     const cs = getComputedStyle(panel);
     const extra = cs.boxSizing === "border-box" ? 0 : ["padding-top", "padding-bottom", "border-top-width", "border-bottom-width"].reduce((sum, p) => sum + (parseFloat(cs.getPropertyValue(p)) || 0), 0);
     const p = springCurve("panel");
     const a = keep(panel, panel.animate([{height: cap.h0 - extra + "px"}, {height: h1 - extra + "px"}], {duration: p.duration, easing: p.easing, delay: wait, fill: "backwards"}));
     a.__fjHeight = {extra, from: cap.h0};
+    const topStart = panel.getBoundingClientRect().top; // the old height is in effect now: this is where the edge really starts
+    if (Math.abs(top1 - topStart) > 0.5) hold = {fromOffset: top1 - topStart, timing: {duration: p.duration, easing: p.easing, delay: wait}};
   }
   staggerIn([...panel.children], {from: {opacity: 0, translate: "14px 0"}, delay: wait + 50, beat: 40});
+  if (hold) holdContentStill(panel, hold.fromOffset, hold.timing); // after staggerIn, so it sits above its replace animations in the stack
 }
 
 // The screen's content changed while its height was still gliding (a list that finished loading): the glide goes on to the new height instead of
@@ -650,12 +671,16 @@ export function retargetHeight(panel) {
   const pending = Math.max(0, (a.effect.getTiming().delay || 0) - (timing.localTime || 0));
   const cur = panel.getBoundingClientRect().height;
   a.cancel();
-  const natural = panel.getBoundingClientRect().height;
+  (live.get(panel) || []).filter((x) => x.__fjHold).forEach((x) => x.cancel()); // the hold is rebuilt below for the new glide
+  const nat = panel.getBoundingClientRect();
+  const natural = nat.height;
   const start = pending > 0 ? from : cur;
   if (Math.abs(natural - start) < 0.5) return;
   const p = springCurve("panel");
   const b = keep(panel, panel.animate([{height: start - extra + "px"}, {height: natural - extra + "px"}], {duration: p.duration, easing: p.easing, delay: pending, fill: "backwards"}));
   b.__fjHeight = {extra, from};
+  const topStart = panel.getBoundingClientRect().top; // measured with the new glide in effect, as in playStep
+  if (Math.abs(nat.top - topStart) > 0.5) holdContentStill(panel, nat.top - topStart, {duration: p.duration, easing: p.easing, delay: pending});
 }
 
 // ---------- Travelling highlights ----------

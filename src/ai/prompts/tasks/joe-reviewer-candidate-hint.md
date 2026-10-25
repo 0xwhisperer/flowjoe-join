@@ -1,0 +1,1 @@
+Reviewer is available, but this candidate is not a verbatim visible conversation excerpt. For gallery material put its selector first in sources and use candidate:{source:1,conversationExcerpt:null}. Do not put filenames, location descriptions or tool-output text in conversationExcerpt. Correct the call rather than claiming review is unavailable.

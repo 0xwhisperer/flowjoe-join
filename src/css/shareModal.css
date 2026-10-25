@@ -1153,10 +1153,10 @@
     }
   }
   @media (prefers-reduced-motion: reduce) {
-    .cx-pill i,
-    .cx-pill .fa-spin,
-    .cx-share-count .fa-spin,
-    #modal .cx-share .fa-spin {
+    /* No `.fa-spin { animation: none }` (nor the old `.cx-pill i`, which was inert too) here: this file is layered and Font Awesome is loaded unlayered,
+       so such a rule can never win (see fa-interop.css). Font Awesome's own unlayered reduced-motion rule already stops every .fa-spin spinner in the share modal.
+       The breathing connection dot is not an FA animation, so it is stopped here, after its `.cx-pill.live i.dotx` rule at equal specificity. */
+    .cx-pill.live i.dotx {
       animation: none;
     }
     #modal-message details.cx-ended > summary i {

@@ -3,7 +3,7 @@
 <!-- GENERATED FILE — do not edit by hand. Built from the mintlify user docs by
 scripts/build-app-help-knowledge.js (deterministic digest; re-run it after editing any source page).
 Source pages: joe/byob.mdx, joe/agent-bridge.mdx, joe/permissions.mdx
-Generated: 2026-10-24 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
+Generated: 2026-10-25 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
 Sync guard: tests/unit/appHelpKnowledgeSync.test.js fails when mintlify/**/*.mdx or this digest drifts
 from scripts/app-help-knowledge.manifest.json. -->
 
@@ -30,6 +30,7 @@ Choose how FlowJoe keeps each key in **Settings → APIs**.
 - **Desktop storage:** Keys normally use OS encryption. If it fails or is weak, **Use for this session** keeps the saved key intact; **Try again** retries a failed read. Temporary keys end when you quit FlowJoe.
 - **Browser storage:** New keys last until refresh or close. **Save on this computer as plain text** requires an explicit choice. Existing plaintext copies stay until you choose to keep or remove them. Tasks need a key again after its session ends.
 - **Export choice:** Keys are excluded from portable exports by default. You can explicitly include an OpenAI key, so review that checkbox before sharing a package.
+API-key encryption protects the saved key. It does not encrypt your Flow, its Private nodes or its history. See What is encrypted today.
 
 **Configuring Your AI Brain.**
 To adjust your model config:

@@ -1,0 +1,1 @@
+Independent review started. Keep chatting; results are not available yet. When every background job in the group has finished, Joe considers the results together in one combined answer after any active reply finishes.

@@ -1,0 +1,1 @@
+Research started. Continue talking to the user; findings are not available yet. When every background job in the group has finished, the results come back together for one combined answer after any active reply finishes.

@@ -2117,7 +2117,7 @@
 
   /* Memories mode: like the floating window, the chat's own controls step aside (the Memories button,
      now "Back to chat", sits in the thread bar). */
-  #ai-spell-check-modal.joe-docked > #ai-spell-check-panel[data-mode="memories"] :is(.joe-context-tray, .joe-dock-composer-box, .joe-dock-chips) {
+  #ai-spell-check-modal.joe-docked > #ai-spell-check-panel[data-mode="memories"] :is(.joe-context-tray, .joe-dock-composer-box, .joe-dock-chips, .joe-specialist-pin) {
     display: none;
   }
 

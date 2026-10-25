@@ -1987,9 +1987,25 @@
 .joe-research-card {margin:10px 0;padding:12px 14px;border:1px solid var(--border-color);border-radius:var(--radius-lg);background:var(--bg-secondary);color:var(--text-primary);font-size:var(--font-control,13px);line-height:1.5;overflow-wrap:anywhere;align-self:stretch}
 .joe-research-head {display:flex;gap:8px;align-items:center;flex-wrap:wrap}.joe-research-head i {color:var(--accent-color)}.joe-research-status {margin-left:auto;color:var(--text-secondary);font-size:var(--font-meta,12px)}
 .joe-research-card p {margin:7px 0}.joe-research-meta {color:var(--text-secondary);font-size:var(--font-meta,12px)}
-.joe-research-card .joe-research-link {appearance:none;background:none;border:0;border-radius:0;padding:0;min-height:0;box-shadow:none;color:var(--accent-color);font:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
-.joe-research-card .joe-research-link:hover {color:var(--text-primary);background:none}.joe-research-link:focus-visible {outline:2px solid var(--accent-color);outline-offset:2px}
+.joe-research-card .joe-research-link, .joe-specialist-link {appearance:none;background:none;border:0;border-radius:0;padding:0;min-height:0;box-shadow:none;color:var(--accent-color);font:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.joe-research-card .joe-research-link:hover, .joe-specialist-link:hover {color:var(--text-primary);background:none}.joe-research-link:focus-visible, .joe-specialist-link:focus-visible {outline:2px solid var(--accent-color);outline-offset:2px}
+.joe-research-card .joe-research-stop {margin-left:16px}
 .joe-research-details {border-top:1px solid var(--border-color);margin-top:10px;padding-top:8px}.joe-research-details ul {padding-left:19px;margin:8px 0}.joe-research-card [hidden] {display:none}
+/* Background work group (one frame, one compact row per job) and the pinned progress line. Approved mockup: docs/IMPLEMENTATION/mockups/flowjoe-parallel-specialists.html */
+.joe-research-card.joe-specialist-group {margin:12px 0 4px}.joe-specialist-group:focus {outline:none}.joe-specialist-group:focus-visible {outline:2px solid var(--accent-color);outline-offset:2px}
+.joe-specialist-summary {display:flex;align-items:baseline;gap:4px 12px;flex-wrap:wrap}.joe-specialist-count {color:var(--text-secondary)}.joe-specialist-summary .joe-specialist-link {margin-left:auto}
+.joe-specialist-link {margin:0}
+.joe-research-card .joe-specialist-scope {margin:2px 0 6px}
+.joe-specialist-row {border-top:1px solid var(--border-color);padding:8px 0 6px}
+.joe-specialist-row-head {display:flex;align-items:baseline;gap:4px 8px;flex-wrap:wrap}.joe-specialist-row-head i {color:var(--accent-color);width:14px;text-align:center;flex:none}
+.joe-specialist-row-title {font-weight:600;min-width:0}.joe-specialist-row-role {color:var(--text-secondary);font-size:var(--font-meta,12px)}
+.joe-specialist-row-status {text-align:right}
+.joe-specialist-row-actions {display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin:2px 0 0 22px}.joe-specialist-row-actions .joe-research-link {margin:0}
+.joe-specialist-row .joe-research-details {margin:8px 0 0 22px}
+.joe-specialist-usage-toggle {display:block;margin-top:8px;font-size:var(--font-control,13px)}.joe-specialist-usage {color:var(--text-secondary);font-size:var(--font-meta,12px);margin:6px 0 0}.joe-specialist-usage p {margin:4px 0}
+.joe-specialist-pin {display:flex;align-items:center;gap:10px;flex:none;margin:var(--jd-inset-margin, 0 12px);margin-bottom:8px;padding:6px 12px;border:1px solid var(--border-color);border-radius:var(--radius-lg);background:var(--bg-secondary);color:var(--text-primary);font-size:var(--font-meta,12px);line-height:1.5;cursor:pointer}.joe-specialist-pin[hidden] {display:none}.joe-specialist-pin i {color:var(--accent-color);flex:none}
+.joe-specialist-pin-text {min-width:0;flex:1 1 auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.joe-specialist-pin-count {color:var(--text-secondary)}.joe-specialist-pin-actions {display:flex;gap:14px;flex:none;font-size:var(--font-control,13px)}
+#ai-spell-check-panel[data-mode="memories"] .joe-specialist-pin {display:none}
 }
 
 
