@@ -65,6 +65,8 @@ When opening the backup, FlowJoe asks for the **package password** before import
 
 Import restores the contents into FlowJoe’s normal storage. Package encryption does not encrypt the live Flow, its saved Private content or the Workspace Folder. See [Security & privacy](/concepts/security#encrypted-backups).
 
+**Current Private-node protection:** the node password controls access inside FlowJoe. It does not encrypt saved content, media, autosaves or local history. Encrypted Private-node storage is still under development. See [What is encrypted today](/concepts/security#what-is-encrypted-today).
+
 New protected exports use stronger password derivation to make password guessing more expensive. Older protected backups still open with their original passwords. Existing backup files keep their original protection; export a new protected copy to use the stronger setting. Choose a long, unique package password.
 
 There is no package-password recovery. Keep the password somewhere safe, separately from the backup. Protected packages currently need to fit in memory, and protected files of 2 GiB or larger cannot be imported.
