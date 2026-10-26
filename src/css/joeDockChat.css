@@ -337,8 +337,7 @@
 
   /* Outranks the menu's own :hover fill below on its own; the inline fills the menu controllers set
      are held back by menuMotion.js's row-fill hold, so no !important is needed. */
-  #ai-spell-check-modal.joe-docked .joe-dock-menu.fj-glide button:hover,
-  #ai-spell-check-modal.joe-docked .joe-dock-menu.fj-glide button:focus-visible {
+  #ai-spell-check-modal.joe-docked .joe-dock-menu.fj-glide button:hover:not(:focus-visible) {
     background: transparent;
   }
 

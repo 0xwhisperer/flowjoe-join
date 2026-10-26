@@ -739,6 +739,7 @@ export function glideHighlight(host, itemSelector, {fill = "var(--hover-bg)", ke
     }
     cur = item;
   });
+  host.addEventListener("focusin", off);
   host.addEventListener("pointerleave", off);
   host.addEventListener("pointermove", () => windowMotionOn(host, key) || off());
 }

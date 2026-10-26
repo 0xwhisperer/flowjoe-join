@@ -21,7 +21,7 @@ Use the inspection controls before deleting anything:
 - **Inspect Orphaned Image Prompts** finds image-prompt records no longer attached to their images.
 - **View Diagnostics Log**, on desktop, opens troubleshooting information.
 
-For slow Joe replies, the desktop app also keeps bounded local support summaries of OpenAI request times and reported cache reuse. These summaries contain counts and timings, without conversation text or API keys. They help investigate delays; they do not measure the complete time you waited for a reply.
+For slow Joe replies, the desktop app also keeps bounded local support summaries of OpenAI request times and reported cache reuse. These summaries contain counts and timings, without conversation text or API keys. They help investigate delays; they do not measure the complete time you waited for a reply. New summaries separate ordinary HTTP requests from persistent-connection requests; attempts without an observed response stay unknown. Older summaries may have no connection breakdown. These samples can mix models and tasks, so their timings do not prove that one connection method is faster.
 
 Read the inspection results before choosing a cleanup. Export a backup first if you are unsure.
 

@@ -6,7 +6,8 @@
  * exclusively via postMessage, mirroring the spreadsheet/rich-document islands:
  *
  *   island -> parent : { type: "flowjoe:calendar-ready" }                  (bundles loaded, awaiting a snapshot)
- *   parent -> island : { type: "flowjoe:calendar-load", snapshot }         (mount + load this calendar)
+ *   parent -> island : { type: "flowjoe:calendar-validation-text", validation } (live message language)
+ *   parent -> island : { type: "flowjoe:calendar-load", snapshot, validation }         (mount + load this calendar)
  *   island -> parent : { type: "flowjoe:calendar-loaded" }                 (calendar rendered)
  *   parent -> island : { type: "flowjoe:calendar-request-save" }           (e.g. on modal close)
  *   island -> parent : { type: "flowjoe:calendar-save", snapshot }         (debounced on edit, or on request)
@@ -35,6 +36,54 @@
   let currentTheme = null;
   let deleteConfirmSeq = 0;
   let pendingDeleteConfirmId = "";
+  let validationText = null;
+  let validationFailure = null;
+
+  function renderEventValidation() {
+    const message = document.getElementById("fj-ev-validation");
+    if (!message) return;
+    message.lang = validationText?.language || "en";
+    message.dir = "auto";
+    message.textContent = validationFailure ? validationText?.[validationFailure.code] || validationText?.generic || "" : "";
+    message.hidden = !validationFailure;
+    const field = validationFailure && document.getElementById(validationFailure.fieldId);
+    if (field && document.activeElement === field) field.parentElement.scrollIntoView({block: "nearest", inline: "nearest"});
+  }
+
+  function clearEventValidation() {
+    const field = validationFailure && document.getElementById(validationFailure.fieldId);
+    if (field) {
+      field.removeAttribute("aria-invalid");
+      const descriptions = String(field.getAttribute("aria-describedby") || "")
+        .split(/\s+/)
+        .filter((id) => id && id !== "fj-ev-validation");
+      if (descriptions.length) field.setAttribute("aria-describedby", descriptions.join(" "));
+      else field.removeAttribute("aria-describedby");
+    }
+    validationFailure = null;
+    renderEventValidation();
+  }
+
+  function rejectEventEdit(code, fieldId) {
+    clearEventValidation();
+    validationFailure = {code, fieldId};
+    const field = document.getElementById(fieldId);
+    if (field) {
+      if (code !== "generic") field.setAttribute("aria-invalid", "true");
+      const descriptions = new Set(
+        String(field.getAttribute("aria-describedby") || "")
+          .split(/\s+/)
+          .filter(Boolean)
+      );
+      descriptions.add("fj-ev-validation");
+      field.setAttribute("aria-describedby", Array.from(descriptions).join(" "));
+      const message = document.getElementById("fj-ev-validation");
+      if (message) field.parentElement.appendChild(message);
+    }
+    renderEventValidation();
+    field?.focus();
+    field?.parentElement.scrollIntoView({block: "nearest", inline: "nearest"});
+  }
 
   function postToParent(message) {
     // Same-origin local island; for file:// the parent origin is "null", so target "*" is
@@ -226,7 +275,10 @@
     row.className = "fj-ev-row";
     const span = document.createElement("span");
     span.className = "fj-ev-label";
+    span.id = `${inputEl.id}-label`;
     span.textContent = labelText;
+    // The adjacent error describes the control; it must never become part of its name.
+    inputEl.setAttribute("aria-labelledby", span.id);
     row.appendChild(span);
     row.appendChild(inputEl);
     return row;
@@ -328,6 +380,15 @@
 
     const body = document.createElement("div");
     body.className = "fj-event-editor-body";
+    const validationMessage = document.createElement("span");
+    validationMessage.id = "fj-ev-validation";
+    validationMessage.setAttribute("role", "alert");
+    validationMessage.setAttribute("aria-atomic", "true");
+    validationMessage.hidden = true;
+    body.appendChild(validationMessage);
+    body.addEventListener("input", (event) => {
+      if (validationFailure && event.target.id === validationFailure.fieldId) clearEventValidation();
+    });
 
     const allDay = input("fj-ev-allday", "checkbox");
     const allDayRow = document.createElement("label");
@@ -543,6 +604,7 @@
 
   function openEditor(mode, opts) {
     buildEditor();
+    clearEventValidation();
     pendingDeleteConfirmId = "";
     const o = opts && typeof opts === "object" ? opts : {};
     const base = isPlainObject(o.base) ? o.base : {};
@@ -583,6 +645,7 @@
   }
 
   function closeEditor() {
+    clearEventValidation();
     pendingDeleteConfirmId = "";
     if (editorEl) editorEl.hidden = true;
     try {
@@ -637,11 +700,31 @@
       attendees
     });
     const existing = calendar.getEventById(editorState.eventId);
-    if (existing) existing.remove();
     const def = {id: fjEvent.id, title: fjEvent.title, allDay, extendedProps: {fjEvent}};
     if (start) def.start = start;
     if (end) def.end = end;
-    calendar.addEvent(def);
+    // Stage with the public parser before retiring the captured original. Engine rejection
+    // must leave both the saved event and the user's editable draft available for correction.
+    let candidate;
+    try {
+      candidate = calendar.addEvent(def);
+    } catch (error) {
+      rejectEventEdit("generic", "fj-ev-title");
+      reportError("edit", error);
+      return;
+    }
+    if (!candidate) {
+      rejectEventEdit("start", "fj-ev-start");
+      return;
+    }
+    // FullCalendar silently discards malformed/nonpositive End. A supplied End must survive
+    // parsing and follow Start; blank End retains the engine's existing optional-end behavior.
+    if (end && (!candidate.end || candidate.end.getTime() <= candidate.start.getTime())) {
+      candidate.remove();
+      rejectEventEdit("end", "fj-ev-end");
+      return;
+    }
+    if (existing) existing.remove();
     syncEmptyState();
     closeEditor();
     scheduleSave();
@@ -784,8 +867,14 @@
 
     switch (data.type) {
       case "flowjoe:calendar-load":
+        validationText = data.validation || null;
+        renderEventValidation();
         applyTheme(data.theme);
         mountAndLoad(data.snapshot);
+        break;
+      case "flowjoe:calendar-validation-text":
+        validationText = data.validation || null;
+        renderEventValidation();
         break;
       case "flowjoe:calendar-theme":
         applyTheme(data.theme);

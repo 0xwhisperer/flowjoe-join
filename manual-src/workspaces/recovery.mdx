@@ -13,6 +13,8 @@ FlowJoe keeps two different safety nets, and it helps to know which one you want
   <img src="/images/diagrams/restore-points.svg" alt="Choose a retained version, confirm restoration after a protective restore point is saved, then inspect the result and use Go back if needed." />
 </Frame>
 
+**Blocked Local saves:** When FlowJoe offers **Try Again** after a blocked Local save, it retries the waiting saves and keeps the recovery window open if the retry is refused. If another window opens while the retry is running, its result leaves that newer window alone.
+
 ## A Workspace folder becomes unavailable
 
 FlowJoe automatically keeps working and saving locally, with a small save-status warning. You do

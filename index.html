@@ -22,7 +22,7 @@
     <link rel="preload" as="font" type="font/woff2" crossorigin="anonymous" href="vendor/fontawesome-free-6.5.0/webfonts/fa-regular-400.woff2" />
     <!-- App typography families -->
     <link rel="stylesheet" href="vendor/fonts/fonts.css" />
-    <script src="boot/prebootstrap.83d5bdf74b1961ac.js"></script>
+    <script src="boot/prebootstrap.60727205b17cc9fa.js"></script>
     <!-- canvas-confetti is now bundled (see VENDOR_GLOBALS in scripts/build-bundle-esm.js) — no CDN dependency. -->
   </head>
   <body>
@@ -529,7 +529,7 @@
       </div>
     </div>
     <!-- Settings Panel -->
-    <div id="settings-panel" class="settings-panel">
+    <div id="settings-panel" class="settings-panel" inert>
       <div class="settings-header">
         <h3 class="settings-breadcrumb">
           <span class="settings-breadcrumb-root" data-i18n="settings.title">Settings</span>
@@ -550,41 +550,41 @@
             <i class="settings-nav-collapse-icon fa-solid fa-angles-left" aria-hidden="true"></i>
             <span class="settings-tab-label" data-i18n="settings.nav.collapse">Collapse</span>
           </button>
-          <button class="settings-tab active" data-tab="appearance">
+          <button class="settings-tab active" data-tab="appearance" aria-labelledby="settings-nav-label-appearance">
             <i class="settings-tab-icon fa-regular fa-image" aria-hidden="true"></i>
-            <span class="settings-tab-label" data-i18n="settings.tabs.appearance">Appearance</span>
+            <span id="settings-nav-label-appearance" class="settings-tab-label" data-i18n="settings.tabs.appearance">Appearance</span>
           </button>
-          <button class="settings-tab" data-tab="tree">
+          <button class="settings-tab" data-tab="tree" aria-labelledby="settings-nav-label-tree">
             <i class="settings-tab-icon fa-solid fa-folder-tree" aria-hidden="true"></i>
-            <span class="settings-tab-label" data-i18n="settings.tabs.tree">Tree</span>
+            <span id="settings-nav-label-tree" class="settings-tab-label" data-i18n="settings.tabs.tree">Tree</span>
           </button>
-          <button class="settings-tab" data-tab="gallery">
+          <button class="settings-tab" data-tab="gallery" aria-labelledby="settings-nav-label-gallery">
             <i class="settings-tab-icon fa-regular fa-images" aria-hidden="true"></i>
-            <span class="settings-tab-label" data-i18n="settings.tabs.gallery">Gallery</span>
+            <span id="settings-nav-label-gallery" class="settings-tab-label" data-i18n="settings.tabs.gallery">Gallery</span>
           </button>
-          <button class="settings-tab" data-tab="audio">
+          <button class="settings-tab" data-tab="audio" aria-labelledby="settings-nav-label-audio">
             <i class="settings-tab-icon fa-solid fa-wave-square" aria-hidden="true"></i>
-            <span class="settings-tab-label" data-i18n="settings.tabs.audio">Audio</span>
+            <span id="settings-nav-label-audio" class="settings-tab-label" data-i18n="settings.tabs.audio">Audio</span>
           </button>
-          <button class="settings-tab electron-browser-settings-only" data-tab="browser" hidden>
+          <button class="settings-tab electron-browser-settings-only" data-tab="browser" aria-labelledby="settings-nav-label-browser" hidden>
             <i class="settings-tab-icon fa-regular fa-window-maximize" aria-hidden="true"></i>
-            <span class="settings-tab-label" data-i18n="settings.tabs.browser">Browser</span>
+            <span id="settings-nav-label-browser" class="settings-tab-label" data-i18n="settings.tabs.browser">Browser</span>
           </button>
-          <button class="settings-tab" data-tab="ai">
+          <button class="settings-tab" data-tab="ai" aria-labelledby="settings-nav-label-ai">
             <i class="settings-tab-icon fa-regular fa-comment-dots" aria-hidden="true"></i>
-            <span class="settings-tab-label" data-i18n="settings.tabs.ai">Joe AI</span>
+            <span id="settings-nav-label-ai" class="settings-tab-label" data-i18n="settings.tabs.ai">Joe AI</span>
           </button>
-          <button class="settings-tab" data-tab="apis">
+          <button class="settings-tab" data-tab="apis" aria-labelledby="settings-nav-label-apis">
             <i class="settings-tab-icon fa-solid fa-key" aria-hidden="true"></i>
-            <span class="settings-tab-label" data-i18n="settings.tabs.apis">APIs</span>
+            <span id="settings-nav-label-apis" class="settings-tab-label" data-i18n="settings.tabs.apis">APIs</span>
           </button>
-          <button class="settings-tab" data-tab="data">
+          <button class="settings-tab" data-tab="data" aria-labelledby="settings-nav-label-data">
             <i class="settings-tab-icon fa-solid fa-database" aria-hidden="true"></i>
-            <span class="settings-tab-label" data-i18n="settings.tabs.data">Data</span>
+            <span id="settings-nav-label-data" class="settings-tab-label" data-i18n="settings.tabs.data">Data</span>
           </button>
-          <button class="settings-tab" data-tab="automation">
+          <button class="settings-tab" data-tab="automation" aria-labelledby="settings-nav-label-automation">
             <i class="settings-tab-icon fa-regular fa-clock" aria-hidden="true"></i>
-            <span class="settings-tab-label" data-i18n="settings.tabs.automation">Tasks</span>
+            <span id="settings-nav-label-automation" class="settings-tab-label" data-i18n="settings.tabs.automation">Tasks</span>
           </button>
         </nav>
 
@@ -1648,7 +1648,7 @@
           <div class="setting-item" data-provider-account="openai">
             <div class="setting-control">
               <label data-i18n="settings.apis.apiSettingsLabel">OpenAI API Key</label>
-              <button class="icon-btn" id="ai-settings-btn" data-tooltip="Open OpenAI key settings" data-position="left" style="margin-left: auto;" data-i18n-attr="data-tooltip:settings.apis.apiSettingsButtonTooltip">
+              <button class="icon-btn" id="ai-settings-btn" aria-label="Open OpenAI key settings" data-tooltip="Open OpenAI key settings" data-position="left" style="margin-left: auto;" data-i18n-attr="data-tooltip:settings.apis.apiSettingsButtonTooltip;aria-label:settings.apis.apiSettingsButtonTooltip">
                 <i class="fa-solid fa-robot"></i>
               </button>
             </div>
@@ -1658,7 +1658,7 @@
           <div class="setting-item" data-provider-account="anthropic">
             <div class="setting-control">
               <label data-i18n="settings.apis.anthropicSettingsLabel">Anthropic API Key</label>
-              <button class="icon-btn provider-key-logo-btn" id="anthropic-settings-btn" data-company-logo="anthropic" data-tooltip="Open Anthropic key settings" data-position="left" style="margin-left: auto;" data-i18n-attr="data-tooltip:settings.apis.anthropicSettingsButtonTooltip"></button>
+              <button class="icon-btn provider-key-logo-btn" id="anthropic-settings-btn" aria-label="Open Anthropic key settings" data-company-logo="anthropic" data-tooltip="Open Anthropic key settings" data-position="left" style="margin-left: auto;" data-i18n-attr="data-tooltip:settings.apis.anthropicSettingsButtonTooltip;aria-label:settings.apis.anthropicSettingsButtonTooltip"></button>
             </div>
             <div class="provider-key-status" data-provider-account="anthropic" role="status" aria-live="polite"></div>
             <p class="setting-description" data-i18n="settings.apis.anthropicDescription">Use Claude models as one of Joe’s brains with your own Anthropic key. Separate from a Claude Code login: you can have both.</p>
@@ -1666,7 +1666,7 @@
           <div class="setting-item" data-provider-account="gemini">
             <div class="setting-control">
               <label data-i18n="settings.apis.geminiSettingsLabel">Gemini API Key</label>
-              <button class="icon-btn" id="gemini-settings-btn" data-tooltip="Open Gemini Settings" data-position="left" style="margin-left: auto;" data-i18n-attr="data-tooltip:settings.apis.geminiSettingsButtonTooltip">
+              <button class="icon-btn" id="gemini-settings-btn" aria-label="Open Gemini Settings" data-tooltip="Open Gemini Settings" data-position="left" style="margin-left: auto;" data-i18n-attr="data-tooltip:settings.apis.geminiSettingsButtonTooltip;aria-label:settings.apis.geminiSettingsButtonTooltip">
                 <i class="fa-solid fa-wand-magic-sparkles"></i>
               </button>
             </div>
@@ -1676,7 +1676,7 @@
           <div class="setting-item" data-provider-account="xai">
             <div class="setting-control">
               <label data-i18n="settings.apis.xaiSettingsLabel">xAI API Key</label>
-              <button class="icon-btn provider-key-logo-btn" id="xai-settings-btn" data-company-logo="xai" data-tooltip="Open xAI key settings" data-position="left" style="margin-left: auto;" data-i18n-attr="data-tooltip:settings.apis.xaiSettingsButtonTooltip"></button>
+              <button class="icon-btn provider-key-logo-btn" id="xai-settings-btn" aria-label="Open xAI key settings" data-company-logo="xai" data-tooltip="Open xAI key settings" data-position="left" style="margin-left: auto;" data-i18n-attr="data-tooltip:settings.apis.xaiSettingsButtonTooltip;aria-label:settings.apis.xaiSettingsButtonTooltip"></button>
             </div>
             <div class="provider-key-status" data-provider-account="xai" role="status" aria-live="polite"></div>
             <p class="setting-description" data-i18n="settings.apis.xaiDescription">Use Grok as one of Joe’s brains with your own xAI key. Separate from a Grok terminal login.</p>
@@ -1687,7 +1687,7 @@
           <div class="setting-item" data-provider-account="typesafe">
             <div class="setting-control">
               <label data-i18n="settings.apis.typesafeSettingsLabel">TypeSafe API Key</label>
-              <button class="icon-btn" id="typesafe-settings-btn" data-tooltip="Open TypeSafe Settings" data-position="left" style="margin-left: auto;" data-i18n-attr="data-tooltip:settings.apis.typesafeSettingsButtonTooltip">
+              <button class="icon-btn" id="typesafe-settings-btn" aria-label="Open TypeSafe Settings" data-tooltip="Open TypeSafe Settings" data-position="left" style="margin-left: auto;" data-i18n-attr="data-tooltip:settings.apis.typesafeSettingsButtonTooltip;aria-label:settings.apis.typesafeSettingsButtonTooltip">
                 <i class="fa-solid fa-bolt"></i>
               </button>
             </div>
@@ -2188,6 +2188,6 @@
         </div><!-- /settings-content -->
       </div><!-- /settings-body -->
     </div><!-- /settings-panel -->
-    <script src="boot/progress.cfb4caf71dbbcc34.js"></script>
+    <script src="boot/progress.abc625a3828116b2.js"></script>
   </body>
 </html>
