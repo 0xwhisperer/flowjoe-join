@@ -88,6 +88,8 @@ Some Anthropic answers have their own plain message:
 
 * **Key rejected: Anthropic needs a key made inside a workspace** — this key was created outside any Anthropic workspace. Create a new key inside a workspace and paste that one.
 * **The key works, but the account has no credit** — add credit to your Anthropic account, then try again.
+* **Gemini or xAI says the account is out of credit** — Joe shows the provider's own reason under a short explanation. Add credit (Gemini: your prepaid balance or billing in Google AI Studio; xAI: your team's credits in the xAI console), then try again. A per-minute rate limit looks different: wait a moment and retry.
+* **"Couldn't get a reply from …"** — the request never got an answer. Check your internet connection; if it keeps happening, check that the key still has credit. This reads the same on every brain, and after a change was already made in your flow Joe says so first.
 
 **Test never saves.** Pressing **Test** checks the key you typed without storing it, for xAI too (FlowJoe checks xAI keys through the desktop app). Only **Save** changes your saved key, so a mistyped key never replaces one that works. xAI brains need the FlowJoe desktop app: in a plain web browser, Grok shows as "Desktop app only" in both brain lists and can't be picked, and **Test** in the xAI window says the same.
 

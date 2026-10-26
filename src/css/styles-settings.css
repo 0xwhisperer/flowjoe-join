@@ -768,39 +768,7 @@
   line-height: var(--notes-line-height);
 }
 
-/* Settings › Gallery › Image Editor: one status line (added / not added / busy) and quiet icon actions. */
-#image-editor-setting-card .image-editor-setting-actions {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-#image-editor-setting-card .icon-btn {
-  width: 28px;
-  height: 28px;
-  min-width: 28px;
-  border-color: transparent;
-  border-radius: var(--radius-md, 6px);
-  background-color: transparent;
-  color: var(--text-secondary);
-  cursor: pointer;
-  flex: 0 0 auto;
-}
-
-#image-editor-setting-card .icon-btn:hover:not(:disabled) {
-  background-color: var(--hover-bg);
-  color: var(--text-primary);
-}
-
-#image-editor-setting-card .icon-btn:disabled {
-  opacity: var(--disabled-opacity-control);
-  cursor: default;
-}
-
-#image-editor-setting-card .icon-btn[hidden] {
-  display: none;
-}
-
+/* Settings › Gallery › Image Editor: an info card (the editor is bundled), one "Built in · version" line with a check. */
 #image-editor-setting-card .image-editor-setting-status {
   display: flex;
   align-items: center;
@@ -809,17 +777,8 @@
   color: var(--text-primary);
 }
 
-#image-editor-setting-card .image-editor-setting-status[data-state="added"] i {
+#image-editor-setting-card .image-editor-setting-status i {
   color: var(--success-color);
-}
-
-#image-editor-setting-card .image-editor-setting-status[data-state="notAdded"] i {
-  color: var(--text-secondary);
-}
-
-/* The busy spinner (fa-spin) stops under Reduce motion through Font Awesome's own reduced-motion rule. */
-#image-editor-setting-card .image-editor-setting-status[data-state="busy"] i {
-  color: var(--accent-color);
 }
 
 /* "What Joe Sees" context card — Map controls + live counts. */

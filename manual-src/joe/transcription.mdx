@@ -165,6 +165,21 @@ New model choices may arrive with FlowJoe updates. You choose whether to downloa
 
 Transcripts keep following their original recording when you merge audio into a stack. Moving that stack into a Private node excludes its retained transcripts from exports by default. The owner can explicitly include eligible transcripts by selecting the Private node with password confirmation; unlocking alone does not include it. An Edit guest with export permission can include eligible retained transcripts; FlowJoe checks access again before saving the export.
 
+## Ask Joe about a YouTube video
+
+Paste a YouTube link (or ask about a video you have open) and Joe can read what is said in it. FlowJoe's built-in browser rises to just its tab row at the bottom of the window and a YouTube tab with a small Joe badge appears beside your own active tab; Joe's status line says **Reading the video's captions…**. The video stays paused and muted the whole time. You can keep working while Joe reads.
+
+When Joe is done, his tab closes and the browser goes back to how it was: if it was closed, it slides away again; if you had tabs open, you stay on yours. If you expanded the browser meanwhile, it stays open. If the video is already open in one of your own tabs, Joe reads it there and leaves your tab as it is.
+
+- **The whole transcript, however long.** Joe reads the full captions — a three-hour podcast included — and works through a long transcript in sections, quoting with timestamps.
+- **Captions are needed.** Joe reads YouTube's own transcript. If a video has none, Joe says so; you can send him the transcript another way, or transcribe a recording you have.
+- **YouTube asks for a person.** If YouTube shows its unusual-traffic check, Joe stops and tells you right away. Open YouTube in FlowJoe's browser to complete the check yourself, then ask Joe again. Joe does not try to pass the check or retry it.
+- **Stopping.** Stop in the Joe chat, or closing Joe's tab yourself, ends the read. Stop also cancels a request waiting behind another read without waiting for that video to finish.
+- **Your YouTube account.** Joe's tab uses the same YouTube session as your built-in browser, so videos Joe reads can appear in your YouTube watch history and recommendations.
+- **History and saved tabs.** Joe's tab is never added to your browser history or saved tabs, and it can't be brought back with Reopen Closed Tab.
+- **Guests.** A guest's Joe can read a YouTube video too, when the owner has Joe switched on for that guest. The read happens on the owner's computer: the owner briefly sees Joe's tab in their tab row. If the owner switches off a guest's Joe while a request is waiting, that request will not open a tab.
+- **Every brain.** This works the same whichever brain runs Joe. Outside assistants connected through the Agent Bridge can't use it.
+
 ## Privacy, limits and troubleshooting
 
 Local transcription keeps the audio on your computer and works offline after setup. If you later attach or paste the transcript into an online Joe conversation, that text follows the chat provider's normal processing rules.

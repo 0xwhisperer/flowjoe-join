@@ -1563,9 +1563,9 @@ button.orphan-media-modal-close.context-menu-corner-close {
 }
 
 #modal > div.modal-panel-url-input #modal-input {
-  width: calc(100% - 10px);
-  max-width: calc(100% - 10px);
-  margin: 0 5px 16px;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 0 16px;
   border: 1px solid var(--border-light);
   border-radius: var(--radius-md, 6px);
   box-sizing: border-box;

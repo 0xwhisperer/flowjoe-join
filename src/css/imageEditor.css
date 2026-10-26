@@ -1,8 +1,8 @@
-/* imageEditor.css — the optional Image Editor (Edit Image): its first-use download window and its screen laid over the gallery like
+/* imageEditor.css — the Image Editor (Edit Image): its dialog bodies (Resize…) and its screen laid over the gallery like
    Version History (activityPanel.css owns the shared frame: .activity-host, title row, .activity-header, .activity-toolbar-btn, .activity-tabs).
    Ported from the approved mockup docs/IMPLEMENTATION/mockups/flowjoe-image-editor.html (#pce-style). Theme tokens only. */
 
-/* --- Slot menu: a guest whose owner hasn't added the editor sees Edit Image greyed with the reason under its label (mockup guest-not-added) --- */
+/* --- Slot menu: a guest whose owner doesn't offer the editor (an older owner app) sees Edit Image greyed with the reason under its label (mockup guest-not-added) --- */
 .pce-row-stack {
   display: flex;
   flex-direction: column;
@@ -18,7 +18,7 @@
   color: var(--text-secondary);
 }
 
-/* --- Download window body (inside the shared #modal) --- */
+/* --- Dialog body inside the shared #modal (Resize…) --- */
 .pce-dl-body {
   display: flex;
   flex-direction: column;
@@ -38,26 +38,6 @@
 }
 .pce-dl-meta i {
   color: var(--accent-color);
-}
-.pce-progress {
-  height: 6px;
-  border-radius: var(--radius-full, 999px);
-  background: var(--bg-tertiary);
-  overflow: hidden;
-}
-.pce-progress > span {
-  display: block;
-  height: 100%;
-  width: 0;
-  background: var(--accent-color);
-  border-radius: inherit;
-}
-.pce-progress-row {
-  display: flex;
-  justify-content: space-between;
-  font-size: var(--font-control);
-  color: var(--text-secondary);
-  font-variant-numeric: tabular-nums;
 }
 .pce-dl-error {
   color: var(--danger-color);

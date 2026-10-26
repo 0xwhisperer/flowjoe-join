@@ -14,6 +14,7 @@ This guest build publishes only components delivered to the browser. The complet
 | @fullcalendar/interaction | 6.1.20 | MIT |
 | @fullcalendar/list | 6.1.20 | MIT |
 | @fullcalendar/timegrid | 6.1.20 | MIT |
+| @noble/hashes | 1.8.0 | MIT |
 | @popperjs/core | 2.11.8 | MIT |
 | @radix-ui/primitive | 1.1.7 | MIT |
 | @radix-ui/react-arrow | 1.1.16 | MIT |
@@ -124,6 +125,7 @@ This guest build publishes only components delivered to the browser. The complet
 | markdown-it | 14.3.2 | MIT |
 | markdown-it-task-lists | 2.1.1 | ISC |
 | mdurl | 2.0.0 | MIT |
+| mp4box | 2.4.1 | BSD-3-Clause |
 | n-gram | 2.0.2 | MIT |
 | Newsreader | bundled | OFL-1.1 |
 | orderedmap | 2.1.1 | MIT |

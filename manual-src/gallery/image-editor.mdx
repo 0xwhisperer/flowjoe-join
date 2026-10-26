@@ -5,7 +5,7 @@ description: "Edit a picture in a full editor and save the result as a new versi
 
 **Edit Image** opens a picture from a slot in a full image editor right inside the gallery. Whatever you save is added as a **new version on top of the slot**: the original stays underneath in the slot's [stack](/gallery/stacks), and **Undo** puts it back.
 
-The editor is an optional add-on. **Crop Image** in the same menu is built in, works instantly and never needs it.
+The editor comes with FlowJoe: there is nothing to download or set up, and it works offline. **Crop Image** in the same menu stays the quickest way to just trim a picture.
 
 ---
 
@@ -18,15 +18,7 @@ The editor is an optional add-on. **Crop Image** in the same menu is built in, w
 
 The editor opens PNG, JPEG, WebP, GIF, BMP, TIFF, HEIC and SVG pictures (an SVG drawing is saved back as a PNG). For other kinds (an AVIF photo, for example) FlowJoe says so instead of opening it; **Crop Image** still works on them.
 
-### The first time: adding the editor
-
-The first time you use **Edit Image**, FlowJoe asks before downloading anything. The window shows the size (about **12 MB to download, 26 MB on disk**) and says that FlowJoe checks the file before it is used.
-
-- **Download** shows the progress in the same window, then opens the editor on the picture you picked.
-- **Cancel** stops at any point, including during the download. Nothing half-downloaded is kept.
-- If the download fails (for example the connection drops), the window says what went wrong and offers **Try Again**.
-
-After that it works offline.
+The editor opens straight away on the picture you picked.
 
 ---
 
@@ -48,7 +40,6 @@ Each one is saved like **Save as New Version**: the result goes on top of the sl
 - One quick fix runs at a time. Asking for another while one is running tells you to try again when it's done.
 - While the editor screen is open, quick fixes wait: close the editor first. **Open Editor…** also waits while a quick fix is still running.
 - If a quick fix can't be done, FlowJoe says so and the picture isn't changed.
-- The first time, the editor is downloaded first (the same window as for **Open Editor…**), then the quick fix carries on.
 
 ### Resize…
 
@@ -134,10 +125,10 @@ The editor runs separately from the rest of FlowJoe. If it stops (it can run out
 
 ## Guests
 
-People you've invited to a shared Flow in their browser use your copy of the editor: they never download it themselves.
+People you've invited to a shared Flow in their browser use your copy of the editor: they never install anything themselves.
 
-- **When you've added the editor**, a guest who can crop a picture gets **Edit Image ›** with **Open Editor…** and every quick fix, exactly as you do. The editor comes from your computer the first time they open it in their visit (about 12 MB) and then starts from what their browser already has.
-- **When you haven't added it**, they see **Edit Image** greyed out, without its arrow, with the line **The owner hasn't added the image editor yet.** under it. As soon as you add it (or remove it), their menu follows, without them reloading.
+- A guest who can crop a picture gets **Edit Image ›** with **Open Editor…** and every quick fix, exactly as you do. The editor comes from your computer the first time they open it in their visit (about 12 MB) and then starts from what their browser already has.
+- If you're on an older version of FlowJoe that didn't include the editor yet, they see **Edit Image** greyed out, without its arrow, with the line **The owner hasn't added the image editor yet.** under it.
 - A guest who can only view the Flow can't crop, so they can't edit pictures either.
 - What a guest saves goes into your Flow the same way as their **Crop Image** does: a new version on top of the slot, the original underneath. Changing a picture someone else added follows the invitation's **removal** permission, as Crop does: without it, FlowJoe keeps the picture as it is and tells the guest **Unable to remove item**, with **Ask (your name) to remove it or grant removal permission.**
 - If someone replaces or removes the picture while it's open in the editor, a quick fix or **Crop Image**, FlowJoe doesn't save and says **The edit wasn't saved: the picture changed while the edit was open.** In the editor your edits stay on screen.
@@ -146,11 +137,6 @@ People you've invited to a shared Flow in their browser use your copy of the edi
 
 ## Settings
 
-**Settings › Gallery › Image Editor** shows whether the editor is added, its version and its sizes (for example **Added · version 0.15.1 · 12 MB download · 26 MB on disk**; the sizes change a little between versions). The card appears in the desktop app for the Flow's owner; guests and the browser version don't see it.
+**Settings › Gallery › Image Editor** says the editor is built in and shows its version (for example **Built in · version 0.15.1**). There is nothing to download or remove. The card appears in the desktop app for the Flow's owner; guests and the browser version don't see it.
 
-- **Reveal in Finder** (on Windows **Show in Explorer**, on Linux **Show in folder**) opens the folder the editor is kept in.
-- **Remove** (the bin) frees the space. FlowJoe asks first; **Cancel** keeps it. Afterwards **Edit Image** offers to download it again, and **Crop Image** keeps working.
-- When the editor isn't added, **Download** opens the same window as the first use of **Edit Image**.
-- While the editor is being added or removed, the card says so and its buttons wait.
-
-The editor is based on PhotoCraft by the ArtCraft team (MIT licence).
+The editor is based on PhotoCraft by the ArtCraft team (MIT licence). Its licence notices are in **Settings › Data › Open-source licenses**.

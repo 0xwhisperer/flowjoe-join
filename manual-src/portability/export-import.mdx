@@ -69,7 +69,11 @@ Import restores the contents into FlowJoe’s normal storage. Package encryption
 
 New protected exports use stronger password derivation to make password guessing more expensive. Older protected backups still open with their original passwords. Existing backup files keep their original protection; export a new protected copy to use the stronger setting. Choose a long, unique package password.
 
-There is no package-password recovery. Keep the password somewhere safe, separately from the backup. Protected packages currently need to fit in memory, and protected files of 2 GiB or larger cannot be imported.
+There is no package-password recovery. Keep the password somewhere safe, separately from the backup.
+
+Full packages saved through the desktop save window or a browser’s file-saving window use a streaming encrypted format. FlowJoe can export and import these packages above 2 GiB without loading the whole archive into memory. You still need enough free space for the imported media and the retained original backup. Use a current version of FlowJoe on the receiving computer; older versions cannot open this format.
+
+Protected data-only exports and browser download fallbacks use the earlier format and still need to fit in memory. Earlier protected packages of 2 GiB or larger cannot be imported. Very large outlines or media lists may also need to be split into smaller exports.
 
 ---
 

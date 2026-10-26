@@ -7,7 +7,7 @@
 
 ## description
 
-Some of your tools were left out of this turn because the request did not seem to need them. Call this with the group names you need and those tools will be available from your next step. Withheld groups: {groups}. Groups: edit (propose_flow_patch, undo_last_change, request_app_workflow, request_file), media (stage_media, transcribe_audio, generate_image, read_media_content, find_pictures, control_global_player), schedule (list_scheduled_tasks, and implies edit), memory (list_joe_memories, read_chat_attachment, query_history, read_history), devtools (read_browser_tab, read_terminal_output, read_repository, read_repo_file, list_github_repositories), delegate (research and review jobs).
+Some of your tools were left out of this turn because the request did not seem to need them. Call this with the group names you need and those tools will be available from your next step. Withheld groups: {groups}. Groups: edit (propose_flow_patch, undo_last_change, request_app_workflow, request_file), media (stage_media, transcribe_audio, read_youtube_captions, generate_image, read_media_content, find_pictures, control_global_player), schedule (list_scheduled_tasks, and implies edit), memory (list_joe_memories, read_chat_attachment, query_history, read_history), devtools (read_browser_tab, read_terminal_output, read_repository, read_repo_file, list_github_repositories), delegate (research and review jobs).
 
 ## added
 

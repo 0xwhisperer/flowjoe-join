@@ -2902,6 +2902,31 @@ body.browser-duck-resizing {
   line-height: 1;
 }
 
+/* Joe's YouTube captions tab (JOE_YOUTUBE_CAPTIONS_PLAN.md): a small Joe badge in the audio indicator's
+   slot — the tab is always muted, so the indicator is hidden there and the two never meet. */
+.browser-tab--joe .browser-tab-title {
+  padding-right: 18px;
+}
+
+.browser-tab-joe-badge {
+  position: absolute;
+  right: 34px;
+  top: 50%;
+  translate: 0 -50%;
+  width: 16px;
+  height: 16px;
+  border-radius: var(--radius-full, 999px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--accent-color) 22%, transparent);
+  color: var(--accent-color);
+  font-size: 9px;
+  line-height: 1;
+  pointer-events: none;
+  z-index: 3;
+}
+
 .browser-tab.pinned .browser-tab-audio-indicator {
   top: auto;
   right: 3px;

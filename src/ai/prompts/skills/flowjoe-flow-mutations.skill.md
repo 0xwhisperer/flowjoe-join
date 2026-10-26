@@ -114,15 +114,16 @@ result, and the mistakes that have actually happened.
   `unchanged_since_last_snapshot` refusal is NOT an error — the tool description says what it means.
   A snapshot is also provided to you each turn, but it **omits gallery contents**.
   **To answer ANYTHING about a slot's contents/items** ("what's in slot 1", "what is the first item", "which
-  slot has the YouTube link") you MUST call it with **`includeGallery: true`** — then each node's `gallery.slots`
-  lists every slot with its items: `{ index, isStack, title?, type?, tagIds?, stackCount?, activeIndex?,
-  items?:[{type, title?, url?}] }` (a plain slot's URL is inline; a stack's items are in `items`, with
-  `activeIndex` = the shown/top one). Use it instead of saying you don't have the contents. Call this to
-  refresh after a change or to drill into a subtree. **Private nodes are redacted** (you see `redacted:true`
-  with no content) — never target or describe their contents. The response also carries a top-level `tags`
-  dictionary (`[{id, name, color?, description?}]`) naming every tag id the visible entries reference. For
-  tag work ("everything tagged Urgent"): call with `includeGallery: true`, match the name in `tags` to its
-  id, then collect the slots whose `tagIds` carry that id. Never guess or fabricate a tag id.
+  slot has the YouTube link") you MUST call it with **`includeGallery: true`** — then each node's slots
+  follow its line (s1, s2, ... and a stack's items i1, i2, ...) with type, title, full entryId, url, notes, tag
+  ids and, for a stack, its item count and the shown (`active`) item. A plain slot's URL is inline. Use it
+  instead of saying you don't have the contents. The result opens with its own short reading guide (the
+  result is text lines in the flow map's format, not JSON). Call this to
+  refresh after a change or to drill into a subtree. **Private nodes are redacted** (you see "(private — sealed)"
+  with no content) — never target or describe their contents. The result also carries a `tags:` section (the tag
+  dictionary: id, name, color?, description?) naming every tag id the visible entries reference. For
+  tag work ("everything tagged Urgent"): call with `includeGallery: true`, match the name in `tags:` to its
+  id, then collect the slots whose `tags:` carry that id. Never guess or fabricate a tag id.
 - **`get_node_neighbors()`** — one node's parent / children / siblings / `sameTagNodes`. Reach for it on
   relational questions instead of re-reading the whole map and matching tag ids by hand. Sealed nodes stay
   opaque — never describe or guess sealed contents.
@@ -636,8 +637,8 @@ Each verb's REQUIRED args and shapes are in `propose_flow_patch`'s generated sig
 - `reorderStackItem` — change an item's position in the stack
 - `setStackActiveItem` — sets which item the stack SHOWS (its
   active/cover item) WITHOUT reordering. This is "flip the stack to image N" / "show the 3rd one" /
-  "make this the cover/top image". For "next"/"previous", read the stack's current `activeIndex` from
-  `get_flow_snapshot` (`includeGallery: true`) and pass `activeIndex ± 1` as `itemIndex`. Use `reorderStackItem` only
+  "make this the cover/top image". For "next"/"previous", read the stack's current active item (`active:K` on its slot line, 0-based) from
+  `get_flow_snapshot` (`includeGallery: true`) and pass `K ± 1` as `itemIndex`. Use `reorderStackItem` only
   when the user wants to CHANGE THE ORDER; use this when they just want a different one shown.
 - `removeStackItem` · `flattenStackSlot`
 - `copyStackItem` — optional `targetNodeId`, `targetIndex` — copy ONE stack item out as its own slot beside the stack (or onto another node). The stack keeps the original. This is not "copy into another stack". A repository file is refused.

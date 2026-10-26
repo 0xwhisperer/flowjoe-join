@@ -499,6 +499,21 @@
   transition: none;
 }
 
+/* Private pictures (encryption slice M-a1) are drawn on a canvas laid over the tile's <img>, which stays in place, empty and invisible, so the tile's
+   hit-testing, loading state and badges are unchanged. The canvas shows no decrypted bytes through any URL. */
+.image-frame:has(> canvas.private-media-canvas) {
+  position: relative;
+}
+
+.image-frame > canvas.private-media-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
 /* Non-image gallery slots should never flash the base placeholder/missing image
    layer while their real inline shell is initializing on reload. */
 .image-item img.lazy[data-media-type="audio"],
@@ -1897,6 +1912,28 @@ textarea:not(.image-notes):focus {
   color: var(--text-secondary);
   font-size: calc(12px * var(--font-scale));
   line-height: 1.55;
+}
+
+/* Optional recovery key (private-node encryption, mockup flowjoe-private-recovery.html). Checked by default; the
+   loss warning under it turns danger-coloured while the box is unchecked. */
+#modal .recovery-choice {
+  display: flex;
+  align-items: center;
+  gap: var(--modal-row-gap);
+  margin: 0 0 var(--modal-row-gap-tight);
+  color: var(--text-primary);
+  font-size: calc(14px * var(--font-scale));
+  cursor: pointer;
+}
+
+#modal .recovery-choice input {
+  width: auto;
+  margin: 0;
+  accent-color: var(--accent-color);
+}
+
+#modal .node-lock-password-helper.recovery-warning--loss {
+  color: var(--danger-color);
 }
 
 #modal .node-lock-password-message {
