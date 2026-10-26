@@ -145,6 +145,8 @@ The dollar signs beside an AI choice help you compare how expensive it is to use
 
   **See the actual rates:** open the brain list in the status bar at the bottom of FlowJoe. Input is what Joe sends to the AI; output is the answer it writes. Each has its own rate.
 
+  **If you see “6× price”:** **Sol 6.1 Ultrafast** is the same model as Sol 6.1 on OpenAI's faster service tier. Replies come back faster, with the same answers, at six times the Sol 6.1 price ($12 in / $60 out per million tokens, against $2 / $10). It sits off the dollar-sign scale, so the chat menu says **6× price** and the status bar's list shows a full `$$$$` followed by **6×** (hover it for the comparison). FlowJoe never picks it for you and never moves you onto it when another choice is unavailable. Only Joe's chat replies use the faster tier. His background helpers, Researcher and Reviewer jobs, writing actions, commit messages and scheduled tasks use standard Sol 6.1 prices. The reply receipt names the step **OpenAI (Sol 6.1 Ultrafast)** and prices it at the faster rates. If OpenAI says a reply actually ran at standard speed, the receipt prices it at the standard rates. If your OpenAI account is not eligible for the faster tier, Joe shows OpenAI's reason instead of quietly sending the message at standard speed. When someone you share a Flow with chats with Joe while your brain is Sol 6.1 Ultrafast, their replies can run at either speed depending on how they joined; your key pays either way.
+
   **If you see “plan”:** that choice uses the account you signed into. Its usage counts toward that company’s plan limits.
 </Card>
 
@@ -168,7 +170,7 @@ When **Smart context loading** is on (Settings → Joe AI; it is on by default),
 
 | Joe's brain | Who makes that decision |
 | :--- | :--- |
-| OpenAI API key | A small, cheap OpenAI model (GPT-5.6 Luna). |
+| OpenAI API key | A small, cheap OpenAI model (GPT-6 Luna, with its extra thinking turned off). |
 | Anthropic API key | Claude Haiku 5.5, on the same Anthropic key. |
 | xAI API key | Grok 4.20 non-reasoning, on the same xAI key. |
 | Gemini 3.8 Flash or Gemini 4 Argon (Gemini API key) | Gemini 3.5 Flash-Lite, a cheaper Gemini model on the same key. This works in the browser too. |
@@ -191,7 +193,7 @@ In an offline test with an empty Flow and a sample decision that picked one manu
 
 ### Cheaper models for small jobs
 
-On an OpenAI API key, spelling corrections, automatic titles, first-Flow outlines, image memories and memories of readable or extracted document text use Luna 6. Conversation compaction, memories of PDFs and other files sent in their original form, and the chapter picker use GPT-5.6 Luna, with reasoning off specifically for the chapter picker. Other providers use their own helper models listed above; command-line brains don’t write attachment memories. Writing actions in documents and notes still use the chat model you picked.
+On an OpenAI API key, spelling corrections, automatic titles, first-Flow outlines, image memories and memories of readable or extracted document text use Luna 6. The chapter picker also uses Luna 6, with its thinking turned off. Conversation compaction and memories of PDFs and other files sent in their original form use GPT-5.6 Luna. Other providers use their own helper models listed above; command-line brains don’t write attachment memories. Writing actions in documents and notes still use the chat model you picked.
 
 ### How much Gemini thinks
 

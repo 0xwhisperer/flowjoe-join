@@ -3,7 +3,7 @@
 <!-- GENERATED FILE — do not edit by hand. Built from the mintlify user docs by
 scripts/build-app-help-knowledge.js (deterministic digest; re-run it after editing any source page).
 Source pages: joe/byob.mdx, joe/agent-bridge.mdx, joe/permissions.mdx
-Generated: 2026-10-25 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
+Generated: 2026-10-26 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
 Sync guard: tests/unit/appHelpKnowledgeSync.test.js fails when mintlify/**/*.mdx or this digest drifts
 from scripts/app-help-knowledge.manifest.json. -->
 
@@ -36,11 +36,11 @@ API-key encryption protects the saved key. It does not encrypt your Flow, its Pr
 To adjust your model config:
 - For an API brain, add its key in **Settings → APIs**. For a CLI brain, install and sign into its tool first, as described below.
 - Click the model settings button inside the Joe panel — or the brain name in the status bar — to pick the brain behind Joe:
-- **OpenAI models (API key):** **Sol 6.1**, **Luna 6** (the default), **Sol 6**, and **Astra 6**, plus **Luna**, **Terra**, and **Sol** from the GPT-5.6 family.
+- **OpenAI models (API key):** **Sol 6.1**, **Sol 6.1 Ultrafast** (the same model on OpenAI's faster, six-times-priced tier; never chosen for you; it speeds up Joe's chat replies only), **Luna 6** (the default), **Sol 6**, and **Astra 6**, plus **Luna**, **Terra**, and **Sol** from the GPT-5.6 family.
 - **Anthropic API:** **Claude Fable 5.1**, **Claude Opus 5.5**, **Claude Sonnet 5.5** and **Claude Haiku 5.5** use your own Anthropic API key. This is separate from a Claude Code login: you can have both.
 - **xAI API:** **Grok 4.7** uses your own xAI API key. This is separate from a Grok terminal login.
 
-Also covered in the full docs for this area: How the brain menu is arranged; Where to get an OpenAI key; Set up Gemini chat; Set up Claude or Grok with an API key; What CLI brains need first; Which brains can work with your Flow?; A CLI brain, Agent Bridge, or Forge?; What happens with no key and no CLI brain; Your keys in Settings → APIs; Viewing, copying and removing a key; Making Joe faster: the optional TypeSafe key; It also trims a big flow map; Checking that a key works; CLI brains in shared conversations.
+Also covered in the full docs for this area: How the brain menu is arranged; When your OpenAI key can't use a model; Where to get an OpenAI key; Set up Gemini chat; Set up Claude or Grok with an API key; What CLI brains need first; Which brains can work with your Flow?; A CLI brain, Agent Bridge, or Forge?; What happens with no key and no CLI brain; Your keys in Settings → APIs; Viewing, copying and removing a key; Making Joe faster: the optional TypeSafe key; It also trims a big flow map; Checking that a key works; CLI brains in shared conversations.
 
 ## Agent Bridge (MCP)
 

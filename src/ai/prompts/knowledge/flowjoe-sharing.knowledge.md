@@ -3,7 +3,7 @@
 <!-- GENERATED FILE — do not edit by hand. Built from the mintlify user docs by
 scripts/build-app-help-knowledge.js (deterministic digest; re-run it after editing any source page).
 Source pages: workspaces/sharing-and-presenting.mdx, workspaces/chat.mdx
-Generated: 2026-10-23 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
+Generated: 2026-10-26 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
 Sync guard: tests/unit/appHelpKnowledgeSync.test.js fails when mintlify/**/*.mdx or this digest drifts
 from scripts/app-help-knowledge.manifest.json. -->
 
@@ -33,7 +33,7 @@ A guest sees only what you shared with them. Their theme, their language and the
 - Remove someone else's shared content, or their own container holding others' contributions — No — Only with your additional removal permission
 - Ask you to restore a version or change a restore point — Yes — Yes
 - Execute a version restore or change restore-point settings — No — No
-- Use Joe when enabled for the invitation — Questions and conversation; no shared-content changes — Ordinary Joe features within their shared access
+- Use Joe when enabled for the invitation — Questions, conversation and background research; no shared-content changes — Ordinary Joe features within their shared access, including background research and review on your account
 - Generate pictures in the Images tab when enabled for the invitation — Read only — Yes
 - Export, download, copy or print — No — Only when you enable **Let guests export**
 Making a shared node private removes guest access. Currently, making it public again can require you to confirm the newly available content in Sharing before guests see it again. This extra confirmation is under review; it is not an additional guest permission.

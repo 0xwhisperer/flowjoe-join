@@ -43,7 +43,7 @@ API-key encryption protects the saved key. It does not encrypt your Flow, its Pr
 To adjust your model config:
 1. For an API brain, add its key in **Settings → APIs**. For a CLI brain, install and sign into its tool first, as described below.
 2. Click the model settings button inside the Joe panel — or the brain name in the status bar — to pick the brain behind Joe:
-   - **OpenAI models (API key):** **Sol 6.1**, **Luna 6** (the default), **Sol 6**, and **Astra 6**, plus **Luna**, **Terra**, and **Sol** from the GPT-5.6 family.
+   - **OpenAI models (API key):** **Sol 6.1**, **Sol 6.1 Ultrafast** (the same model on OpenAI's faster, six-times-priced tier; never chosen for you; it speeds up Joe's chat replies only), **Luna 6** (the default), **Sol 6**, and **Astra 6**, plus **Luna**, **Terra**, and **Sol** from the GPT-5.6 family.
    - **Anthropic API:** **Claude Fable 5.1**, **Claude Opus 5.5**, **Claude Sonnet 5.5** and **Claude Haiku 5.5** use your own Anthropic API key. This is separate from a Claude Code login: you can have both.
    - **xAI API:** **Grok 4.7** uses your own xAI API key. This is separate from a Grok terminal login.
    - **Gemini API:** **Gemini 3.8 Flash** and **Gemini 4 Argon** use a separate Google Gemini API key. See setup below.
@@ -60,6 +60,12 @@ Joe's brain menu groups the brains by company: **OpenAI** first, then **Anthropi
 **More dollar signs mean a more expensive AI choice:** `$` is the lowest-cost group and `$$$$` is the highest. These symbols help you compare choices; they are not the price of a message. **Plan** means usage counts toward the account you signed into. See [What the dollar signs mean](/joe/token-usage#what-each-brain-costs).
 
 A company you have no key for shows one dimmed line instead of one line per model, for example **Grok 4.7 — needs an xAI key**, **Gemini — needs a Gemini key** or **OpenAI — needs an OpenAI key**. Once you save that key, the line opens up into the company's models. The brain list in the status bar shows the same brains in the same order; under each API-key brain it shows the account and the start and end of the key, and a company without a key reads **Needs an … API key**.
+
+### When your OpenAI key can't use a model
+
+An OpenAI project doesn't always have access to every model. FlowJoe asks OpenAI which models your saved key can use when you open the app and each time you save or test the key, and it dims the OpenAI brains your key can't use. In Joe's brain menu they read **… · not available on this key**; in the status bar's brain list they read **Not available on this OpenAI key**, and you can't pick them. If OpenAI refuses a message because your project has no access to the model, FlowJoe remembers that too.
+
+Nothing is hidden and your brain is never switched for you. If the brain you already chose turns out to be one your key can't use, it stays selected so you can see why a message fails. To fix it, check model access in your OpenAI organization settings, then press **Test** or **Save** on the OpenAI key in **Settings → APIs** so FlowJoe checks again. If FlowJoe can't reach OpenAI to ask (for example when you're offline), it treats every OpenAI brain as available.
 
 ### Where to get an OpenAI key
 
