@@ -12,7 +12,7 @@
   padding: 28px 16px;
   text-align: center;
   color: var(--text-secondary);
-  font-size: 14px;
+  font-size: var(--font-history-empty-message);
   border: 1px dashed var(--border-color);
   border-radius: var(--radius-lg, 8px);
 }
@@ -60,7 +60,7 @@
   border-radius: 7px;
   background: transparent;
   color: var(--text-secondary);
-  font-size: 13px;
+  font-size: var(--icon-history-close);
   line-height: 1;
   box-shadow: none;
 }
@@ -90,9 +90,10 @@
 
 .activity-toolbar-btn,
 .activity-row-btn {
+  position: relative;
   margin: 0; /* the global button margin (5px) would sit these buttons inset from the text they line up with */
   padding: 4px 10px;
-  font-size: 12px;
+  font-size: var(--font-control);
   border: 1px solid var(--border-color);
   background: transparent;
   color: var(--text-primary);
@@ -117,9 +118,10 @@
 
 .activity-toolbar-link,
 .activity-row-link {
+  position: relative;
   margin: 0;
   padding: 0;
-  font-size: 12px;
+  font-size: var(--font-control);
   border: none;
   background: none;
   color: var(--text-secondary);
@@ -137,17 +139,30 @@
   color: var(--accent-color);
 }
 
-.activity-toolbar-btn:focus-visible,
-.activity-row-btn:focus-visible,
-.activity-toolbar-link:focus-visible,
-.activity-row-link:focus-visible {
-  outline: 2px solid var(--border-focus);
-  outline-offset: 2px;
+/* Keyboard focus: a ring just outside the control, apart from the accent border that marks a pressed one. It is drawn on ::after
+   because buttons.css removes every button's outline and box-shadow on focus (with !important). */
+.activity-toolbar-btn:focus-visible::after,
+.activity-row-btn:focus-visible::after,
+.activity-toolbar-link:focus-visible::after,
+.activity-row-link:focus-visible::after,
+.activity-tab:focus-visible::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: calc(var(--radius-sm, 4px) + 3px);
+  box-shadow: 0 0 0 2px var(--border-focus);
+  pointer-events: none;
+}
+/* The tabs sit in the title row, whose text box clips (overflow: hidden): their ring is drawn inside the tab, like a Filters tile's. */
+.activity-tab:focus-visible::after {
+  inset: 0;
+  border-radius: var(--radius-sm, 4px);
+  box-shadow: inset 0 0 0 2px var(--border-focus);
 }
 
 .activity-retention-note {
   margin-top: 6px;
-  font-size: 11px;
+  font-size: var(--font-meta);
   color: var(--text-secondary);
 }
 
@@ -163,7 +178,7 @@
   border-radius: var(--radius-md, 6px);
   background: var(--bg-secondary);
   color: var(--text-primary);
-  font-size: 13px;
+  font-size: var(--font-history-banner);
 }
 
 /* The timeline is injected into the gallery container, which is sized for image slots and never
@@ -227,7 +242,7 @@ body:has(.activity-host) #gallery-side-scrubber {
   z-index: 1;
   margin: 0;
   padding: 10px 12px 6px;
-  font-size: 12px;
+  font-size: var(--font-control);
   font-weight: 600;
   color: var(--text-secondary);
   background: var(--bg-primary);
@@ -267,7 +282,7 @@ body:has(.activity-host) #gallery-side-scrubber {
 }
 
 .activity-entry-reason {
-  font-size: 14px;
+  font-size: var(--font-history-entry-title);
   font-weight: 500;
   color: var(--text-primary);
   margin-bottom: 4px;
@@ -280,7 +295,7 @@ body:has(.activity-host) #gallery-side-scrubber {
   display: block;
   padding: 0;
   margin: 0 0 4px;
-  font-size: 12px;
+  font-size: var(--font-control);
   border: none;
   background: none;
   color: var(--text-secondary);
@@ -301,7 +316,7 @@ body:has(.activity-host) #gallery-side-scrubber {
 .activity-entry-changes {
   margin: 0 0 6px;
   padding-left: 18px;
-  font-size: 12px;
+  font-size: var(--font-control);
   color: var(--text-secondary);
   list-style: disc;
 }
@@ -316,7 +331,7 @@ body:has(.activity-host) #gallery-side-scrubber {
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
-  font-size: 11px;
+  font-size: var(--font-meta);
   color: var(--text-secondary);
 }
 
@@ -331,7 +346,7 @@ body:has(.activity-host) #gallery-side-scrubber {
 
 .activity-entry-note {
   margin-top: 4px;
-  font-size: 11px;
+  font-size: var(--font-meta);
   font-style: italic;
   color: var(--text-secondary);
 }
@@ -374,7 +389,7 @@ body:has(.activity-host) #gallery-side-scrubber {
   gap: 8px;
   flex-wrap: wrap;
   margin-top: 6px;
-  font-size: 12px;
+  font-size: var(--font-control);
   color: var(--text-primary);
 }
 
@@ -422,9 +437,10 @@ body:has(.activity-host) #gallery-side-scrubber {
 }
 
 .activity-tab {
+  position: relative;
   margin: 0;
   padding: 3px 10px;
-  font-size: 12px;
+  font-size: var(--font-control);
   font-weight: 400;
   border: 0;
   border-radius: var(--radius-sm, 4px);
@@ -442,11 +458,6 @@ body:has(.activity-host) #gallery-side-scrubber {
   color: var(--text-primary);
   background: var(--hover-bg);
   font-weight: 600;
-}
-
-.activity-tab:focus-visible {
-  outline: 2px solid var(--border-focus);
-  outline-offset: 2px;
 }
 
 .activity-chat-search {
@@ -471,7 +482,7 @@ body:has(.activity-host) #gallery-side-scrubber {
   background: transparent;
   color: var(--text-primary);
   font: inherit;
-  font-size: 12px;
+  font-size: var(--font-control);
 }
 
 .activity-chat-search:focus-within {
@@ -497,7 +508,7 @@ body:has(.activity-host) #gallery-side-scrubber {
   justify-content: center;
   margin-right: 6px;
   color: var(--text-secondary);
-  font-size: 11px;
+  font-size: var(--font-meta);
 }
 
 .activity-chat-snippet {
@@ -506,7 +517,7 @@ body:has(.activity-host) #gallery-side-scrubber {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 12px;
+  font-size: var(--font-control);
   color: var(--text-secondary);
 }
 
@@ -516,7 +527,7 @@ body:has(.activity-host) #gallery-side-scrubber {
 
 .activity-chat-gone-note {
   margin: 0 12px 6px;
-  font-size: 12px;
+  font-size: var(--font-control);
   color: var(--text-secondary);
 }
 
@@ -530,7 +541,7 @@ body:has(.activity-host) #gallery-side-scrubber {
   min-width: 28px;
   margin: 0;
   padding: 4px 7px;
-  font-size: 12px;
+  font-size: var(--font-control);
   line-height: 1.2;
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm, 4px);
@@ -630,14 +641,14 @@ body:has(.activity-host) #gallery-side-scrubber {
 .activity-image-grid .ai-image-history-item-meta {
   justify-content: space-between;
   min-height: 20px; /* the same height with or without the "Saved" badge */
-  font-size: 11px;
+  font-size: var(--font-meta);
 }
 
 .activity-image-place {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 11px;
+  font-size: var(--font-meta);
   color: var(--text-secondary);
 }
 

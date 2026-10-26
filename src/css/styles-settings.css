@@ -195,6 +195,9 @@
   justify-content: space-between;
   align-items: center;
   padding: var(--modal-header-padding);
+  /* border-box so --modal-header-min-height is the bar's height, as on the Preview titlebar;
+     content-box added the padding and border on top (43px against a 34px token). */
+  box-sizing: border-box;
   min-height: var(--modal-header-min-height);
   border-bottom: 1px solid var(--border-light);
   background-color: var(--bg-secondary);
@@ -763,6 +766,60 @@
   color: var(--text-secondary);
   margin-top: 12px;
   line-height: var(--notes-line-height);
+}
+
+/* Settings › Gallery › Image Editor: one status line (added / not added / busy) and quiet icon actions. */
+#image-editor-setting-card .image-editor-setting-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+#image-editor-setting-card .icon-btn {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  border-color: transparent;
+  border-radius: var(--radius-md, 6px);
+  background-color: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  flex: 0 0 auto;
+}
+
+#image-editor-setting-card .icon-btn:hover:not(:disabled) {
+  background-color: var(--hover-bg);
+  color: var(--text-primary);
+}
+
+#image-editor-setting-card .icon-btn:disabled {
+  opacity: var(--disabled-opacity-control);
+  cursor: default;
+}
+
+#image-editor-setting-card .icon-btn[hidden] {
+  display: none;
+}
+
+#image-editor-setting-card .image-editor-setting-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: calc(13px * var(--font-scale));
+  color: var(--text-primary);
+}
+
+#image-editor-setting-card .image-editor-setting-status[data-state="added"] i {
+  color: var(--success-color);
+}
+
+#image-editor-setting-card .image-editor-setting-status[data-state="notAdded"] i {
+  color: var(--text-secondary);
+}
+
+/* The busy spinner (fa-spin) stops under Reduce motion through Font Awesome's own reduced-motion rule. */
+#image-editor-setting-card .image-editor-setting-status[data-state="busy"] i {
+  color: var(--accent-color);
 }
 
 /* "What Joe Sees" context card — Map controls + live counts. */
@@ -2994,7 +3051,8 @@
 .key-storage-choice p:last-child { margin-bottom: 0; }
 .key-storage-choice strong { color: var(--text-primary); font-weight: 600; }
 .key-storage-choice label { display: flex; gap: 8px; align-items: flex-start; margin: 8px 0; cursor: pointer; }
-.key-storage-choice input { margin-top: 4px; accent-color: var(--accent-color); }
+/* flex: none — as flex items the radios shrank to different widths, staggering the option text. */
+.key-storage-choice input { flex: none; margin-top: 4px; accent-color: var(--accent-color); }
 .key-storage-choice small { display: block; font: inherit; color: var(--text-secondary); }
 
 .key-storage-choice[hidden], [data-key-storage-retry][hidden] { display: none; }

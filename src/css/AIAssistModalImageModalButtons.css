@@ -8,6 +8,9 @@
   border-color: var(--border-color) !important;
   color: var(--text-secondary) !important;
   box-shadow: none !important;
+  /* margin: 0 — resets buttons.css's global `button { margin: 5px; }`, which put Save and Cancel
+     14px apart against their group's 4px gap and held Cancel inside the editor's edge. */
+  margin: 0;
 }
 
 #image-modal .flowjoe-modal-control-btn:hover:not(:disabled) {

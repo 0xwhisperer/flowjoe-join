@@ -1335,6 +1335,9 @@
   .gallery-notes-hide-from-joe {
     flex: 0 0 auto;
     flex-shrink: 0 !important;
+    /* margin: 0 — resets buttons.css's global `button { margin: 5px; }`, which widened the
+       titlebar's 6px gap to 11px beside this eye button. */
+    margin: 0;
   }
   .gallery-notes-target-toggle {
     flex-shrink: 0 !important;

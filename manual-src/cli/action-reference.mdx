@@ -320,7 +320,7 @@ flowjoe-cli action search_flow --file input.json --json
 
 ## Read a document or note file — `read_item_content`
 
-Read extracted text from a gallery note, text file or supported PDF/Word/ODT/PowerPoint/EPUB. Add itemIndex only for a stack member. For scanned PDFs, startPage selects a 1-based page; follow the result’s continuation guidance.
+Read extracted text from a gallery note, text file or supported PDF/Word/ODT/PowerPoint/EPUB. Add itemIndex only for a stack member. For scanned PDFs, startPage selects a 1-based page; follow the result’s continuation guidance. To look at chosen pages of any PDF as images (a chart, photo or scanned page), set viewPages with startPage and optionally endPage; the user is asked once per PDF.
 
 **Changes and approval:** Read only; no approval.
 
@@ -336,7 +336,9 @@ Read extracted text from a gallery note, text file or supported PDF/Word/ODT/Pow
 | `heading` | No | Exact Markdown heading text, through the next heading. Choose characters, lines or heading, not a combination. |
 | `maxChars` | No | Page budget, from 512 to 60,000. |
 | `cursor` | No | Previous `nextCursor`; repeat all other inputs. |
-| `startPage` | No | Only for a SCANNED PDF being read as page images: 1-based page to start from. Use it to continue through a long scan (the result tells you the next page). Omit for a normal read. |
+| `startPage` | No | PDF page images only: the 1-based page to view with `viewPages`, or to continue a SCANNED PDF from (the result tells you the next page). Omit for a normal read. |
+| `endPage` | No | With `viewPages`: the last page to view, at most 4 pages per call. Defaults to `startPage`. |
+| `viewPages` | No | PDF only: `true` looks at pages `startPage`–`endPage` as images, for a chart, photo or scanned page marked “No text layer” in the text. The user is asked once per PDF; declining returns `view_declined`. |
 
 ```json
 {
@@ -350,8 +352,8 @@ flowjoe-cli action read_item_content --file input.json --json
 ```
 
 **Result:** Text pages include `textContent`, `source.revision`, exact `coverage`, `partial`,
-`truncated` and, when more remains, `nextCursor`. Scanned PDFs can instead return page images with
-page continuation guidance. For example, `{"nodeId":"YOUR_NODE_ID","slotIndex":0,"startLine":2001,"endLine":2050}`
+`truncated` and, when more remains, `nextCursor`. Scanned PDFs, and any PDF read with `viewPages`, can instead return page images
+(a scanned read adds page continuation guidance). For example, `{"nodeId":"YOUR_NODE_ID","slotIndex":0,"startLine":2001,"endLine":2050}`
 reads those lines rather than just the beginning of the file. A changed or moved target, changed
 content or revoked access refuses continuation; restart the read. A canceled read is not a successful empty result.
 

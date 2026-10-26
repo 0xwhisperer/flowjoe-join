@@ -776,7 +776,9 @@ body.toast-theme-match .notification.notification-clickable:hover {
   font-size: 16px;
   cursor: pointer;
   opacity: 0.7;
-  margin-left: 10px;
+  /* Full shorthand, not margin-left alone: buttons.css's global `button { margin: 5px; }` kept
+     5px above and below, which made every toast 4px taller than its text. */
+  margin: 0 0 0 10px;
   padding: 0;
   line-height: 1;
 }

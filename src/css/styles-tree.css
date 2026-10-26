@@ -288,6 +288,9 @@ button.floating-pin-btn {
   backdrop-filter: blur(var(--modal-glass-blur)) saturate(var(--modal-glass-saturate));
   -webkit-backdrop-filter: blur(var(--modal-glass-blur)) saturate(var(--modal-glass-saturate));
   background-clip: padding-box;
+  /* Same corner as the other menu surfaces (file menu, status-footer menus). The JS-built menus
+     used to set an inline 6px each, which also kept them off the shape drop-ins' radius ladder. */
+  border-radius: var(--radius-xl, 10px);
   isolation: isolate;
   box-shadow: var(--elev-floating) !important;
 }

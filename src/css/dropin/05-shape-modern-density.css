@@ -34,7 +34,9 @@ body.shape-soft.density-compact {
 
   /* Modal chrome — grows, on purpose (see header note above) */
   --modal-header-min-height:       34px;  /* 01 sets 30px */
-  --modal-header-padding:          4px 8px 4px 14px;
+  /* Left inset 12, not 1b's 14: matches --pad-modal so a titlebar's text starts on the same
+     line as the body text under it (owner decision 2026-10-26). */
+  --modal-header-padding:          4px 8px 4px 12px;
   --modal-section-header-height:   28px;  /* 01 sets 26px */
   --ai-chat-header-control-height: 26px;  /* 01 sets 24px */
   --rect-btn-height:               27px;  /* 01 sets 26px */

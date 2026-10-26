@@ -2365,7 +2365,7 @@ body.tree-branch-toggle-flat .header-audio-saved-playlist-expand-btn.collapse-bt
   max-width: min(320px, calc(100vw - 16px));
   padding: var(--pad-menu);
   border: 1px solid var(--border-color);
-  border-radius: var(--radius-md, 6px);
+  /* border-radius comes from the shared context-menu rule (styles-tree.css), as for every menu. */
   background: var(--bg-secondary);
   /* no box-shadow here on purpose — this menu is in the unified :is(...) menu rule
      (styles-tree.css), whose important-flagged var(--elev-floating) always won; the literal
@@ -2799,8 +2799,10 @@ body.settings-panel-open .topbar > div[style*="margin-left: auto"] {
   max-width: min(34vw, 360px);
 }
 
+/* Floor against layout collapse; the standard icon-button size, so these match the tree
+   toolbar's buttons instead of rendering 32px wide. */
 .breadcrumbs-actions .icon-btn {
-  min-width: 32px;
+  min-width: var(--icon-btn-size);
 }
 
 /* Disabled state — use background/color instead of opacity so tooltips stay fully visible */
@@ -3246,8 +3248,11 @@ button:focus-visible,
 }
 
 /* Flow Summary button — a 22px (--icon-btn-size-xs) square left of the flow-name field inside
-   .tree-title-container; the row's flex centering aligns it with the field's text, and being
-   shorter than the field it never grows the row (guarded by a flow-summary-modal e2e test).
+   .tree-title-container; being shorter than the field it never grows the row (guarded by a
+   flow-summary-modal e2e test). The row's flex centering centers the field's MARGIN box
+   (.tree-title-input: margin-top 4px, margin-bottom -15px), so the field's visible box sits
+   (4 + 15) / 2 = 9.5px below the row center; `top` moves the button down to meet it without
+   changing the row's height.
    Colors come from theme tokens (no hardcoded values); it sits at the muted base color and only
    takes the accent highlight on hover / active / keyboard focus — matching the design system's
    .icon-btn:hover. Lives in a loaded stylesheet (not injected by JS) so it is fully styled on
@@ -3262,6 +3267,8 @@ button:focus-visible,
   height: var(--icon-btn-size-xs);
   padding: 0;
   margin: 0 8px 0 0;
+  position: relative;
+  top: calc((4px + 15px) / 2);
   flex: 0 0 auto;
   display: inline-flex;
   align-items: end;
@@ -3324,6 +3331,9 @@ button:focus-visible,
   border: none;
   border-radius: var(--radius-sm, 4px);
   padding: var(--pad-menu-item); /* was 10px 12px */
+  /* margin: 0 — resets this file's global `button { margin: 5px; }`, which stacked 10px between
+     rows (flex columns don't collapse margins); rows now sit flush like .context-menu-item. */
+  margin: 0;
   cursor: pointer;
   text-align: left;
   color: var(--text-primary);

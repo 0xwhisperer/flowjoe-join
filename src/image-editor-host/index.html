@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <!-- The browser guest's Image Editor host page (docs/REFERENCE/IMAGE_EDITOR_ADDON.md "Guests"). Its one script is inline and allowed by
+         its SHA-256 (tests/unit/imageEditorGuest.test.js checks the hash; it changes with every edit of the script). The guest app frames it sandboxed
+         (allow-scripts only: an opaque origin with no access to the guest's storage or the owner's computer) and hands it the owner's pinned
+         editor files, already checked against their SHA-256. Same limits as the desktop editor scheme: no network, nothing but its own code. -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-UiWsecWJNArTjO/HZRSHonLNC8z/il4fSgDbrsOwsVU=' blob: 'wasm-unsafe-eval'; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; connect-src 'none'; worker-src blob:; object-src 'none'; base-uri 'none'; form-action 'none'" />
+    <meta name="referrer" content="no-referrer" />
+    <title>Image Editor</title>
+    <script>
+      // The browser guest's Image Editor host (docs/REFERENCE/IMAGE_EDITOR_ADDON.md "Guests"). An inline classic script allowed by its SHA-256 in
+      // the page's policy: in a sandboxed frame (opaque origin) Safari doesn't match 'self' for a script file, and a module script would need CORS.
+      //
+      // The guest app frames this page with ?flowjoe=<guest page origin>[&focus=0], waits for "ready", then posts the owner's pinned editor files
+      // ({html, js, wasm}), which it has already checked against their SHA-256. The page takes the styles and markup of the editor's own pinned
+      // index.html (never its scripts or preload links), loads the glue code from a blob: address and starts the engine from the wasm bytes, the
+      // same steps as that index.html's own module script. From then on the editor's bridge talks to the guest page exactly as on the desktop
+      // (it reads ?flowjoe= from this page's address and checks that messages come from window.parent at that origin).
+      (function () {
+        "use strict";
+        var READY = "flowjoe-editor-host:ready";
+        var FILES = "flowjoe-editor-host:files";
+        var FAILED = "flowjoe-editor-host:failed";
+        var hostOrigin = "";
+        try {
+          hostOrigin = new URLSearchParams(window.location.search).get("flowjoe") || "";
+        } catch (_) {
+          hostOrigin = "";
+        }
+        // Only inside a frame that is really sandboxed (an opaque origin: another site framing this page without the sandbox would otherwise get
+        // its own code run as this site), and only for the guest app of this same site (the page that frames it names this site's origin).
+        var siteOrigin = "";
+        try {
+          siteOrigin = new URL(window.location.href).origin;
+        } catch (_) {
+          siteOrigin = "";
+        }
+        if (window.parent === window || self.origin !== "null" || !siteOrigin || hostOrigin !== siteOrigin) return;
+        var started = false;
+
+        // Only what the editor's page needs to look right: its <style> blocks (from anywhere in the page) and, from its <body>, an allow-list of
+        // plain elements (the canvas and the loading text) rebuilt one by one with their attributes but never an event handler. Scripts, links,
+        // meta (a refresh), frames, objects, forms and anything else are left out. A link keeps only its text (as a span): a followed link
+        // would navigate this frame, and the guest page's "*" posts would then reach whatever loaded.
+        var KEEP = {CANVAS: true, DIV: true, P: true, SPAN: true, BR: true, STRONG: true, EM: true, B: true, I: true, SMALL: true};
+        function rebuild(node) {
+          if (node.nodeType === 3) return document.createTextNode(node.nodeValue);
+          if (node.nodeType === 1 && node.nodeName === "A") {
+            var text = document.createElement("span");
+            Array.prototype.forEach.call(node.childNodes, function (child) {
+              var copy = rebuild(child);
+              if (copy) text.appendChild(copy);
+            });
+            return text;
+          }
+          if (node.nodeType !== 1 || !KEEP[node.nodeName]) return null;
+          var el = document.createElement(node.nodeName.toLowerCase());
+          Array.prototype.forEach.call(node.attributes, function (attr) {
+            if (!/^on/i.test(attr.name)) el.setAttribute(attr.name, attr.value);
+          });
+          Array.prototype.forEach.call(node.childNodes, function (child) {
+            var copy = rebuild(child);
+            if (copy) el.appendChild(copy);
+          });
+          return el;
+        }
+        function adoptEditorPage(html) {
+          var doc = new DOMParser().parseFromString(String(html || ""), "text/html");
+          doc.querySelectorAll("style").forEach(function (style) {
+            var copy = document.createElement("style");
+            copy.textContent = style.textContent;
+            document.head.appendChild(copy);
+          });
+          Array.prototype.forEach.call(doc.body ? doc.body.childNodes : [], function (node) {
+            var copy = rebuild(node);
+            if (copy) document.body.appendChild(copy);
+          });
+        }
+
+        // The engine asks for a WebGPU adapter first and falls back to WebGL when there is none. In a browser where that request is very slow to
+        // answer (seen in a software-rendered test browser: about 30 s in the hidden quick-fix frame), the editor would wait for it before it
+        // could start, so the request gets ADAPTER_WAIT_MS to answer and then counts as "no adapter". A browser with a GPU answers at once.
+        var ADAPTER_WAIT_MS = 4000;
+        function boundAdapterRequest() {
+          var gpu = navigator.gpu;
+          if (!gpu || typeof gpu.requestAdapter !== "function") return;
+          var request = gpu.requestAdapter.bind(gpu);
+          try {
+            gpu.requestAdapter = function (options) {
+              return Promise.race([
+                request(options),
+                new Promise(function (resolve) {
+                  setTimeout(function () {
+                    resolve(null);
+                  }, ADAPTER_WAIT_MS);
+                })
+              ]);
+            };
+          } catch (_) {}
+        }
+
+        async function boot(message) {
+          adoptEditorPage(message.html);
+          var glue = URL.createObjectURL(new Blob([message.js], {type: "text/javascript"}));
+          var bindings = await import(glue);
+          var wasm = await bindings.default({module_or_path: new Response(message.wasm, {headers: {"Content-Type": "application/wasm"}})});
+          window.wasmBindings = bindings;
+          window.dispatchEvent(new CustomEvent("TrunkApplicationStarted", {detail: {wasm: wasm}}));
+        }
+
+        function onMessage(event) {
+          if (started || event.source !== window.parent || event.origin !== hostOrigin) return;
+          var message = event.data;
+          if (!message || message.type !== FILES || typeof message.html !== "string" || !message.js || !message.wasm) return;
+          started = true;
+          window.removeEventListener("message", onMessage);
+          boot(message).catch(function (error) {
+            console.error("[ImageEditor host] the editor did not start:", error);
+            window.parent.postMessage({type: FAILED}, hostOrigin);
+          });
+        }
+
+        // The engine draws with WebGPU or WebGL 2. A browser with neither can't run it: say so at once (before any file is fetched), so the guest
+        // gets a clear message instead of waiting for a start that never comes.
+        async function canDraw() {
+          try {
+            if (document.createElement("canvas").getContext("webgl2")) return true;
+          } catch (_) {}
+          var gpu = navigator.gpu;
+          if (!gpu || typeof gpu.requestAdapter !== "function") return false;
+          try {
+            return !!(await gpu.requestAdapter());
+          } catch (_) {
+            return false;
+          }
+        }
+
+        boundAdapterRequest();
+        canDraw().then(function (ok) {
+          if (!ok) {
+            window.parent.postMessage({type: FAILED, reason: "unsupported"}, hostOrigin);
+            return;
+          }
+          window.addEventListener("message", onMessage);
+          window.parent.postMessage({type: READY}, hostOrigin);
+        });
+      })();
+    </script>
+  </head>
+  <body></body>
+</html>

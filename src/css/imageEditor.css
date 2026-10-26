@@ -1,0 +1,704 @@
+/* imageEditor.css — the optional Image Editor (Edit Image): its first-use download window and its screen laid over the gallery like
+   Version History (activityPanel.css owns the shared frame: .activity-host, title row, .activity-header, .activity-toolbar-btn, .activity-tabs).
+   Ported from the approved mockup docs/IMPLEMENTATION/mockups/flowjoe-image-editor.html (#pce-style). Theme tokens only. */
+
+/* --- Slot menu: a guest whose owner hasn't added the editor sees Edit Image greyed with the reason under its label (mockup guest-not-added) --- */
+.pce-row-stack {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.pce-row-note {
+  display: block;
+  margin-top: 2px;
+  font-size: var(--font-meta);
+  line-height: 1.3;
+  white-space: normal;
+  color: var(--text-secondary);
+}
+
+/* --- Download window body (inside the shared #modal) --- */
+.pce-dl-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 390px;
+}
+.pce-dl-body p {
+  margin: 0;
+  line-height: 1.45;
+}
+.pce-dl-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--font-control);
+  color: var(--text-secondary);
+}
+.pce-dl-meta i {
+  color: var(--accent-color);
+}
+.pce-progress {
+  height: 6px;
+  border-radius: var(--radius-full, 999px);
+  background: var(--bg-tertiary);
+  overflow: hidden;
+}
+.pce-progress > span {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--accent-color);
+  border-radius: inherit;
+}
+.pce-progress-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--font-control);
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+.pce-dl-error {
+  color: var(--danger-color);
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+/* --- Title row additions (History's breadcrumb row) --- */
+.pce-file {
+  margin-left: 10px;
+  font-size: var(--font-control);
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+.pce-title-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-right: 8px;
+}
+.pce-title-actions .activity-toolbar-btn.pce-save,
+.pce-crashed-card .activity-toolbar-btn.pce-save {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+.pce-adv-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--font-control);
+  color: var(--text-secondary);
+}
+
+/* --- Screen body --- */
+.image-editor-host .pce-editor,
+.image-editor-host .pce-crashed {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.pce-editor {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) 300px;
+  min-height: 0;
+  border-top: 1px solid var(--border-color);
+}
+/* Advanced: PhotoCraft's own options bar, toolbar and dock fill the editor body; FlowJoe keeps only its title row. */
+.image-editor-host.is-advanced .pce-editor {
+  grid-template-columns: minmax(0, 1fr);
+}
+.image-editor-host.is-advanced .pce-panel,
+.image-editor-host.is-advanced .pce-tools,
+.image-editor-host.is-advanced .pce-toolbar,
+.image-editor-host.is-advanced .pce-status {
+  display: none;
+}
+.pce-stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+.pce-canvas {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  overflow: hidden;
+  background: var(--bg-primary);
+}
+.pce-frame {
+  flex: 1 1 auto;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+  background: var(--bg-primary);
+}
+
+/* Full-size apply at Save: drawn by FlowJoe over the editor (the editor runs in its own process). */
+.pce-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--bg-primary) 72%, transparent);
+}
+.pce-overlay-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(360px, 80%);
+  padding: 16px 18px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg, 8px);
+  background: var(--bg-secondary);
+  box-shadow: var(--elev-overlay);
+}
+.pce-overlay-card b {
+  font-size: var(--font-image-editor-card-title);
+  color: var(--text-primary);
+}
+.pce-overlay-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.pce-overlay-title i {
+  color: var(--accent-color);
+}
+.pce-overlay-card p {
+  margin: 0;
+  font-size: var(--font-control);
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+/* No reduced-motion rule for the spinner here: Font Awesome's own prefers-reduced-motion rule already stops .fa-spin (this file is
+   unlayered, like activityPanel.css; see CSS_MODULE_MAP.md "Unlayered stylesheets"). The spinner is a fresh element on every save, so
+   visibleSpinners.js marks it in view and it keeps turning while it can be seen. */
+
+/* The editor stopped */
+.pce-crashed {
+  display: grid;
+  place-items: center;
+}
+.pce-crashed-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  max-width: 380px;
+  text-align: center;
+}
+.pce-crashed-card i.fa-triangle-exclamation {
+  font-size: var(--icon-image-editor-stopped);
+  color: var(--warning-color);
+}
+.pce-crashed-card b {
+  font-size: var(--font-image-editor-stopped-title);
+  color: var(--text-primary);
+}
+.pce-crashed-card p {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+.pce-crashed-card .pce-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+/* --- Right panel: Adjust --- */
+.pce-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-left: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+}
+.pce-panel-head {
+  display: flex;
+  justify-content: center;
+  padding: 10px 10px 8px;
+  border-bottom: 1px solid var(--border-color);
+}
+.pce-panel-head .activity-tabs {
+  margin: 0;
+}
+.pce-panel-body {
+  flex: 1 1 auto;
+  overflow: auto;
+  padding: 4px 14px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+/* The tab that isn't showing: `display: flex` above would otherwise override the hidden attribute and show all three at once. */
+.pce-panel-body[hidden] {
+  display: none;
+}
+/* The panel body scrolls; its parts keep their own height (a list with overflow hidden would otherwise shrink to nothing in a short
+   window and the parts below it would cover it). */
+.pce-panel-body > * {
+  flex: 0 0 auto;
+}
+.pce-group-label {
+  margin: 12px 0 4px;
+  font-size: var(--font-meta);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+.pce-auto {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+.pce-slider {
+  display: grid;
+  /* The label column grows with the user's font size (a long one-word label, e.g. Russian "Насыщенность", can't wrap). */
+  grid-template-columns: calc(92px * var(--font-scale, 1)) minmax(0, 1fr) 38px;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--font-control);
+  color: var(--text-primary);
+}
+.pce-slider input {
+  width: 100%;
+  accent-color: var(--accent-color);
+}
+.pce-slider output {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary);
+  font-size: var(--font-control);
+}
+.pce-slider.is-changed output {
+  color: var(--accent-color);
+}
+
+/* The screen sits beside #image-display (so gallery rebuilds never touch the editor's frame) and editorScreen.js places it over the
+   area's box with top/left/width/height; the shared .activity-host inset is released here. #node-info makes no stacking context, so
+   the shared app-modal layer would paint the screen over the (sticky, translucent) title row in the canvas layouts and hide Save,
+   Advanced and ✕: a local layer just above the gallery area (z-index 0) and below the title row is used instead. Same corners as the
+   gallery area it covers. */
+.image-editor-host.image-editor-host-beside {
+  right: auto;
+  bottom: auto;
+  z-index: 1;
+  border-radius: var(--radius-lg, 8px);
+}
+
+/* Like History (activityPanel.css): while the screen is up the gallery area is bounded by the window instead of growing with a
+   long gallery (the screen takes its box), and nothing underneath scrolls. */
+#node-details:has(> #node-info > .image-editor-host) {
+  min-height: 0;
+}
+#image-display:has(~ .image-editor-host) {
+  overflow: hidden;
+}
+
+/* --- Slice 2b: tool rail, toolbar row, status row, Filters, Layers, Compare (ported from the mockup's pce-* rules) --- */
+/* Clipped (a long tool's options never push Compare out of the row) with room for the focus ring and the options' rise-in. */
+.pce-toolbar {
+  flex-wrap: nowrap;
+  min-width: 0;
+  overflow: clip;
+  overflow-clip-margin: 6px;
+}
+.pce-tool-options {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+.pce-grow {
+  flex: 1 1 auto;
+}
+.pce-toolbar-sep {
+  width: 1px;
+  align-self: stretch;
+  margin: 2px 4px;
+  background: var(--border-color);
+}
+.pce-icon-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 28px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md, 6px);
+  background: transparent;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+.pce-icon-btn:hover {
+  background: var(--hover-bg);
+}
+.pce-icon-btn[aria-pressed="true"] {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+.pce-icon-btn:disabled {
+  color: var(--text-muted);
+  cursor: default;
+  background: transparent;
+}
+/* Keyboard focus: a ring drawn just outside the button, apart from the accent border that marks the picked tool. It is drawn on ::after
+   because buttons.css removes every button's outline and box-shadow on focus (with !important). */
+.pce-icon-btn:focus-visible::after,
+.pce-filter:focus-visible::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: calc(var(--radius-md, 6px) + 3px);
+  box-shadow: 0 0 0 2px var(--border-focus);
+  pointer-events: none;
+}
+.pce-field :is(input, select):disabled,
+.pce-swatch:disabled {
+  opacity: var(--disabled-opacity-field);
+  cursor: default;
+}
+/* A hidden field (the crop frame's W/H while there is no frame) keeps its place in the row, invisible: the frame appears a frame or two
+   after Crop is picked, and collapsing W/H until then made Rotate and Flip jump sideways under a click aimed at them (the click landed
+   on W/H instead). `.pce-field`'s own display below keeps it laid out. */
+.pce-field[hidden] {
+  visibility: hidden;
+}
+.pce-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--font-control);
+  color: var(--text-secondary);
+}
+.pce-field input,
+.pce-field select {
+  height: 26px;
+  padding: 0 8px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm, 4px);
+  background: var(--bg-input);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: var(--font-control);
+}
+/* Number fields fit six digits (the largest picture side, 300000) at every font size: width in ch of the field's own font, plus its
+   padding and border. The crop frame's W/H are read-only: no spinner there. The editable Size field keeps its spinner and room for it. */
+.pce-field input[type="number"] {
+  box-sizing: border-box;
+  width: calc(6ch + 18px);
+  font-variant-numeric: tabular-nums;
+}
+.pce-field input[type="number"]:not(:read-only) {
+  width: calc(6ch + 34px);
+}
+.pce-field input[type="number"]:read-only {
+  appearance: textfield;
+}
+.pce-field input[type="number"]:read-only::-webkit-inner-spin-button,
+.pce-field input[type="number"]:read-only::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.pce-field input[type="range"] {
+  width: 110px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  accent-color: var(--accent-color);
+}
+.pce-field-wide {
+  justify-content: space-between;
+}
+.pce-hint {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pce-swatch {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border-radius: var(--radius-sm, 4px);
+  border: 1px solid var(--border-color);
+  background: transparent;
+  cursor: pointer;
+}
+
+.pce-tools {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 0;
+  border-right: 1px solid var(--border-color);
+  overflow-y: auto;
+}
+.pce-tools .pce-icon-btn {
+  width: 34px;
+  height: 34px;
+  font-size: var(--icon-image-editor-tool);
+}
+.pce-tools-sep {
+  width: 22px;
+  height: 1px;
+  background: var(--border-color);
+  margin: 4px 0;
+}
+
+.pce-status {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 6px 12px;
+  border-top: 1px solid var(--border-color);
+  font-size: var(--font-control);
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+.pce-status .pce-icon-btn {
+  width: 26px;
+  height: 24px;
+}
+
+.pce-filters {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 10px;
+}
+.pce-filter {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md, 6px);
+  background: transparent;
+  color: var(--text-primary);
+  font: inherit;
+  font-size: var(--font-control);
+  cursor: pointer;
+  overflow: hidden;
+  text-align: left;
+}
+.pce-filter img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  display: block;
+  background: var(--bg-tertiary);
+}
+.pce-filter span {
+  padding: 0 8px 7px;
+}
+.pce-filter[aria-pressed="true"] {
+  border-color: var(--accent-color);
+}
+.pce-filter:focus-visible::after {
+  inset: 2px;
+  border-radius: var(--radius-sm, 4px);
+}
+.pce-filter:disabled {
+  cursor: default;
+  opacity: var(--disabled-opacity-control);
+}
+
+.pce-layers {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md, 6px);
+  overflow: hidden;
+}
+.pce-layer {
+  display: grid;
+  grid-template-columns: 30px 36px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 8px;
+  border-bottom: 1px solid var(--border-color);
+  font-size: var(--font-control);
+  cursor: pointer;
+}
+.pce-layer:last-child {
+  border-bottom: 0;
+}
+.pce-layer.is-picked {
+  background: var(--hover-bg);
+  box-shadow: inset 2px 0 0 var(--accent-color);
+}
+/* Where a dragged layer will land. */
+.pce-layer.is-drop-above {
+  box-shadow: inset 0 2px 0 var(--accent-color);
+}
+.pce-layer.is-drop-below {
+  box-shadow: inset 0 -2px 0 var(--accent-color);
+}
+.pce-layer.is-locked {
+  cursor: default;
+}
+.pce-layer-lock {
+  color: var(--text-muted);
+  font-size: var(--font-meta);
+}
+.pce-layer.pce-layer-filter {
+  padding-left: 22px;
+  cursor: default;
+}
+.pce-layer-thumb {
+  width: 36px;
+  height: 24px;
+  border-radius: var(--radius-xs, 2px);
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  font-size: var(--font-control);
+}
+.pce-layer-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.pce-layer-text {
+  min-width: 0;
+}
+.pce-layer-name {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: bottom;
+}
+.pce-layer-kind {
+  font-size: var(--font-meta);
+  color: var(--text-secondary);
+}
+.pce-layer-tools {
+  display: flex;
+  justify-content: flex-end;
+  gap: 2px;
+  margin-top: 6px;
+}
+.pce-layer-opts {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+/* Compare: FlowJoe draws the original (left of the line) and the edit (right of it) over the editor, both fitted the same way. */
+.pce-compare-view {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  padding: 28px;
+  background: var(--bg-primary);
+  cursor: ew-resize;
+  touch-action: none;
+}
+/* Sized to the drawn picture (editorChrome.js fits it to the view at the edit's own ratio), so the line, the labels and the drag follow
+   the picture, portrait or landscape. */
+.pce-compare-pic {
+  position: relative;
+  width: var(--pce-pic-w, 100%);
+  height: var(--pce-pic-h, 100%);
+}
+.pce-compare-pic img,
+.pce-compare-before {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.pce-compare-pic img {
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+}
+.pce-compare-before {
+  clip-path: inset(0 calc(100% - var(--pce-split, 50%)) 0 0);
+}
+.pce-compare-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--pce-split, 50%);
+  width: 2px;
+  translate: -1px 0;
+  background: var(--accent-color);
+  pointer-events: none;
+}
+.pce-compare-label {
+  position: absolute;
+  top: 10px;
+  padding: 2px 8px;
+  border-radius: var(--radius-full, 999px);
+  background: var(--tooltip-bg);
+  color: var(--tooltip-text, var(--text-primary));
+  font-size: var(--font-meta);
+  pointer-events: none;
+}
+.pce-compare-label.is-before {
+  left: 10px;
+}
+.pce-compare-label.is-after {
+  right: 10px;
+}
+
+/* --- Quick fixes (slice 3): Resize… window (inside the shared #modal), the hidden editor, the progress toast. The window's fields and
+   link button reuse the editor's own .pce-field / .pce-icon-btn rules above; only the size row's layout and text-field width are added. --- */
+.pce-size-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.pce-size-row .pce-field input {
+  box-sizing: border-box;
+  width: calc(6ch + 18px);
+  font-variant-numeric: tabular-nums;
+}
+.pce-resize-error[hidden] {
+  display: none;
+}
+/* The hidden editor that runs a quick fix: inside the window at a real size (the editor's queue runs on its own animation frames, which
+   Chromium stops for an off-screen, hidden or zero-sized cross-origin frame), but fully transparent and click-through. */
+.pce-headless-frame {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 320px;
+  height: 240px;
+  border: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+/* Dimmed with opacity, not var(--text-secondary) as in the mockup: with "match theme" off the app's toast is always dark
+   (styles-themes.css notification rules), so a light theme's --text-secondary would be dark grey on dark grey. */
+.pce-quickfix-toast .pce-toast-sub {
+  opacity: 0.75;
+  font-size: var(--font-control);
+}

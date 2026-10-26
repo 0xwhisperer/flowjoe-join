@@ -156,7 +156,7 @@ root.style.setProperty("--tree-resizer-width", resizerPx + "px");
 // Block 5: Asset URL helper (cache-busting) + CSS link injection via document.write.
 // document.write here is correct and necessary — it must run synchronously in <head>
 // to inject CSS <link> tags before <body> renders. Do NOT replace with appendChild.
-const cacheToken = "97e2eefbe26f06e8"; // join-site guest build: stylesheets carry the build id (scripts/build-join-site-app.js)
+const cacheToken = "bcbdd35092ed06ad"; // join-site guest build: stylesheets carry the build id (scripts/build-join-site-app.js)
 window.__flowjoeAssetUrl = function (path) {
   const safePath = String(path || "");
   if (!cacheToken || !safePath) return safePath;
@@ -236,6 +236,7 @@ const localStyles = [
   "src/css/statusFooter.css",
   "src/css/fa-interop.css",
   "src/css/activityPanel.css",
+  "src/css/imageEditor.css",
   "src/css/shareModal.css",
   "src/css/guestJoin.css",
   "src/css/presentPill.css",
