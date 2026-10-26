@@ -544,6 +544,7 @@
 
   .pc-strip {
     position: relative;
+    flex-shrink: 0;
     display: flex;
     gap: 4px;
     padding: var(--jd-row-margin-top); /* Joe's tab row inset, per density */

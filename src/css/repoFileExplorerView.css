@@ -460,6 +460,7 @@ body.repo-editor-active #selected-node-name .breadcrumbs-actions {
 }
 
 .repo-editor-workbench .file-tool {
+  margin: 0;
   display: inline-flex;
   align-items: center;
   gap: 6px;

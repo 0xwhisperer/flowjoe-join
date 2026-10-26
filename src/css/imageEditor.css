@@ -682,3 +682,53 @@
   opacity: 0.75;
   font-size: var(--font-control);
 }
+
+/* Export uses the shared window and app-wide dropdown chevron geometry. */
+.pce-export-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+.pce-export-form p {
+  margin: 0;
+  line-height: 1.45;
+}
+.pce-export-form label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: space-between;
+  color: var(--text-primary);
+}
+.pce-export-form label[hidden] {
+  display: none;
+}
+.pce-export-format {
+  min-width: 170px;
+  padding: 7px 30px 7px 10px;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: var(--dropdown-chevron);
+  background-repeat: no-repeat;
+  background-position: right var(--dropdown-chevron-inset) center;
+  background-size: 12px 12px;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm, 4px);
+  font: inherit;
+}
+.pce-export-quality {
+  flex: 1;
+  accent-color: var(--accent-color);
+}
+.pce-export-form output {
+  min-width: 26px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.pce-export-filename {
+  overflow-wrap: anywhere;
+  color: var(--text-secondary);
+}

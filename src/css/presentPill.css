@@ -246,11 +246,27 @@
   display: none;
 }
 .present-pill-guest {
-  display: flex;
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr) minmax(0, 1fr) 44px;
   align-items: center;
-  gap: 10px;
+  gap: 4px 10px;
+}
+.present-pill-guest > .cx-av {
+  grid-column: 1;
+  grid-row: 1 / 3;
+}
+.present-pill-guest > .present-pill-lockstate {
+  grid-column: 3;
+  grid-row: 2;
+  white-space: normal;
+}
+.present-pill-guest > .present-pill-lock-switch {
+  grid-column: 4;
+  grid-row: 1 / 3;
 }
 .present-pill-guest-name {
+  grid-column: 2 / 4;
+  grid-row: 1;
   flex: 1 1 auto;
   min-width: 0;
   overflow: hidden;
@@ -258,6 +274,9 @@
   white-space: nowrap;
 }
 .present-pill-guest-status {
+  grid-column: 2;
+  grid-row: 2;
+  white-space: normal;
   flex: none;
   color: var(--text-secondary);
   font-size: 12px;

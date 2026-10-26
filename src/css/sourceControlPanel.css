@@ -1736,7 +1736,7 @@ button.scm-pill:hover {
 
 .scm-graph-commit-card-action {
   width: 100%;
-  margin-top: 8px;
+  margin: 8px 0 0;
   padding: 5px 8px;
   border: 1px solid var(--border-light);
   border-radius: var(--radius-sm, 4px);
@@ -1915,12 +1915,18 @@ button.scm-pill:hover {
   white-space: nowrap;
 }
 
-/* The pills keep their size (up to 92 px each, with an ellipsis only beyond that); the subject and author give way first. */
+/* Labels share at most half the fixed-height row; the current branch keeps its size while other labels shorten. */
 .scm-graph-row-refs {
   display: flex;
-  flex: 0 0 auto;
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 50%;
   gap: 3px;
   margin-left: auto;
+}
+
+.scm-graph-row-refs > :not(.is-head) {
+  min-width: 0;
 }
 
 .scm-graph-row-ref,
@@ -1960,6 +1966,7 @@ button.scm-pill:hover {
 }
 
 .scm-graph-row-ref.is-head {
+  flex: 0 0 auto;
   background: var(--accent-color);
   box-shadow: none;
   color: var(--text-on-accent);
@@ -2923,6 +2930,10 @@ button.scm-pill:hover {
   flex-wrap: wrap;
   gap: 8px;
   margin-top: 10px;
+}
+
+.scm-question-choices > button {
+  margin: 0;
 }
 
 .scm-question-note {

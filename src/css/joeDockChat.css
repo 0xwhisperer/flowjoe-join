@@ -1208,6 +1208,7 @@
   #ai-spell-check-modal.joe-docked #ai-chat-messages .ai-chat-message.assistant :is(.ai-chat-web-search-chip, .ai-chat-code-interpreter-chip, .ai-chat-outside-text-chip, .ai-chat-manual-reference-chip) {
     margin-left: 0;
     max-width: 100%;
+    box-sizing: border-box;
     font-size: 10px;
     line-height: 1;
   }

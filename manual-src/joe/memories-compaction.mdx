@@ -45,6 +45,8 @@ On OpenAI, Gemini, Anthropic and xAI API-key brains, attachment summaries have a
 
 ---
 
+Attachment-memory cards put the title, information badges and actions on separate lines, so every action remains available in a narrow Joe panel.
+
 ## Ask about an earlier attachment
 
 In the owner's Joe chat, a brain that supports Flow tools can read an attachment's saved memory
@@ -82,7 +84,7 @@ Joe Memories are sent up to a per-turn cap (a handful per flow, node, and slot).
 
 Remembering and recalling memories works the same way in every language FlowJoe ships (see [Language settings](/reference/settings-map)) — asking Joe "what did we decide about the budget?" in Chinese, Arabic, Thai, or any of the other 16 languages finds the same relevant memory it would in English, instead of only working for space-separated Latin-script text.
 
-Compaction uses your selected provider: the configured small model for OpenAI, Gemini 3.5 Flash-Lite on the Gemini API key, or your selected command-line provider's helper model. Attachment memories are written on OpenAI and on the Gemini API key alike; on Gemini they use your Gemini key and nothing is sent to OpenAI. Changing providers while compaction is running affects the next job. Login (command-line) brains keep file memories too, using their own helper model on your plan with no API key. Claude Code and Codex remember your pictures, text documents and PDFs (a PDF with no readable text is read from its first pages as pictures). Grok remembers pictures, text documents and PDFs that have readable text, but not scanned PDFs yet. Antigravity remembers text documents and PDFs with readable text, but not pictures or scanned PDFs yet. If a helper run fails, no memory is saved for that file; send the file again to try again. The Regenerate button in the memory panel works the same way, so you do not need an API key for it on a login brain.
+Compaction uses your selected provider: the configured small model for OpenAI, Gemini 3.5 Flash-Lite on the Gemini API key, or your selected command-line provider's helper model. Attachment memories are written on OpenAI and on the Gemini API key alike; on Gemini they use your Gemini key and nothing is sent to OpenAI. Changing providers while compaction is running affects the next job. Login (command-line) brains keep file memories too, using their own helper model on your plan with no API key. Claude Code and Codex remember your pictures, text documents and PDFs (a PDF with no readable text is read from its first pages as pictures). Grok remembers pictures, text documents and PDFs that have readable text, but not scanned PDFs yet. On a Mac, Antigravity also remembers pictures and the first pages of scanned PDFs. It reads those pictures from a private temporary folder that FlowJoe deletes after the reply finishes or stops. On Windows and Linux, Antigravity remembers readable text only. If a helper run fails, no memory is saved for that file; send the file again to try again. The Regenerate button in the memory panel works the same way, so you do not need an API key for it on a login brain.
 
 Each API request used to compact a conversation has a one-minute limit, including reading the answer. A longer conversation may need several requests. If a request times out, FlowJoe keeps your existing history and memory and does not save a late summary. Refused, non-final or invalid summary answers are not saved either. An answer cut off at the token limit can still use the existing single retry with a larger allowance.
 

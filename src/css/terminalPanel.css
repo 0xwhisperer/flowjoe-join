@@ -147,6 +147,7 @@ input[type="text"].terminal-tab-edit {
   border-radius: var(--radius-sm, 4px);
 }
 .terminal-tab-close {
+  margin: 0;
   font-size: var(--font-control);
   padding: 2px;
   width: 17px;
@@ -162,6 +163,7 @@ input[type="text"].terminal-tab-edit {
   color: var(--terminal-icon-hover-color);
 }
 .terminal-newtab {
+  margin: 0;
   font-size: 16px;
   padding: 0 7px;
 }

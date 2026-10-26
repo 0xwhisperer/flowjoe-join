@@ -784,6 +784,11 @@ body.glass-effects-disabled #modal>div {
   box-sizing: border-box;
 }
 
+#image-modal-titlebar {
+  /* Preview and Summary title text follows the body inset; window controls keep their inset. */
+  padding-inline-start: var(--pad-modal);
+}
+
 /* Body inset shares --pad-modal with AI Assist / generic #modal / crop shell. */
 #image-modal-body,
 #stack-preview-grid-container {

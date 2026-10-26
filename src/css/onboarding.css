@@ -242,10 +242,11 @@
 .ob-pop-top .kick { color: var(--ob-amber); font-size: var(--ob-text-xxs); letter-spacing: 0; text-transform: uppercase; }
 .ob-pop h3 { margin: 4px 16px 0; font-size: var(--ob-text-lg); color: var(--ob-ink); }
 .ob-pop p { margin: 8px 16px 0; color: var(--ob-ink-2); font-size: var(--ob-text-sm); line-height: 1.55; }
-.ob-pop .pop-foot { display: flex; align-items: center; gap: 10px; padding: 14px 16px 15px; }
-.ob-pop .pop-foot .count { color: var(--ob-ink-3); font-size: var(--ob-text-xs); }
-.ob-pop .pop-foot .grow { flex: 1; }
+.ob-pop .pop-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 16px 15px; }
+.ob-pop .pop-foot .count { flex: 0 0 auto; white-space: nowrap; color: var(--ob-ink-3); font-size: var(--ob-text-xs); }
+.ob-pop .pop-foot .pop-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 10px; max-width: 100%; margin-left: auto; }
 .ob-pop .pop-foot button {
+  flex: 0 0 auto; margin: 0;
   height: 34px; padding: 0 16px; border-radius: var(--radius-sm, 4px); cursor: pointer; font-family: var(--ob-font);
   font-size: var(--ob-text-sm); font-weight: 700; border: 1px solid var(--ob-line-2); background: var(--ob-bg-3); color: var(--ob-ink);
 }

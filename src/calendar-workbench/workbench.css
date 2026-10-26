@@ -62,8 +62,19 @@ body {
   overflow: hidden;
 }
 
+/* FullCalendar positions More relative to the view harness. Cap only the available
+   space below its existing top; fitting popovers retain their natural content height. */
+#fj-calendar-root .fc-more-popover {
+  max-width: calc(100vw - 16px);
+  min-width: 0;
+  height: max-content;
+  max-height: stretch;
+  bottom: 8px;
+  overflow: auto;
+}
+
 #fj-calendar-root .fc-header-toolbar {
-  display: grid !important;
+  display: var(--fj-calendar-toolbar-display, grid) !important;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
   flex: 0 0 auto;
@@ -334,7 +345,23 @@ body {
   }
 
   #fj-calendar-root .fc-header-toolbar {
+    --fj-calendar-toolbar-display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
     align-items: stretch;
+  }
+
+  #fj-calendar-root .fc-toolbar-chunk:nth-child(2) {
+    order: -1;
+    flex-basis: 100%;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #fj-calendar-root .fc-toolbar-chunk:nth-child(1),
+  #fj-calendar-root .fc-toolbar-chunk:nth-child(3) {
+    flex: 0 0 auto;
   }
 
   #fj-calendar-root .fc-toolbar-title {

@@ -167,9 +167,25 @@ Transcripts keep following their original recording when you merge audio into a 
 
 ## Ask Joe about a YouTube video
 
-Paste a YouTube link (or ask about a video you have open) and Joe can read what is said in it. FlowJoe's built-in browser rises to just its tab row at the bottom of the window and a YouTube tab with a small Joe badge appears beside your own active tab; Joe's status line says **Reading the video's captions…**. The video stays paused and muted the whole time. You can keep working while Joe reads.
+Paste a YouTube link (or ask about a video you have open) and Joe can read what is said in it. If FlowJoe's built-in browser was closed, it rises to just its tab row at the bottom of the window. A YouTube tab with a small Joe badge appears beside your own active tab; Joe's status line says **Reading the video's captions…**. A video Joe opens stays paused and muted the whole time. You can keep working while Joe reads.
 
 When Joe is done, his tab closes and the browser goes back to how it was: if it was closed, it slides away again; if you had tabs open, you stay on yours. If you expanded the browser meanwhile, it stays open. If the video is already open in one of your own tabs, Joe reads it there and leaves your tab as it is.
+
+### Try it with an example
+
+Open Joe chat, give Joe at least **Read-only** Flow access, and paste:
+
+> Read the captions of https://www.youtube.com/watch?v=UF8uR6Z6KLc. Summarize Steve Jobs' three stories, give a timestamp for each, and explain his main takeaway.
+
+You should briefly see Joe's badged tab beside your own tab in the browser's bottom tab row. It closes when the read finishes, and Joe answers in the chat with a summary and timestamps. If you already have that video open, Joe uses your tab and leaves it open without pausing or muting it. No local transcription model is needed for YouTube captions.
+
+Then, in the **same conversation**, try:
+
+> Using that transcript, explain the connecting-the-dots section and give its timestamp.
+
+Joe reuses the transcript already read for that conversation, so this follow-up does not need to open the video again.
+
+### What to expect
 
 - **The whole transcript, however long.** Joe reads the full captions — a three-hour podcast included — and works through a long transcript in sections, quoting with timestamps.
 - **Captions are needed.** Joe reads YouTube's own transcript. If a video has none, Joe says so; you can send him the transcript another way, or transcribe a recording you have.

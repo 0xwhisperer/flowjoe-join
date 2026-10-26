@@ -1255,7 +1255,7 @@ body.surface-effects-disabled .header-audio-playlist-popover {
   text-overflow: ellipsis;
   position: relative;
   bottom: -1px;
-  margin-right: -1px;
+  margin: 0 -1px 0 0;
 }
 
 .header-audio-playlist-tab:last-child {
@@ -2333,6 +2333,7 @@ body.tree-branch-toggle-flat .header-audio-saved-playlist-expand-btn.collapse-bt
 }
 
 .header-audio-saved-playlist-actions button {
+  margin: 0;
   appearance: none;
   width: 24px;
   min-width: 24px;

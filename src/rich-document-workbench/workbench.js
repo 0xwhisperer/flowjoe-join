@@ -1143,6 +1143,12 @@ function mountAndLoad(snapshot) {
     });
     univer = created.univer;
     univerAPI = created.univerAPI;
+    // The upstream page-settings confirm hardcodes 528px and disables max-width.
+    // Supply a bounded CSS width before its first render; leave other confirms untouched.
+    const confirmService = univer.__getInjector().get(core.IConfirmService);
+    const openConfirm = confirmService.open.bind(confirmService);
+    // Redi caches bound methods on its lazy service proxy, so replace that own property.
+    Object.defineProperty(confirmService, "open", {configurable: true, value: (options) => openConfirm(options.id === "docs.component.page-setting" ? {...options, width: "min(528px, calc(100vw - 16px))"} : options)});
     // Automation/debug seam, scoped to THIS isolated island window only (never the main
     // renderer). Lets e2e tests drive real Univer Docs commands (e.g. set-inline-format-bold)
     // to prove the command→mutation→save path, without the parent reaching into Univer.

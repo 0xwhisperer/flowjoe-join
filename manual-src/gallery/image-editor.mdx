@@ -18,6 +18,8 @@ The editor comes with FlowJoe: there is nothing to download or set up, and it wo
 
 The editor opens PNG, JPEG, WebP, GIF, BMP, TIFF, HEIC and SVG pictures (an SVG drawing is saved back as a PNG). For other kinds (an AVIF photo, for example) FlowJoe says so instead of opening it; **Crop Image** still works on them.
 
+Pictures in a **Private node** stay inside FlowJoe: use **Crop Image** for them. They are not sent to the separate Image Editor.
+
 The editor opens straight away on the picture you picked.
 
 ---
@@ -36,7 +38,7 @@ Below **Open Editor…** the **Edit Image** menu has one-click fixes that work w
 
 Each one is saved like **Save as New Version**: the result goes on top of the slot, the original stays underneath in the [stack](/gallery/stacks), and **Undo** in the message that appears (for example **Sharpened. Saved as a new version in slot 1**) puts the slot back as it was. A JPEG picture stays a JPEG; everything else is saved as a PNG.
 
-- A quick fix takes a few seconds (the editor starts in the background first; large photos take longer). A small message at the edge of the window shows it's working, for example **Sharpening cafe-front.jpg…**, and goes away when it's done. You can keep using FlowJoe meanwhile, or switch to another app: the quick fix carries on while FlowJoe's window is in the background.
+- A quick fix takes a few seconds (the editor starts in the background first; large photos take longer). A small message at the edge of the window shows it's working, for example **Sharpening aster-bay-first-light.png…**, and goes away when it's done. You can keep using FlowJoe meanwhile, or switch to another app: the quick fix carries on while FlowJoe's window is in the background.
 - One quick fix runs at a time. Asking for another while one is running tells you to try again when it's done.
 - While the editor screen is open, quick fixes wait: close the editor first. **Open Editor…** also waits while a quick fix is still running.
 - If a quick fix can't be done, FlowJoe says so and the picture isn't changed.
@@ -53,7 +55,11 @@ Each one is saved like **Save as New Version**: the result goes on top of the sl
 
 ## The editor screen
 
-The editor takes the place of the gallery, like **Version History** does. The title row shows **Edit Image**, the picture's name, its slot and node, then **Advanced**, **Save as New Version** and **✕**.
+The editor takes the place of the gallery, like **Version History** does. The title row shows **Edit Image**, the picture's name, its slot and node, then **Advanced**, **Export Image…**, **Save as New Version** and **✕**.
+
+<Frame caption="Aster Bay, a fictional setting in Mosslight Atlas, shown in the real Image Editor.">
+  <img src="/images/gallery/aster-bay-editor-adjust.png" alt="Image Editor with a fictional coastal lighthouse picture and Exposure set to +8 in Adjust." />
+</Frame>
 
 Below it:
 
@@ -70,6 +76,10 @@ Undo and Redo also bring the sliders back to match the picture, including an und
 - **Text**: set the font, weight, size, color and alignment, then click the picture to type: the text starts in that style. Pick a text layer to change its style afterwards; **Shadow** needs a text layer picked.
 
 A crop frame or text you're still typing is finished automatically when you save or compare, so what you see is what gets saved. In the rare case the editor doesn't finish it in time, nothing is saved and FlowJoe tells you; choose **Save as New Version** again.
+
+<Frame caption="Choose 1:1 Square to frame a square study before saving.">
+  <img src="/images/gallery/aster-bay-editor-crop.png" alt="Crop tool showing a square frame, rule-of-thirds grid and 1024 by 1024 pixel size on Aster Bay." />
+</Frame>
 
 ### Adjust
 
@@ -99,9 +109,13 @@ The picture itself is the bottom layer and is locked (it shows a lock): it can't
 
 **Compare** shows the original and your edit side by side, split by a line you can drag. Press it again, pick a tool or switch tabs to go back to editing.
 
+<Frame caption="Drag the dividing line to compare the original light with the brighter edit.">
+  <img src="/images/gallery/aster-bay-editor-compare.png" alt="Before and After comparison of the fictional lighthouse picture with a draggable vertical divider." />
+</Frame>
+
 ### Advanced
 
-Turn on **Advanced** to use the editor's full set of tools and panels (Curves, Levels, brushes, layer styles and more), in the editor's own layout; FlowJoe's tools, toolbar row, status row and panel step aside. **Save as New Version**, **Advanced** and **✕** stay where they are. Turn it off to go back, with the tool you had picked.
+Turn on **Advanced** to use the editor's additional tools and panels (Curves, Levels, brushes, layer styles and more), in the editor's own layout; FlowJoe's tools, toolbar row, status row and panel step aside. **Save as New Version**, **Advanced** and **✕** stay where they are. Turn it off to go back, with the tool you had picked.
 
 ---
 
@@ -109,11 +123,38 @@ Turn on **Advanced** to use the editor's full set of tools and panels (Curves, L
 
 **Save as New Version** applies your edits to the picture at full size. Large photos can take several seconds; FlowJoe shows that it's working and you can keep using the rest of FlowJoe. When it's done the editor closes and the slot shows the edited picture on top, with the original underneath. **Undo** in the message that appears puts the slot back as it was.
 
-A JPEG picture is saved as a JPEG; everything else is saved as a PNG.
+A JPEG picture is saved as a JPEG; everything else is saved as a PNG. The saved version is one finished picture: reopening it does not restore the editor's separate text, adjustment or other layers.
+
+<Frame caption="The saved square study is on top. The 2 badge shows that the original remains in the stack.">
+  <img src="/images/gallery/aster-bay-editor-saved-stack.png" alt="Aster Bay gallery slot after saving, with the square edited picture and a two-version stack badge." style={{maxWidth: "328px", margin: "0 auto"}} />
+</Frame>
+
+## Exporting a file
+
+Choose **Export Image…** to save a finished picture to your device while keeping the editor open.
+
+1. Pick **PNG**, **JPEG**, **WebP**, **TIFF** or **TGA**.
+2. For **JPEG** or lossy **WebP**, set **Quality** from 1 to 100. Lower quality usually makes a smaller file; higher quality keeps more detail.
+3. For **WebP**, turn on **Lossless** to keep every detail without a quality setting.
+4. Choose **Export**. In the desktop app, choose the file's name and location; in a browser, the download follows your browser's settings.
+
+PNG, TIFF and TGA keep all detail without a quality slider. JPEG has no transparency: transparent areas become white. Export makes one finished, flattened picture. It includes a pending crop or text edit, just as saving does.
+
+Your editor stays open with its edits. Export does not add a version to the slot or replace **Save as New Version**. If you close afterwards with unsaved edits, FlowJoe still asks whether to keep them in your Flow.
+
+<Frame caption="Choose JPEG and adjust quality before exporting the fictional Aster Bay picture.">
+  <img src="/images/gallery/aster-bay-export-jpg-high.png" alt="Real Export Image window with JPEG selected and Quality set to 95, using the app's inset dropdown chevron." />
+</Frame>
+
+<Frame caption="WebP Lossless keeps every detail, so no quality slider is needed.">
+  <img src="/images/gallery/aster-bay-export-webp-lossless.png" alt="Real Export Image window with WebP selected and Lossless checked; the quality slider is hidden." />
+</Frame>
+
+An invited guest needs Edit access and the owner's permission to export. Without it, **Export Image…** is hidden; editing and saving into the shared Flow follow their existing permissions.
 
 ## Closing without saving
 
-**✕** or **Esc** closes the editor. If you have unsaved edits, FlowJoe asks first: **Save as New Version**, **Discard**, or **Cancel** (which keeps you in the editor). Clicking another node in the tree (also with Shift or Cmd/Ctrl), opening **History**, deleting the node, importing or switching the Flow, restoring a version, and quitting or reloading FlowJoe ask too. A leave you ask for while a save is running waits for the save and then goes ahead.
+**✕** or **Esc** closes the editor. A crop frame you have drawn, resized, moved or turned counts as an unsaved edit too. If you have unsaved edits, FlowJoe asks first: **Save as New Version**, **Discard**, or **Cancel** (which keeps you in the editor). Clicking another node in the tree (also with Shift or Cmd/Ctrl), opening **History**, deleting the node, importing or switching the Flow, restoring a version, and quitting or reloading FlowJoe ask too. A leave you ask for while a save is running waits for the save and then goes ahead.
 
 <Note>
 With **Advanced** on, or with **Crop** or **Text** picked, **Esc** inside the picture belongs to the tool (it cancels the crop frame or ends the typing); use **✕** to close.

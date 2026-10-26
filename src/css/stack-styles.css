@@ -1129,6 +1129,32 @@
     pointer-events: auto;
   }
 
+  /* Informational only: keep the underlying workbench toolbar clickable. */
+  #image-modal #image-modal-media-type-chip {
+    pointer-events: none;
+  }
+
+  #image-modal.image-modal-workbench-preview #image-modal-heading {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  #image-modal.image-modal-workbench-preview #image-modal-titlebar > div:first-child {
+    gap: var(--header-gap);
+  }
+
+  #image-modal.image-modal-workbench-preview #image-modal-media-type-chip {
+    position: static;
+    inset: auto;
+    transform: none;
+    flex: 0 0 auto;
+    max-width: 120px;
+    margin: 0;
+  }
+
   /* Preview modal hosted audio/video controls sit above the separate modal stack nav. */
   #image-modal-inline-media-host .image-item-preview-modal-media[data-modal-stack-media="1"] .image-frame.media-playing:hover .gallery-inline-audio-controls {
     transform: translateY(-48px);
@@ -1624,7 +1650,7 @@
 
   .vslot-pick-primary {
     position: relative;
-    margin: 0 8px 0 0;
+    margin: 0;
     padding: 8px 16px;
     border: 1px solid var(--accent-color);
     border-radius: var(--radius-sm, 4px);

@@ -3,7 +3,7 @@
 <!-- GENERATED FILE — do not edit by hand. Built from the mintlify user docs by
 scripts/build-app-help-knowledge.js (deterministic digest; re-run it after editing any source page).
 Source pages: workbenches/calendars.mdx, workbenches/spreadsheets.mdx, workbenches/rich-documents.mdx
-Generated: 2026-10-22 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
+Generated: 2026-10-26 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
 Sync guard: tests/unit/appHelpKnowledgeSync.test.js fails when mintlify/**/*.mdx or this digest drifts
 from scripts/app-help-knowledge.manifest.json. -->
 
@@ -31,7 +31,6 @@ Open a Calendar slot to use the FullCalendar workbench:
 
 **Joe Integration.**
 Joe receives calendar agendas as parsed, readable text:
-- **Planning:** Ask Joe *"Find conflicts in my schedule next week"* or *"Draft an itinerary for Tuesday."*
 
 Also covered in the full docs for this area: Calendar boundaries.
 
@@ -50,7 +49,6 @@ The **Spreadsheet Workbench** is an interactive, editable island powered by Univ
 - **Multi-Tab Sheets:** Add, rename, and delete multiple tabs inside a single spreadsheet slot.
 - **Formatting:** Edit font styling, backgrounds, borders, alignment, and column widths.
 - **Exporting:** Download the sheet from the slot's menu. It saves in the same format you imported (`.csv`, `.tsv`, `.xlsx` or `.ods`); a new spreadsheet, or an imported `.xls`, downloads as `.xlsx`.
-- **Appearance:** The spreadsheet always uses a light look, even when the app is in a dark theme.
 
 Also covered in the full docs for this area: Import and export limits; AI Access & Interactions.
 
@@ -68,6 +66,7 @@ The **Rich Document Workbench** utilizes Univer Docs to provide a real word-proc
 - **Typography styling:** Change headers, font weights, colors, text alignment, and spacing.
 - **Image Integration:** Paste images directly from your clipboard into the body of the document.
 - **Headers & Footers:** Double-click the top or bottom margin of a page to edit its header or footer. Tables from imported files are kept when you save, but they cannot be edited in the editor yet.
+- **Appearance:** The editor always uses a light look, even when the app is in a dark theme.
 
 Also covered in the full docs for this area: Collaborative AI Writing.
 

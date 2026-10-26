@@ -519,7 +519,7 @@
 
   .licenses-list-row {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto var(--icon-glyph);
+    grid-template-columns: minmax(0, 1fr) fit-content(40%) var(--icon-glyph);
     align-items: center;
     gap: var(--action-row-gap);
     width: 100%;
@@ -562,6 +562,13 @@
     font-family: var(--cx-mono);
     font-size: var(--font-micro);
     white-space: nowrap;
+  }
+
+  /* Long license expressions must leave room for the component name and detail arrow. */
+  .licenses-list-row .licenses-tag {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .licenses-tag-copyleft {
@@ -1195,8 +1202,9 @@
    (the .cleanup-button / theme-reset family: class-3 rect tokens, bg-input fill, accent hover) —
    these were a bespoke fifth look (translucent fills, 600 weight, no height token). */
 .export-prefs-bulk-btn {
+  margin: 0;
   padding: 7px 12px;
-  font-size: 14px;
+  font-size: var(--font-control);
   font-weight: 500;
   line-height: 1.2;
   min-height: var(--rect-btn-height);
@@ -1350,6 +1358,12 @@
   gap: var(--action-row-gap);
 }
 
+/* These full-width actions use the cleanup card's block stack. Its sibling margin
+   supplies the spacing, so keep that spacing on the density token too. */
+#workspace-setting-card .workspace-setting-actions .btn + .btn {
+  margin-top: var(--action-row-gap);
+}
+
 /* Restores [hidden] over .cleanup-button-container .btn's display:block (styles-themes.css).
    The ID selector's specificity already beats every competing class-level display rule, so no
    high-importance flag is needed. */
@@ -1432,6 +1446,7 @@
 }
 
 .joe-voice-sample-btn {
+  margin: 0;
   width: var(--icon-btn-size);
   height: var(--icon-btn-size);
   display: inline-flex;

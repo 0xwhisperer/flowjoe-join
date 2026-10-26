@@ -49,7 +49,12 @@ body.browser-view-active .browser-controls * {
 
 /* Resizer grip elements - above adjacent panels and the link drawer, below modals */
 .resizer {
-  z-index: 1002 !important;
+  z-index: var(--_tree-resizer-z, 1002) !important;
+}
+
+/* The narrow Joe drawer covers in-page content, including a wide tree divider. */
+body.joe-docked-open.joe-dock-overlay .container > .resizer {
+  --_tree-resizer-z: 1000;
 }
 
 .resizer::before {
