@@ -15,7 +15,7 @@
      The DOM re-homing (header menu, thread bar, chip row, context tray, composer box) is done by
      joeDockChatLayout.js; this file only styles the result. Selectors carry the panel id + the
      .joe-docked class so they outrank the floating rules (incl. the JS-injected
-     <style id="joe-ai-modal-styles">, which sits later in the same @layer) without !important. */
+     \3c style id="joe-ai-modal-styles">, which sits later in the same @layer) without !important. */
 
   /* The docked column's colour ladder, shared with the people-Chat panel so the parts both have look the same. */
   #ai-spell-check-modal.joe-docked > #ai-spell-check-panel,
@@ -644,17 +644,15 @@
   }
 
   #ai-spell-check-modal.joe-docked #ai-assist-target-controls #ai-assist-target-slot-button {
-    color: var(--accent-color);
+    color: var(--text-primary);
     font-weight: 500;
   }
 
-  /* When the slot picker is hidden (node-summary / node-chat scope), the node button IS the
-     current/terminal segment of the target path -- accent it the same way the slot button is
-     accented when a slot is present, so "what Joe is currently scoped to" is always the orange
-     segment, matching the mockup's targetText() (only the last path segment is accented). */
+  /* Without a slot picker, the node remains the terminal target segment. Keep its
+     compact weight and the approved primary text color, matching the visible slot label. */
   #ai-spell-check-modal.joe-docked #ai-assist-target-controls[data-target-scope="node-summary"] #ai-assist-target-node-button,
   #ai-spell-check-modal.joe-docked #ai-assist-target-controls[data-target-scope="node-chat"] #ai-assist-target-node-button {
-    color: var(--accent-color);
+    color: var(--text-primary);
     font-weight: 500;
   }
 
@@ -2150,6 +2148,12 @@
     .joe-dock-live-state[data-state="working"] .joe-dock-live-dot {
       animation: none;
     }
+  }
+
+  /* Approved readable text treatment; status dots and target accent markers retain their roles. */
+  #ai-spell-check-modal.joe-docked .joe-dock-live-label,
+  #ai-spell-check-modal.joe-docked #ai-chat-context-pressure #ai-chat-token-limit {
+    color: color-mix(in srgb, var(--text-secondary) 80%, var(--text-primary));
   }
 }
 

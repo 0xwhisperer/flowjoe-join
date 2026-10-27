@@ -479,6 +479,7 @@
   overflow: hidden;
   text-align: left;
 }
+.pce-filter canvas,
 .pce-filter img {
   width: 100%;
   aspect-ratio: 16 / 10;
@@ -555,6 +556,7 @@
   color: var(--text-secondary);
   font-size: var(--font-control);
 }
+.pce-layer-thumb canvas,
 .pce-layer-thumb img {
   width: 100%;
   height: 100%;
@@ -607,6 +609,7 @@
   width: var(--pce-pic-w, 100%);
   height: var(--pce-pic-h, 100%);
 }
+.pce-compare-pic canvas,
 .pce-compare-pic img,
 .pce-compare-before {
   position: absolute;
@@ -614,6 +617,7 @@
   width: 100%;
   height: 100%;
 }
+.pce-compare-pic canvas,
 .pce-compare-pic img {
   object-fit: contain;
   pointer-events: none;

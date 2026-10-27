@@ -72,6 +72,49 @@ let dictationListening = false;
 // each emit; never set during load because the CommandExecuted listener is registered AFTER createDocument.
 let mutatedSinceEmit = false;
 let mutationGeneration = 0;
+let privateDocument = false;
+const privateCanvases = new Set();
+const privateImageBuffers = new Set();
+const privateImageDecoders = new Set();
+const privateImageWaiters = new Map();
+let privateImageSequence = 0;
+
+async function privateImageCanvas(bytes, mime) {
+  privateImageBuffers.add(bytes);
+  const decoder = new ImageDecoder({data: bytes, type: mime});
+  privateImageDecoders.add(decoder);
+  let image;
+  try {
+    ({image} = await decoder.decode({frameIndex: 0}));
+    if (disposed) throw new Error("PRIVATE_DOCUMENT_STALE");
+    const canvas = document.createElement("canvas");
+    canvas.width = image.displayWidth;
+    canvas.height = image.displayHeight;
+    canvas.getContext("2d").drawImage(image, 0, 0);
+    Object.defineProperties(canvas, {complete: {value: true}, naturalWidth: {get: () => canvas.width}, naturalHeight: {get: () => canvas.height}});
+    privateCanvases.add(canvas);
+    return canvas;
+  } finally {
+    image?.close();
+    decoder.close();
+    privateImageDecoders.delete(decoder);
+  }
+}
+function cachePrivateImage(src, canvas) {
+  if (disposed || !univer) throw new Error("PRIVATE_DOCUMENT_STALE");
+  univer.__getInjector().get(window.UniverCore.IImageIoService).addImageSourceCache(src, "UUID", canvas);
+}
+function stagePrivateImage(bytes, mime) {
+  return new Promise((resolve, reject) => {
+    const id = ++privateImageSequence;
+    const timer = setTimeout(() => {
+      privateImageWaiters.delete(id);
+      reject(new Error("PRIVATE_MEDIA_REFUSED"));
+    }, 10000);
+    privateImageWaiters.set(id, {resolve, reject, timer});
+    postToParent({type: "flowjoe:rich-document-private-image", id, bytes, mime});
+  });
+}
 
 // ---- clipboard fallback for browser iframes --------------------------------
 // Univer's BrowserClipboardService uses navigator.clipboard.readText() / .read()
@@ -164,9 +207,34 @@ async function insertPastedImages(files) {
     const maxWidth = Math.max(200, (Number(root && root.clientWidth) || DEFAULT_PAGE_MIN_WIDTH) - DEFAULT_DOCUMENT_MARGIN_PX * 2 - 16);
     const maxHeight = 900;
     for (const file of files) {
-      const dataUrl = await fileToDataUrl(file);
-      if (!dataUrl.startsWith("data:")) continue;
-      const natural = await imageSizeFromDataUrl(dataUrl);
+      let dataUrl, natural;
+      if (privateDocument) {
+        const bytes = new Uint8Array(await file.arrayBuffer());
+        privateImageBuffers.add(bytes);
+        let canvas;
+        try {
+          if (disposed) throw new Error("PRIVATE_DOCUMENT_STALE");
+          canvas = await privateImageCanvas(bytes, file.type);
+          dataUrl = await stagePrivateImage(bytes, file.type);
+          if (disposed) throw new Error("PRIVATE_DOCUMENT_STALE");
+          cachePrivateImage(dataUrl, canvas);
+          natural = {width: canvas.width, height: canvas.height};
+        } catch (error) {
+          if (canvas) {
+            canvas.width = 0;
+            canvas.height = 0;
+            privateCanvases.delete(canvas);
+          }
+          throw error;
+        } finally {
+          bytes.fill(0);
+          privateImageBuffers.delete(bytes);
+        }
+      } else {
+        dataUrl = await fileToDataUrl(file);
+        if (!dataUrl.startsWith("data:")) continue;
+        natural = await imageSizeFromDataUrl(dataUrl);
+      }
       let width = natural.width > 0 ? natural.width : 200;
       let height = natural.height > 0 ? natural.height : 150;
       const scale = Math.min(1, maxWidth / width, maxHeight / height);
@@ -180,7 +248,7 @@ async function insertPastedImages(files) {
         subUnitId: DOC_UNIT_ID,
         drawingId,
         drawingType: 0, // DrawingTypeEnum.DRAWING_IMAGE
-        imageSourceType: "BASE64",
+        imageSourceType: privateDocument ? "UUID" : "BASE64",
         source: dataUrl,
         title: "",
         description: String(file.name || ""),
@@ -254,7 +322,7 @@ async function routeClipboardItemsForUniver(items) {
       try {
         const blob = await item.getType(imageType);
         if (blob) {
-          imageFiles.push(new File([blob], "pasted-image", {type: imageType}));
+          imageFiles.push(privateDocument ? blob : new File([blob], "pasted-image", {type: imageType}));
           continue; // the image wins for this item — never hand Univer an image to mangle
         }
       } catch (_) {}
@@ -300,7 +368,14 @@ if (navigator.clipboard) {
       const bridged = await requestParentClipboard();
       if (bridged) {
         if (bridged.imageBytes) {
-          void insertPastedImages([new File([bridged.imageBytes], "pasted-image.png", {type: "image/png"})]);
+          if (privateDocument) {
+            const bytes = bridged.imageBytes;
+            privateImageBuffers.add(bytes);
+            void insertPastedImages([{name: "pasted-image.png", type: "image/png", arrayBuffer: async () => bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength)}]).finally(() => {
+              bytes.fill(0);
+              privateImageBuffers.delete(bytes);
+            });
+          } else void insertPastedImages([new File([bridged.imageBytes], "pasted-image.png", {type: "image/png"})]);
           return [];
         }
         if (bridged.text) return [new ClipboardItem({"text/plain": new Blob([bridged.text], {type: "text/plain"})})];
@@ -450,7 +525,7 @@ function isImageBlock(block) {
 function imageHasRenderableSource(block) {
   if (!isImageBlock(block)) return false;
   const src = isPlainObject(block.image) ? String(block.image.src || "") : "";
-  return src.startsWith("data:");
+  return src.startsWith("data:") || (privateDocument && src.startsWith("privatemedia:"));
 }
 // Blocks rendered inline in the editable body (so reconstructed FROM the body on save).
 function isBodyRenderedBlock(block) {
@@ -477,7 +552,7 @@ function drawingFromImageBlock(block) {
       subUnitId: DOC_UNIT_ID,
       drawingId,
       drawingType: 0, // DrawingTypeEnum.DRAWING_IMAGE
-      imageSourceType: "BASE64",
+      imageSourceType: privateDocument ? "UUID" : "BASE64",
       source: String(img.src || ""),
       title: "",
       description: String(img.alt || ""),
@@ -1112,8 +1187,14 @@ function isDocumentMutationCommand(commandInfo) {
   return true;
 }
 
-function mountAndLoad(snapshot) {
-  if (univer) return; // already mounted — load is one-shot per island instance
+async function mountAndLoad(snapshot, privateImages = []) {
+  if (univer || disposed) {
+    for (const image of privateImages) {
+      image.bytes.fill(0);
+      privateImageBuffers.delete(image.bytes);
+    }
+    return; // Load is one-shot; a queued message cannot remount a disposed editor.
+  }
   const presets = window.UniverPresets;
   const core = window.UniverCore;
   const docsCore = window.UniverPresetDocsCore;
@@ -1179,6 +1260,15 @@ function mountAndLoad(snapshot) {
       footers: isPlainObject(doc.footers) ? cloneStructure(doc.footers) : null
     };
 
+    for (const image of privateImages) {
+      try {
+        cachePrivateImage(image.src, await privateImageCanvas(image.bytes, image.mime));
+      } finally {
+        image.bytes.fill(0);
+        privateImageBuffers.delete(image.bytes);
+      }
+    }
+    if (disposed) return;
     univerAPI.createDocument(toUniverDocumentData(snapshot));
 
     // Auto-persist on edits (debounced). Pragmatic "snapshot the whole document on change"
@@ -1203,6 +1293,7 @@ function mountAndLoad(snapshot) {
 
     postToParent({type: "flowjoe:rich-document-loaded"});
   } catch (error) {
+    if (privateDocument) dispose();
     reportError("load", error);
   }
 }
@@ -1210,6 +1301,22 @@ function mountAndLoad(snapshot) {
 function dispose() {
   if (disposed) return;
   disposed = true;
+  for (const canvas of privateCanvases) {
+    canvas.width = 0;
+    canvas.height = 0;
+  }
+  privateCanvases.clear();
+  for (const decoder of privateImageDecoders) decoder.close();
+  privateImageDecoders.clear();
+  for (const bytes of privateImageBuffers) bytes.fill(0);
+  privateImageBuffers.clear();
+  for (const waiter of privateImageWaiters.values()) {
+    clearTimeout(waiter.timer);
+    waiter.reject(new Error("PRIVATE_DOCUMENT_STALE"));
+  }
+  privateImageWaiters.clear();
+  _pasteCache.text = "";
+  _pasteCache.html = "";
   stopDictation({abort: true});
   if (saveTimer) {
     clearTimeout(saveTimer);
@@ -1237,8 +1344,19 @@ window.addEventListener("message", (event) => {
   switch (data.type) {
     case "flowjoe:rich-document-load":
       applyTheme(data.theme);
-      mountAndLoad(data.snapshot);
+      privateDocument = data.privateDocument === true;
+      for (const image of data.privateImages || []) privateImageBuffers.add(image.bytes);
+      void mountAndLoad(data.snapshot, data.privateImages || []);
       break;
+    case "flowjoe:rich-document-private-image-result": {
+      const waiter = privateImageWaiters.get(data.id);
+      if (!waiter) break;
+      privateImageWaiters.delete(data.id);
+      clearTimeout(waiter.timer);
+      if (data.error || disposed) waiter.reject(new Error("PRIVATE_MEDIA_REFUSED"));
+      else waiter.resolve(data.src);
+      break;
+    }
     case "flowjoe:rich-document-theme":
       applyTheme(data.theme);
       break;

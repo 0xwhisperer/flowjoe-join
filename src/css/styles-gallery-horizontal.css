@@ -2154,6 +2154,11 @@ button.orphan-media-modal-close.context-menu-corner-close {
   color: var(--accent-color);
 }
 
+/* Keep the existing focused/hovered Cancel surface with the approved primary label. */
+#modal-button-container #modal-cancel:is(:hover, :focus-visible) {
+  color: var(--text-primary);
+}
+
 #modal-message .danger-confirm-shell {
   --danger-confirm-color: var(--danger-color, #dc3545);
   --danger-confirm-warning: #f5b642;

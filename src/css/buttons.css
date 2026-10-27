@@ -394,11 +394,11 @@ body:not(.tree-collapsed) .header-bg-left,
 
 .topbar-subtext {
   max-width: 240px;
-  color: var(--text-secondary);
+  color: color-mix(in srgb, var(--text-secondary) 80%, var(--text-primary));
   font-size: var(--font-micro);
   line-height: 11px;
   letter-spacing: 0.04em;
-  opacity: 0.78;
+  opacity: 1;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -4050,6 +4050,28 @@ body.guest-owner-away #guest-presence .cx-av:not(.is-you):not(:has(.crown))::aft
 @media (max-width: 1180px) {
   .cx-presence .cx-seat {
     display: none;
+  }
+}
+/*
+ Approved 320px header: retain every action and wrap controls below the brand.
+ */
+@media (max-width: 500px) {
+  body {
+    --topbar-height: 160px;
+  }
+  .topbar {
+    flex-wrap: wrap;
+    align-content: center;
+    row-gap: 8px;
+  }
+  .topbar-brand-stack {
+    flex: 1 0 200px;
+  }
+  .topbar > div:last-child {
+    flex: 1 0 100%;
+    max-width: 100%;
+    flex-wrap: wrap;
+    justify-content: flex-end;
   }
 }
 }

@@ -96,7 +96,7 @@
 
 .settings-tab.active {
   background: color-mix(in srgb, var(--accent-color) 12%, transparent);
-  color: var(--accent-color);
+  color: var(--text-primary);
   border-color: color-mix(in srgb, var(--accent-color) 26%, transparent);
   font-weight: var(--rail-item-font-weight-active);
 }
@@ -770,7 +770,7 @@
 
 .setting-description {
   font-size: calc(13px * var(--font-scale));
-  color: var(--text-secondary);
+  color: color-mix(in srgb, var(--text-secondary) 80%, var(--text-primary));
   margin-top: 12px;
   line-height: var(--notes-line-height);
 }
