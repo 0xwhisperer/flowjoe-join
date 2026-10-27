@@ -32,6 +32,7 @@
   // the parent with every save message so a flush that follows NO edits (e.g. modal close or
   // stack traversal over an untouched sheet) is a no-op the parent must not persist or restage.
   let mutatedSinceEmit = false;
+  let mutationGeneration = 0;
 
   // ---- clipboard fallback for browser iframes --------------------------------
   // Univer's BrowserClipboardService uses navigator.clipboard.readText() / .read()
@@ -132,7 +133,7 @@
     // persist — mirrors the rich-document island's contract.
     const mutated = mutatedSinceEmit;
     mutatedSinceEmit = false;
-    postToParent({type: "flowjoe:spreadsheet-save", snapshot, mutated});
+    postToParent({type: "flowjoe:spreadsheet-save", snapshot, mutated, generation: mutationGeneration});
   }
 
   function scheduleSave() {
@@ -205,6 +206,7 @@
       const onCommand = (commandInfo) => {
         if (isWorkbookMutationCommand(commandInfo)) {
           mutatedSinceEmit = true;
+          mutationGeneration++;
           scheduleSave();
         }
       };
@@ -234,10 +236,21 @@
     } catch (_) {
       /* best-effort */
     }
+    loadedEnvelope = null;
+    mutatedSinceEmit = false;
+    mutationGeneration = 0;
     univer = null;
     univerAPI = null;
   }
 
+  window.addEventListener("flowjoe:spreadsheet-capture-dispose", (event) => {
+    try {
+      const snapshot = currentSnapshot();
+      if (snapshot) event.detail?.accept?.(snapshot, mutationGeneration);
+    } finally {
+      dispose();
+    }
+  });
   window.addEventListener("message", (event) => {
     // Only trust messages from our parent window.
     if (event.source !== window.parent) return;

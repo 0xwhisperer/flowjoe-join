@@ -71,6 +71,7 @@ let dictationListening = false;
 // document.engineData), so the parent must NOT gate persistence on blocks alone. Reset on
 // each emit; never set during load because the CommandExecuted listener is registered AFTER createDocument.
 let mutatedSinceEmit = false;
+let mutationGeneration = 0;
 
 // ---- clipboard fallback for browser iframes --------------------------------
 // Univer's BrowserClipboardService uses navigator.clipboard.readText() / .read()
@@ -899,7 +900,7 @@ function emitSave() {
   // with mutated:false (e.g. close without editing) is a no-op the parent must not persist.
   const mutated = mutatedSinceEmit;
   mutatedSinceEmit = false;
-  postToParent({type: "flowjoe:rich-document-save", snapshot, mutated});
+  postToParent({type: "flowjoe:rich-document-save", snapshot, mutated, generation: mutationGeneration});
 }
 
 function scheduleSave() {
@@ -950,6 +951,7 @@ function insertDictationText(text) {
   if (!transcript) {
     if (changed) {
       mutatedSinceEmit = true;
+      mutationGeneration += 1;
       scheduleSave();
     }
     return changed;
@@ -968,6 +970,7 @@ function insertDictationText(text) {
   changed = inserted || changed;
   if (!changed) return false;
   mutatedSinceEmit = true;
+  mutationGeneration += 1;
   scheduleSave();
   return true;
 }
@@ -1186,6 +1189,7 @@ function mountAndLoad(snapshot) {
       // not the neutral blocks, so this flag is the only thing that can save them.
       if (isDocumentMutationCommand(commandInfo)) {
         mutatedSinceEmit = true;
+        mutationGeneration += 1;
         scheduleSave();
       }
     };
@@ -1218,6 +1222,10 @@ function dispose() {
   }
   univer = null;
   univerAPI = null;
+  loadedEnvelope = null;
+  loadedDocStructure = null;
+  mutatedSinceEmit = false;
+  mutationGeneration = 0;
 }
 
 window.addEventListener("message", (event) => {
@@ -1246,6 +1254,17 @@ window.addEventListener("message", (event) => {
       break;
     default:
       break;
+  }
+});
+
+// Same-origin parent calls this synchronously at Private revocation, before the node's
+// reserved final write captures. Snapshot capture and disposal cannot wait for postMessage.
+window.addEventListener("flowjoe:rich-document-capture-dispose", (event) => {
+  try {
+    const snapshot = currentSnapshot();
+    if (snapshot && typeof event.detail?.accept === "function") event.detail.accept(snapshot, mutationGeneration);
+  } finally {
+    dispose();
   }
 });
 

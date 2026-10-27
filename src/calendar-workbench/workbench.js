@@ -10,7 +10,7 @@
  *   parent -> island : { type: "flowjoe:calendar-load", snapshot, validation }         (mount + load this calendar)
  *   island -> parent : { type: "flowjoe:calendar-loaded" }                 (calendar rendered)
  *   parent -> island : { type: "flowjoe:calendar-request-save" }           (e.g. on modal close)
- *   island -> parent : { type: "flowjoe:calendar-save", snapshot }         (debounced on edit, or on request)
+ *   island -> parent : { type: "flowjoe:calendar-save", snapshot, generation: mutationGeneration }         (debounced on edit, or on request)
  *   parent -> island : { type: "flowjoe:calendar-dispose" }                (teardown)
  *   island -> parent : { type: "flowjoe:calendar-error", message, phase }  (init/load/save failure)
  *
@@ -32,6 +32,7 @@
   let loadedEnvelope = null; // echoed envelope fields from the load message
   let saveTimer = null;
   let disposed = false;
+  let mutationGeneration = 0;
   let eventSeq = 0;
   let currentTheme = null;
   let deleteConfirmSeq = 0;
@@ -157,10 +158,11 @@
     if (disposed) return;
     const snapshot = currentSnapshot();
     if (!snapshot) return;
-    postToParent({type: "flowjoe:calendar-save", snapshot});
+    postToParent({type: "flowjoe:calendar-save", snapshot, generation: mutationGeneration});
   }
 
   function scheduleSave() {
+    mutationGeneration++;
     if (disposed) return;
     if (saveTimer) clearTimeout(saveTimer);
     saveTimer = setTimeout(() => {
@@ -855,11 +857,24 @@
       /* best-effort */
     }
     calendar = null;
+    loadedEnvelope = null;
+    editorState = {mode: "create", eventId: "", base: {}};
+    editorEl?.replaceChildren();
+    editorEl = null;
+    mutationGeneration = 0;
     try {
       delete window.__flowjoeCalendarWorkbench;
     } catch (_) {}
   }
 
+  window.addEventListener("flowjoe:calendar-capture-dispose", (event) => {
+    try {
+      const snapshot = currentSnapshot();
+      if (snapshot) event.detail?.accept?.(snapshot, mutationGeneration);
+    } finally {
+      dispose();
+    }
+  });
   window.addEventListener("message", (event) => {
     if (event.source !== window.parent) return;
     const data = event.data;

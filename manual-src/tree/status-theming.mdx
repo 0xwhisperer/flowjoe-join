@@ -55,6 +55,10 @@ Marking a node as Frozen (padlock icon) keeps its gallery content from being cha
 * **Unfreeze Toggle:** Clicking the padlock badge in the gallery header opens a confirmation modal before unfreezing.
 
 ### 3. Private (Password-Protected) Nodes
+In a password window, **Tab** and **Shift+Tab** move through its current controls. **Enter** activates a focused button, including **Cancel** and the password reveal button. **Escape** or **Cancel** returns to where you opened it; focus stays put if you have moved to another window. Empty or mismatched entries identify the affected field and expose the error to assistive software.
+
+When a recovery key is shown, **Copy key** leaves that window open. If automatic copying is unavailable or refused, select and copy the displayed key yourself. Choose **I saved this recovery key** only after saving it; **Cancel protection setup** remains available.
+
 Private nodes require a password to view their contents in FlowJoe. Their saved content and media are not encrypted at rest. For a protected portable backup, explicitly include the Private node and enable package password protection; see [Password-protected packages](/portability/export-import#password-protected-packages). Importing that backup preserves the node’s separate password lock.
 * **Temporary Unlock:** Right-click and enter your password. This starts an in-memory session. Leaving the node, reloading the app, disconnecting the workspace, opening another Flow, starting a New Flow, importing over the current Flow, or restoring a version immediately re-locks it.
 * **Workspace Folder privacy:** Workspace files show a redacted **Private node (not shared)** placeholder. When an older Flow is opened, FlowJoe preserves the private content in owner-only storage and verifies the redacted folder file before saving resumes. Copies made before migration cannot be recalled. If a retained backup still contains private text, FlowJoe replaces that text with a placeholder (your private notes stay on this computer) and removes any backup too damaged to check; see [Workspace Folders](/workspaces/folders).
