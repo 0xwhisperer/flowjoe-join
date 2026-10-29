@@ -51,11 +51,19 @@
 }
 
 #image-modal .flowjoe-modal-control-btn.is-active:not(:disabled),
-#image-modal .flowjoe-modal-control-btn[aria-pressed="true"]:not(:disabled) {
+#image-modal .flowjoe-modal-control-btn[aria-pressed="true"]:not(:disabled),
+#image-modal .flowjoe-modal-control-btn[aria-checked="true"]:not(:disabled) {
   background: color-mix(in srgb, var(--accent-color) 14%, var(--bg-secondary)) !important;
   border-color: var(--accent-color) !important;
   color: var(--accent-color) !important;
   box-shadow: none !important;
+}
+
+#image-modal #image-modal-hide-from-joe[aria-checked="true"]:focus-visible:not(:disabled) {
+  background: color-mix(in srgb, var(--accent-color) 14%, var(--bg-secondary)) !important;
+  border-color: var(--accent-color) !important;
+  color: var(--accent-color) !important;
+  box-shadow: var(--focus-ring) !important;
 }
 
 #image-modal .flowjoe-modal-control-btn:disabled {

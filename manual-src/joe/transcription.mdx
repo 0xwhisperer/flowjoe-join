@@ -109,7 +109,7 @@ The size is disk space for the model file, not the amount of memory needed while
 
 ## Make a transcript
 
-1. Choose a node or slot in Joe’s target bar, then select the recording in **Source**. A node shows recordings grouped by slot, including the audio items in each stack. Choosing a recording targets its slot. A slot target shows only recordings in that slot; selecting the node again returns to all its slots.
+1. Choose a node or slot in Joe’s target bar, then select the recording in **Source**. The visible **Source** heading also names this selector for assistive technology. A node shows recordings grouped by slot, including the audio items in each stack. Choosing a recording targets its slot. A slot target shows only recordings in that slot; selecting the node again returns to all its slots.
 2. Choose your **Transcription method**.
 3. For local transcription, choose an installed **Local model**. Under **Options**, choose **Plain text**, **Whisper - Timestamps** or **Speaker Labels + Timestamps**. For online transcription, the original **Model** menu offers the paid choices.
 4. Leave **Language** on **Auto**, or choose **English** when appropriate.
@@ -123,6 +123,12 @@ Online transcription saves a result only after the service confirms it is comple
 ## Return to a transcript
 
 Completed transcripts and your edits are kept automatically for the current Flow, even before you save a gallery copy. Returning to Transcribe after a reload restores the latest transcript. Open **Recent transcripts** to reopen an earlier result, remove one, or clear the history. Removing history does not delete the recording or a copy you saved in the gallery.
+
+Clear removes the transcripts currently available in the list, including available results marked **Keep on this computer only**. It does not remove records inside locked Private nodes. Unlock the node first to remove those results.
+
+<Note>
+Encrypted storage for Private nodes is still under development and is not enabled in this release. Its retained transcript text and edits are being moved into the same encrypted node storage. Safe processing of encrypted recordings, older retained copies and portable exports still need completion before this mode is available. This does not change the current choice between local and paid-online transcription.
+</Note>
 
 The transcription method controls where speech recognition runs. Storage follows the Flow’s storage mode:
 

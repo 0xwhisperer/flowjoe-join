@@ -3,7 +3,7 @@
 <!-- GENERATED FILE — do not edit by hand. Built from the mintlify user docs by
 scripts/build-app-help-knowledge.js (deterministic digest; re-run it after editing any source page).
 Source pages: tree/status-theming.mdx
-Generated: 2026-10-24 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
+Generated: 2026-10-27 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
 Sync guard: tests/unit/appHelpKnowledgeSync.test.js fails when mintlify/**/*.mdx or this digest drifts
 from scripts/app-help-knowledge.manifest.json. -->
 
@@ -20,7 +20,9 @@ FlowJoe provides native visual indicators and safety features to help you catego
 **Node Status.**
 Every node in FlowJoe can display a status badge. This is useful for project tracking:
 - **Status Options:** Choose **Not Started**, **In Progress**, **Completed**, or **Neutral**. Number keys 1–4 set these in that order when the tree has focus.
+- **Bulk changes:** A parent status change updates editable nodes and skips frozen or password-locked branches. Unlocked siblings still change. The parent badge reflects all children, so a mix of changed and protected children can leave it **In Progress**.
 - **Tree Filtering:** Use the tree filter controls to choose a status. The tree search box searches node names.
+- **Undo:** When **Delete Undo (5s)** is enabled, Undo after a parent status change restores each child’s previous status, including mixed statuses inside nested groups. The restored values are saved.
 - **Joe Awareness:** Joe is aware of node statuses and will use them to prioritize suggestions.
 
 **Branch Theming & Inheritance.**
@@ -29,6 +31,7 @@ To help organize different zones of a large workspace (e.g. distinguishing perso
 - **Inheritance:** By default, children nodes inherit their parent's color theme. This lets you color-code an entire branch (and its gallery slots) in one click.
 - **Theme Profiles:** Global styling themes (Dark, Light, Cozy, Sepia) are managed in Settings.
 - **Joe:** You can ask Joe to set a node's Theme-menu look by its menu name, such as Clay Roast, or ask for a calming, earthy, light, or dark look. He is shown each look's colors and uses those, not the name alone. A name that is not on the list is refused.
+- **Bulk theme clearing:** **Remove All**, resetting node themes to the global theme, and resetting preferences leave frozen or password-locked branches unchanged while clearing editable nodes’ overrides.
 - **Clear or app theme:** Clearing that look lets the node inherit from its parent again. Asking for the app theme uses the app-wide look on that node and stops inheritance. A frozen or private node refuses the change.
 
 **The Four Node Protection States.**
@@ -46,13 +49,8 @@ Hiding a node filters it out of the tree view sidebar without deleting it.
 **Frozen (Read-Only) Nodes.**
 Marking a node as Frozen (padlock icon) keeps its gallery content from being changed by accident. Flows saved earlier with a node "locked" now show that node as frozen, and it works the same way:
 - **What is Allowed:** You can still reorder/move the node on the tree, copy/export content, and duplicate the branch (the duplicate is created as a new, fully editable, unfrozen sibling).
-- **What is Blocked:** You cannot rename the node (unfreeze it first), edit slot notes or titles, crop/delete images, reorder or navigate stacks, attach new media, set statuses, or delete the node itself.
-- **Unfreeze Toggle:** Clicking the padlock badge in the gallery header opens a confirmation modal before unfreezing.
 
-**Private (Password-Protected) Nodes.**
-Private nodes require a password to view their contents in FlowJoe. Their saved content and media are not encrypted at rest. For a protected portable backup, explicitly include the Private node and enable package password protection; see Password-protected packages. Importing that backup preserves the node’s separate password lock.
-
-Also covered in the full docs for this area: Hidden from Joe Nodes.
+Also covered in the full docs for this area: Private (Password-Protected) Nodes; Hidden from Joe Nodes.
 
 ## Manual links
 

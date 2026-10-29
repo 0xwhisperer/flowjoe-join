@@ -4175,6 +4175,33 @@
     transform: translateX(-50%);
   }
 
+  /* A focused media control keeps its existing hover controls available, including while
+     paused. :where keeps the existing selection/drag-mode guards stronger than this rule. */
+  .image-frame:where(:has(img[data-media-type="audio"])):focus-within :is(.gallery-inline-audio-controls, .gallery-inline-audio-progress, .gallery-inline-audio-volume-cluster),
+  .image-frame:where(:has(img[data-media-type="video"])):focus-within :is(.gallery-inline-video-controls, .gallery-inline-video-progress, .gallery-inline-video-volume-cluster, .gallery-inline-video-top-controls) {
+    opacity: 0.95;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .image-frame:where(:has(img[data-media-type="audio"])):focus-within :is(.gallery-inline-audio-controls, .gallery-inline-audio-volume-cluster) *,
+  .image-frame:where(:has(img[data-media-type="video"])):focus-within :is(.gallery-inline-video-controls, .gallery-inline-video-volume-cluster, .gallery-inline-video-top-controls) * {
+    pointer-events: auto;
+  }
+
+  .image-frame:focus-within :is(.gallery-inline-audio-idle-glyph, .gallery-inline-video-idle-glyph) {
+    opacity: 0.82;
+    pointer-events: auto;
+  }
+
+  .image-frame:focus-within :is(.gallery-inline-audio-idle-glyph, .gallery-inline-video-idle-glyph) .gallery-inline-empty-rest {
+    opacity: 0;
+  }
+
+  .image-frame:focus-within :is(.gallery-inline-audio-idle-glyph, .gallery-inline-video-idle-glyph) .gallery-inline-empty-action {
+    opacity: 1;
+  }
+
   .gallery-inline-audio-overlay-play {
     display: inline-flex;
   }

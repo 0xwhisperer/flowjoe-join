@@ -8,10 +8,11 @@
  *   island -> parent : { type: "flowjoe:rich-document-ready" }                 (UMD loaded, awaiting a snapshot)
  *   parent -> island : { type: "flowjoe:rich-document-load", snapshot }        (mount + load this document)
  *   island -> parent : { type: "flowjoe:rich-document-loaded" }                (document mounted)
- *   parent -> island : { type: "flowjoe:rich-document-request-save" }          (e.g. on modal close)
- *   island -> parent : { type: "flowjoe:rich-document-save", snapshot }        (debounced on edit, or on request)
+ *   parent -> island : { type: "flowjoe:rich-document-request-save", requestId? }          (e.g. on modal close)
+ *   island -> parent : { type: "flowjoe:rich-document-save", snapshot, requestId? }        (debounced on edit, or on request)
  *   parent -> island : { type: "flowjoe:rich-document-dispose" }               (teardown)
  *   island -> parent : { type: "flowjoe:rich-document-error", message, phase } (init/load/save failure)
+ *   island -> parent : { type: "flowjoe:rich-document-focus-exit" }           (F6: return to host controls)
  *
  * The snapshot ENVELOPE (schema/version/engine + document.title) is owned by the model on the
  * parent side (RichDocumentSlotModel). The island echoes the envelope it was loaded with and
@@ -63,6 +64,22 @@ let loadedEnvelope = null; // { schema, version, engine, engineVersion, title } 
 let loadedDocStructure = null;
 let saveTimer = null;
 let disposed = false;
+
+// Keep document Tab/Escape behavior intact while providing a route back to host controls.
+// This changes focus only; the loaded document and pending save remain owned by the workbench.
+window.addEventListener(
+  "keydown",
+  (event) => {
+    if (disposed || event.key !== "F6" || event.altKey || event.metaKey || event.shiftKey) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    // A parent-window focus alone can leave Univer's internal editable active, allowing
+    // a later selection refresh to reclaim focus. Its existing blur path releases it.
+    if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+    postToParent({type: "flowjoe:rich-document-focus-exit"});
+  },
+  true
+);
 let dictationSession = null; // { id, unsubs }
 let dictationListening = false;
 // True once the user has made a REAL content mutation (text OR formatting/style) since the
@@ -967,7 +984,7 @@ function currentSnapshot() {
   };
 }
 
-function emitSave() {
+function emitSave(requestId) {
   if (disposed) return;
   const snapshot = currentSnapshot();
   if (!snapshot) return;
@@ -975,7 +992,7 @@ function emitSave() {
   // with mutated:false (e.g. close without editing) is a no-op the parent must not persist.
   const mutated = mutatedSinceEmit;
   mutatedSinceEmit = false;
-  postToParent({type: "flowjoe:rich-document-save", snapshot, mutated, generation: mutationGeneration});
+  postToParent({type: "flowjoe:rich-document-save", snapshot, mutated, generation: mutationGeneration, ...(typeof requestId === "string" ? {requestId} : {})});
 }
 
 function scheduleSave() {
@@ -1365,7 +1382,7 @@ window.addEventListener("message", (event) => {
         clearTimeout(saveTimer);
         saveTimer = null;
       }
-      emitSave();
+      emitSave(data.requestId);
       break;
     case "flowjoe:rich-document-dispose":
       dispose();
@@ -1381,8 +1398,11 @@ window.addEventListener("flowjoe:rich-document-capture-dispose", (event) => {
   try {
     const snapshot = currentSnapshot();
     if (snapshot && typeof event.detail?.accept === "function") event.detail.accept(snapshot, mutationGeneration);
+  } catch (error) {
+    if (event.detail?.captureOnly === true && typeof event.detail?.reject === "function") event.detail.reject(error);
+    else throw error;
   } finally {
-    dispose();
+    if (event.detail?.captureOnly !== true) dispose();
   }
 });
 

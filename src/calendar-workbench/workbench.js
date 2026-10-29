@@ -604,12 +604,16 @@
     return v.length === 16 ? `${v}:00` : v; // datetime-local has no seconds
   }
 
+  let editorOpener = null;
+
   function openEditor(mode, opts) {
     buildEditor();
     clearEventValidation();
     pendingDeleteConfirmId = "";
     const o = opts && typeof opts === "object" ? opts : {};
     const base = isPlainObject(o.base) ? o.base : {};
+    // Pointer selection has no keyboard opener; only retain the event that actually held focus.
+    editorOpener = o.opener === document.activeElement ? o.opener : null;
     editorState = {mode: mode === "edit" ? "edit" : "create", eventId: String(o.eventId || base.id || nextEventId()), base};
     document.getElementById("fj-ev-heading").textContent = editorState.mode === "edit" ? "Edit event" : "New event";
     document.getElementById("fj-ev-delete").style.display = editorState.mode === "edit" ? "" : "none";
@@ -647,12 +651,20 @@
   }
 
   function closeEditor() {
+    // Match the shared dialog rule: a parked form must not take focus from another window.
+    const ownedFocus = document.hasFocus() && editorEl?.contains(document.activeElement);
+    const opener = editorOpener;
+    editorOpener = null;
     clearEventValidation();
     pendingDeleteConfirmId = "";
     if (editorEl) editorEl.hidden = true;
     try {
       calendar && calendar.unselect();
     } catch (_) {}
+    if (ownedFocus && opener?.isConnected && opener.tabIndex >= 0 && !opener.closest("[inert]") && !opener.matches(":disabled") && opener.getClientRects().length) {
+      const style = getComputedStyle(opener);
+      if (style.visibility !== "hidden" && style.visibility !== "collapse") opener.focus();
+    }
   }
 
   function confirmDeleteEditorEvent() {
@@ -753,7 +765,7 @@
     const ev = info && info.event;
     if (!ev) return;
     const base = ev.extendedProps && isPlainObject(ev.extendedProps.fjEvent) ? ev.extendedProps.fjEvent : {};
-    openEditor("edit", {eventId: ev.id, base, title: ev.title, allDay: ev.allDay, start: ev.startStr, end: ev.endStr});
+    openEditor("edit", {opener: info.el, eventId: ev.id, base, title: ev.title, allDay: ev.allDay, start: ev.startStr, end: ev.endStr});
   }
 
   // --- Mount / dispose --------------------------------------------------------------------
@@ -859,6 +871,7 @@
     calendar = null;
     loadedEnvelope = null;
     editorState = {mode: "create", eventId: "", base: {}};
+    editorOpener = null;
     editorEl?.replaceChildren();
     editorEl = null;
     mutationGeneration = 0;
@@ -871,8 +884,11 @@
     try {
       const snapshot = currentSnapshot();
       if (snapshot) event.detail?.accept?.(snapshot, mutationGeneration);
+    } catch (error) {
+      if (event.detail?.captureOnly === true && typeof event.detail?.reject === "function") event.detail.reject(error);
+      else throw error;
     } finally {
-      dispose();
+      if (event.detail?.captureOnly !== true) dispose();
     }
   });
   window.addEventListener("message", (event) => {

@@ -88,6 +88,24 @@
   white-space: nowrap;
   transition: background var(--transition-speed) ease, color var(--transition-speed) ease;
 }
+.terminal-tab-select {
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.terminal-tab-select:focus-visible {
+  outline: 2px solid var(--accent-color, #ff9500);
+  outline-offset: 2px;
+}
+.terminal-tab-select[hidden] {
+  display: none;
+}
 .terminal-tab:hover {
   background: var(--terminal-tab-hover-bg);
   color: var(--text-primary);

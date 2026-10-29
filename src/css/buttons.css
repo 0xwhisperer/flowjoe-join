@@ -3230,6 +3230,13 @@ button:focus-visible,
   border-color: var(--accent-color) !important;
 }
 
+#node-selector-dialog .node-selector-target:focus-visible,
+#node-selector-dialog .node-selector-branch-toggle:focus-visible {
+  outline: 2px solid var(--accent-color) !important;
+  outline-offset: -2px !important;
+  border-radius: var(--radius-sm, 4px);
+}
+
 .header-audio-playlist-tag-chip .gallery-tag-chip-main:focus,
 .header-audio-playlist-tag-chip .gallery-tag-chip-main:focus-visible {
   outline: none !important;

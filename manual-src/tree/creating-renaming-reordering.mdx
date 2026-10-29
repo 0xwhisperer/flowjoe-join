@@ -37,9 +37,12 @@ Cancelling the password step returns to Add Node with your name and privacy choi
 ## Reordering & Dragging
 
 You can reorder nodes dynamically:
+- **Move without dragging:** Right-click a node, choose **Move Node…**, then choose the root, a parent, or a sibling destination. Keyboard users can open the node menu and operate the destination picker without a pointer.
 - **Drag and Drop:** Click and hold a node to drag it. You can move it between siblings or nest it under a new parent.
 - **Drop Indicators:** A horizontal bar shows where the node will land if dropped between others. Highlighting a node indicates it will become a child of that node.
 - **Subtree Moving:** Dragging a parent node automatically moves all of its nested children, preserving the entire sub-hierarchy.
+
+Move Node applies the same branch and destination protection rules as dragging. If a move is allowed, the Undo notification can restore the branch to its previous location.
 
 ---
 

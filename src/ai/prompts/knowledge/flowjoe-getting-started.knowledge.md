@@ -3,7 +3,7 @@
 <!-- GENERATED FILE — do not edit by hand. Built from the mintlify user docs by
 scripts/build-app-help-knowledge.js (deterministic digest; re-run it after editing any source page).
 Source pages: getting-started/quickstart.mdx, getting-started/mental-model.mdx, getting-started/hemispheres.mdx, concepts/local-first.mdx, concepts/structure-references-meaning.mdx
-Generated: 2026-10-23 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
+Generated: 2026-10-28 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
 Sync guard: tests/unit/appHelpKnowledgeSync.test.js fails when mintlify/**/*.mdx or this digest drifts
 from scripts/app-help-knowledge.manifest.json. -->
 
@@ -20,15 +20,12 @@ Here is what to expect during your first run, and how to get back to those setti
 
 **The Welcome Wizard.**
 The onboarding wizard helps you seed your project and select your interface preferences.
+You can complete setup with the keyboard: use **Tab** and **Shift+Tab** to move through the wizard, then press **Enter** or **Space** to choose a starting shape or theme.
 
 **Name your Flow.**
 Every project starts with a **Flow**—the whole document, containing one or more root nodes. Choose a title that matches your current goal, such as *Novel Draft*, *Research Board*, or *Product Design Plan*.
 
-**Pick a Starting Shape.**
-To prevent staring at a blank screen, pick one of our pre-designed outline shapes to seed your tree:
-- **Project:** Seeds `Planning`, `Tasks`, and `Assets` nodes.
-
-Also covered in the full docs for this area: Optionally Link Joe AI; Choose a Swatch Theme; The Interactive Coach-Mark Tour; Retours & Customizations.
+Also covered in the full docs for this area: Pick a Starting Shape; Optionally Link Joe AI; Choose a Swatch Theme; The Interactive Coach-Mark Tour; Retours & Customizations.
 
 ## Core mental model
 

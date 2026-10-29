@@ -217,6 +217,23 @@
       } finally {
         if (activeRenderTask === task) activeRenderTask = null;
       }
+      if (token !== renderToken) return;
+      try {
+        const content = await page.getTextContent();
+        if (token !== renderToken) return;
+        const text = content.items.map((item) => typeof item.str === "string" ? item.str + (item.hasEOL ? "\n" : "") : "").join("");
+        if (text) {
+          const readable = document.createElement("div");
+          readable.className = "page-text";
+          readable.dataset.pageNumber = String(pageIndex);
+          readable.textContent = text;
+          // Keep the canvas last so its existing last-child spacing rule remains intact.
+          pages.insertBefore(readable, canvas);
+        }
+      } catch (error) {
+        if (token !== renderToken) return;
+        console.warn("[pdfjs-viewer] Page text unavailable:", error);
+      }
     }
 
     function cancelActiveRender() {

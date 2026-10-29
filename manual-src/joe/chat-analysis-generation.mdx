@@ -55,6 +55,13 @@ Large documents, spreadsheets and calendars are read in sections. Name the headi
 
 A text summary covers the text FlowJoe could extract; it does not establish that every page, diagram or embedded image was examined. File-conversion limits are separate from reading the available text. Joe is also told when a PDF page has no readable text, such as a page that is only a chart, photo or scan. In chat he can then look at that page as a picture, so "what does the chart on page 7 show?" gets a real answer. The first time he wants to look at pages of a PDF, Joe asks you, because each page sent as a picture uses noticeably more of your AI usage than reading text; he looks at a few pages at a time, only the ones he needs. If you say no, he answers from the text and tells you the visuals were not read. In a browser, PDF text extraction reads at most the first 100 pages, and Joe is told which pages were left out. For visual details, give Joe the relevant image or screenshot as well.
 
+
+### Compare saved repository text
+
+With your own OpenAI API key and **Luna 6**, Joe can combine several permitted saved repository text files into a compact comparison. Name the files and the facts you want compared. Joe uses source paths and supporting excerpts to ground the comparison and identifies any file read only in part.
+
+This can reduce AI token usage for larger comparisons, although it may take longer than ordinary reads. Each file read covers at most 12,000 characters, and one reply can coordinate up to eight distinct saved files. For a complete review of a longer file, ask Joe to continue through its remaining sections using ordinary reads. Existing Flow permissions still apply; the admitted text is processed by OpenAI. Single-file questions, open drafts and historical versions use ordinary reads.
+
 ---
 
 ## Image Generation
@@ -77,6 +84,10 @@ You can generate graphics directly in your workspace:
 - **Stop:** If you stop while the image response is arriving, that late response is not accepted as the finished replacement.
 - **Images request timeout:** In the **Images** tab, an image request that has not finished after three minutes stops with a timeout message. Your previous picture stays available, and you can try again. Pressing **Stop** still shows the normal stopped message.
 - **Survives a restart:** A generated image you haven't sent to the gallery yet still shows, and can still be sent or reused, after you close and reopen FlowJoe. If a generated image genuinely can't be recovered, the card says so with a plain note instead of showing a blank frame.
+
+<Note>
+Encrypted Private-node storage is still under development and is not enabled in the current release. In the planned encrypted mode, a Private node keeps its unfinished generated picture, prompts and image history under the same node password. Existing saved picture prompts should remain usable when you make the node Private or remove its protection. Removing protection is also intended to keep the generated draft and image history usable normally, without replacing another node’s unfinished draft. Relocking hides those working pictures and prompts; unlocking restores the saved draft. Other older saved copies and remaining protection work must be completed before this mode is released.
+</Note>
 
 ### Continue an older picture
 

@@ -37,7 +37,7 @@ Open a Calendar slot to use the FullCalendar workbench:
 
 Joe receives calendar agendas as parsed, readable text:
 - **Planning:** Ask Joe *"Find conflicts in my schedule next week"* or *"Draft an itinerary for Tuesday."*
-- **Original versus edited copy:** **Download Original** keeps the untouched imported calendar. Downloading the edited calendar creates an `.ics` file from its current events; it does not preserve every original calendar field.
+- **Original versus edited copy:** **Download Original** keeps the untouched imported calendar. Downloading the edited calendar creates an `.ics` file from its current events; it does not preserve every original calendar field. Calendar Slot and Stack keep this hidden original; its filename adds `_orig` before the source extension, such as `Team_orig.ics`. Event Cards and Event Nodes have no single original file.
 
 ## Calendar boundaries
 
@@ -52,3 +52,5 @@ The Calendar file-type badge appears beside the Preview title, leaving the edito
 ### Correcting an event date
 
 If Start cannot be read, or a supplied End cannot be read or comes before or at Start, the event form stays open and identifies the field to correct. Your previous event and the text you entered remain available. Correct the field and Save again, or Cancel to keep the previous event. End can be left blank. For an all-day event, End remains the first day after the event.
+
+When you open an existing event with the keyboard, **Cancel** or the event form’s close button returns you to that event when it is still visible. If you already moved to another window, closing the form leaves your focus there.

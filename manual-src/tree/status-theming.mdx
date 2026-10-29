@@ -11,6 +11,7 @@ FlowJoe provides native visual indicators and safety features to help you catego
 
 Every node in FlowJoe can display a status badge. This is useful for project tracking:
 - **Status Options:** Choose **Not Started**, **In Progress**, **Completed**, or **Neutral**. Number keys 1–4 set these in that order when the tree has focus.
+- **Bulk changes:** A parent status change updates editable nodes and skips frozen or password-locked branches. Unlocked siblings still change. The parent badge reflects all children, so a mix of changed and protected children can leave it **In Progress**.
 - **Tree Filtering:** Use the tree filter controls to choose a status. The tree search box searches node names.
 - **Undo:** When **Delete Undo (5s)** is enabled, Undo after a parent status change restores each child’s previous status, including mixed statuses inside nested groups. The restored values are saved.
 - **Joe Awareness:** Joe is aware of node statuses and will use them to prioritize suggestions.
@@ -24,6 +25,7 @@ To help organize different zones of a large workspace (e.g. distinguishing perso
 - **Inheritance:** By default, children nodes inherit their parent's color theme. This lets you color-code an entire branch (and its gallery slots) in one click.
 - **Theme Profiles:** Global styling themes (Dark, Light, Cozy, Sepia) are managed in Settings.
 - **Joe:** You can ask Joe to set a node's Theme-menu look by its menu name, such as Clay Roast, or ask for a calming, earthy, light, or dark look. He is shown each look's colors and uses those, not the name alone. A name that is not on the list is refused.
+- **Bulk theme clearing:** **Remove All**, resetting node themes to the global theme, and resetting preferences leave frozen or password-locked branches unchanged while clearing editable nodes’ overrides.
 - **Clear or app theme:** Clearing that look lets the node inherit from its parent again. Asking for the app theme uses the app-wide look on that node and stops inheritance. A frozen or private node refuses the change.
 
 ---

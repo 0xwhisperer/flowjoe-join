@@ -32,6 +32,9 @@ The **Spreadsheet Workbench** is an interactive, editable island powered by Univ
 
 Treat imported spreadsheets as editable copies focused on values, sheets, and basic formulas. Charts, pivot tables, macros, and advanced formatting are not preserved. Use **Download Original** for the unchanged source, especially for complex workbooks or legacy `.xls` files. CSV and TSV downloads contain one sheet. Very large sheets and long cell text can be cut down during import; use **Download Original** for the complete source.
 
+**Download Original** in the slot's menu returns the untouched imported file. Its filename adds `_orig` before the source extension, such as `Budget_orig.xlsx`, so you can distinguish it from the edited copy. It stays hidden behind the single editable slot.
+
+
 ## AI Access & Interactions
 
 Joe and external terminal agents can read spreadsheet content using the `get_island_content` tool.
@@ -50,4 +53,13 @@ The Spreadsheet file-type badge appears beside the Preview title, leaving the ed
 
 ## Saving and retrying
 
-Closing Preview or moving to another stack item waits for your edits to save. If saving fails, the editor stays open with your draft. Once storage is available again, retry **Close**, **Save**, or the stack move without retyping your changes. Keep the editor open until saving succeeds.
+While editing, press **F6** (or **Ctrl+F6**) to return to Preview's **Close** control. This moves keyboard focus without closing the spreadsheet. **Tab** continues to navigate cells, **Escape** keeps its normal editor action, and autosave continues as usual. The editor stays out of the way after you leave it, even if a cursor movement was still finishing. You can use Tab to return to the workbench controls or click the editing area to continue typing.
+
+Closing Preview or moving to another stack item waits for your edits to save. If saving fails, the editor stays open with your draft. Once storage is available again, retry **Close**, **Save**, or the stack move without retyping your changes. An earlier autosave finishing does not cancel that retry: your latest changes still need to save. Keep the editor open until saving succeeds. Preview also waits for your latest edit when an earlier autosave is still finishing; it stays open until that edit is saved.
+
+Closing the desktop window or quitting FlowJoe also waits for your editor to save. If saving cannot be confirmed, choose **Stay open** to keep your draft, or **Retry save** once storage is available again. **Close anyway** or **Quit anyway** leaves without confirming the save and may lose your unsaved changes.
+
+
+## Mac screen-reader access
+
+Screen-reader reading and editing of cell values is not yet verified on Mac. Current accessibility checks found that the built-in editor exposes toolbar controls but does not expose the tested cell values through the Mac text-reading interfaces checked. This remains an open accessibility limitation. **F6** still moves focus from the editor to Preview’s **Close** control.

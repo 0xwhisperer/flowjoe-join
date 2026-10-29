@@ -1,0 +1,254 @@
+/* Approved desktop account additions ported from the account mockup. */
+/* Desktop additions (inside the real app snapshot) ============ */
+/* Header account avatar: the existing owner-presence button. Signed out shows the empty avatar with a person glyph. */
+#owner-avatar-btn .cx-av.is-empty i {
+  font-size: 12px;
+}
+/* A small state dot on the avatar (offline / signed out by the account page). Same geometry as the presence dot ring. */
+.acx-av-dot {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 9px;
+  height: 9px;
+  border-radius: var(--radius-full, 999px);
+  background: var(--warning-color);
+  box-shadow: 0 0 0 2px var(--cx-ring, var(--bg-secondary));
+}
+.acx-av-dot.is-bad {
+  background: var(--danger-color);
+}
+/* Menu head second line: plan / status words beside the email. */
+.acx-menu-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-secondary);
+  font-size: var(--font-meta);
+}
+.acx-dot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-full, 999px);
+  background: var(--success-color);
+}
+.acx-dot.is-off {
+  background: transparent;
+  border: 1px solid var(--text-secondary);
+  box-sizing: border-box;
+}
+.acx-dot.is-warn {
+  background: var(--warning-color);
+}
+.acx-dot.is-bad {
+  background: var(--danger-color);
+}
+.file-menu-item .acx-ext {
+  margin-inline-start: auto;
+  color: var(--text-secondary);
+  font-size: var(--icon-glyph-sm, 11px);
+}
+#owner-avatar-menu .owner-menu-locked i {
+  color: var(--text-secondary);
+}
+/* Settings › Account (a new tab panel built from the existing card classes). */
+[data-panel="account"] .acx-who {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 4px 0 2px;
+}
+[data-panel="account"] .acx-who .cx-av {
+  --size: 36px;
+}
+[data-panel="account"] .acx-who-text {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+[data-panel="account"] .acx-who-text strong {
+  font-size: calc(14px * var(--font-scale, 1));
+}
+[data-panel="account"] .acx-who-text code {
+  color: var(--text-secondary);
+  font: 11px var(--cx-mono);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+[data-panel="account"] .acx-facts {
+  display: grid;
+  grid-template-columns: minmax(110px, max-content) minmax(0, 1fr);
+  gap: 6px 14px;
+  margin: 10px 0 0;
+  font-size: calc(13px * var(--font-scale, 1));
+}
+[data-panel="account"] .acx-facts dt {
+  color: var(--text-secondary);
+}
+[data-panel="account"] .acx-facts dd {
+  margin: 0;
+  min-width: 0;
+  color: var(--text-primary);
+}
+[data-panel="account"] .acx-facts dd small {
+  display: block;
+  color: var(--text-secondary);
+  font-size: var(--font-meta);
+}
+[data-panel="account"] .acx-list {
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 6px;
+  font-size: calc(13px * var(--font-scale, 1));
+  color: var(--text-secondary);
+}
+[data-panel="account"] .acx-list li {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  gap: 8px;
+}
+[data-panel="account"] .acx-list li > i {
+  margin-top: 3px;
+  color: var(--accent-color);
+  text-align: center;
+}
+[data-panel="account"] .acx-list b {
+  color: var(--text-primary);
+}
+[data-panel="account"] .workspace-setting-status .acx-status-text {
+  display: grid;
+  gap: 2px;
+  font-size: calc(13px * var(--font-scale, 1));
+}
+[data-panel="account"] .workspace-setting-status .acx-status-text small {
+  color: var(--text-secondary);
+  font-size: var(--font-meta);
+}
+[data-panel="account"] .workspace-setting-led.acx-warn {
+  color: var(--warning-color);
+  background: var(--warning-color);
+}
+[data-panel="account"] .workspace-setting-led.acx-idle {
+  background: transparent;
+  border-color: var(--text-secondary);
+}
+/* Primary action inside a Settings card: the share window's primary fill (accent + text-on-accent), restated for .cleanup-button. */
+[data-panel="account"] .btn.cleanup-button.acx-primary {
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+  color: var(--text-on-accent);
+  font-weight: 600;
+}
+[data-panel="account"] .btn.cleanup-button.acx-primary:hover {
+  background: var(--accent-hover, var(--accent-color));
+  color: var(--text-on-accent);
+}
+[data-panel="account"] .btn.cleanup-button i {
+  margin-inline-start: 6px;
+  font-size: 0.85em;
+}
+/* Dialog content: the matching code and the waiting line. */
+#modal-message .acx-code {
+  display: inline-block;
+  margin: 2px 0 0;
+  padding: 4px 10px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md, 6px);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font: 700 calc(18px * var(--font-scale, 1)) / 1.2 var(--cx-mono);
+  letter-spacing: 0.12em;
+}
+#modal-message .acx-wait {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary);
+  font-size: var(--font-control);
+}
+#modal-message .acx-wait.is-done {
+  color: var(--success-color);
+}
+#modal-message .acx-wait.is-bad {
+  color: var(--warning-color);
+}
+#modal-message .acx-big-who {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+#modal-message .acx-big-who .cx-av {
+  --size: 40px;
+}
+
+/* Trial handle controls use the approved mockup’s app-token rules. */
+.acx-input,
+.acx-select {
+  width: 100%;
+  min-height: 34px;
+  margin: 0;
+  padding: 7px 11px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm, 4px);
+  background: var(--bg-input);
+  color: var(--text-primary);
+  font: inherit;
+}
+.acx-input:focus,
+.acx-select:focus {
+  border-color: var(--accent-color);
+}
+.acx-input.is-bad {
+  border-color: var(--danger-color);
+}
+
+.acx-handle {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm, 4px);
+  background: var(--bg-input);
+}
+.acx-handle:focus-within {
+  border-color: var(--accent-color);
+}
+.acx-handle .acx-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  font-family: var(--cx-mono);
+}
+.acx-web .acx-handle .acx-input:focus-visible {
+  outline: none;
+}
+.acx-handle-suffix {
+  display: grid;
+  place-items: center;
+  padding: 0 11px;
+  border-inline-start: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  font-family: var(--cx-mono);
+  font-size: 0.92em;
+}
+.acx-check {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+.acx-check.is-ok {
+  color: var(--success-color);
+}
+.acx-check.is-bad {
+  color: var(--danger-color);
+}
+.acx-check.is-warn {
+  color: var(--warning-color);
+}

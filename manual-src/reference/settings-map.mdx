@@ -66,7 +66,7 @@ Shared-node themes require **Can edit**. Workspace storage, restore-point manage
 </Frame>
 </Tab>
 </Tabs>
-* **Theme:** Full global theme catalog in Appearance (Dark / Light / Sepia / Cozy and the rest of the theme list). Reset all nodes to the global theme when needed. Per-node overrides are available from the node Theme Manager and the status-bar Theme control.
+* **Theme:** Full global theme catalog in Appearance (Dark / Light / Sepia / Cozy and the rest of the theme list). Reset editable nodes to the global theme when needed; frozen and password-locked branches keep their overrides, including during a factory-preferences reset. Per-node overrides are available from the node Theme Manager and the status-bar Theme control.
 * Mac development launches through `npm run dev` also show **FlowJoe** in the top macOS application menu. Restart the app after updating; a direct `electron .` launch still uses Electron’s name.
 * On Mac, the window title bar follows the currently displayed theme, including per-node themes. The window buttons, coffee mug, FlowJoe name and header controls share one compact row. Drag empty header space to move the window. Full screen gives the window-button space back to the header.
 * **Font style, justification, line height** for notes and readable surfaces.
@@ -147,3 +147,5 @@ In a shared browser session, View guests can inspect the shared lists and task r
 ## Tips
 * Cards can be dragged to reorder within a tab; that does not change the left-hand tab list.
 * Some browser settings only appear in the **desktop (Electron)** app.
+
+Settings icon actions expose their localized purposes to assistive technology. In Data, prefix-removal buttons keep their names when rows are rebuilt, license search has a localized name, and each license entry remains a named button within the component list.

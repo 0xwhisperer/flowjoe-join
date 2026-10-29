@@ -3,7 +3,7 @@
 <!-- GENERATED FILE — do not edit by hand. Built from the mintlify user docs by
 scripts/build-app-help-knowledge.js (deterministic digest; re-run it after editing any source page).
 Source pages: reference/keyboard-shortcuts.mdx, reference/status-bar.mdx, reference/settings-map.mdx, reference/limitations.mdx, reference/glossary.mdx
-Generated: 2026-10-22 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
+Generated: 2026-10-27 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
 Sync guard: tests/unit/appHelpKnowledgeSync.test.js fails when mintlify/**/*.mdx or this digest drifts
 from scripts/app-help-knowledge.manifest.json. -->
 
@@ -18,18 +18,14 @@ Hotkey reference aligned with the in-app Keyboard Shortcuts legend, plus a few e
 This page follows the **Keyboard Shortcuts** legend in the app (tree toolbar **K**, status bar **Shortcuts**). A short **Also useful** section at the end lists a few extra keys that are real in the product but not every row in that legend.
 > [!IMPORTANT] > **Open Joe:** `Cmd+Shift+A` / `Ctrl+Shift+A` toggles the Joe chat panel (open / minimize to a floating pill / restore). `Ctrl+J` copies node JSON — it does **not** open Joe. **New node:** `N` / `Ctrl+N` (not Enter or Tab). On Mac, `Cmd+N` is **New Flow**, not add node.
 
+**Confirmation and text prompts.**
+In ordinary confirmation and single-text-entry prompts, **Tab** and **Shift+Tab** move through the current controls and wrap within the prompt. Closing returns keyboard focus to the control you came from, unless you have already moved focus to another window. Screen readers can identify the prompt by its displayed title and hear the text field’s instructions.
+
 **Tree.**
 - `Ctrl+F` — Tree search
 - `Q` — Query by tags
 - `N` / `Ctrl+N` — Add node (child of the selected node, or a root if none is selected).
 - `Ctrl+P` — Unlock private nodes
-- `↑` / `↓` — Previous / next visible node
-- `←` / `→` — Collapse / expand (or previous / next node when already collapsed/expanded as appropriate)
-- `Space` — Toggle node collapse
-- `+` / `-` — Expand / collapse selected node
-- `Shift+=` — Expand all nodes
-- `Shift+-` — Collapse all nodes
-- `/` or `\` — Hide / show tree
 
 Also covered in the full docs for this area: Tree Nodes; Gallery; Gallery slots; Other shortcuts (legend); Rich-text editor; Also useful (not every row is on the legend card).
 
@@ -62,7 +58,6 @@ Tab order matches the app (top to bottom):
 - **Joe AI**
 - **APIs**
 - **Data**
-- **Tasks**
 
 Also covered in the full docs for this area: Settings when you join someone else's Flow; Appearance; Language (localization); Layout; Theme & typography; Modern Ember; Modern Paper; Sage Storyboard; Tree; Gallery; Audio; Browser (desktop); Joe AI; APIs; Data; Tasks; Tips.
 

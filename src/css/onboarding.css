@@ -137,8 +137,11 @@
   border: 1px solid var(--ob-line-2); border-radius: var(--radius-xl, 10px); background: var(--ob-bg-2);
   cursor: pointer; transition: .15s;
 }
+button.ob-choice { width: 100%; margin: 0; font: inherit; color: inherit; text-align: left; }
 .ob-choice:hover { border-color: var(--ob-amber); background: var(--ob-bg-3); }
 .ob-choice.sel { border-color: var(--ob-amber); box-shadow: var(--ob-glow); background: var(--ob-bg-3); }
+.ob-choice:focus-visible,
+.ob-swatch:focus-visible { outline: 2px solid var(--ob-amber); outline-offset: 2px; }
 .ob-choice .ico { color: var(--ob-amber); flex: none; margin-top: 1px; }
 .ob-choice b { display: block; color: var(--ob-ink); font-size: var(--ob-text-base); margin-bottom: 3px; }
 .ob-choice span { color: var(--ob-ink-3); font-size: calc(11.5px * var(--ob-scale)); line-height: 1.45; }
@@ -152,6 +155,7 @@
 .ob-swatch {
   border: 1px solid var(--ob-line-2); border-radius: var(--radius-xl, 10px); overflow: hidden; cursor: pointer; transition: .15s;
 }
+button.ob-swatch { margin: 0; padding: 0; background: transparent; font: inherit; color: inherit; }
 .ob-swatch:hover { border-color: var(--ob-amber); }
 .ob-swatch.sel { border-color: var(--ob-amber); box-shadow: var(--ob-glow); }
 .ob-swatch .bar { height: 46px; display: flex; }
@@ -174,7 +178,7 @@
    settings rows); constrain it here since this one sits inline next to a label. */
 .ob-lang-row .custom-select { width: auto; min-width: 180px; }
 .ob-lang-row .select-button { height: 38px; }
-/* Portaled onto document.body (see buildLanguageDropdown's document.body.appendChild) to
+/* Portaled to the wizard scrim, outside .ob-card, to
    escape .ob-card's overflow:hidden, which otherwise clips the open option list regardless of
    flipDropdownIfClipped's up/down choice. position:fixed + JS-computed left/top/bottom (see
    positionDropdownOptions) replaces the shared component's default position:absolute/top:100%

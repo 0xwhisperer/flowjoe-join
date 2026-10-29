@@ -3,7 +3,7 @@
 <!-- GENERATED FILE — do not edit by hand. Built from the mintlify user docs by
 scripts/build-app-help-knowledge.js (deterministic digest; re-run it after editing any source page).
 Source pages: gallery/browser.mdx, gallery/terminal.mdx
-Generated: 2026-10-22 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
+Generated: 2026-10-28 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
 Sync guard: tests/unit/appHelpKnowledgeSync.test.js fails when mintlify/**/*.mdx or this digest drifts
 from scripts/app-help-knowledge.manifest.json. -->
 
@@ -57,11 +57,9 @@ Drag tabs to reorder them, move them between panels, or drop them in empty space
 **Keep work running.**
 Minimizing a panel keeps its shells running. Closing the main panel hides it and preserves its sessions for reopening.
 Closing a detached panel or an individual tab ends its shells. Quitting or reloading FlowJoe also ends sessions.
+Screen readers can navigate the terminal's visible rows and receive announcements as output arrives. For a very large burst of output, xterm limits live announcements while keeping the rows available to read.
 
-**Connect a coding assistant.**
-Enable **Settings → Joe AI → Agent Bridge (MCP)**, then run your connected assistant in Forge or another terminal. The bridge runs in FlowJoe independently of the shell.
-
-Also covered in the full docs for this area: Share terminal output with Joe.
+Also covered in the full docs for this area: Connect a coding assistant; Share terminal output with Joe.
 
 ## Manual links
 

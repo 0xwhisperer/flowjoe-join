@@ -538,6 +538,10 @@
     background: color-mix(in srgb, var(--accent-color) 10%, var(--bg-tertiary));
   }
 
+  .licenses-list-row:focus-visible {
+    background: color-mix(in srgb, var(--accent-color) 18%, var(--bg-tertiary));
+  }
+
   .licenses-component-name {
     min-width: 0;
     overflow: hidden;

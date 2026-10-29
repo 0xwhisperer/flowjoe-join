@@ -317,6 +317,7 @@ body.glass-effects-disabled :is(
    hand-typing these properties in cssText; per-item state (danger/disabled/highlighted/
    selected) still toggles via inline style or a data-attribute, since that varies by menu. */
 .context-menu-item {
+  margin: 0;
   padding: var(--pad-menu-item);
   font-size: var(--font-control);
   line-height: 1.25;
@@ -327,6 +328,28 @@ body.glass-effects-disabled :is(
   gap: var(--control-icon-gap);
   color: var(--text-primary);
   transition: background-color 0.12s ease;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  font-family: inherit;
+  font-weight: inherit;
+}
+
+.context-menu-item:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: -2px;
+}
+
+.context-menu-item-with-trailing {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.context-menu-item-primary {
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .context-menu-item-highlighted {
@@ -1466,6 +1489,11 @@ body.hide-child-counts .child-count {
   box-sizing: border-box;
   border-radius: var(--radius-md, 6px);
   transition: background-color var(--transition-speed) ease;
+}
+
+#tree li[data-node-id]:focus-visible > .flex-container {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
 }
 
 .flex-container>* {

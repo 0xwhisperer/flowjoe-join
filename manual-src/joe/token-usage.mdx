@@ -26,7 +26,7 @@ A typical Joe send is a bundle:
 - **The current slot's notes** — and, for a stack, every item's notes.
 - **Joe Memories**, compacted chat memory, and any attached files or images.
 - Joe's built-in instructions (the same on every send).
-- **Tool definitions** — the list of actions Joe is allowed to take this send (propose changes, read the flow, look up the manual, web search, code interpreter), each described to the model. This rides on every send and is one of the larger fixed costs: the size depends on your permission level, available features and the model’s tokenizer. Descriptions are kept short without removing Joe’s actions. At **Off**, only the manual-lookup tool remains.
+- **Tool definitions** — the list of actions Joe is allowed to take this send (propose changes, read the flow, look up the manual, web search, code interpreter), each described to the model. These definitions can be one of the larger fixed costs: the size depends on your permission level, available features and the model’s tokenizer. Descriptions are kept short without removing Joe’s actions. At **Off**, only the manual-lookup tool remains.
 
 You are billed for the whole bundle. On a large tree, the flow map is usually the biggest slice; after that, the tool definitions and Joe's instructions are the biggest fixed pieces. When **Smart context loading** is on there is also a small chapter-picking step before the reply, with a second request if its first helper misses — see [A second request per send](#a-second-request-per-send-the-context-director) below.
 
@@ -65,6 +65,8 @@ The number does not move while you type. Your unsent draft is shown separately a
 The **FlowJoe manual** count starts with a short estimate, then updates when the selected chapters have loaded. If Joe selects different chapters or you switch conversations, an older lookup cannot replace the newer count.
 
 The bar is an estimate based on the text’s characters and scripts. Recognized decomposed accents and Korean syllables receive a conservative extra allowance. Context warnings or compaction can therefore appear earlier for that text. After each reply the app records the provider's real input-token count next to the estimate it made for that send (visible in the diagnostics/debug output), so a persistent gap can be spotted and fixed.
+
+With **the current OpenAI brains on your own API key**, Joe loads most tool details only when needed, including when you choose the faster service tier. Tool names and short descriptions remain available, so he can find a tool without carrying every parameter description into each request. Saved-file program tools keep their existing loading behavior. Discovery can add a step; savings depend on the task and cache. The token bar remains an approximate, conservative estimate; the reply receipt shows provider-reported usage. Your Flow permissions and approval requirements still govern every action. Other connections keep their complete tool instructions available up front; choosing another brain does not remove Flow actions to save tokens. The loading method and savings can differ between connections.
 
 With **Luna 6 on your own OpenAI API key**, Joe can ask for more thinking after a failed action and return to the normal level after recovery while keeping the earlier conversation available for cache reuse. This happens automatically during the reply. The receipt still shows the provider's actual cached tokens and estimated cost; savings vary with the conversation.
 

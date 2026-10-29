@@ -17,6 +17,13 @@
   border-radius: var(--radius-lg, 8px);
 }
 
+.activity-image-load-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
 /* History's title row reuses the gallery breadcrumb row's structure (activityPanel.js buildHistoryTitle); the close button uses the same quiet chrome as Joe, inset from the right edge. */
 #selected-node-name:has(.activity-title-icon) {
   padding-bottom: 10px; /* a node's breadcrumb row is 46px tall; History's row has no filter line below it, so it takes the same height */

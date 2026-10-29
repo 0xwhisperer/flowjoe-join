@@ -67,6 +67,16 @@
   color: var(--text-primary);
 }
 
+@layer app {
+  /* The global button reset clears outlines; this dialog must show its keyboard focus. */
+  .repo-merge-conflict-modal button:focus-visible {
+    /* stylelint-disable-next-line declaration-no-important -- Override the existing global !important button focus reset. */
+    outline: 2px solid var(--accent-color) !important;
+    /* stylelint-disable-next-line declaration-no-important -- Keep the ring outside the button despite the global focus reset. */
+    outline-offset: 2px !important;
+  }
+}
+
 .repo-merge-conflict-description {
   padding: 8px 16px;
   font-size: 12px;

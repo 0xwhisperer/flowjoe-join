@@ -8,10 +8,11 @@
  *   island -> parent : { type: "flowjoe:spreadsheet-ready" }                 (UMD loaded, awaiting a snapshot)
  *   parent -> island : { type: "flowjoe:spreadsheet-load", snapshot }        (mount + load this workbook)
  *   island -> parent : { type: "flowjoe:spreadsheet-loaded" }                (workbook mounted)
- *   parent -> island : { type: "flowjoe:spreadsheet-request-save" }          (e.g. on modal close)
- *   island -> parent : { type: "flowjoe:spreadsheet-save", snapshot }        (debounced on edit, or on request)
+ *   parent -> island : { type: "flowjoe:spreadsheet-request-save", requestId? }          (e.g. on modal close)
+ *   island -> parent : { type: "flowjoe:spreadsheet-save", snapshot, requestId? }        (debounced on edit, or on request)
  *   parent -> island : { type: "flowjoe:spreadsheet-dispose" }               (teardown)
  *   island -> parent : { type: "flowjoe:spreadsheet-error", message, phase } (init/load/save failure)
+ *   island -> parent : { type: "flowjoe:spreadsheet-focus-exit" }           (F6: return to host controls)
  *
  * The snapshot ENVELOPE (schema/version/engine) is owned by the model on the parent side;
  * the island echoes the envelope it was loaded with and only swaps in a fresh workbook body
@@ -97,6 +98,21 @@
     }
   }
 
+  // Tab belongs to cell navigation and Escape belongs to the active engine edit. F6 moves
+  // between app regions without saving, cancelling, or disposing the live editor.
+  window.addEventListener(
+    "keydown",
+    (event) => {
+      if (disposed || event.key !== "F6" || event.altKey || event.metaKey || event.shiftKey) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      // Release the engine's local editable before the parent takes focus.
+      if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+      postToParent({type: "flowjoe:spreadsheet-focus-exit"});
+    },
+    true
+  );
+
   function reportError(phase, error) {
     postToParent({
       type: "flowjoe:spreadsheet-error",
@@ -124,7 +140,7 @@
     return Object.assign({}, envelope, engineVersion ? {engineVersion} : {}, {workbook: body});
   }
 
-  function emitSave() {
+  function emitSave(requestId) {
     if (disposed) return;
     const snapshot = currentSnapshot();
     if (!snapshot) return;
@@ -133,7 +149,7 @@
     // persist — mirrors the rich-document island's contract.
     const mutated = mutatedSinceEmit;
     mutatedSinceEmit = false;
-    postToParent({type: "flowjoe:spreadsheet-save", snapshot, mutated, generation: mutationGeneration});
+    postToParent({type: "flowjoe:spreadsheet-save", snapshot, mutated, generation: mutationGeneration, ...(typeof requestId === "string" ? {requestId} : {})});
   }
 
   function scheduleSave() {
@@ -247,8 +263,11 @@
     try {
       const snapshot = currentSnapshot();
       if (snapshot) event.detail?.accept?.(snapshot, mutationGeneration);
+    } catch (error) {
+      if (event.detail?.captureOnly === true && typeof event.detail?.reject === "function") event.detail.reject(error);
+      else throw error;
     } finally {
-      dispose();
+      if (event.detail?.captureOnly !== true) dispose();
     }
   });
   window.addEventListener("message", (event) => {
@@ -266,7 +285,7 @@
           clearTimeout(saveTimer);
           saveTimer = null;
         }
-        emitSave();
+        emitSave(data.requestId);
         break;
       case "flowjoe:spreadsheet-dispose":
         dispose();

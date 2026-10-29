@@ -1076,7 +1076,7 @@ button.scm-pill:hover {
 }
 
 .scm-change-row {
-  padding: 0 4px 0 22px;
+  padding: 0 var(--pad-menu) 0 4px;
   cursor: pointer;
 }
 
