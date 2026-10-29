@@ -172,3 +172,4 @@ This guest build publishes only components delivered to the browser. The complet
 | use-callback-ref | 1.3.3 | MIT |
 | use-sidecar | 1.1.3 | MIT |
 | w3c-keyname | 2.2.8 | MIT |
+| zod | 4.4.3 | MIT |

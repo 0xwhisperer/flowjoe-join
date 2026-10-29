@@ -15,7 +15,7 @@ Loading this knowledge is not evidence that any calendar, spreadsheet, or rich-d
 
 Manage timelines, schedules, and ICS files in a unified view.
 
-The **Calendar Workbench** integrates FullCalendar into a slot, letting you schedule, drag, and structure events side-by-side with research materials.
+The **Calendar Workbench** uses FullCalendar to schedule events beside your research.
 
 **Intakes & Imports.**
 You can import schedules in several shapes:
@@ -25,7 +25,7 @@ You can import schedules in several shapes:
 **Interactive Timeline Editing.**
 Open a Calendar slot to use the FullCalendar workbench:
 - **Multiple Views:** Switch between Month, Week, Day, and Agenda List views.
-- **Manage Events:** Create new events, rename titles, or delete events.
+- **Manage Events:** Tab to **New event**, Enter, then Save; Cancel/Close returns. Edit or delete existing events.
 - **Drag & Resize:** Drag event cards to change dates, or drag block edges to resize duration. Changes save in the FlowJoe calendar; download an `.ics` copy to use elsewhere.
 - **Exporting:** Save calendars back to a standard `.ics` file.
 
@@ -57,7 +57,7 @@ The **Spreadsheet Workbench** is an interactive, editable island powered by Univ
 - **Exporting:** Download the sheet from the slot's menu. It saves in the same format you imported (`.csv`, `.tsv`, `.xlsx` or `.ods`); a new spreadsheet, or an imported `.xls`, downloads as `.xlsx`.
 - **Appearance:** The spreadsheet always uses a light look, even when the app is in a dark theme.
 
-Also covered in the full docs for this area: Import and export limits; AI Access & Interactions; Saving and retrying; Mac screen-reader access.
+Also covered in the full docs for this area: Import and export limits; AI Access & Interactions; Saving and retrying; Toolbar names; Mac screen-reader access.
 
 ## Rich Document Workbench
 
@@ -75,7 +75,7 @@ The **Rich Document Workbench** utilizes Univer Docs to provide a real word-proc
 - **Headers & Footers:** Double-click the top or bottom margin of a page to edit its header or footer. Tables from imported files are kept when you save, but they cannot be edited in the editor yet.
 - **Exporting:** Download your edited copy from the slot's menu. It always saves as a `.docx` file (`.odt` and `.rtf` files are imported but not written back).
 
-Also covered in the full docs for this area: Collaborative AI Writing; Saving and retrying; Mac screen-reader access.
+Also covered in the full docs for this area: Collaborative AI Writing; Saving and retrying; Toolbar names; Mac screen-reader access.
 
 ## Manual links
 

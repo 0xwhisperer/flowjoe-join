@@ -40,6 +40,21 @@
   let validationText = null;
   let validationFailure = null;
 
+  function renderNewEventText() {
+    const label = validationText?.newEvent || "New event";
+    const definition = calendar?.getOption("customButtons")?.newEvent;
+    if (definition) {
+      definition.text = label;
+      definition.hint = label;
+    }
+    document.querySelectorAll(".fc-newEvent-button").forEach((button) => {
+      button.textContent = label;
+      button.title = label;
+      button.setAttribute("aria-label", label);
+    });
+    if (editorState.mode === "create" && editorEl && !editorEl.hidden) document.getElementById("fj-ev-heading").textContent = label;
+  }
+
   function renderEventValidation() {
     const message = document.getElementById("fj-ev-validation");
     if (!message) return;
@@ -615,7 +630,7 @@
     // Pointer selection has no keyboard opener; only retain the event that actually held focus.
     editorOpener = o.opener === document.activeElement ? o.opener : null;
     editorState = {mode: mode === "edit" ? "edit" : "create", eventId: String(o.eventId || base.id || nextEventId()), base};
-    document.getElementById("fj-ev-heading").textContent = editorState.mode === "edit" ? "Edit event" : "New event";
+    document.getElementById("fj-ev-heading").textContent = editorState.mode === "edit" ? "Edit event" : validationText?.newEvent || "New event";
     document.getElementById("fj-ev-delete").style.display = editorState.mode === "edit" ? "" : "none";
     document.getElementById("fj-ev-title").value = String(o.title != null ? o.title : base.title || "");
     document.getElementById("fj-ev-allday").checked = Boolean(o.allDay != null ? o.allDay : base.allDay);
@@ -786,9 +801,16 @@
         // Standard MIT plugins only; each auto-registered into FC.globalPlugins on load.
         initialView: envelope.defaultView || "dayGridMonth",
         headerToolbar: {
-          left: "prev,next today",
+          left: "prev,next today newEvent",
           center: "title",
           right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek"
+        },
+        customButtons: {
+          newEvent: {
+            text: validationText?.newEvent || "New event",
+            hint: validationText?.newEvent || "New event",
+            click: (_event, button) => openEditor("create", {opener: button})
+          }
         },
         buttonText: {today: "Today", month: "Month", week: "Week", day: "Day", list: "List"},
         height: "100%",
@@ -900,12 +922,14 @@
       case "flowjoe:calendar-load":
         validationText = data.validation || null;
         renderEventValidation();
+        renderNewEventText();
         applyTheme(data.theme);
         mountAndLoad(data.snapshot);
         break;
       case "flowjoe:calendar-validation-text":
         validationText = data.validation || null;
         renderEventValidation();
+        renderNewEventText();
         break;
       case "flowjoe:calendar-theme":
         applyTheme(data.theme);

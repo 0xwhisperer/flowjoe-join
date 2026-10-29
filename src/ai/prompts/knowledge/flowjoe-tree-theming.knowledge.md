@@ -3,7 +3,7 @@
 <!-- GENERATED FILE — do not edit by hand. Built from the mintlify user docs by
 scripts/build-app-help-knowledge.js (deterministic digest; re-run it after editing any source page).
 Source pages: tree/status-theming.mdx
-Generated: 2026-10-27 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
+Generated: 2026-10-29 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
 Sync guard: tests/unit/appHelpKnowledgeSync.test.js fails when mintlify/**/*.mdx or this digest drifts
 from scripts/app-help-knowledge.manifest.json. -->
 
@@ -32,7 +32,7 @@ To help organize different zones of a large workspace (e.g. distinguishing perso
 - **Theme Profiles:** Global styling themes (Dark, Light, Cozy, Sepia) are managed in Settings.
 - **Joe:** You can ask Joe to set a node's Theme-menu look by its menu name, such as Clay Roast, or ask for a calming, earthy, light, or dark look. He is shown each look's colors and uses those, not the name alone. A name that is not on the list is refused.
 - **Bulk theme clearing:** **Remove All**, resetting node themes to the global theme, and resetting preferences leave frozen or password-locked branches unchanged while clearing editable nodes’ overrides.
-- **Clear or app theme:** Clearing that look lets the node inherit from its parent again. Asking for the app theme uses the app-wide look on that node and stops inheritance. A frozen or private node refuses the change.
+- **Clear or app theme:** Clearing that look lets the node inherit from its parent again. Asking for the app theme uses the app-wide look on that node and stops inheritance. A frozen or locked Private node refuses the change.
 
 **The Four Node Protection States.**
 FlowJoe supports four independent (orthogonal) node states that can be toggled via the **Set Visibility / Privacy…** context-menu flyout. These states inherit down the tree, meaning freezing or privatizing a parent applies to the entire subtree.

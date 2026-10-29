@@ -38,7 +38,7 @@ See [Workspace folders](/workspaces/folders), [Sharing](/workspaces/sharing-and-
 | API keys in a standalone browser | Session-only by default. Saving a key on this computer requires explicit consent to plain-text storage. |
 
 <Note>
-Encrypted storage for Private nodes is still being developed and is not enabled in the current release. The planned encrypted mode keeps title and notes undo history and a picture’s saved generation prompts available after unlocking, including prompts saved before the node was made Private. Removing protection should keep the node’s files, current edits and saved prompts usable normally. Retained transcript text and edits are also being connected to the same encrypted node storage. Safe processing of encrypted recordings, other older saved copies and remaining import/export paths are not yet fully covered. Generated-image draft/history protection is being validated before release. Locking a node again does not encrypt copies already saved on this computer. Use your computer's disk protection and password-protected package backups for sensitive work.
+Encrypted storage for Private nodes is still being developed and is not enabled in the current release. Development also connects conversations saved with a node—including archived conversations and compacted memory—to that same encrypted node storage. Older saved conversations and remaining history/import paths still need conversion before this mode can be enabled. The planned encrypted mode keeps title and notes undo history and a picture’s saved generation prompts available after unlocking, including prompts saved before the node was made Private. Removing protection should keep the node’s files, current edits and saved prompts usable normally. Retained transcript text and edits are also being connected to the same encrypted node storage. Safe processing of encrypted recordings, other older saved copies and remaining import/export paths are not yet fully covered. Generated-image draft/history protection is being validated before release. Locking a node again does not encrypt copies already saved on this computer. Use your computer's disk protection and password-protected package backups for sensitive work.
 </Note>
 
 ## API keys
@@ -53,7 +53,7 @@ Keys appear masked in Settings. Use the eye button to reveal or copy them. Keys 
 
 ## Private and Hidden-from-Joe nodes
 
-**Private** nodes protect access in the app with a password. Their contents are excluded from the shared Workspace Folder and browser guests. You can explicitly include individual Private nodes in a portable export or repository after entering their passwords and reading the warning; otherwise their contents stay on your computer. Unlocking one for yourself does not give Joe access to its contents.
+**Private** nodes protect access in the app with a password. Their contents are excluded from the shared Workspace Folder and browser guests. You can explicitly include individual Private nodes in a portable export; an already-unlocked node does not need its password again. Including a Private folder in a repository keeps its separate password-and-warning choice. After unlocking a node, you can discuss it with Joe or attach its contents through the normal controls. Use Hidden from Joe separately to withhold content from Joe.
 
 A Private folder inside a Git repository stays out of every commit and push. The one exception is your own choice: when you make a branch a repository you can include a Private node after entering its password and reading the warning. Its contents then go into the repository unencrypted, readable by anyone who opens the files outside FlowJoe, and Git keeps them in the history. Only the lock’s check value travels with it, never the password, so it stays locked inside FlowJoe for whoever clones it. It stays included for whoever clones it. If you later remove its password and set a new one, it stays out of Git from then on. See [Repositories](/tree/repositories#make-a-branch-a-repository).
 
@@ -63,9 +63,9 @@ Your Joe chats, picture history, transcripts, undo notes history and Memories go
 
 **Hidden from Joe** seals a node’s contents from Joe while leaving them available to you. Sealed node names and positions can still appear in Joe’s outline, so keep secrets out of names. A media read still waiting for its result checks these protections again before returning it. Hidden from Joe is a preference for your own Joe: a guest’s Joe can still read content that guest is allowed to see. Neither setting recalls information already sent in an earlier message.
 
-For an encrypted portable copy of Private work, explicitly select each Private node, confirm its password, and enable **Protect package with a password**. Included nodes also keep their separate FlowJoe access locks. Those node locks control access inside the app; they do not encrypt the saved text or media on this computer. Without package encryption, an exported file's included content is readable outside FlowJoe.
+For an encrypted portable copy of Private work, explicitly select each Private node, unlock it or confirm its password, and enable **Protect package with a password**. Included nodes also keep their separate FlowJoe access locks. Those node locks control access inside the app; they do not encrypt the saved text or media on this computer. Without package encryption, an exported file's included content is readable outside FlowJoe.
 
-Existing virtual slots can remain together inside one unlocked Private area for your own use; Joe and guests still cannot read their Private master. Making separate branches Private treats each branch as a separate area and converts pointers between them to real copies. Moves that would separate a retained pair across a Private boundary are refused without moving any of the selection. See [Virtual slots](/gallery/virtual-slots#making-a-node-private).
+Existing virtual slots can remain together inside one unlocked Private area for your own use. Joe follows the same unlocked-owner and Hidden from Joe rules; browser guests cannot read the Private master. Making separate branches Private treats each branch as a separate area and converts pointers between them to real copies. Moves that would separate a retained pair across a Private boundary are refused without moving any of the selection. See [Virtual slots](/gallery/virtual-slots#making-a-node-private).
 
 ## Review changes
 
@@ -73,7 +73,7 @@ Joe normally proposes Flow changes for you to approve, reject, or revise. Schedu
 
 ## Encrypted backups
 
-Select **Protect package with a password** when exporting to encrypt the entire exported file, including any Private nodes, media and history you explicitly chose to include. Private nodes start excluded; entering a node password to include one does not turn on package encryption.
+Select **Protect package with a password** when exporting to encrypt the entire exported file, including any Private nodes, media and history you explicitly chose to include. Private nodes start excluded. You can include an already-unlocked node without entering its password again; a locked node still requires its node password. Including a node does not turn on package encryption.
 
 The recipient needs the **package password** to import the file. Included Private nodes keep their separate **node passwords** and remain locked after import. Unlocking the package does not unlock those nodes.
 
