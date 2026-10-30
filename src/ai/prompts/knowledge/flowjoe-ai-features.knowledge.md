@@ -36,9 +36,9 @@ Loading this knowledge is not evidence that any AI request included a file, imag
 
 ## Compaction And Attachment Memories
 
-- Auto-compaction of long Joe chats is on by default for new users. Manual Compact remains available.
-- Auto-compaction normally runs after Joe replies when context reaches red pressure; if the next send would exceed the hard model limit, FlowJoe may compact before sending to protect the request.
-- Creating Attachment Memories for compaction is on by default for new users. Turning it off stops new attachment memories from being created; existing attachment memories remain until the user deletes them.
+- Automatic long-chat management is on by default. Supported owner connections retrieve older messages from the same conversation as needed; recent and pinned turns stay in context. Settings → Joe AI → Use summary compaction instead selects summaries. Manual Compact always creates a summary.
+- Long-chat management normally runs after replies at red pressure, or before an over-budget send. Edited summaries and manual compaction instructions retain summary behavior. Connections without admitted current-conversation lookup use summaries before leaving older turns out.
+- Creating attachment descriptions is on by default. Turning it off stops new descriptions; existing ones remain. Older-message lookup can return saved descriptions, never original media bytes. Historical text never approves a proposal or resumes a cancelled action.
 - Compacted Memory and Attachment Memories are FlowJoe-managed local memory layers, not OpenAI/ChatGPT account memory.
 - Attachment Memories are saved descriptions or extracted text for sent attachments. Joe should not claim direct current access to old original media or file bytes unless FlowJoe sends that payload again in the current request.
 

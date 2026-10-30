@@ -331,3 +331,9 @@ Some requests do not return complete usage (for example one you stopped, or a co
 Joe can ask for a specific page from a manual link when it needs a focused lookup. That lookup includes the complete page, its chapter introduction and any required permissions or approval guidance. Other pages remain available through another lookup. If the page or required guidance cannot be loaded, Joe receives the ordinary chapter result with an explanation of the fallback. The manual reference chip opens the page that was successfully consulted.
 
 OpenAI and Gemini API-key chats can narrow manual lookups and avoid repeating exact pages already in the request. Follow-up counts still depend on the conversation.
+
+## Older messages on demand
+
+Automatic long-chat management can replace older verbatim turns with a reference that lets Joe look up relevant messages from the same saved conversation. Recent and pinned messages stay in context. The context bar counts the continuation instruction; each actual lookup and follow-up contributes to the reply's normal usage receipt. An older message labeled **available on demand** is not sent in full on every request.
+
+**Settings → Joe AI → Use summary compaction instead** selects the summary alternative. Some connections and edited summaries retain that path. Lookup may use additional model requests, so savings depend on the task. See [Context & Memories](/joe/memories-compaction) for connection support and how saved memories behave.

@@ -10,7 +10,9 @@ Populating your gallery is designed to be frictionless. FlowJoe lets you ingest 
 ## Adding Files
 
 ### 1. Drag & Drop
+
 You can drag multiple files directly from your system finder/explorer and drop them onto:
+
 - **The Gallery Gaps:** Adds them as new slots at the end of the gallery.
 - **An Existing Slot:** Adds the dropped item as a new layer in a [Stack](/gallery/stacks).
 - **A Tree Node:** Adds them directly to that node's gallery, even if the node is not currently selected.
@@ -23,6 +25,7 @@ When you choose several files, FlowJoe asks whether to keep **Every File Separat
 </Frame>
 
 ### 2. File Pickers & Paste
+
 - **Add Item button:** Click the grid addition card to choose files manually.
 - **Clipboard Paste (`Cmd/Ctrl+V`):** Press paste while the gallery has focus to insert images, text snippets, or file paths currently in your clipboard.
 
@@ -32,13 +35,17 @@ When you choose several files, FlowJoe asks whether to keep **Every File Separat
 
 When adding local files, FlowJoe offers two modes:
 
-| Mode | Storage Location | Performance | Portability |
-| :--- | :--- | :--- | :--- |
-| **Import Copy** | Stored inside IndexedDB | High (copies cached locally) | Portable (packages into `.fj`) |
-| **Linked Local File** | Kept in origin folder on disk | Dependent on disk paths | High disk risk (broken paths on other machines) |
+| Mode                  | Storage Location              | Performance                  | Portability                                     |
+| :-------------------- | :---------------------------- | :--------------------------- | :---------------------------------------------- |
+| **Import Copy**       | Stored inside IndexedDB       | High (copies cached locally) | Portable (packages into `.fj`)                  |
+| **Linked Local File** | Kept in origin folder on disk | Dependent on disk paths      | High disk risk (broken paths on other machines) |
+
+If a drop cannot add any items because a file fails to be read or stored, FlowJoe reports the import error. Your existing gallery stays intact; after resolving the problem, you can retry the drop.
 
 ### Linked Local Files
+
 A **Linked Local File** reference points directly to an absolute path on your hard drive (e.g. `/Users/name/Projects/report.pdf`).
+
 - **No Duplication:** FlowJoe doesn't duplicate large video or audio files, saving disk space.
 - **Live Updates:** Editing the file in external software reflects instantly in FlowJoe's preview.
 - **Path Warnings:** If you move the project to another computer, links will break unless the file exists at the exact same absolute path.

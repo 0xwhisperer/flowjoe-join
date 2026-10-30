@@ -22,7 +22,7 @@
     <link rel="preload" as="font" type="font/woff2" crossorigin="anonymous" href="vendor/fontawesome-free-6.5.0/webfonts/fa-regular-400.woff2" />
     <!-- App typography families -->
     <link rel="stylesheet" href="vendor/fonts/fonts.css" />
-    <script src="boot/prebootstrap.9da416a91c10b62c.js"></script>
+    <script src="boot/prebootstrap.d3c41ca2ba607c89.js"></script>
     <!-- canvas-confetti is now bundled (see VENDOR_GLOBALS in scripts/build-bundle-esm.js) — no CDN dependency. -->
   </head>
   <body>
@@ -1385,6 +1385,168 @@
           <!-- ── AI & Data ── -->
           <!-- ── AI (Joe behavior) ── -->
           <div class="settings-tab-panel" data-panel="ai">
+            <div class="setting-item" id="flow-mutations-setting-card">
+              <div class="setting-control">
+                <label for="flow-permission-select" data-i18n="settings.ai.flowMutations.label">Let Joe edit your flow</label>
+                <select id="flow-permission-select" class="setting-select">
+                  <option value="off" data-i18n="settings.ai.flowMutations.options.off">Off — can't see or touch</option>
+                  <option value="read" data-i18n="settings.ai.flowMutations.options.read">Read-only — sees &amp; suggests</option>
+                  <option value="propose" selected data-i18n="settings.ai.flowMutations.options.propose">Propose &amp; modify — asks before changing</option>
+                </select>
+              </div>
+              <p class="setting-description" data-i18n-html="settings.ai.flowMutations.description">
+                Controls how much Joe can do with your flow and gallery.
+                <strong>Propose</strong>
+                (default): Joe proposes add/move/rename/gallery changes and
+                <strong>you approve, revise, or reject</strong>
+                each one before it applies.
+                <strong>Read-only</strong>
+                : Joe can see your flow and suggest ideas in chat but gets no editing tools.
+                <strong>Off</strong>
+                : Joe can't see or change your flow at all.
+              </p>
+            </div>
+
+            <div class="setting-item" id="ai-context-director-setting-card">
+              <div class="setting-control">
+                <label for="ai-context-director-toggle" data-i18n="settings.ai.contextDirector.label">Smart context loading (experimental)</label>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="ai-context-director-toggle" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <p class="setting-description" data-i18n="settings.ai.contextDirector.description">Before each message, a quick AI read decides what Joe actually needs — so casual chats and questions stay light, while his heavier tools and reference load only when a message calls for them. The trade-off is a short pause before Joe replies, in exchange for a leaner, sharper Joe. If the read fails (or no API key is set) it quietly falls back to a simple word-based check, so nothing breaks. On by default.</p>
+            </div>
+
+            <div class="setting-item" id="joe-auto-compact-setting-card">
+              <div class="setting-control">
+                <label for="joe-auto-compact-toggle" data-i18n="settings.ai.autoCompact.label">Manage long Joe chats automatically</label>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="joe-auto-compact-toggle" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <p class="setting-description" data-i18n-html="settings.ai.autoCompact.description">
+                When a chat gets long, Joe keeps recent messages in context and looks up older messages as needed. Your full conversation stays saved. Connections without conversation lookup and conversations with a summary you edited keep using summary compaction. Turn this off to manage long chats yourself.
+              </p>
+            </div>
+
+            <div class="setting-item" id="joe-summary-compaction-setting-card">
+              <div class="setting-control">
+                <label for="joe-summary-compaction-toggle" data-i18n="settings.ai.summaryCompaction.label">Use summary compaction instead</label>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="joe-summary-compaction-toggle" aria-describedby="joe-summary-compaction-description" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <p class="setting-description" id="joe-summary-compaction-description" data-i18n="settings.ai.summaryCompaction.description">Off by default. Turn on to summarize older messages instead of looking them up as needed. Your full conversation stays saved with either method. Manual Compact remains available.</p>
+            </div>
+
+            <div class="setting-item" id="joe-attachment-memory-setting-card">
+              <div class="setting-control">
+                <label for="joe-attachment-memory-toggle" data-i18n="settings.ai.attachmentMemory.label">Create attachment memories</label>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="joe-attachment-memory-toggle" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <p class="setting-description" data-i18n-html="settings.ai.attachmentMemory.description">
+                When you send an image or document to Joe, FlowJoe creates a saved text description so useful details remain available in long chats. A description is not the original file. Turning this off stops new descriptions; existing ones stay available. On by default.
+              </p>
+            </div>
+
+            <div class="setting-item" id="joe-link-preview-setting-card">
+              <div class="setting-control">
+                <label for="joe-link-preview-select" data-i18n="settings.ai.joeLinkPreviews.label">Link previews for cards Joe adds</label>
+                <select id="joe-link-preview-select" class="setting-select">
+                  <option value="auto" selected data-i18n="settings.ai.joeLinkPreviews.options.auto">Load automatically</option>
+                  <option value="click" data-i18n="settings.ai.joeLinkPreviews.options.click">Wait for a click</option>
+                </select>
+              </div>
+              <p class="setting-description" data-i18n-html="settings.ai.joeLinkPreviews.description">
+                A link card shows a preview of its page, which means the page is contacted the moment the card appears. Cards you add yourself always load their preview. For cards added by Joe, a scheduled task or a connected assistant, you can choose to load previews automatically (default) or to wait for a click — those cards then show only their address and a
+                <strong>Load preview</strong>
+                button, and nothing is contacted until you press it.
+              </p>
+            </div>
+
+            <div class="setting-item" id="joe-voice-setting-card">
+              <div class="setting-control">
+                <label for="joe-voice-auto-read-toggle" data-i18n="settings.ai.voice.autoReadLabel">Auto-read Joe replies aloud</label>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="joe-voice-auto-read-toggle" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <div class="setting-sub-divider"></div>
+              <div class="setting-control">
+                <label for="joe-voice-select" data-i18n="settings.ai.voice.voiceSelectLabel">Joe voice</label>
+                <span class="joe-voice-select-row">
+                  <select id="joe-voice-select" class="setting-select" aria-label="Joe voice" data-i18n-attr="aria-label:settings.ai.voice.voiceSelectAriaLabel">
+                    <option value="alloy">alloy</option>
+                    <option value="ash">ash</option>
+                    <option value="ballad">ballad</option>
+                    <option value="coral">coral</option>
+                    <option value="echo">echo</option>
+                    <option value="sage">sage</option>
+                    <option value="shimmer">shimmer</option>
+                    <option value="verse">verse</option>
+                    <option value="marin">marin</option>
+                    <option value="cedar">cedar</option>
+                  </select>
+                  <button type="button" id="joe-voice-sample-btn" class="joe-voice-sample-btn" aria-label="Play Joe voice sample" title="Play voice sample" data-i18n-attr="aria-label:settings.ai.voice.sampleButtonAriaLabel;title:settings.ai.voice.sampleButtonTitle">
+                    <i class="fas fa-volume-up" aria-hidden="true"></i>
+                  </button>
+                </span>
+              </div>
+              <p class="setting-description" id="joe-voice-pricing-description" aria-live="polite"></p>
+              <p class="setting-description" data-i18n="settings.ai.voice.description">Choosing a voice plays a short billed sample when your OpenAI API key is saved. Mini and Full voices can also read Joe’s replies aloud. Live conversation voices are used through Talk with Joe.</p>
+            </div>
+
+            <div class="setting-item" id="flow-audit-log-setting-card">
+              <div class="setting-control">
+                <label data-i18n="settings.ai.auditLog.label">Joe's change history</label>
+                <button class="icon-btn" id="flow-audit-log-btn" aria-label="View Joe's applied flow changes" data-tooltip="View Joe's applied flow changes" data-position="left" style="margin-left: auto;" data-i18n-attr="data-tooltip:settings.ai.auditLog.buttonTooltip;aria-label:settings.ai.auditLog.buttonTooltip">
+                  <i class="fa-solid fa-clock-rotate-left"></i>
+                </button>
+              </div>
+              <p class="setting-description" data-i18n="settings.ai.auditLog.description">A running log of every flow change you approved — what changed, when, and that you approved it. Open it to review or clear the history.</p>
+            </div>
+
+            <div class="setting-item" id="joe-context-setting-card">
+              <h4 class="joe-context-title" data-i18n="settings.ai.context.heading">What Joe Sees</h4>
+              <p class="setting-description" data-i18n="settings.ai.context.intro">What Joe gets attached to every message. Sent once, and re-sent only when it changes — never duplicated.</p>
+
+              <div class="joe-context-group-label" data-i18n="settings.ai.context.mapGroupLabel">THE MAP</div>
+              <p class="setting-description" data-i18n="settings.ai.context.mapDescription">Your whole flow's shape: every node, slot, and stack item — names, how they connect, and counts. No content — just the lay of the land, so Joe can find and name anything. Private nodes show name + place only (sealed — Joe can move them, not look inside).</p>
+              <p class="setting-description joe-context-readout" id="joe-ctx-readout">
+                <span id="joe-ctx-count-nodes">—</span>
+                nodes ·
+                <span id="joe-ctx-count-slots">—</span>
+                slots ·
+                <span id="joe-ctx-count-items">—</span>
+                stack items
+                <span class="joe-context-tokens" id="joe-ctx-tokens"></span>
+              </p>
+
+              <div class="joe-context-group-label" data-i18n="settings.ai.context.whereGroupLabel">WHERE YOU ARE AT</div>
+              <p class="setting-description" data-i18n="settings.ai.context.whereDescription">The real content for your current spot: your flow summary, this node's summary, and this slot in full — including every item's notes.</p>
+
+              <div class="joe-context-group-label" data-i18n="settings.ai.context.everythingElseGroupLabel">EVERYTHING ELSE</div>
+              <p class="setting-description" data-i18n="settings.ai.context.everythingElseDescription">Joe fetches on his own, when he needs it.</p>
+
+              <details class="joe-context-how">
+                <summary data-i18n="settings.ai.context.howSummary">How this works</summary>
+                <p class="setting-description" data-i18n-html="settings.ai.context.howDescription">
+                  Sent once · re-sent only when it changes · never stored as memory · dropped when the chat compacts. Everything else, Joe pulls on demand.
+                  <strong>Hide from Joe</strong>
+                  → that summary or note reads "hidden" (the name stays).
+                  <strong>Private</strong>
+                  → the whole node is sealed; its name shows, its insides don't.
+                </p>
+              </details>
+            </div>
+
             <div class="setting-item electron-mcp-settings-only" id="mcp-bridge-setting-card" hidden>
               <div class="setting-header">
                 <h4 data-i18n="settings.ai.mcpBridge.heading">Agent Bridge (MCP)</h4>
@@ -1496,166 +1658,6 @@
               <div class="mcp-bridge-action-row" id="agent-bridge-helper-revoke-row" hidden>
                 <button id="agent-bridge-helper-revoke-btn" class="btn cleanup-button" type="button" data-i18n="settings.ai.mcpBridge.helper.alwaysAllowRevokeLabel">Revoke always-allow</button>
               </div>
-            </div>
-            <div class="setting-item" id="joe-auto-compact-setting-card">
-              <div class="setting-control">
-                <label for="joe-auto-compact-toggle" data-i18n="settings.ai.autoCompact.label">Auto compact long Joe chats</label>
-                <label class="toggle-switch">
-                  <input type="checkbox" id="joe-auto-compact-toggle" />
-                  <span class="toggle-slider"></span>
-                </label>
-              </div>
-              <p class="setting-description" data-i18n-html="settings.ai.autoCompact.description">
-                When a Joe chat runs long (context in the red), FlowJoe automatically summarizes the older turns into a local
-                <strong>compacted memory</strong>
-                after Joe replies, so the chat stays affordable and within the model's limit. If a send would exceed the hard model limit, FlowJoe may compact first to protect the request. This memory lives only in FlowJoe — it is
-                <strong>not</strong>
-                OpenAI/ChatGPT memory. Your full conversation stays saved; you can View, Edit, Regenerate, or Delete it. On by default — manual
-                <em>Compact</em>
-                is always available. A summary you've edited is never auto-overwritten.
-              </p>
-            </div>
-
-            <div class="setting-item" id="joe-attachment-memory-setting-card">
-              <div class="setting-control">
-                <label for="joe-attachment-memory-toggle" data-i18n="settings.ai.attachmentMemory.label">Create attachment memories for compaction</label>
-                <label class="toggle-switch">
-                  <input type="checkbox" id="joe-attachment-memory-toggle" />
-                  <span class="toggle-slider"></span>
-                </label>
-              </div>
-              <p class="setting-description" data-i18n-html="settings.ai.attachmentMemory.description">
-                When you send an image or document to Joe, FlowJoe derives a durable text
-                <strong>memory</strong>
-                of it so its details survive compaction without resending the file. Turning this off only stops
-                <em>new</em>
-                memories from being created — existing memories are kept and still sent with compacted memory. Default on.
-              </p>
-            </div>
-
-            <div class="setting-item" id="joe-link-preview-setting-card">
-              <div class="setting-control">
-                <label for="joe-link-preview-select" data-i18n="settings.ai.joeLinkPreviews.label">Link previews for cards Joe adds</label>
-                <select id="joe-link-preview-select" class="setting-select">
-                  <option value="auto" selected data-i18n="settings.ai.joeLinkPreviews.options.auto">Load automatically</option>
-                  <option value="click" data-i18n="settings.ai.joeLinkPreviews.options.click">Wait for a click</option>
-                </select>
-              </div>
-              <p class="setting-description" data-i18n-html="settings.ai.joeLinkPreviews.description">
-                A link card shows a preview of its page, which means the page is contacted the moment the card appears. Cards you add yourself always load their preview. For cards added by Joe, a scheduled task or a connected assistant, you can choose to load previews automatically (default) or to wait for a click — those cards then show only their address and a
-                <strong>Load preview</strong>
-                button, and nothing is contacted until you press it.
-              </p>
-            </div>
-
-            <div class="setting-item" id="ai-context-director-setting-card">
-              <div class="setting-control">
-                <label for="ai-context-director-toggle" data-i18n="settings.ai.contextDirector.label">Smart context loading (experimental)</label>
-                <label class="toggle-switch">
-                  <input type="checkbox" id="ai-context-director-toggle" />
-                  <span class="toggle-slider"></span>
-                </label>
-              </div>
-              <p class="setting-description" data-i18n="settings.ai.contextDirector.description">Before each message, a quick AI read decides what Joe actually needs — so casual chats and questions stay light, while his heavier tools and reference load only when a message calls for them. The trade-off is a short pause before Joe replies, in exchange for a leaner, sharper Joe. If the read fails (or no API key is set) it quietly falls back to a simple word-based check, so nothing breaks. On by default.</p>
-            </div>
-
-            <div class="setting-item" id="joe-voice-setting-card">
-              <div class="setting-control">
-                <label for="joe-voice-auto-read-toggle" data-i18n="settings.ai.voice.autoReadLabel">Auto-read Joe replies aloud</label>
-                <label class="toggle-switch">
-                  <input type="checkbox" id="joe-voice-auto-read-toggle" />
-                  <span class="toggle-slider"></span>
-                </label>
-              </div>
-              <div class="setting-sub-divider"></div>
-              <div class="setting-control">
-                <label for="joe-voice-select" data-i18n="settings.ai.voice.voiceSelectLabel">Joe voice</label>
-                <span class="joe-voice-select-row">
-                  <select id="joe-voice-select" class="setting-select" aria-label="Joe voice" data-i18n-attr="aria-label:settings.ai.voice.voiceSelectAriaLabel">
-                    <option value="alloy">alloy</option>
-                    <option value="ash">ash</option>
-                    <option value="ballad">ballad</option>
-                    <option value="coral">coral</option>
-                    <option value="echo">echo</option>
-                    <option value="sage">sage</option>
-                    <option value="shimmer">shimmer</option>
-                    <option value="verse">verse</option>
-                    <option value="marin">marin</option>
-                    <option value="cedar">cedar</option>
-                  </select>
-                  <button type="button" id="joe-voice-sample-btn" class="joe-voice-sample-btn" aria-label="Play Joe voice sample" title="Play voice sample" data-i18n-attr="aria-label:settings.ai.voice.sampleButtonAriaLabel;title:settings.ai.voice.sampleButtonTitle">
-                    <i class="fas fa-volume-up" aria-hidden="true"></i>
-                  </button>
-                </span>
-              </div>
-              <p class="setting-description" id="joe-voice-pricing-description" aria-live="polite"></p>
-              <p class="setting-description" data-i18n="settings.ai.voice.description">Choosing a voice plays a short billed sample when your OpenAI API key is saved. Mini and Full voices can also read Joe’s replies aloud. Live conversation voices are used through Talk with Joe.</p>
-            </div>
-
-            <div class="setting-item" id="flow-mutations-setting-card">
-              <div class="setting-control">
-                <label for="flow-permission-select" data-i18n="settings.ai.flowMutations.label">Let Joe edit your flow</label>
-                <select id="flow-permission-select" class="setting-select">
-                  <option value="off" data-i18n="settings.ai.flowMutations.options.off">Off — can't see or touch</option>
-                  <option value="read" data-i18n="settings.ai.flowMutations.options.read">Read-only — sees &amp; suggests</option>
-                  <option value="propose" selected data-i18n="settings.ai.flowMutations.options.propose">Propose &amp; modify — asks before changing</option>
-                </select>
-              </div>
-              <p class="setting-description" data-i18n-html="settings.ai.flowMutations.description">
-                Controls how much Joe can do with your flow and gallery.
-                <strong>Propose</strong>
-                (default): Joe proposes add/move/rename/gallery changes and
-                <strong>you approve, revise, or reject</strong>
-                each one before it applies.
-                <strong>Read-only</strong>
-                : Joe can see your flow and suggest ideas in chat but gets no editing tools.
-                <strong>Off</strong>
-                : Joe can't see or change your flow at all.
-              </p>
-            </div>
-
-            <div class="setting-item" id="flow-audit-log-setting-card">
-              <div class="setting-control">
-                <label data-i18n="settings.ai.auditLog.label">Joe's change history</label>
-                <button class="icon-btn" id="flow-audit-log-btn" aria-label="View Joe's applied flow changes" data-tooltip="View Joe's applied flow changes" data-position="left" style="margin-left: auto;" data-i18n-attr="data-tooltip:settings.ai.auditLog.buttonTooltip;aria-label:settings.ai.auditLog.buttonTooltip">
-                  <i class="fa-solid fa-clock-rotate-left"></i>
-                </button>
-              </div>
-              <p class="setting-description" data-i18n="settings.ai.auditLog.description">A running log of every flow change you approved — what changed, when, and that you approved it. Open it to review or clear the history.</p>
-            </div>
-
-            <div class="setting-item" id="joe-context-setting-card">
-              <h4 class="joe-context-title" data-i18n="settings.ai.context.heading">What Joe Sees</h4>
-              <p class="setting-description" data-i18n="settings.ai.context.intro">What Joe gets attached to every message. Sent once, and re-sent only when it changes — never duplicated.</p>
-
-              <div class="joe-context-group-label" data-i18n="settings.ai.context.mapGroupLabel">THE MAP</div>
-              <p class="setting-description" data-i18n="settings.ai.context.mapDescription">Your whole flow's shape: every node, slot, and stack item — names, how they connect, and counts. No content — just the lay of the land, so Joe can find and name anything. Private nodes show name + place only (sealed — Joe can move them, not look inside).</p>
-              <p class="setting-description joe-context-readout" id="joe-ctx-readout">
-                <span id="joe-ctx-count-nodes">—</span>
-                nodes ·
-                <span id="joe-ctx-count-slots">—</span>
-                slots ·
-                <span id="joe-ctx-count-items">—</span>
-                stack items
-                <span class="joe-context-tokens" id="joe-ctx-tokens"></span>
-              </p>
-
-              <div class="joe-context-group-label" data-i18n="settings.ai.context.whereGroupLabel">WHERE YOU ARE AT</div>
-              <p class="setting-description" data-i18n="settings.ai.context.whereDescription">The real content for your current spot: your flow summary, this node's summary, and this slot in full — including every item's notes.</p>
-
-              <div class="joe-context-group-label" data-i18n="settings.ai.context.everythingElseGroupLabel">EVERYTHING ELSE</div>
-              <p class="setting-description" data-i18n="settings.ai.context.everythingElseDescription">Joe fetches on his own, when he needs it.</p>
-
-              <details class="joe-context-how">
-                <summary data-i18n="settings.ai.context.howSummary">How this works</summary>
-                <p class="setting-description" data-i18n-html="settings.ai.context.howDescription">
-                  Sent once · re-sent only when it changes · never stored as memory · dropped when the chat compacts. Everything else, Joe pulls on demand.
-                  <strong>Hide from Joe</strong>
-                  → that summary or note reads "hidden" (the name stays).
-                  <strong>Private</strong>
-                  → the whole node is sealed; its name shows, its insides don't.
-                </p>
-              </details>
             </div>
           </div>
           <!-- /settings-tab-panel ai -->
@@ -2244,6 +2246,6 @@
       <!-- /settings-body -->
     </div>
     <!-- /settings-panel -->
-    <script src="boot/progress.99a01d169732ecc1.js"></script>
+    <script src="boot/progress.95757a62490de782.js"></script>
   </body>
 </html>

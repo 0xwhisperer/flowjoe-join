@@ -3,7 +3,7 @@ title: "Context & Memories"
 description: "Manage token budgets, compact chats, and store attachment summaries."
 ---
 
-Large chat transcripts can quickly exhaust AI token budgets and slow down performance. FlowJoe manages this with automatic and manual chat compaction.
+Long conversations can use more of the AI model’s context and cost more to resend. FlowJoe manages them automatically, while keeping manual summary compaction available.
 
 The token bar at the bottom of the Joe panel also shows **Flow map**, **Location**, and **Slot data** as separate slices. To shrink the tree outline Joe is given each turn — **Limit map to my location** and **Omit entire flow map** — see [Token usage with Joe](/joe/token-usage).
 
@@ -19,16 +19,29 @@ The **Flow map** slice is the tree outline plus your Flow Summary. That is the s
 
 ---
 
-## Compaction Modes
+## Manage long chats
 
-Compaction folds older messages in your chat transcript into a single consolidated text summary, saving token usage while preserving narrative memory. With your own OpenAI API key, these summary requests explicitly disable provider storage.
+<Frame caption="Automatic management stays on; choose summary compaction when you prefer it.">
+  <img src="/images/joe/long-chat-settings.png" alt="Settings → Joe AI shows automatic long-chat management on and Use summary compaction instead off." style={{maxWidth: "520px", width: "100%"}} />
+</Frame>
 
-### 1. Automatic Compaction (Default)
-When your active chat approaches the model's token limit, FlowJoe compacts the oldest turns in the background, updating your context footprint automatically.
 
-### 2. Manual Compaction
-Click the **Compact Now** button in the chat options:
-- **Preservation Instructions:** You can write a short guidance prompt (e.g. *"Remember that we decided to write the draft in sepia style"*) to instruct the compaction engine on which details must be preserved in the summary.
+**Manage long Joe chats automatically** is on by default in **Settings → Joe AI**. On supported connections, Joe keeps recent messages and pinned turns in context and looks up relevant older messages from the same conversation when needed. Older message labels say **available on demand**. Your full conversation remains saved and readable.
+
+To prefer the existing summary method, turn on **Use summary compaction instead**. Connections without conversation lookup keep using summaries. A summary you edited, or created with a custom compaction instruction, also stays in summary mode until you deliberately clear that memory. Changing the setting does not delete your conversation.
+
+Lookup is available in the owner's API-key chats and supported desktop CLI connections with Read or Propose access. CLI connections without a conversation-reading bridge, CLI Flow access set to Off, and guest/shared transport paths retain summary management. These paths keep their existing capabilities; they do not claim the same token saving. Joe does not gain access to other conversations or more Flow content through this setting.
+
+**Compact Older Turns** always creates a summary. You can add an optional instruction, such as “Keep the exact budget and the cancelled tasks.” **View**, **Edit**, **Regenerate** and **Delete** continue to manage saved summaries.
+
+If older source messages become unavailable or change during a continuation, Joe does not claim to have recovered them. A lookup can take additional model requests, so it is not guaranteed to be faster or cheaper on every task.
+
+### Memories still work
+
+Your **Joe Memories** keep applying at their Flow, Node or Slot scope. Pinned messages stay in context, and omitted messages stay out. Reading an old message never approves an old proposal or restarts a cancelled action.
+
+**Create attachment memories** controls new saved descriptions of pictures and documents. Older-message lookup includes the descriptions already saved with those messages. A description is not the original picture or document; re-share the original when Joe needs details it cannot recover. Turning off new attachment memories does not delete existing ones.
+
 
 ---
 
@@ -55,8 +68,7 @@ can remain readable after its original file bytes are no longer in the chat. You
 warning notes and pins stay attached to that record.
 
 Saved memory is a summary of the attachment. For exact quotations or details it does not contain,
-re-share the original or the relevant section. Joe's usual complete attachment memories are still
-sent; this read path does not switch on selective omission.
+re-share the original or the relevant section. This attachment-memory reader is separate from automatic long-chat retrieval. Recent and pinned material follows its normal send rules; older saved descriptions remain available with their original conversation messages.
 
 ---
 

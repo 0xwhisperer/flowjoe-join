@@ -1013,6 +1013,19 @@
     right: 0;
   }
 
+  /* A tiny Both-mode picture must not clip its existing interactive info card.
+     The card remains inside this hover/focus chain; resting media clipping is unchanged. */
+  #image-container:has(.image-modal-info-wrapper:hover),
+  #image-container:has(.image-modal-info-wrapper:focus-within) {
+    overflow: visible !important;
+  }
+
+  /* Local overlay 90 otherwise paints below the adjacent notes toolbar's 100. */
+  .image-modal-media-overlay:has(.image-modal-info-wrapper:hover),
+  .image-modal-media-overlay:has(.image-modal-info-wrapper:focus-within) {
+    z-index: 101;
+  }
+
   .image-modal-stack-chip {
     /* Reset button defaults to match gallery .image-stack-indicator div */
     border: none;
