@@ -28,12 +28,18 @@ The gallery toolbar's three collapse controls are named **Collapse all media**, 
 - **View state travels with the flow:** Pan/zoom, the grid arrangement, Fit, snap-to-grid, and the colour filter are saved per node and export/import along with the rest of the flow — reopening an exported flow puts Canvas back the way you left it.
 - **Insert button:** The plus button on each canvas card has a minimum 24-pixel target. Its glyph and neighboring controls keep their existing scale.
 - **Narrow windows:** If the canvas toolbar does not fit, scroll sideways over it with a trackpad or hold Shift while using the mouse wheel. Tab also brings each toolbar control into view. The board stays put while you scroll the toolbar.
-- **Connections:** Drag the handle on a slot's edge onto another slot to link them, and colour a slot to colour its outgoing lines. See [Canvas Connections](/gallery/connections) for the full picture.
+- **Connections:** Drag the handle on a slot's edge onto another slot to link them, or choose **Connect to…** from its free-form Canvas menu. **Connections…** lets you find and select an existing line without clicking it. Colour a slot to colour its outgoing lines. See [Canvas Connections](/gallery/connections) for the full picture.
 - **Coordinate readout:** Move your mouse over the board (or drag a slot) and a small readout appears next to the zoom percentage in the top-right corner. It shows two different coordinates:
   - **V** is the **viewport** position — where your mouse is on your screen, in plain pixels.
   - **C** is the **canvas** position — where that same point sits in the board's own space, independent of how far you've zoomed or panned. This is the position a slot's placement is actually saved as, so it stays meaningful no matter your current zoom level.
   - While you're dragging a slot, the readout switches to showing the slot's canvas position plus how far it has moved (**Δ**), and whether Snap to Grid is on. Dragging several slots at once shows the count instead, with a shared movement delta.
   - This readout is a reference for anyone who wants precise placement or is describing a position to someone else — it's not required for everyday use of the canvas.
+
+### Changing one card's width without dragging
+
+In free-form Canvas, open the card's menu and choose **Card width…**. Enter a width from **160 to 1600 pixels**, then choose **Apply** or press plain **Enter**. **Reset to gallery size** removes that card's custom width; **Cancel** or **Escape** leaves it unchanged. Tab moves between the field and buttons.
+
+Only that card changes. Other cards keep their sizes, and the chosen width remains when you reopen the board. Width is a view adjustment and keeps its existing read-only restrictions; it does not change the card's media or notes.
 
 ### 2. Theatre Mode (Experimental)
 

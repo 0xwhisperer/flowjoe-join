@@ -199,6 +199,8 @@ The Graph also lets you compare a commit with its parent, your current branch, o
 
 ## Keyboard controls
 
+File Explorer exposes each file as a named keyboard action: Tab to it and press **Enter** or **Space** to open it. Accessibility tools can identify the current file; that mark follows editor-tab changes and clears when the last file closes. **F2** starts the existing inline rename field, **Enter** submits it, and **Escape** cancels and returns to the file row. A refused rename keeps the field and its error available.
+
 The merge-conflict window keeps **Tab** and **Shift+Tab** within its controls. **Escape** closes it when the editor is not using Escape for its own command; closing leaves the merge waiting so you can return to it. The window returns focus to its opener, or to Source Control if that control is no longer available. When resolving a Stash conflict, Escape closes the conflict editor first and returns you to the restore window; a second Escape can cancel the restore.
 
 With focus in the workbench, **Ctrl/Cmd+S** saves and **Ctrl/Cmd+F** finds text in the file. Focus a file row, folder row, or working-file tab and press **F2** to rename it inline; press **Enter** to accept or **Escape** to cancel. **Shift+F10** (or the Context Menu key) opens the menu for a focused Explorer row, tab, or Timeline entry.

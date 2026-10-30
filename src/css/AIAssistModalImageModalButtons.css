@@ -161,3 +161,77 @@
 }
 
 }
+
+/* Approved optional native reading pane; the mounted editor keeps its own layout and state. */
+#image-modal .workbench-reading {
+  height: 100%;
+  min-height: 0;
+  width: 100%;
+  flex: 1 1 0%;
+  box-sizing: border-box;
+  overflow: auto;
+  padding: 16px;
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  font: inherit;
+  line-height: 1.5;
+}
+#image-modal .workbench-reading [data-reading-note] {
+  margin: 0 0 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-secondary);
+}
+#image-modal .workbench-reading table {
+  border-collapse: collapse;
+  width: 100%;
+  max-width: 760px;
+  font: inherit;
+}
+#image-modal .workbench-reading caption {
+  text-align: start;
+  font-weight: 600;
+  padding: 0 0 12px;
+  color: var(--text-primary);
+}
+#image-modal .workbench-reading th,
+#image-modal .workbench-reading td {
+  text-align: start;
+  border: 1px solid var(--border-color);
+  padding: 8px 12px;
+}
+#image-modal .workbench-reading th {
+  font-weight: 600;
+  background: var(--bg-tertiary);
+}
+#image-modal .workbench-reading article {
+  max-width: 72ch;
+}
+#image-modal .workbench-reading :is(h1, h2, h3, h4, h5, h6) {
+  font-size: 18px;
+  line-height: 1.4;
+  margin: 0 0 16px;
+}
+#image-modal .workbench-reading p {
+  margin: 0 0 12px;
+}
+#image-modal .workbench-reading ul {
+  list-style: disc;
+  padding-inline-start: 24px;
+  margin: 0 0 12px;
+}
+#image-modal .workbench-reading ol {
+  list-style: decimal;
+  padding-inline-start: 24px;
+  margin: 0 0 12px;
+}
+#image-modal .workbench-reading-switch {
+  display: inline-flex;
+  gap: 4px;
+  margin-inline-start: 8px;
+}
+#image-modal .workbench-reading-switch button:focus-visible,
+#image-modal .workbench-reading:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}

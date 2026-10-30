@@ -3,7 +3,7 @@ title: "Spreadsheet Workbench"
 description: "Live, formulas-ready spreadsheets running inside your gallery slots."
 ---
 
-The **Spreadsheet Workbench** is an interactive, editable island powered by Univer Sheets. It lets you manage tabular data directly alongside your outlines and research notes.
+The **Spreadsheet Workbench** uses Univer Sheets to edit cells beside your research.
 
 ---
 
@@ -64,6 +64,15 @@ Closing the desktop window or quitting FlowJoe also waits for your editor to sav
 
 Accessibility tools can identify the **Font**, **Font size**, **Range / Defined names**, **Add sheet**, **Open sheet menu** and **More** controls. The built-in editor currently uses English for these controls, even when FlowJoe uses another language. These names do not change how you edit cells or format text.
 
+When **Zoom** has keyboard focus, the arrow keys adjust it. When **More** has focus, **Enter** opens it and **Escape** closes it and returns focus. Arrow keys in the **Font** field keep their text-field behavior.
+
 ## Mac screen-reader access
 
-Screen-reader reading and editing of cell values is not yet verified on Mac. Current accessibility checks found that the built-in editor exposes toolbar controls but does not expose the tested cell values through the Mac text-reading interfaces checked. This remains an open accessibility limitation. **F6** still moves focus from the editor to Preview’s **Close** control.
+The earlier native Mac checks below concern the canvas **Editor**. Screen-reader speech and nonvisual editing are not yet verified on Mac. Current accessibility checks found that the built-in editor exposes toolbar controls but does not expose the tested cell values through the Mac text-reading interfaces checked. This remains an open accessibility limitation. **F6** still moves focus from the editor to Preview’s **Close** control.
+
+
+## Read content
+
+Preview starts in **Editor**. Choose **Read content** for a native table of the current sheet's populated cells. Column letters, row numbers and cell names retain the original coordinates. Empty rows and columns are omitted; there is no reading-view row limit. Values use the live editor's display, including available formula results, dates and currency. Return to **Editor**, choose another sheet, then **Read content** to read it.
+
+The switch keeps the same editor and does not change formulas, formatting or data. **F6** returns to Preview's **Close** control from the reading pane too. Reading is separate from nonvisual editing: this view does not make canvas editing accessible or establish spoken screen-reader results. Charts, drawings and every merged-cell layout are not reproduced.

@@ -140,6 +140,23 @@
     return Object.assign({}, envelope, engineVersion ? {engineVersion} : {}, {workbook: body});
   }
 
+  // Read the current sheet through public getters. The matrix enumerates stored sparse
+  // cells; the per-cell getter applies the engine's formula/number-format interceptors.
+  window.addEventListener("flowjoe:spreadsheet-reading-capture", (event) => {
+    if (disposed || !univerAPI) return;
+    const workbook = univerAPI.getActiveWorkbook();
+    const sheet = workbook?.getActiveSheet();
+    if (!sheet) return;
+    const cells = [];
+    sheet
+      .getSheet()
+      .getCellMatrix()
+      .forValue((row, column, cell) => {
+        if (cell && (cell.v != null || cell.f || cell.p?.body?.dataStream)) cells.push({row, column, text: sheet.getRange(row, column).getDisplayValues()[0][0]});
+      });
+    event.detail?.accept?.({title: workbook.getName(), sheet: sheet.getSheetName(), cells});
+  });
+
   function emitSave(requestId) {
     if (disposed) return;
     const snapshot = currentSnapshot();

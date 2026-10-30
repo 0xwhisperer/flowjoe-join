@@ -129,7 +129,7 @@ Completed transcripts and your edits are kept automatically for the current Flow
 Clear removes the transcripts currently available in the list, including available results marked **Keep on this computer only**. It does not remove records inside locked Private nodes. Unlock the node first to remove those results.
 
 <Note>
-Encrypted storage for Private nodes is still under development and is not enabled in this release. Its retained transcript text and edits are being moved into the same encrypted node storage. Safe processing of encrypted recordings, older retained copies and portable exports still need completion before this mode is available. This does not change the current choice between local and paid-online transcription.
+Encrypted storage for Private nodes is still under development and is not enabled in this release. The development version keeps retained transcripts and edits under the same node password, including older transcripts saved before you make the node Private. It preserves saved text, older versions and normal Recent access after unlocking. Other retained copies, portable exports and final release checks still need completion. This does not change the current choice between local and paid-online transcription.
 </Note>
 
 The transcription method controls where speech recognition runs. Storage follows the Flow’s storage mode:
@@ -141,7 +141,9 @@ Transcript history is registered app data and is excluded from orphaned-media cl
 
 In owner chat and authorized external CLI/MCP sessions, you can ask Joe to find or quote a retained transcript in the current Flow. He reads bounded text portions with source dates only when the recording still has an admitted public source. Private, Hidden from Joe, removed and uncertain sources stay unavailable to this reader, even if you can still copy them in the human history. A recording converted into a stack or moved to another public node keeps its retained source link. Ambiguous or newly private sources are withheld. Reading does not upload the audio or start recognition. Joe reads a bounded portion of history already loaded with the Flow; unusually large or unavailable retained collections can be unavailable to this reader while ordinary History remains readable. Results may be partial; guests and scheduled runs do not receive these readers. Authorized external CLI/MCP sessions can use them with Read or Propose access; see [the action reference](/cli/action-reference).
 
-Exports have an **Include transcript history** option, enabled by default. Private-source transcripts start excluded; explicitly include their Private nodes with password confirmation to include eligible transcripts. Computer-only transcripts remain excluded. See [Export & Import](/portability/export-import). If FlowJoe can't read the saved transcript history, the Flow still exports without it and a notice says so; the kept transcripts on your computer are left unchanged. If you open a Flow whose transcript history was saved by a newer FlowJoe, this version still shows it, but new transcripts and edits are not kept there; FlowJoe warns you and the text stays copyable. In a Workspace folder saved by a newer FlowJoe, new transcripts stay on this computer.
+In the development encrypted mode, Joe can also read converted node-owned transcripts after you unlock their still-available recording source. Hidden from Joe and locked or uncertain sources remain unavailable.
+
+Exports have an **Include transcript history** option, enabled by default. Private-source transcripts start excluded; explicitly include their Private nodes to include eligible transcripts. An already-unlocked node does not require its password again. Computer-only transcripts remain excluded. See [Export & Import](/portability/export-import). If FlowJoe can't read the saved transcript history, the Flow still exports without it and a notice says so; the kept transcripts on your computer are left unchanged. If you open a Flow whose transcript history was saved by a newer FlowJoe, this version still shows it, but new transcripts and edits are not kept there; FlowJoe warns you and the text stays copyable. In a Workspace folder saved by a newer FlowJoe, new transcripts stay on this computer.
 
 ### Shared guests
 
@@ -171,7 +173,7 @@ A model downloaded by FlowJoe can be removed from this screen after confirmation
 
 New model choices may arrive with FlowJoe updates. You choose whether to download a bigger or different model; FlowJoe does not replace your selected model automatically.
 
-Transcripts keep following their original recording when you merge audio into a stack. Moving that stack into a Private node excludes its retained transcripts from exports by default. The owner can explicitly include eligible transcripts by selecting the Private node with password confirmation; unlocking alone does not include it. An Edit guest with export permission can include eligible retained transcripts; FlowJoe checks access again before saving the export.
+Transcripts keep following their original recording when you merge audio into a stack. Moving that stack into a Private node excludes its retained transcripts from exports by default. The owner can explicitly include eligible transcripts by selecting the Private node; an already-unlocked node does not require its password again, and unlocking alone does not include it. An Edit guest with export permission can include eligible retained transcripts; FlowJoe checks access again before saving the export.
 
 ## Ask Joe about a YouTube video
 
@@ -246,3 +248,15 @@ If you correct a running job to a shorter interval, Joe can stop that job and st
 Your local model selection and installed model files stay on this computer across builds. FlowJoe also recognizes existing compatible Whisper models. On macOS, an existing Homebrew Whisper installation can use the matching installed library recorded by its PyTorch installation when Homebrew’s current library link has changed. This recovery is limited to the Whisper process. It does not download another model.
 
 If the engine cannot start, Joe reports an engine problem and directs you to repair Whisper or choose another installed model. That is distinct from a missing-model setup request. FlowJoe does not silently switch to paid transcription.
+
+
+### Background progress
+
+The background transcription card lines up with the chat prompt field. It shows a
+percentage when the engine supplies one, and names preparation or speaker detection
+when those steps are running. A recognition percentage does not measure the later
+speaker-detection step. Joe's status clears that percentage when the next step starts.
+
+A remaining-time estimate appears only after enough measured local recognition progress.
+Near completion, during speaker detection, or when timing is unavailable, the card says
+it is still estimating instead of promising a finish time.

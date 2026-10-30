@@ -2164,12 +2164,18 @@
   max-height: 42%;
   overflow: auto;
 }
-.joe-transcription-job .ai-chat-bubble {
+.joe-transcription-job.ai-chat-message.assistant .ai-chat-bubble {
+  box-sizing: border-box;
+  max-width: 100%;
   width: 100%;
   padding: 10px 12px;
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   background: var(--bg-secondary);
+}
+#ai-spell-check-modal.joe-docked .joe-transcription-job {
+  margin: var(--jd-inset-margin);
+  margin-block: 8px;
 }
 .joe-transcription-job p {
   margin: 4px 0;

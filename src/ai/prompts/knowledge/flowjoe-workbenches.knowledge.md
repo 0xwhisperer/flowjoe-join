@@ -43,8 +43,8 @@ Press **F6** or **Ctrl+F6** in either editor to focus Preview’s **Close** cont
 Desktop close or quit waits for editor saving: **Stay open** keeps the draft; **Retry save** tries again; **Close anyway** or **Quit anyway** may lose unsaved changes.
 Preview also waits for the latest edit, even while an older autosave finishes.
 **Download Original** keeps source bytes unchanged and uses an **_orig** filename.
-Mac screen-reader access to cell values and document text remains unverified; tested native text APIs returned no content.
-The **Spreadsheet Workbench** is an interactive, editable island powered by Univer Sheets. It lets you manage tabular data directly alongside your outlines and research notes.
+**Read content** reads the current sheet/body; **Editor** returns unchanged. Canvas editing and screen-reader speech remain unverified; prior Mac text APIs returned no content.
+The **Spreadsheet Workbench** uses Univer Sheets to edit cells beside your research.
 
 **Creating & Importing Spreadsheets.**
 - **New Spreadsheet:** Click **Add Slot** (or **Add First Slot** on an empty node) in the gallery and select **New Spreadsheet**. This initializes an empty slot running the Univer Sheets engine.
@@ -57,7 +57,7 @@ The **Spreadsheet Workbench** is an interactive, editable island powered by Univ
 - **Exporting:** Download the sheet from the slot's menu. It saves in the same format you imported (`.csv`, `.tsv`, `.xlsx` or `.ods`); a new spreadsheet, or an imported `.xls`, downloads as `.xlsx`.
 - **Appearance:** The spreadsheet always uses a light look, even when the app is in a dark theme.
 
-Also covered in the full docs for this area: Import and export limits; AI Access & Interactions; Saving and retrying; Toolbar names; Mac screen-reader access.
+Also covered in the full docs for this area: Import and export limits; AI Access & Interactions; Saving and retrying; Toolbar names; Mac screen-reader access; Read content.
 
 ## Rich Document Workbench
 
@@ -75,7 +75,7 @@ The **Rich Document Workbench** utilizes Univer Docs to provide a real word-proc
 - **Headers & Footers:** Double-click the top or bottom margin of a page to edit its header or footer. Tables from imported files are kept when you save, but they cannot be edited in the editor yet.
 - **Exporting:** Download your edited copy from the slot's menu. It always saves as a `.docx` file (`.odt` and `.rtf` files are imported but not written back).
 
-Also covered in the full docs for this area: Collaborative AI Writing; Saving and retrying; Toolbar names; Mac screen-reader access.
+Also covered in the full docs for this area: Collaborative AI Writing; Saving and retrying; Toolbar names; Mac screen-reader access; Read content.
 
 ## Manual links
 

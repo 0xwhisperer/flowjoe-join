@@ -1766,6 +1766,7 @@ body:not(.notes-justified) :is(.image-notes, #image-modal-notes, .gallery-search
 /* Global styles for all form inputs in modals and editing */
 #modal input[type="text"],
 #modal input[type="password"],
+#modal input.canvas-card-width-input,
 #modal textarea,
 textarea:not(.image-notes) {
   background-color: var(--bg-input);
@@ -1788,6 +1789,7 @@ textarea:not(.image-notes) {
    This replaces per-modal one-off fixes (e.g. .modal-panel-url-input). */
 #modal input[type="text"],
 #modal input[type="password"],
+#modal input.canvas-card-width-input,
 #modal textarea {
   border: 1px solid var(--border-light);
   border-radius: var(--radius-md, 6px);
@@ -1829,6 +1831,7 @@ input[type="text"].node-edit-input {
 /* Focus style for all inputs and textareas except node-edit-input */
 #modal input[type="text"]:focus,
 #modal input[type="password"]:focus,
+#modal input.canvas-card-width-input:focus,
 #modal textarea:focus,
 textarea:not(.image-notes):focus {
   outline: 1px solid var(--accent-color);

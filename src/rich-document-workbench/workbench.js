@@ -984,6 +984,16 @@ function currentSnapshot() {
   };
 }
 
+// Main-body reading uses the live engine body and its current paragraph/run metadata,
+// never the stored neutral blocks or the save path's unloaded-content fallback.
+window.addEventListener("flowjoe:rich-document-reading-capture", (event) => {
+  if (disposed || !univerAPI) return;
+  const document = univerAPI.getActiveDocument();
+  if (!document) return;
+  const blocks = bodyToFlowBlocks(document.getBody(), {}).map(({type, text, level, runs}) => ({type, text, level, runs}));
+  event.detail?.accept?.({title: document.getName(), blocks});
+});
+
 function emitSave(requestId) {
   if (disposed) return;
   const snapshot = currentSnapshot();

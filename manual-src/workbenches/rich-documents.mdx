@@ -60,6 +60,15 @@ When saving your edits, this also protects pictures you paste into the document:
 
 Accessibility tools can identify the **Font**, **Font size** and **More** controls. The built-in editor currently uses English for these controls, even when FlowJoe uses another language. These names do not change how you format your document.
 
+When **Zoom** has keyboard focus, the arrow keys adjust it. When **More** has focus, **Enter** opens it and **Escape** closes it and returns focus. Arrow keys in the **Font** field keep their text-field behavior.
+
 ## Mac screen-reader access
 
-Screen-reader reading and editing of document text is not yet verified on Mac. Current accessibility checks found that the built-in editor exposes toolbar controls but does not expose the tested document text through the Mac text-reading interfaces checked. This remains an open accessibility limitation. **F6** still moves focus from the editor to Preview’s **Close** control.
+The earlier native Mac checks below concern the canvas **Editor**. Screen-reader speech and nonvisual editing are not yet verified on Mac. Current accessibility checks found that the built-in editor exposes toolbar controls but does not expose the tested document text through the Mac text-reading interfaces checked. This remains an open accessibility limitation. **F6** still moves focus from the editor to Preview’s **Close** control.
+
+
+## Read content
+
+Preview starts in **Editor**. Choose **Read content** for the current document's main body as native headings, paragraphs, lists and simple text emphasis where the document carries that information. Return to **Editor** to edit; switching retains the same document and does not change its text or formatting. **F6** returns to Preview's **Close** control from the reading pane too.
+
+This optional view supports reading, not nonvisual editing or verified screen-reader speech. It does not reproduce every table, drawing, embedded object, header or footer. The earlier Mac editor-text limitation remains separate from this native reading view.
