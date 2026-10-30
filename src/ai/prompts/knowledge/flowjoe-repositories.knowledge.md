@@ -42,7 +42,10 @@ Unknown or changed host keys are rejected. FlowJoe never offers a prompt that tr
 **Preview repository files.**
 HTML and Markdown previews show saved content without running scripts or contacting websites. Images and styles from the same repository can load within preview limits. A preview does not start your app or development server, and custom fonts may not appear.
 
-Also covered in the full docs for this area: Create or open a repo node; Make a branch a repository; Browse and edit repository files; Review and commit files; Private folders in a repository; What goes into the repository; History in the repository; Everything you add becomes a file; Titles are file and folder names; Merging FlowJoe's notes and layout; Explore history and ask Joe; Keyboard controls; Work with branches; Sync with a Git remote; Bring a teammate's changes into your gallery; Answer FlowJoe's questions; Sign in to GitHub over HTTPS; Large files (Git LFS); Set changes aside (Stash); Bring FlowJoe into your IDE; What Joe can read; Ask Joe to change a file; Ask Joe to work with repositories; Guests and GitHub repositories; Local folder import safety; When history is temporarily unavailable.
+**When history is temporarily unavailable.**
+Encrypted Private nodes remain in development. Their intended behavior is the same as other Private content: unlock the node to edit and save its repository files normally; locking it makes the protected content unavailable. This does not announce encrypted-node activation.
+
+Also covered in the full docs for this area: Create or open a repo node; Make a branch a repository; Browse and edit repository files; Review and commit files; Private folders in a repository; What goes into the repository; History in the repository; Everything you add becomes a file; Titles are file and folder names; Merging FlowJoe's notes and layout; Explore history and ask Joe; Keyboard controls; Work with branches; Sync with a Git remote; Bring a teammate's changes into your gallery; Answer FlowJoe's questions; Sign in to GitHub over HTTPS; Large files (Git LFS); Set changes aside (Stash); Bring FlowJoe into your IDE; What Joe can read; Ask Joe to change a file; Ask Joe to work with repositories; Guests and GitHub repositories; Local folder import safety.
 
 ## Manual links
 

@@ -386,3 +386,7 @@ Portable `.fj` and `.json` exports use the same per-Private-node password choice
 If this computer cannot read saved undo steps or a history picture, FlowJoe keeps the repository's committed copy. An unavailable picture does not become a broken image or a deletion when you commit other changes. If a history import or update cannot finish, FlowJoe remembers the unfinished work across restarts and retries it in order when you next open Changes. Deleting undo history clears its saved steps while keeping the current notes and title. Deleting a history entry yourself still removes it from the repository for everyone, unless a teammate has changed that same entry.
 
 The incoming changes summary counts all commits since the gallery's last update, including changes by people whose commits are further back in the history.
+
+<Note>
+Encrypted Private nodes remain in development. Their intended behavior is the same as other Private content: unlock the node to edit and save its repository files normally; locking it makes the protected content unavailable. This does not announce encrypted-node activation.
+</Note>
