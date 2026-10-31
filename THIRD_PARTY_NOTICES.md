@@ -125,6 +125,7 @@ This guest build publishes only components delivered to the browser. The complet
 | markdown-it | 14.3.2 | MIT |
 | markdown-it-task-lists | 2.1.1 | ISC |
 | mdurl | 2.0.0 | MIT |
+| monaco-editor | 0.52.2 | MIT |
 | mp4box | 2.4.1 | BSD-3-Clause |
 | n-gram | 2.0.2 | MIT |
 | Newsreader | bundled | OFL-1.1 |

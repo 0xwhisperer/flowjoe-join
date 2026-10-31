@@ -36,14 +36,13 @@ The Graph includes branches in the shared repository, including branches not yet
 Discarding working changes, saving a stash that puts files back to their last commit, applying or popping a stash over existing work, rewriting the last commit, renaming or deleting branches, deleting tags or stashes, and replacing or removing a remote require the owner's additional removal permission. Linking a new remote does not.
 
 **Use an SSH remote (macOS and Linux).**
-SSH remotes work on macOS and Linux. On Windows they are not supported yet; FlowJoe tells you so and asks you to use an `https://` address.
 Unknown or changed host keys are rejected. FlowJoe never offers a prompt that trusts a new host automatically.
 
 **Preview repository files.**
 HTML and Markdown previews show saved content without running scripts or contacting websites. Images and styles from the same repository can load within preview limits. A preview does not start your app or development server, and custom fonts may not appear.
 
 **When history is temporarily unavailable.**
-Encrypted Private nodes remain in development. Their intended behavior is the same as other Private content: unlock the node to edit and save its repository files normally; locking it makes the protected content unavailable. This does not announce encrypted-node activation.
+Encrypted Private nodes remain in development. Unlock to edit and save repository files; lock to make their content unavailable. Joe can prepare and review changes and use existing approvals for commits and branches. Hidden from Joe and Frozen still apply. Commit or Stash deliberately puts selected content into Git. Encryption is not activated.
 
 Also covered in the full docs for this area: Create or open a repo node; Make a branch a repository; Browse and edit repository files; Review and commit files; Private folders in a repository; What goes into the repository; History in the repository; Everything you add becomes a file; Titles are file and folder names; Merging FlowJoe's notes and layout; Explore history and ask Joe; Keyboard controls; Work with branches; Sync with a Git remote; Bring a teammate's changes into your gallery; Answer FlowJoe's questions; Sign in to GitHub over HTTPS; Large files (Git LFS); Set changes aside (Stash); Bring FlowJoe into your IDE; What Joe can read; Ask Joe to change a file; Ask Joe to work with repositories; Guests and GitHub repositories; Local folder import safety.
 

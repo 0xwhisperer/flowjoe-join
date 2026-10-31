@@ -310,4 +310,9 @@ input[type="text"].terminal-tab-edit {
   height: 14px;
   cursor: nesw-resize;
 }
+/* Disabled actions match the approved ordinary app menu. */
+.terminal-tab-menu .context-menu-item:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
 }
