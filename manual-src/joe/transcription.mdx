@@ -79,7 +79,7 @@ continuation. See the [CLI action reference](/cli/action-reference#transcribe-a-
 
 Free local transcription is available in the desktop app. Browser and shared guest sessions keep their existing online transcription route. A ChatGPT subscription does not supply OpenAI API credit.
 
-For a recording in a Private node, unlock the node before starting. Choosing online transcription sends the recording to your chosen provider in the usual way; Private status does not add another consent step. Locking the source or switching away from its Flow stops unfinished work from being added to that node. Encrypted Private-node storage remains under development; see [Security & privacy](/concepts/security).
+For a recording in a Private node, unlock the node before starting. Choosing online transcription sends the recording to your chosen provider in the usual way; Private status does not add another consent step. Locking the source or switching away from its Flow stops unfinished work from being added to that node. A Private node's recordings and transcripts are saved encrypted; see [Security & privacy](/concepts/security).
 
 Your method, local model and local output format are remembered on this computer. Switching methods keeps your paid model choice. FlowJoe does not switch to a paid service if a local run fails.
 
@@ -129,7 +129,7 @@ Completed transcripts and your edits are kept automatically for the current Flow
 Clear removes the transcripts currently available in the list, including available results marked **Keep on this computer only**. It does not remove records inside locked Private nodes. Unlock the node first to remove those results.
 
 <Note>
-Encrypted storage for Private nodes is still under development and is not enabled in this release. The development version keeps retained transcripts and edits under the same node password, including older transcripts saved before you make the node Private. It preserves saved text, older versions and normal Recent access after unlocking. Other retained copies, portable exports and final release checks still need completion. This does not change the current choice between local and paid-online transcription.
+Retained transcripts and edits of a Private node are saved encrypted under the same node password, including older transcripts saved before you made the node Private. Saved text, older versions and normal Recent access stay available after unlocking. This does not change the choice between local and paid-online transcription.
 </Note>
 
 The transcription method controls where speech recognition runs. Storage follows the Flow’s storage mode:
@@ -141,7 +141,7 @@ Transcript history is registered app data and is excluded from orphaned-media cl
 
 In owner chat and authorized external CLI/MCP sessions, you can ask Joe to find or quote a retained transcript in the current Flow. He reads bounded text portions with source dates only when the recording still has an admitted public source. Private, Hidden from Joe, removed and uncertain sources stay unavailable to this reader, even if you can still copy them in the human history. A recording converted into a stack or moved to another public node keeps its retained source link. Ambiguous or newly private sources are withheld. Reading does not upload the audio or start recognition. Joe reads a bounded portion of history already loaded with the Flow; unusually large or unavailable retained collections can be unavailable to this reader while ordinary History remains readable. Results may be partial; guests and scheduled runs do not receive these readers. Authorized external CLI/MCP sessions can use them with Read or Propose access; see [the action reference](/cli/action-reference).
 
-In the development encrypted mode, Joe can also read converted node-owned transcripts after you unlock their still-available recording source. Hidden from Joe and locked or uncertain sources remain unavailable.
+Joe can also read a Private node's own transcripts after you unlock their still-available recording source. Hidden from Joe and locked or uncertain sources remain unavailable.
 
 Exports have an **Include transcript history** option, enabled by default. Private-source transcripts start excluded; explicitly include their Private nodes to include eligible transcripts. An already-unlocked node does not require its password again. Computer-only transcripts remain excluded. See [Export & Import](/portability/export-import). If FlowJoe can't read the saved transcript history, the Flow still exports without it and a notice says so; the kept transcripts on your computer are left unchanged. If you open a Flow whose transcript history was saved by a newer FlowJoe, this version still shows it, but new transcripts and edits are not kept there; FlowJoe warns you and the text stays copyable. In a Workspace folder saved by a newer FlowJoe, new transcripts stay on this computer.
 

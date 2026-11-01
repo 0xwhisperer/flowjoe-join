@@ -146,10 +146,13 @@
   }
 
   /* ---- Dialog shell: the real #modal + #modal > div; only layout additions ---- */
+  /* Capped like the app's other tall #modal windows (Send to slot, 720px) and kept clear of the header row on both edges: on the
+     desktop Mac build that row is the OS window-drag region, so a full-height window put its title bar (and grip) inside it and
+     could not be dragged. The settings body scrolls inside; the title bar and the footer stay fixed. */
   #modal > div.cx-share {
     display: flex;
     flex-direction: column;
-    max-height: calc(100vh - 32px);
+    max-height: min(720px, calc(100vh - 2 * (var(--topbar-height) + var(--modal-viewport-margin))));
     overflow: hidden;
   }
   #modal > div.cx-share #modal-title {

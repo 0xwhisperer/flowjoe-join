@@ -37,11 +37,11 @@ Linked local files remain references; their original files are not bundled. Copy
 
 ## Choose Private nodes
 
-Every Private node starts left out of an export. To include one, tick its row, enter its password and read the warning. A Private node inside another Private node needs its own choice. Exporting a selected child also requires including its Private ancestors. These choices reset when you reopen Export or change its scope.
+Every Private node starts left out of an export. To include one, tick its row, enter its password and read the warning. Everything inside a Private node shares its password, so one choice covers the whole Private branch. Exporting a selected child inside a Private node also requires including that Private node; only the selected branch is written, as a Private node of its own that opens with the same password. These choices reset when you reopen Export or change its scope.
 
 Included nodes keep their FlowJoe locks and carry their contents. Their chats, picture history, transcripts and undo notes follow the history options below; records you keep on this computer stay here. Private-only tags and Memories travel only with their node. A Flow-wide Memory proposed from an excluded Private chat stays home too.
 
-**A node’s lock works inside FlowJoe; it does not encrypt the exported file.** Without **Protect package with a password**, someone who opens the file directly can read included Private content. Send it only to people you want to have it. If the Flow, access or Private protection changes while you are choosing, reopen Export to review it. Leaving out a Private branch produces a partial copy and does not clear the Flow’s unsaved reminder.
+**An included Private node stays encrypted inside the exported file** and opens only with its own password after import. Its name and the rest of the file are readable by anyone who opens it directly unless you also choose **Protect package with a password**. Send it only to people you want to have it. If the Flow, access or Private protection changes while you are choosing, reopen Export to review it. Leaving out a Private branch produces a partial copy and does not clear the Flow’s unsaved reminder.
 
 ## Transcript history
 
@@ -63,9 +63,9 @@ To include a Private node, select its row before exporting. If the node is alrea
 
 When opening the backup, FlowJoe asks for the **package password** before importing its contents. A wrong password or canceling that password prompt leaves the current Flow unchanged. After a successful import, included Private nodes remain locked and require their separate **node passwords**; the package password does not unlock them.
 
-Import restores the contents into FlowJoe’s normal storage. Package encryption does not encrypt the live Flow, its saved Private content or the Workspace Folder. See [Security & privacy](/concepts/security#encrypted-backups).
+Import restores the contents into FlowJoe’s normal storage. Private nodes stay encrypted there; ordinary nodes and the Workspace Folder are saved as usual. See [Security & privacy](/concepts/security#encrypted-backups).
 
-**Current Private-node protection:** the node password controls access inside FlowJoe. It does not encrypt saved content, media, autosaves or local history. Encrypted Private-node storage is still under development. See [What is encrypted today](/concepts/security#what-is-encrypted-today).
+**Private nodes when importing:** an imported Private node arrives locked and opens with its own password. Importing into an unlocked Private node asks for the imported node's password, then it joins that node's protection and FlowJoe shows "Now protected by “…”'s password." Importing a Private node back into the Flow it came from brings it in as a separate copy that opens with the same password: FlowJoe shows **Import as a copy** and asks for that password first. Cancel or a wrong password imports nothing. Exporting a node from inside a Private node writes it as a Private node of its own that opens with the same password. See [What is encrypted today](/concepts/security#what-is-encrypted-today).
 
 New protected exports use stronger password derivation to make password guessing more expensive. Older protected backups still open with their original passwords. Existing backup files keep their original protection; export a new protected copy to use the stronger setting. Choose a long, unique package password.
 

@@ -3,7 +3,7 @@
 <!-- GENERATED FILE — do not edit by hand. Built from the mintlify user docs by
 scripts/build-app-help-knowledge.js (deterministic digest; re-run it after editing any source page).
 Source pages: tree/status-theming.mdx
-Generated: 2026-10-29 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
+Generated: 2026-11-01 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
 Sync guard: tests/unit/appHelpKnowledgeSync.test.js fails when mintlify/**/*.mdx or this digest drifts
 from scripts/app-help-knowledge.manifest.json. -->
 
@@ -37,7 +37,7 @@ To help organize different zones of a large workspace (e.g. distinguishing perso
 **The Four Node Protection States.**
 FlowJoe supports four independent (orthogonal) node states that can be toggled via the **Set Visibility / Privacy…** context-menu flyout. These states inherit down the tree, meaning freezing or privatizing a parent applies to the entire subtree.
 - **Hidden** — Declutter the tree sidebar — No (filtered out) — n/a until shown — No — `node.hidden` boolean toggle
-- **Private (password)** — Access control / privacy — **No** until unlocked — No until unlocked — **No** (Verifier-only; not encrypted at rest) — Durable `lockKey` verifier + temporary memory unlock session
+- **Private (password)** — Access control / privacy — **No** until unlocked — No until unlocked — **Yes** (saved encrypted) — Node password + temporary memory unlock session
 - **Frozen** — Prevent accidental edits — **Yes** (fully readable) — **No** (read-only) — No — `node.frozen` boolean toggle
 - **Hidden from Joe** — Seal content from AI assistant — **Yes** to the human — **Yes** to the human — No — `node.hiddenFromJoe` boolean toggle
 

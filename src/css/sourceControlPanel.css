@@ -2840,6 +2840,12 @@ button.scm-pill:hover {
   color: var(--accent-color);
 }
 
+/* A Private node in the Make Repository window: it always stays out of repositories (owner decision 2026-11-01), so its row is dimmed and inert. */
+#modal-message .make-repo-private-row.make-repo-private-out {
+  opacity: var(--disabled-opacity-field);
+  cursor: default;
+}
+
 .make-repo-password {
   display: flex;
   flex-wrap: wrap;

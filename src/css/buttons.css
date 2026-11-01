@@ -257,6 +257,13 @@ html[data-native-titlebar] .topbar > :not(.native-titlebar),
 html[data-native-titlebar] .topbar > :not(.native-titlebar) * {
   -webkit-app-region: no-drag;
 }
+/* The header row is an OS drag region, and an OS drag region wins over anything drawn above it. A window on the shared #modal,
+   or any window made draggable by modalSurfaceState.js, that is moved up into that row would lose its title-bar grip and buttons
+   to the OS, so it carves itself out. Closed windows are display:none or visibility:hidden, which Chromium leaves out of the
+   drag-region map, so a closed window never blocks header dragging. */
+html[data-native-titlebar] :is(#modal > div, .floating-surface-draggable) {
+  -webkit-app-region: no-drag;
+}
 html[data-native-titlebar] .topbar .logo-svg {
   width: 36px;
   height: 36px;
