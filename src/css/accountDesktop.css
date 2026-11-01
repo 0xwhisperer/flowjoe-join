@@ -180,6 +180,8 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  /* The “you” ring reaches 3.5px outside the circle; the scrolling message area clips past its padding (top and side). */
+  padding: 4px;
 }
 #modal-message .acx-big-who .cx-av {
   --size: 40px;
@@ -251,4 +253,26 @@
 }
 .acx-check.is-warn {
   color: var(--warning-color);
+}
+/* Share window and the "not set up on this computer" window: the plan and own-address lines (approved 2026-10-31). */
+#modal-message .acx-share-facts {
+  display: grid;
+  grid-template-columns: minmax(110px, max-content) minmax(0, 1fr);
+  gap: 5px 14px;
+  margin: 0;
+  font-size: var(--font-control);
+}
+#modal-message .acx-share-facts dt {
+  color: var(--text-secondary);
+}
+#modal-message .acx-share-facts dd {
+  margin: 0;
+  min-width: 0;
+  color: var(--text-primary);
+}
+#modal-message .acx-share-facts dd small {
+  color: var(--text-secondary);
+}
+#modal-message .acx-share-facts code {
+  font-family: var(--cx-mono);
 }

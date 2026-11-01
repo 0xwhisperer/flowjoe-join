@@ -1,0 +1,41 @@
+---
+title: "Account data and privacy"
+description: "What your FlowJoe account stores, where it is kept, and what never leaves your computer."
+---
+
+This page explains how the FlowJoe account at [account.flowjoe.app](https://account.flowjoe.app) handles your information. It covers the account only — not the FlowJoe app on your computer, which keeps your Flows locally.
+
+## What never leaves your computer because of your account
+
+Your Flows, their notes, pictures, media, documents and Joe conversations are **not** stored in your account. Signing in, signing out or removing a computer never uploads, copies or deletes them.
+
+## What your account stores
+
+| Information | Why |
+| --- | --- |
+| Your email address | To send you sign-in codes and identify your account. |
+| Display name and preferred language, if set | Used to personalize your account and emails. |
+| Signed-in browser sessions | Kept encrypted on the server so you stay signed in; a browser session ends after eight hours or when you sign out. |
+| Signed-in computers | So you can see and sign out the computers using your account. |
+| Trial records | Each email can use the free trial once, and a computer can start another account's trial only after a year. These are kept as one-way fingerprints of the email and computer, not readable copies. |
+| Your sharing address, if you choose one | So people can reach the Flows you share. |
+
+Sign-in codes are sent by email and expire; we do not keep them. Browser cookies used by the account site are limited to keeping you signed in and protecting your requests — there are no advertising or tracking cookies.
+
+## Where it is kept
+
+- **Supabase** runs the account database and sign-in service.
+- **Cloudflare** hosts the account website and sends the sign-in emails.
+
+Database access for the account service uses a restricted login that can only perform account operations; it cannot read other data.
+
+## Your choices
+
+- Change your email from **Security**.
+- Sign out any computer, all computers, or everywhere at once.
+
+You can delete your account on the **Security** page. Deletion removes your sign-in identity, profile, signed-in computers and browsers, plan, trial history and sharing address (the address is released immediately). FlowJoe keeps only two minimal records with no link to you: a keyed fingerprint showing that your email address already used a trial, and one showing that your computer did, so the one-trial rules still apply. The Flows on your computers are never touched.
+
+<Note>
+This page describes how the account works today. A formal privacy policy will replace it before general availability.
+</Note>
