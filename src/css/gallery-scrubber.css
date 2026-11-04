@@ -425,7 +425,7 @@ body.scrubber-top #gallery-top-scrubber.dragging #gallery-top-scrubber-inner {
   bottom: 1px;
   transform: translateX(-50%);
   font-size: var(--font-control);
-  font-weight: 800;
+  font-weight: 500;
   line-height: 1;
   color: color-mix(in srgb, var(--text-secondary) 78%, var(--accent-color));
   white-space: nowrap;
@@ -437,7 +437,6 @@ body.scrubber-top #gallery-top-scrubber.dragging #gallery-top-scrubber-inner {
 
 .gallery-top-tick-label.active-slot {
   color: var(--text-primary);
-  text-shadow: 0 0 6px color-mix(in srgb, var(--accent-color) 28%, transparent);
 }
 
 .gallery-top-tick-label.edge-label {
@@ -479,7 +478,7 @@ body.gallery-top-scrubber-visible.scrubber-top #gallery-top-scrubber-spacer {
   padding: 4px 8px;
   border-radius: var(--radius-sm, 4px);
   font-size: var(--font-meta);
-  font-weight: 700;
+  font-weight: 500;
   line-height: 1.15;
   color: var(--text-primary);
   background: color-mix(in srgb, var(--bg-primary) 82%, black);
@@ -773,7 +772,7 @@ body.scrubber-glass #gallery-side-scrubber-inner::after {
   right: 1px;
   transform: translateY(-50%);
   font-size: var(--font-control);
-  font-weight: 800;
+  font-weight: 500;
   line-height: 1;
   color: color-mix(in srgb, var(--text-secondary) 78%, var(--accent-color));
   white-space: nowrap;
@@ -785,7 +784,6 @@ body.scrubber-glass #gallery-side-scrubber-inner::after {
 
 .gallery-side-tick-label.active-slot {
   color: var(--text-primary);
-  text-shadow: 0 0 6px color-mix(in srgb, var(--accent-color) 28%, transparent);
 }
 
 .gallery-side-scrub-tooltip {
@@ -798,7 +796,7 @@ body.scrubber-glass #gallery-side-scrubber-inner::after {
   border: 1px solid color-mix(in srgb, var(--border-color) 80%, transparent);
   color: var(--text-primary);
   font-size: var(--font-control);
-  font-weight: 700;
+  font-weight: 500;
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;

@@ -13,9 +13,9 @@
   color: var(--text-secondary);
   font-size: 0.9em;
   font-weight: 600;
-  letter-spacing: 0.05em;
+  letter-spacing: 0;
   line-height: 1;
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 .ai-transcribe-grid {
@@ -122,7 +122,7 @@
 
 .ai-transcribe-source-title {
   color: var(--accent-color);
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.25;
   overflow-wrap: anywhere;
   white-space: normal;

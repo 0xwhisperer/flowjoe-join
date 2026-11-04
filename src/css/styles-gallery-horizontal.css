@@ -384,14 +384,12 @@ body.surface-effects-disabled #image-display::after {
   border-radius: var(--radius-sm, 4px);
   background: color-mix(in srgb, var(--virtual-gallery-accent-color) 12%, transparent);
   color: color-mix(in srgb, var(--virtual-gallery-accent-color) 95%, transparent);
-  box-shadow:
-    inset 0 0 0 1px color-mix(in srgb, var(--virtual-gallery-accent-color) 18%, transparent),
-    0 0 14px color-mix(in srgb, var(--virtual-gallery-accent-color) 22%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--virtual-gallery-accent-color) 18%, transparent);
   font-size: calc(12px * var(--font-scale));
   font-weight: 700;
   line-height: 1;
-  letter-spacing: 0.01em;
-  text-transform: uppercase;
+  letter-spacing: 0;
+  text-transform: none;
   white-space: nowrap;
   transform: translateY(-100%) rotate(-90deg);
   transform-origin: left bottom;
@@ -410,14 +408,12 @@ body.surface-effects-disabled #image-display::after {
   border-radius: var(--radius-sm, 4px);
   background: color-mix(in srgb, var(--virtual-gallery-accent-color) 12%, transparent);
   color: color-mix(in srgb, var(--virtual-gallery-accent-color) 95%, transparent);
-  box-shadow:
-    inset 0 0 0 1px color-mix(in srgb, var(--virtual-gallery-accent-color) 18%, transparent),
-    0 0 14px color-mix(in srgb, var(--virtual-gallery-accent-color) 18%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--virtual-gallery-accent-color) 18%, transparent);
   font-size: calc(12px * var(--font-scale));
   font-weight: 700;
   line-height: 1;
-  letter-spacing: 0.01em;
-  text-transform: uppercase;
+  letter-spacing: 0;
+  text-transform: none;
   white-space: nowrap;
   animation: virtual-gallery-chip-pulse 2s infinite ease-in-out;
 }
@@ -448,29 +444,24 @@ body.surface-effects-disabled #image-display::after {
   }
 }
 
+/* Pulse keeps its timing, fade and tint and the thin inner outline; no outer coloured glow (owner approved 2026-11-03, mockup flowjoe-tagquery-chip). */
 @keyframes virtual-gallery-chip-pulse {
   0% {
     opacity: 0.58;
     background: color-mix(in srgb, var(--virtual-gallery-accent-color) 8%, transparent);
-    box-shadow:
-      inset 0 0 0 1px color-mix(in srgb, var(--virtual-gallery-accent-color) 14%, transparent),
-      0 0 8px color-mix(in srgb, var(--virtual-gallery-accent-color) 14%, transparent);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--virtual-gallery-accent-color) 14%, transparent);
   }
 
   50% {
     opacity: 1;
     background: color-mix(in srgb, var(--virtual-gallery-accent-color) 16%, transparent);
-    box-shadow:
-      inset 0 0 0 1px color-mix(in srgb, var(--virtual-gallery-accent-color) 24%, transparent),
-      0 0 16px color-mix(in srgb, var(--virtual-gallery-accent-color) 26%, transparent);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--virtual-gallery-accent-color) 24%, transparent);
   }
 
   100% {
     opacity: 0.58;
     background: color-mix(in srgb, var(--virtual-gallery-accent-color) 8%, transparent);
-    box-shadow:
-      inset 0 0 0 1px color-mix(in srgb, var(--virtual-gallery-accent-color) 14%, transparent),
-      0 0 8px color-mix(in srgb, var(--virtual-gallery-accent-color) 14%, transparent);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--virtual-gallery-accent-color) 14%, transparent);
   }
 }
 
@@ -1898,7 +1889,7 @@ button.orphan-media-modal-close.context-menu-corner-close {
 }
 
 #modal-message .modal-choice-title {
-  font-weight: 700;
+  font-weight: 600;
   color: var(--text-primary);
   font-size: calc(16px * var(--font-scale));
 }
@@ -1923,7 +1914,7 @@ button.orphan-media-modal-close.context-menu-corner-close {
   background: none;
   color: var(--text-primary);
   font-size: calc(18px * var(--font-scale));
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.2;
 }
 
@@ -1932,7 +1923,7 @@ button.orphan-media-modal-close.context-menu-corner-close {
 }
 
 #modal-message .gallery-alert-shell {
-  --gallery-alert-color: #ff9800;
+  --gallery-alert-color: var(--accent-color); /* the theme colour (owner choice 2026-11-03; was a fixed #ff9800 on every theme) */
   display: grid;
   grid-template-columns: 42px minmax(0, 1fr);
   gap: 14px;
@@ -1980,7 +1971,7 @@ button.orphan-media-modal-close.context-menu-corner-close {
 #modal-message .gallery-alert-primary {
   color: var(--text-primary);
   font-size: calc(15px * var(--font-scale));
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.4;
 }
 
@@ -2224,7 +2215,7 @@ button.orphan-media-modal-close.context-menu-corner-close {
 #modal-message .danger-confirm-eyebrow {
   margin: 0 0 4px;
   color: color-mix(in srgb, var(--danger-confirm-warning, #f5b642) 72%, var(--text-primary));
-  font-weight: 800;
+  font-weight: 600;
 }
 
 #modal-message .danger-confirm-copy {
@@ -2360,7 +2351,7 @@ button.orphan-media-modal-close.context-menu-corner-close {
 #modal-message .export-modal-section-title {
   margin-bottom: 6px;
   font-size: calc(14px * var(--font-scale));
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.01em;
   color: var(--text-primary);
 }
@@ -2415,7 +2406,7 @@ button.orphan-media-modal-close.context-menu-corner-close {
 
 #modal-message .export-modal-option-title {
   font-size: calc(14px * var(--font-scale));
-  font-weight: 700;
+  font-weight: 600;
   color: var(--text-primary);
   max-width: 100%;
   white-space: normal;

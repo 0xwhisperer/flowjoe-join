@@ -1056,7 +1056,7 @@ body.surface-effects-disabled .header-audio-playlist-popover {
   font-size: var(--modal-title-font-size);
   line-height: 1.2;
   font-weight: var(--modal-title-font-weight);
-  letter-spacing: 0.01em;
+  letter-spacing: 0;
   color: var(--text-primary);
   white-space: nowrap;
   overflow: hidden;
@@ -1189,7 +1189,7 @@ body.surface-effects-disabled .header-audio-playlist-popover {
   color: var(--accent-color);
   font: inherit;
   font-size: calc(14px * var(--playlist-font-scale, 1));
-  font-weight: 700;
+  font-weight: 500;
   line-height: 1;
   padding: 0;
   cursor: pointer;
@@ -1516,7 +1516,7 @@ body.glass-effects-disabled .header-audio-playlist-tab.active {
      themes), so it resolved to nothing here and the glyph inherited a near-accent color. */
   color: var(--text-on-accent);
   font-size: 6px;
-  font-weight: 800;
+  font-weight: 500;
   line-height: 1;
   pointer-events: none;
 }
@@ -1539,7 +1539,7 @@ body.glass-effects-disabled .header-audio-playlist-tab.active {
 .header-audio-playlist-search-wrap .header-audio-playlist-time-btn,
 .header-audio-playlist-search-wrap .header-audio-playlist-sort-btn {
   flex: 0 0 auto;
-  font-weight: 800;
+  font-weight: 500;
   font-size: var(--font-control);
   letter-spacing: 0;
   line-height: 1;
@@ -1627,7 +1627,7 @@ body.glass-effects-disabled .header-audio-playlist-tab.active {
      themes), so it resolved to nothing here and the glyph inherited a near-accent color. */
   color: var(--text-on-accent);
   font-size: 6px;
-  font-weight: 800;
+  font-weight: 500;
   line-height: 1;
   pointer-events: none;
 }
@@ -2102,7 +2102,7 @@ body.tree-branch-toggle-flat .header-audio-saved-playlist-expand-btn.collapse-bt
   background: color-mix(in srgb, var(--accent-color) 10%, var(--bg-tertiary));
   color: var(--accent-color);
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 500;
   cursor: pointer;
 }
 
@@ -2218,7 +2218,7 @@ body.tree-branch-toggle-flat .header-audio-saved-playlist-expand-btn.collapse-bt
   text-overflow: ellipsis;
   white-space: nowrap;
   font-size: calc(14px * var(--playlist-font-scale, 1));
-  font-weight: 800;
+  font-weight: 600;
   line-height: 1.2;
   color: var(--text-primary);
 }
@@ -2315,7 +2315,7 @@ body.tree-branch-toggle-flat .header-audio-saved-playlist-expand-btn.collapse-bt
   font-size: calc(14px * var(--playlist-font-scale, 1));
   line-height: 1.2;
   color: var(--accent-color);
-  font-weight: 700;
+  font-weight: 500;
 }
 
 .header-audio-saved-playlist-now-playing span {
@@ -2391,9 +2391,9 @@ body.tree-branch-toggle-flat .header-audio-saved-playlist-expand-btn.collapse-bt
   padding: 7px 40px 0 10px;
   font-size: var(--font-control);
   line-height: 1.25;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
   color: var(--text-secondary);
 }
 
@@ -2401,7 +2401,7 @@ body.tree-branch-toggle-flat .header-audio-saved-playlist-expand-btn.collapse-bt
   padding: 6px 10px 8px;
   font-size: var(--font-control);
   line-height: 1.25;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--text-primary);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -2602,7 +2602,7 @@ body.tree-branch-toggle-flat .header-audio-saved-playlist-expand-btn.collapse-bt
   background: transparent;
   color: var(--accent-color);
   font: inherit;
-  font-weight: 700;
+  font-weight: 500;
   padding: 0;
   margin: 0;
   cursor: pointer;
@@ -2696,9 +2696,8 @@ body.tree-branch-toggle-flat .header-audio-saved-playlist-expand-btn.collapse-bt
   border-radius: var(--radius-full, 999px);
   background: currentColor;
   position: relative;
-  /* Static glow; the expanding ring lives on ::after as a transform/opacity ripple
-     (compositor-only — the old keyframes animated box-shadow and repainted every frame). */
-  box-shadow: 0 0 10px color-mix(in srgb, currentColor 28%, transparent);
+  /* No glow on the dot itself (status dots keep their colour, not a halo); the expanding ring lives on ::after
+     as a transform/opacity ripple (compositor-only — the old keyframes animated box-shadow and repainted every frame). */
   /* Paused-by-default: the pill hides via opacity (not display), so a running
      animation would keep compositing behind the invisible pill all session.
      .is-visible flips play-state to running (rule below) — paused costs nothing
@@ -3405,9 +3404,9 @@ button:focus-visible,
 
 .file-menu-section-label {
   font-size: var(--font-micro);
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
   color: var(--text-secondary);
   padding: 2px 12px 4px;
 }
@@ -3810,7 +3809,7 @@ body.guest-owner-away #guest-presence .cx-av:not(.is-you):not(:has(.crown))::aft
   align-items: center;
   gap: 8px; /* the pill gap is a flex gap: the header's right-side margin reset (styles-browser.css, !important) zeroes margins on every descendant */
   min-width: 0;
-  font-weight: 700;
+  font-weight: 600;
 }
 .cx-name-text {
   min-width: 0;
@@ -3906,8 +3905,8 @@ body.guest-owner-away #guest-presence .cx-av:not(.is-you):not(:has(.crown))::aft
   color: var(--text-secondary);
   font-size: var(--font-meta);
   font-weight: 650;
-  letter-spacing: 0.6px;
-  text-transform: uppercase;
+  letter-spacing: 0;
+  text-transform: none;
 }
 .cx-panel h6 .cx-count {
   font-family: var(--cx-mono);
@@ -4011,7 +4010,7 @@ body.guest-owner-away #guest-presence .cx-av:not(.is-you):not(:has(.crown))::aft
   font-size: var(--font-control);
 }
 .owner-menu-name strong {
-  font-weight: 700;
+  font-weight: 600;
   min-width: 0;
   overflow-wrap: anywhere;
 }
@@ -4022,8 +4021,8 @@ body.guest-owner-away #guest-presence .cx-av:not(.is-you):not(:has(.crown))::aft
   border-radius: 5px;
   color: var(--accent-color);
   font: 700 10px var(--cx-mono);
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
+  letter-spacing: 0;
+  text-transform: none;
 }
 .owner-menu-address {
   color: var(--text-secondary);

@@ -393,7 +393,7 @@
   }
   #modal-message .cx-points b {
     color: var(--text-primary);
-    font-weight: 700;
+    font-weight: 600;
   }
   #modal-message .export-modal-shell + .export-modal-shell,
   #modal-message .export-modal-shell + .export-modal-warning,
@@ -576,7 +576,7 @@
     color: var(--text-secondary);
   }
   #modal-message .cx-joe-state {
-    font-weight: 700;
+    font-weight: 600;
     color: var(--text-primary);
   }
 
@@ -983,7 +983,7 @@
   #modal-message .cx-inv .who b {
     color: var(--text-primary);
     font-size: calc(14px * var(--font-scale));
-    font-weight: 700;
+    font-weight: 600;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

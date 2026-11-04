@@ -3,7 +3,7 @@
 <!-- GENERATED FILE — do not edit by hand. Built from the mintlify user docs by
 scripts/build-app-help-knowledge.js (deterministic digest; re-run it after editing any source page).
 Source pages: tree/repositories.mdx
-Generated: 2026-11-01 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
+Generated: 2026-11-02 from the current worktree copies (post Joe-audit 2026-07-28 wave-1 truth fixes).
 Sync guard: tests/unit/appHelpKnowledgeSync.test.js fails when mintlify/**/*.mdx or this digest drifts
 from scripts/app-help-knowledge.manifest.json. -->
 
@@ -44,7 +44,7 @@ HTML and Markdown previews show saved content without running scripts or contact
 **When history is temporarily unavailable.**
 Private nodes are saved encrypted. Unlock to edit and save repository files; lock to make their content unavailable. Joe can prepare and review changes and use existing approvals for commits and branches. Hidden from Joe and Frozen still apply.
 
-Also covered in the full docs for this area: Create or open a repo node; Make a branch a repository; Browse and edit repository files; Review and commit files; Private folders in a repository; Repositories are never Private; What goes into the repository; History in the repository; Everything you add becomes a file; Titles are file and folder names; Merging FlowJoe's notes and layout; Explore history and ask Joe; Keyboard controls; Work with branches; Sync with a Git remote; Bring a teammate's changes into your gallery; Answer FlowJoe's questions; Sign in to GitHub over HTTPS; Large files (Git LFS); Set changes aside (Stash); Bring FlowJoe into your IDE; What Joe can read; Ask Joe to change a file; Ask Joe to work with repositories; Guests and GitHub repositories; Local folder import safety.
+Also covered in the full docs for this area: Create or open a repo node; Make a branch a repository; Browse and edit repository files; Review and commit files; Private folders in a repository; Repositories are never Private; Importing a file that holds a repository; What goes into the repository; History in the repository; Everything you add becomes a file; Titles are file and folder names; Merging FlowJoe's notes and layout; Explore history and ask Joe; Keyboard controls; Work with branches; Sync with a Git remote; Bring a teammate's changes into your gallery; Answer FlowJoe's questions; Sign in to GitHub over HTTPS; Large files (Git LFS); Set changes aside (Stash); Bring FlowJoe into your IDE; What Joe can read; Ask Joe to change a file; Ask Joe to work with repositories; Guests and GitHub repositories; Local folder import safety.
 
 ## Manual links
 

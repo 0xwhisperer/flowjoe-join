@@ -132,14 +132,14 @@
   .ai-assist-focus-mode-chip {
     /* Sizing/shape (height, padding-x, radius, font-size) comes from the shared tag-chip
      token group in tags.css — this rule only layers the status-chip look (accent border/fill,
-     bold uppercase) on top, since this is a non-interactive indicator, not an assigned tag. */
+     medium weight, as written) on top, since this is a non-interactive indicator, not an assigned tag. */
     max-width: 180px;
     border: 1px solid color-mix(in srgb, var(--accent-color) 58%, var(--border-color));
     background: color-mix(in srgb, var(--accent-color) 13%, var(--bg-tertiary));
     color: var(--text-primary);
-    font-weight: 700;
+    font-weight: 500;
     letter-spacing: 0;
-    text-transform: uppercase;
+    text-transform: none;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -364,13 +364,13 @@
 
   .ai-assist-target-separator {
     color: var(--text-secondary);
-    font-weight: 700;
+    font-weight: 500;
     line-height: 1;
   }
 
   .ai-assist-target-slot-label {
     color: var(--text-primary);
-    font-weight: 700;
+    font-weight: 500;
     white-space: nowrap;
     /* An `auto` grid track sizes to its content's min-content width regardless of min-width:0 on
        the grid ITEM (.ai-assist-target-controls > * on its own doesn't help an auto track the way
@@ -528,9 +528,9 @@
     padding: 6px 10px;
     color: var(--text-secondary);
     font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -641,12 +641,12 @@
     overflow: visible;
     text-overflow: clip;
     white-space: nowrap;
-    font-weight: 700;
+    font-weight: 600;
   }
 
   .ai-assist-node-tree-count {
     color: var(--accent-color);
-    font-weight: 700;
+    font-weight: 500;
     flex: 0 0 auto;
   }
 
@@ -859,8 +859,8 @@
     margin: 0 0 var(--modal-row-gap) 8px;
     color: var(--text-secondary);
     font-size: 0.9em;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    text-transform: none;
+    letter-spacing: 0;
   }
 
   #ai-spell-check-phase-action #ai-spell-check-preview-wrap > .ai-spell-check-label {
@@ -880,9 +880,9 @@
     color: var(--text-secondary);
     font-size: 0.9em;
     font-weight: 600;
-    letter-spacing: 0.05em;
+    letter-spacing: 0;
     line-height: 1;
-    text-transform: uppercase;
+    text-transform: none;
   }
   #ai-spell-check-preview,
   #ai-spell-check-result {
@@ -1165,8 +1165,8 @@
     min-height: 24px; /* joins the 24px small-control rhythm — the old em-scaled max() outgrew every fixed-height chip beside it; candidate member of a future generic-badge family */
     height: 24px;
     font-size: 0.7em;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
+    text-transform: none;
+    letter-spacing: 0;
     color: var(--accent-color);
     background: color-mix(in srgb, var(--accent-color) 12%, var(--bg-primary));
     border: 1px solid color-mix(in srgb, var(--accent-color) 30%, var(--border-color));

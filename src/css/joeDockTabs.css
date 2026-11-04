@@ -71,7 +71,7 @@
     color: var(--jd-text-2);
     font-size: 11.5px;
     font-weight: 400;
-    letter-spacing: 0.3px;
+    letter-spacing: 0;
     line-height: 28px;
     text-transform: none;
   }
@@ -90,9 +90,9 @@
     color: var(--jd-text-3);
     font-size: 11px;
     font-weight: 500;
-    letter-spacing: 0.6px;
+    letter-spacing: 0;
     line-height: 1.3;
-    text-transform: uppercase;
+    text-transform: none;
   }
 
   /* Cards: the raised surface the tray and the target chip use. */
@@ -426,7 +426,7 @@
     color: var(--accent-color);
     font-size: 10px;
     font-weight: 600;
-    letter-spacing: 0.6px;
+    letter-spacing: 0;
   }
 
   /* --jd-tab-inset (shared with #ai-spell-check-preview-wrap above) / --jd-tab-diff-pad's per-tier

@@ -175,10 +175,10 @@
   color: var(--text-primary);
   font: inherit;
   font-size: var(--font-meta);
-  font-weight: 700;
-  letter-spacing: 0.04em;
+  font-weight: 600;
+  letter-spacing: 0;
   text-align: left;
-  text-transform: uppercase;
+  text-transform: none;
   cursor: pointer;
 }
 
@@ -1898,7 +1898,7 @@ button.scm-pill:hover {
 }
 
 .scm-graph-row-head .scm-graph-row-message {
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .scm-graph-row-incoming .scm-graph-row-message {
@@ -2407,9 +2407,9 @@ button.scm-pill:hover {
   margin-bottom: 6px;
   color: var(--text-secondary);
   font-size: var(--font-micro);
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
 }
 
 .scm-stash-dlg-counts {
@@ -2711,8 +2711,8 @@ button.scm-pill:hover {
   color: var(--text-secondary);
   font-size: var(--font-meta);
   font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  letter-spacing: 0;
+  text-transform: none;
 }
 
 .scm-update-list {

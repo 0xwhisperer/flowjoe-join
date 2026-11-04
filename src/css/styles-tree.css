@@ -317,6 +317,11 @@ body.glass-effects-disabled :is(
    hand-typing these properties in cssText; per-item state (danger/disabled/highlighted/
    selected) still toggles via inline style or a data-attribute, since that varies by menu. */
 .context-menu-item {
+  /* Rows are 100% wide; counting the padding inside that width keeps the <div> rows (gallery panel,
+     tree panel, stack-preview thumbnail menu, the image menu's Slot Color row) inside the menu like
+     the <button> rows already were. Without it they spill past the right edge (shortcuts, chevrons,
+     ticks and the hover fill touch or cross the border). */
+  box-sizing: border-box;
   margin: 0;
   padding: var(--pad-menu-item);
   font-size: var(--font-control);
@@ -369,10 +374,10 @@ body.glass-effects-disabled :is(
   padding: 7px 10px;
   font-size: var(--font-meta);
   line-height: 1.25;
-  font-weight: 700;
+  font-weight: 500;
   color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  text-transform: none;
+  letter-spacing: 0;
 }
 
 .context-menu-separator {
@@ -724,6 +729,14 @@ mark.gallery-search-mark {
 .gallery-tag-chip-main.gallery-search-tag-match {
   border-color: var(--tag-chip-search-match-border);
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent-color) 25%, transparent);
+  color: var(--accent-color);
+}
+
+/* Gallery search "match inside this stack" pill above a slot title (imageGallery.js sets only its
+   layout inline). Follows the theme highlight colour like the tag-match chip above. */
+.gallery-search-stack-match {
+  background: color-mix(in srgb, var(--accent-color) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent-color) 36%, transparent);
   color: var(--accent-color);
 }
 
@@ -1107,7 +1120,7 @@ body.resizing .resizer::after,
 
 .tree-filter-empty-title {
   color: var(--text-primary);
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.35;
 }
 

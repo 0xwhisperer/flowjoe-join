@@ -247,7 +247,7 @@
   color: var(--text-secondary);
   font-size: 12px;
   font-weight: 600;
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 .orphan-media-meta {
@@ -1175,24 +1175,20 @@ body.fj-bg-idle:not(.fj-window-hidden) .notification-undo-timer-progress.fj-in-v
 .compression-status.compressed {
   background-color: var(--success-color, #2f9e44);
   /* Green for compressed */
-  box-shadow: 0 0 5px var(--success-color, #2f9e44);
 }
 
 .compression-status.uncompressed {
   background-color: var(--danger-color, #dc3545);
   /* Red for uncompressed */
-  box-shadow: 0 0 5px var(--danger-color, #dc3545);
 }
 
 .compression-status.placeholder {
   background-color: var(--success-color, #2f9e44);
   /* Green for placeholders (not compressible) */
-  box-shadow: 0 0 5px var(--success-color, #2f9e44);
 }
 
 .compression-status.media {
   background-color: var(--accent-purple, #8b5cf6);
-  box-shadow: 0 0 5px var(--accent-purple, #8b5cf6);
 }
 
 /* Scale the media-status LED with the slot on resize. Revert: delete this rule. */
@@ -1638,9 +1634,10 @@ input[type="text"].breadcrumb-node-edit-input {
   height: 24px;
   color: var(--text-secondary);
   font-size: calc(11px * var(--font-scale));
+  font-weight: 500;
   line-height: 1;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  letter-spacing: 0;
+  text-transform: none;
   white-space: nowrap;
   position: relative;
   top: 1px;
@@ -1758,8 +1755,8 @@ input[type="text"].breadcrumb-node-edit-input {
   color: var(--text-primary);
   font-size: 11px; /* NOT --font-meta: this is a clickable <button> badge (unfreeze action), not passive meta text — PM caught this miscategorization */
   font-weight: 600;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
+  letter-spacing: 0;
+  text-transform: none;
   line-height: 1;
   cursor: pointer;
   white-space: nowrap;
@@ -1848,8 +1845,8 @@ input[type="text"].breadcrumb-node-edit-input {
   color: var(--text-primary);
   font-size: var(--font-meta);
   font-weight: 600;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
+  letter-spacing: 0;
+  text-transform: none;
   line-height: 1;
   white-space: nowrap;
 }
@@ -1906,7 +1903,7 @@ input[type="text"].breadcrumb-node-edit-input {
   min-width: 0;
   color: color-mix(in srgb, var(--badge-locked-gold-light) 72%, var(--text-primary));
   font-size: calc(11px * var(--font-scale));
-  font-weight: 700;
+  font-weight: 500;
   line-height: 1.15;
   letter-spacing: 0;
   text-align: center;
@@ -1940,7 +1937,7 @@ input[type="text"].breadcrumb-node-edit-input {
   color: color-mix(in srgb, var(--badge-locked-gold-light) 76%, var(--text-primary));
   font: inherit;
   font-size: calc(10px * var(--font-scale));
-  font-weight: 700;
+  font-weight: 500;
   line-height: 1;
   cursor: pointer;
   transition:

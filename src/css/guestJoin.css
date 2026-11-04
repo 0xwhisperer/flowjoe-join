@@ -71,8 +71,8 @@
     font-family: var(--cx-mono);
     font-size: var(--ob-text-xxs);
     line-height: 16px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    letter-spacing: 0;
+    text-transform: none;
     color: var(--ob-ink-2);
     text-align: end;
     white-space: nowrap;
@@ -80,7 +80,7 @@
   .gj-title {
     margin: 0 0 8px;
     font-size: var(--ob-title);
-    font-weight: 700;
+    font-weight: 600;
     line-height: 1.25;
     color: var(--ob-ink);
     text-wrap: balance;
@@ -138,7 +138,7 @@
     margin: 0;
     padding-block: 0;
     padding-inline: 14px 80px;
-    font-weight: 700;
+    font-weight: 500;
   }
   .gj-name-input.ob-input::placeholder {
     color: var(--ob-ink-3);
@@ -379,8 +379,8 @@
     border-radius: calc(var(--radius-sm, 4px) + 4px);
     pointer-events: none;
   }
-  /* The first-run primary button paints --ob-on-accent (the theme's page colour) on the amber gradient: 6:1 on dark
-     themes but 2.9:1 on light ones (measured on modern-paper). The join dialog's primary uses the theme-invariant dark
+  /* The first-run primary button paints --ob-on-accent (the theme's page colour) on the amber gradient (measured on
+     2026-10-02): about 6:1 on dark themes but 2.9:1 on light ones (modern-paper). The join dialog's primary uses the theme-invariant dark
      ink the avatar marks use on their fills instead (6:1 on both), so the owner's onboarding look is untouched. */
   .gj-buttons .ob-btn.primary:not(:disabled) {
     color: var(--avatar-ink);
@@ -401,7 +401,7 @@
     gap: 8px;
     flex-wrap: wrap;
     font-size: var(--ob-text-md);
-    font-weight: 700;
+    font-weight: 600;
     color: var(--ob-ink);
   }
   .gj-status-list {

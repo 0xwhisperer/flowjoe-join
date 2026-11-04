@@ -233,8 +233,8 @@
   margin: 12px 0 4px;
   font-size: var(--font-meta);
   font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  letter-spacing: 0;
+  text-transform: none;
   color: var(--text-secondary);
 }
 .pce-auto {
@@ -640,7 +640,7 @@
   position: absolute;
   top: 10px;
   padding: 2px 8px;
-  border-radius: var(--radius-full, 999px);
+  border-radius: var(--radius-sm);
   background: var(--tooltip-bg);
   color: var(--tooltip-text, var(--text-primary));
   font-size: var(--font-meta);

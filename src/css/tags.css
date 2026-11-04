@@ -113,7 +113,7 @@
      rule for why: that variable is frozen at :root and can't respond to a per-slot
      --gallery-slot-scale override (e.g. canvas drag-resize). */
   font-size: calc(14px * var(--font-scale, 1) * var(--gallery-slot-scale, 1));
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.01em;
   white-space: nowrap;
   transform: translateY(1px);
@@ -152,6 +152,7 @@
 
 .gallery-tags-copy-btn span {
   display: inline-flex;
+  font-size: var(--icon-glyph-sm);
   align-items: center;
   justify-content: center;
   width: 100%;
@@ -896,7 +897,7 @@
   color: var(--text-primary);
   font-size: 14px;
   line-height: 1.25;
-  font-weight: 700;
+  font-weight: 600;
   min-width: 0;
   flex: 1 1 auto;
 }
@@ -973,9 +974,9 @@
 
 .node-theme-flyout-eyebrow {
   font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
   color: var(--text-secondary);
 }
 

@@ -223,6 +223,8 @@
   gap: 8px;
   min-width: 0;
   overflow: hidden;
+  /* An <h3>: without this the separator takes the browser's heading bold (700). */
+  font-weight: 600;
 }
 
 .settings-breadcrumb-root {
@@ -672,7 +674,7 @@
   margin: 0;
   color: var(--text-primary);
   font-size: calc(16px * var(--font-scale));
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.35;
 }
 
@@ -764,7 +766,7 @@
 .setting-item .setting-label {
   display: block;
   margin: 0;
-  font-weight: bold;
+  font-weight: 500;
   color: var(--text-primary);
   font-size: calc(16px * var(--font-scale));
   white-space: normal;
@@ -802,8 +804,9 @@
   margin-top: 14px;
   margin-bottom: 2px;
   font-size: var(--font-control);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
   color: var(--text-secondary);
   opacity: 0.85;
 }
@@ -865,7 +868,7 @@
 }
 
 .setting-control>label:first-child {
-  font-weight: bold;
+  font-weight: 500;
   font-size: calc(16px * var(--font-scale));
   color: var(--text-primary);
   /* Wrap between words, never mid-word — `overflow-wrap: anywhere` here used to collapse long
@@ -1662,7 +1665,7 @@
   margin: 0;
   font-family: inherit;
   font-size: var(--tag-chip-font-size);
-  font-weight: 700;
+  font-weight: 500;
   line-height: 1.15;
   display: inline-flex;
   align-items: center;
@@ -1700,7 +1703,7 @@
   padding: 2px 4px;
   font: inherit;
   font-size: calc(11px * var(--font-scale));
-  font-weight: 800;
+  font-weight: 500;
   line-height: 1;
   cursor: pointer;
   text-decoration: underline;
@@ -1819,7 +1822,7 @@
   display: block;
   font-size: calc(15px * var(--font-scale));
   line-height: var(--notes-line-height);
-  font-weight: 600;
+  font-weight: 500;
   white-space: normal;
   overflow-wrap: normal;
   word-break: normal;
@@ -2132,7 +2135,7 @@
 .select-option.selected {
   background-color: color-mix(in srgb, var(--accent-color) 24%, var(--bg-input));
   color: var(--text-primary);
-  font-weight: 700;
+  font-weight: 500;
   box-shadow: inset 3px 0 0 var(--accent-color);
 }
 
@@ -2756,9 +2759,7 @@
 }
 .theme-card-node-eyebrow {
   font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-weight: 500;
   color: var(--accent-color);
 }
 .theme-card-revert-link {
@@ -2786,8 +2787,7 @@
 }
 .theme-card-node-name {
   font-size: 17px;
-  font-weight: 800;
-  letter-spacing: -0.01em;
+  font-weight: 600;
   color: var(--text-primary, #e0e0e0);
   margin: 2px 0 10px;
   word-break: break-word;
@@ -2822,9 +2822,7 @@
 }
 .theme-card-divider-word {
   font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-weight: 500;
   color: var(--text-secondary, #999);
   flex-shrink: 0;
 }
@@ -2852,14 +2850,12 @@
 }
 .theme-card-global-strip-label {
   font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  font-weight: 500;
   color: var(--text-secondary, #999);
 }
 .theme-card-global-strip-value {
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--text-primary, #e0e0e0);
   white-space: nowrap;
   overflow: hidden;
@@ -2869,7 +2865,7 @@
   flex-shrink: 0;
   font: inherit;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 500;
   color: var(--accent-color);
   background: none;
   border: none;
@@ -2908,8 +2904,8 @@
   margin: 14px 0 6px;
   font-size: var(--font-meta);
   font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  letter-spacing: 0;
+  text-transform: none;
   color: var(--text-secondary);
 }
 [data-panel="apis"] .settings-apis-section:first-of-type .settings-apis-group {

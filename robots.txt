@@ -1,2 +1,22 @@
+User-agent: facebookexternalhit
+Allow: /$
+Allow: /img/og-join.png
+Disallow: /
+
+User-agent: Facebot
+Allow: /$
+Allow: /img/og-join.png
+Disallow: /
+
+User-agent: Twitterbot
+Allow: /$
+Allow: /img/og-join.png
+Disallow: /
+
+User-agent: LinkedInBot
+Allow: /$
+Allow: /img/og-join.png
+Disallow: /
+
 User-agent: *
 Disallow: /

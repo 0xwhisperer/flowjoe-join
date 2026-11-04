@@ -98,7 +98,16 @@ A branch opened as its own node follows the same Private folders.
 
 ### Repositories are never Private
 
-Git keeps everything as ordinary, readable files, so a repository can't be password-protected. **Make Node Private** is dimmed on a repository, and on a node that holds one; the note names the repository, and you can move it out first and then protect the rest. In **Add Node** (and **Add Repository** or **Clone from GitHub** in Source Control, which open the same window), **Create as a repository** is dimmed inside a Private node, and choosing **Root** or a place outside it brings it back. **Create as a repository** and **Password-protect this node** can't be ticked together: ticking one dims the other, with a note saying why. Moving a repository into a Private node is refused, and FlowJoe says why; the node stays where it was. A copy (paste or duplicate) of a repository is always ordinary folders and files, so it can go anywhere, and a repository you import into a Private node arrives as ordinary folders, with a note saying so. Joe gets the same answers.
+Git keeps everything as ordinary, readable files, so a repository can't be password-protected. **Make Node Private** is dimmed on a repository, and on a node that holds one; the note names the repository, and you can move it out first and then protect the rest. In **Add Node** (and **Add Repository** or **Clone from GitHub** in Source Control, which open the same window), **Create as a repository** is dimmed inside a Private node, and choosing **Root** or a place outside it brings it back. **Create as a repository** and **Password-protect this node** can't be ticked together: ticking one dims the other, with a note saying why. Moving a repository into a Private node is refused, and FlowJoe says why; the node stays where it was. A copy (paste or duplicate) of a repository is always ordinary folders and files, so it can go anywhere. Importing a `.fj` file that holds a repository into a Private node stops before anything is imported: the window names the repository and offers **Import at Root Level**, where it stays a repository, or **Cancel**. A file whose own Private node holds a repository can't be imported as it is; the window says to move the repository out, or remove that node's password, where the file was made. Joe gets the same answers.
+
+### Importing a file that holds a repository
+
+FlowJoe never quietly changes a repository you import. When a `.fj` file (opened from the File menu or dropped on the tree) would change what one of its repositories is, nothing is imported until you choose:
+
+- **Into another repository:** Git can't keep one repository inside another. **Import as Files** adds its folders and files to the repository you chose, and it stops being a repository; **Import at Root Level** keeps it a separate repository; **Cancel** imports nothing.
+- **A repository inside another repository in the file itself:** **Import as Files** keeps the outer one a repository and brings the inner one in as its folders and files, or **Cancel**.
+- **A repository that is already in this Flow:** two nodes can't share one repository. **Import as Files** brings in a copy of its folders and files that isn't a repository, or **Cancel**.
+- **Into a Private node:** see above; **Import at Root Level** or **Cancel**.
 
 New files added through the repo node's gallery appear in **Changes** so you can stage them. Imported executable-permission changes also appear, even when the file text is unchanged.
 

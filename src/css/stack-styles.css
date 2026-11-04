@@ -234,9 +234,9 @@
     touch-action: none;
     backdrop-filter: blur(10px) saturate(1.1);
     -webkit-backdrop-filter: blur(10px) saturate(1.1);
+    /* Neutral drop shadow + inner top highlight only — no coloured halo (owner approved 2026-11-03, mockup flowjoe-effects2). */
     box-shadow:
       0 10px 22px rgba(0, 0, 0, 0.28),
-      0 0 18px color-mix(in srgb, var(--accent-color) 16%, transparent),
       inset 0 1px 0 rgba(255, 255, 255, 0.08);
     transition:
       opacity var(--transition-speed) ease,
@@ -273,8 +273,7 @@
     inset: 0 auto 0 0;
     width: 0;
     border-radius: inherit;
-    background: linear-gradient(90deg, color-mix(in srgb, var(--accent-color) 82%, var(--text-primary) 18%), color-mix(in srgb, var(--accent-color) 48%, var(--text-primary) 52%));
-    box-shadow: 0 0 14px color-mix(in srgb, var(--accent-color) 38%, transparent);
+    background: var(--accent-color);
   }
 
   .stack-scrub-thumb {
@@ -321,7 +320,7 @@
     min-width: 38px;
     font-size: var(--font-meta);
     line-height: 1;
-    font-weight: 700;
+    font-weight: 500;
     text-align: right;
     color: color-mix(in srgb, var(--text-primary) 88%, var(--accent-color) 12%);
     white-space: nowrap;
@@ -1243,7 +1242,7 @@
     background-color: var(--stack-overlay-badge-bg-resting);
     color: white;
     font-size: 16em; /* Twice as big */
-    font-weight: bold;
+    font-weight: 500;
     opacity: 0;
     transition: opacity var(--transition-speed) ease-in-out;
     pointer-events: none;
@@ -1366,7 +1365,7 @@
     background-color: var(--bg-primary);
     color: var(--accent-color);
     font-size: calc(0.68em * var(--gallery-slot-scale, 1));
-    font-weight: 800;
+    font-weight: 500;
     line-height: 1;
     cursor: pointer;
     position: relative;
@@ -1441,8 +1440,9 @@
     display: block;
     margin: 8px 0 3px;
     font-size: 10.5px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0;
+    text-transform: none;
     color: var(--text-secondary);
   }
 
@@ -1653,7 +1653,7 @@
     border-radius: var(--radius-md, 6px);
     background: var(--bg-primary);
     font-size: var(--font-meta, 11px);
-    font-weight: 700;
+    font-weight: 500;
     color: var(--text-primary);
   }
 
@@ -1724,9 +1724,9 @@
   .vslot-menu-heading {
     font-size: 13px;
     line-height: 1.25;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: 0;
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -1744,7 +1744,7 @@
   .vslot-menu-header .context-menu-active-file-label {
     color: var(--text-primary);
     font-size: 12px;
-    font-weight: 700;
+    font-weight: 500;
     letter-spacing: 0;
     text-transform: none;
   }
@@ -1757,14 +1757,15 @@
     white-space: nowrap;
     color: var(--text-primary);
     font-size: 12px;
-    font-weight: 700;
+    font-weight: 500;
   }
 
   .vslot-menu-section {
     padding: 6px 12px 2px;
     font-size: 10.5px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    font-weight: 500;
+    letter-spacing: 0;
+    text-transform: none;
     color: var(--text-secondary);
   }
 

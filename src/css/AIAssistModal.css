@@ -606,8 +606,8 @@
   background: rgba(120, 170, 255, 0.12);
   border-color: rgba(120, 170, 255, 0.5);
 }
-.ai-chat-web-search-chip-icon { font-size: 0.95em; }
-.ai-chat-web-search-chip-label { font-weight: 600; }
+.ai-chat-web-search-chip-icon { font-size: var(--icon-glyph-sm); }
+.ai-chat-web-search-chip-label { font-weight: 500; }
 .ai-chat-web-search-chip-count { opacity: 0.8; }
 .ai-chat-web-search-chip-details {
   margin: 6px 0 0 4px;
@@ -669,8 +669,8 @@
   background: rgba(100, 200, 100, 0.2);
   border-color: rgba(100, 200, 100, 0.7);
 }
-.ai-chat-code-interpreter-chip-icon { font-size: 0.95em; }
-.ai-chat-code-interpreter-chip-label { font-weight: 600; }
+.ai-chat-code-interpreter-chip-icon { font-size: var(--icon-glyph-sm); }
+.ai-chat-code-interpreter-chip-label { font-weight: 500; }
 .ai-chat-code-interpreter-chip-count { opacity: 0.8; }
 .ai-chat-code-interpreter-chip-details {
   margin: 6px 0 0 4px;
@@ -905,7 +905,7 @@
   justify-content: center;
   padding: 0;
   border: 1px solid var(--border-color, #555);
-  border-radius: var(--radius-full, 999px);
+  border-radius: var(--radius-md);
   background: var(--bg-tertiary, #333);
   color: var(--text-secondary, #9aa0a6);
   font: inherit;
@@ -1124,8 +1124,8 @@
 .ai-chat-message-state-badge {
   font-size: var(--font-micro);
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  text-transform: none;
+  letter-spacing: 0;
   padding: 2px 6px;
   border-radius: var(--radius-sm, 4px);
 }
@@ -1631,7 +1631,7 @@
   gap: 5px;
   padding: 1px 6px;
   border: 1px solid transparent;
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-md);
   background: transparent;
   color: var(--text-secondary);
   font: inherit;
@@ -1690,8 +1690,8 @@
 .ai-chat-turn-cost-title {
   font-size: var(--font-meta);
   font-weight: 600;
-  letter-spacing: 0.4px;
-  text-transform: uppercase;
+  letter-spacing: 0;
+  text-transform: none;
   color: var(--jd-text-3, var(--text-secondary));
 }
 .ai-chat-turn-cost-models {
@@ -1910,7 +1910,7 @@
 .ai-chat-helper-tip-btn {
   padding: 3px 10px;
   border: 1px solid var(--jd-line, var(--border-color));
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-md);
   background: transparent;
   color: var(--jd-text-1, var(--text-primary));
   font: inherit;

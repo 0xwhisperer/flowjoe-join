@@ -334,8 +334,8 @@
   color: var(--text-secondary);
   font-size: 0.9em;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  text-transform: none;
+  letter-spacing: 0;
 }
 
 #summary-modal-spellcheck-review .ai-spell-check-tweaks-label {

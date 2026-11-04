@@ -102,6 +102,7 @@
   margin: 0;
   color: var(--text-primary);
   font-size: 1.1em;
+  font-weight: 600;
 }
 
 .ai-image-history-drawer-header .close-btn {

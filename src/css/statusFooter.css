@@ -369,7 +369,6 @@ body.settings-panel-open .status-footer-right {
 .status-footer-save.is-dirty .status-footer-dot,
 .status-footer-other-device .status-footer-dot {
   background: var(--warning-color, #e0a046);
-  box-shadow: 0 0 7px color-mix(in srgb, var(--warning-color, #e0a046) 45%, transparent);
 }
 
 .status-footer-save.is-dirty .status-footer-text,
@@ -386,7 +385,6 @@ body.settings-panel-open .status-footer-right {
    consistently with every other blocked-state indicator in the app. */
 .status-footer-save.is-blocked .status-footer-dot {
   background: var(--danger-color, #dc3545);
-  box-shadow: 0 0 7px color-mix(in srgb, var(--danger-color, #dc3545) 45%, transparent);
 }
 
 .status-footer-save.is-blocked .status-footer-text {
@@ -475,8 +473,8 @@ body.surface-effects-disabled .status-footer-brain-menu {
 .status-footer-brain-menu-heading {
   padding: 4px 10px 7px;
   font-size: var(--font-micro);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+  text-transform: none;
+  letter-spacing: 0;
   color: var(--text-secondary, #999);
 }
 

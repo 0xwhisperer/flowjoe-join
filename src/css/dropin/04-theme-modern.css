@@ -110,6 +110,7 @@
      (rgba(255,149,0,.10) = its #FF9500). Restated here in decimal because every theme
      hand-writes this token; kept in step with the accent retune above. */
   --drop-highlight: rgba(162, 83, 4, .10);
+  --focus-shadow: rgba(162, 83, 4, .4); /* Paper's own accent; it used to inherit the app default orange (themes.css :root) */
 
   --status-not-started: #C4373C;
   --status-in-progress: #B7822C;

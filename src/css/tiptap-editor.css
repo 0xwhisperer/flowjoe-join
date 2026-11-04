@@ -1,4 +1,49 @@
 @layer app {
+  /* Insert Image dialog body (promptFlowJoeImage). Classes, because the modal sanitizer strips inline styles. */
+  .tiptap-image-prompt {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 4px;
+  }
+
+  .tiptap-image-prompt-label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+
+  .tiptap-image-prompt-file {
+    width: 100%;
+    padding: 6px;
+    font-size: 12px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    color: var(--text-primary);
+    cursor: pointer;
+  }
+
+  .tiptap-image-prompt-divider {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 4px 0;
+  }
+
+  .tiptap-image-prompt-rule {
+    flex: 1;
+    height: 1px;
+    background: var(--border-color);
+  }
+
+  .tiptap-image-prompt-or {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
   .tiptap-flowjoe-container {
     display: flex;
     flex-direction: column;
@@ -154,9 +199,9 @@
 
   .tiptap-dropdown-section-title {
     font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: 0;
     color: var(--text-tertiary, var(--text-secondary));
     padding: 6px 8px 2px 8px;
   }
@@ -191,14 +236,14 @@
     outline-offset: 1px;
   }
 
-  /* Bubble Menu - FlowJoe Themed Pill Capsule */
+  /* Bubble Menu - FlowJoe themed floating format bar */
   .tiptap-bubble-menu {
     display: flex;
     align-items: center;
     gap: 4px;
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
-    border-radius: 9999px;
+    border-radius: var(--radius-lg);
     padding: 4px 8px;
     box-shadow: var(--elev-floating);
     z-index: var(--flowjoe-z-tiptap-editor-popup);
@@ -211,7 +256,7 @@
     height: 28px;
     min-width: 28px;
     padding: 0 8px;
-    border-radius: 9999px;
+    border-radius: var(--radius-md);
     border: none;
     background: transparent;
     color: var(--text-secondary);
@@ -760,8 +805,8 @@
     justify-content: space-between;
     font-size: 12px;
     font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    text-transform: none;
+    letter-spacing: 0;
     color: var(--accent-color);
     margin-bottom: 6px;
     padding-bottom: 4px;
@@ -1346,8 +1391,9 @@
     display: block;
     margin: 8px 0 4px;
     font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: 0;
     color: var(--text-muted);
   }
 

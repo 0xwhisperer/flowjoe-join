@@ -11,7 +11,7 @@
   /* USER RULE: no custom colors in embed wrappers — theme chip, not brand orange. */
   background: color-mix(in srgb, var(--text-primary) 24%, transparent);
   color: var(--text-primary, #e0e0e0);
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .gallery-inline-link-rich,
@@ -565,8 +565,8 @@
   font-size: var(--font-micro);
   font-family: inherit;
   font-weight: normal;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
+  letter-spacing: 0;
+  text-transform: none;
   color: var(--text-primary);
   background: color-mix(in srgb, var(--accent-color) 30%, var(--bg-tertiary) 70%);
   border: 1px solid color-mix(in srgb, var(--accent-color) 40%, transparent);
@@ -1218,7 +1218,7 @@ body:not(.notes-justified) :is(.image-notes, #image-modal-notes, .gallery-search
 .image-notes.notes-list-format-active:focus::selection {
   color: var(--text-primary) !important;
   -webkit-text-fill-color: var(--text-primary) !important;
-  background: rgba(255, 153, 0, 0.34);
+  background: var(--canvas-notes-selection-bg); /* the theme colour at 34% (was a fixed orange) */
 }
 
 #image-display[data-gallery-source-type="tag-query"] .image-notes.notes-list-format-active[disabled],
@@ -1325,9 +1325,8 @@ body:not(.notes-justified) :is(.image-notes, #image-modal-notes, .gallery-search
   border-bottom: 1px solid var(--border-light);
   border-radius: 0;
   color: var(--accent-color);
-  /* `bold` to match the gallery card's title exactly. Computes to 700 — the previous 600 was a
-     visibly lighter weight than the field this is meant to mirror. */
-  font-weight: bold;
+  /* Matches the gallery card's title weight (600) exactly. */
+  font-weight: 600;
   font-size: calc(14px * var(--font-scale, 1));
   line-height: 1.4;
   font-family: inherit;
@@ -2041,9 +2040,9 @@ textarea:not(.image-notes):focus {
 #modal .branch-state-modal-action {
   margin-right: 10px;
   flex: 0 0 auto;
-  text-transform: uppercase;
+  text-transform: none;
   font-size: calc(11px * var(--font-scale));
-  letter-spacing: 0.04em;
+  letter-spacing: 0;
   padding: 6px 10px;
 }
 

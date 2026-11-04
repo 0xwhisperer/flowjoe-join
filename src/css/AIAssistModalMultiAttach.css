@@ -27,7 +27,7 @@
   padding: 8px 10px;
   border-bottom: 1px solid color-mix(in srgb, var(--border-color) 82%, transparent);
   color: var(--text-secondary);
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.1;
 }
 

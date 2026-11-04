@@ -113,7 +113,7 @@ body {
   color: var(--fj-cal-text);
   font-size: var(--fj-cal-title-font-size) !important;
   line-height: 1.1;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 0;
   white-space: nowrap;
 }
@@ -221,7 +221,7 @@ body {
   color: var(--fj-cal-muted);
   font-size: var(--fj-cal-label-font-size);
   line-height: 1;
-  font-weight: 800;
+  font-weight: 600;
   text-decoration: none;
 }
 
@@ -241,7 +241,7 @@ body {
   padding: 6px 8px 0 0 !important;
   color: var(--fj-cal-text);
   font-size: var(--fj-cal-font-size);
-  font-weight: 700;
+  font-weight: 500;
   text-decoration: none;
 }
 
@@ -335,7 +335,7 @@ body {
   background: color-mix(in srgb, var(--fj-cal-panel) 88%, transparent);
   color: var(--fj-cal-accent-2);
   font-size: var(--fj-cal-small-font-size);
-  font-weight: 700;
+  font-weight: 500;
   pointer-events: none;
 }
 
@@ -432,7 +432,7 @@ body {
   min-width: 0;
   overflow: hidden;
   color: var(--fj-cal-text);
-  font-weight: 800;
+  font-weight: 600;
   font-size: var(--fj-cal-title-font-size);
   line-height: 1.15;
   text-overflow: ellipsis;
@@ -524,7 +524,7 @@ body {
 }
 .fj-ev-field-wide { grid-column: 1 / -1; }
 .fj-ev-field-compact { grid-column: auto; }
-.fj-ev-label { font-size: var(--fj-cal-label-font-size); font-weight: 700; color: var(--fj-cal-muted); }
+.fj-ev-label { font-size: var(--fj-cal-label-font-size); font-weight: 500; color: var(--fj-cal-muted); }
 .fj-ev-input {
   font: inherit;
   padding: 6px 8px;

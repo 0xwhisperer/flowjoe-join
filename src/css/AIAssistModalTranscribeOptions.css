@@ -22,7 +22,7 @@
 
 .ai-transcribe-model-info-primary {
   color: var(--text-primary);
-  font-weight: 700;
+  font-weight: 600;
 }
 
 #ai-transcribe-model-cost {
