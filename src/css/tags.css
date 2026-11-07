@@ -851,6 +851,9 @@
 
 .context-menu-slot-label {
   margin-top: 4px;
+  /* The "Node: …" / "Slot: …" line names the menu's target; it is not an action, so plain text (owner-approved
+     colour pass 2026-11-04). The Assign Tags label sharing the rule above keeps the accent. */
+  color: var(--text-primary);
 }
 
 .assign-tags-color-menu {

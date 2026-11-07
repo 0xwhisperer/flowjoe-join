@@ -101,6 +101,7 @@
   --breadcrumb-edit-input-focus-border: 1px solid transparent; /* focused border for inline breadcrumb rename inputs -- transparent, no visible underline. */
   --breadcrumb-edit-input-bg: transparent; /* inline breadcrumb rename input background. */
   --breadcrumb-edit-input-radius: 0; /* inline breadcrumb rename input radius. */
+  --context-menu-icon-color: var(--text-secondary); /* default icon colour in right-click and header menus (delete keeps --danger-color; tag/status icons pass their own colour; ticks stay --accent-color). */
   --tree-title-input-bg: var(--bg-secondary); /* flow title input background in the tree header. */
   --tree-title-input-color: var(--accent-color); /* flow title input text/caret color in the tree header. */
   --tree-title-input-border: 1px solid var(--border-color); /* flow title input resting underline. */

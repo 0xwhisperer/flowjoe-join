@@ -97,7 +97,7 @@ This guest build publishes only components delivered to the browser. The complet
 | decimal.js | 10.6.0 | MIT |
 | detect-node-es | 1.1.0 | MIT |
 | devlop | 1.1.0 | MIT |
-| dompurify | 3.4.16 | (MPL-2.0 OR Apache-2.0) |
+| dompurify | 3.4.17 | (MPL-2.0 OR Apache-2.0) |
 | entities | 4.5.0 | BSD-2-Clause |
 | fast-diff | 1.3.0 | Apache-2.0 |
 | fflate | 0.8.3 | MIT |
@@ -122,7 +122,7 @@ This guest build publishes only components delivered to the browser. The complet
 | linkifyjs | 4.3.3 | MIT |
 | lodash-es | 4.18.1 | MIT |
 | lowlight | 3.3.0 | MIT |
-| markdown-it | 14.3.2 | MIT |
+| markdown-it | 14.3.3 | MIT |
 | markdown-it-task-lists | 2.1.1 | ISC |
 | mdurl | 2.0.0 | MIT |
 | monaco-editor | 0.52.2 | MIT |
@@ -173,4 +173,4 @@ This guest build publishes only components delivered to the browser. The complet
 | use-callback-ref | 1.3.3 | MIT |
 | use-sidecar | 1.1.3 | MIT |
 | w3c-keyname | 2.2.8 | MIT |
-| zod | 4.4.3 | MIT |
+| zod | 4.6.7 | MIT |

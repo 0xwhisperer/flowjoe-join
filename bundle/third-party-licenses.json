@@ -1,5 +1,6 @@
 {
   "schema": 1,
+  "speakerPlatform": "darwin-arm64",
   "components": [
     {
       "id": "@flatten-js/interval-tree@1.1.3",
@@ -1583,9 +1584,9 @@
       "standardText": false
     },
     {
-      "id": "dompurify@3.4.16",
+      "id": "dompurify@3.4.17",
       "name": "dompurify",
-      "version": "3.4.16",
+      "version": "3.4.17",
       "targets": [
         "browser",
         "desktop"
@@ -2004,9 +2005,9 @@
       "standardText": false
     },
     {
-      "id": "markdown-it@14.3.2",
+      "id": "markdown-it@14.3.3",
       "name": "markdown-it",
-      "version": "14.3.2",
+      "version": "14.3.3",
       "targets": [
         "browser",
         "desktop"
@@ -2868,9 +2869,9 @@
       "standardText": false
     },
     {
-      "id": "zod@4.4.3",
+      "id": "zod@4.6.7",
       "name": "zod",
-      "version": "4.4.3",
+      "version": "4.6.7",
       "targets": [
         "browser",
         "desktop"

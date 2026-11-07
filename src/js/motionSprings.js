@@ -11,6 +11,9 @@ export const SPRINGS = {
   trail: {k: 140, c: 22}
 };
 
+// How long a small thing (a menu, a popup, a chip) takes to leave at most, so it never leaves slower than it arrived. Windows and panels keep the whole exit spring.
+export const SMALL_LEAVE_MS = 190;
+
 const curveCache = new Map();
 
 export function springCurve(name) {
@@ -44,8 +47,13 @@ export function canAnimate(el) {
   if (!el || typeof el.animate !== "function") return false;
   // A hidden window animates nothing (the page's frames are throttled and the queued motion would replay on return).
   if (typeof document !== "undefined" && document.hidden) return false;
+  return motionWanted();
+}
+
+// The user's own choice, apart from whether the window can show it right now: an endless spin that must be running when the window comes back asks this, not canAnimate.
+export function motionWanted() {
   try {
-    // `localStorage.setItem("flowjoe_motion", "off")` and a reload turns every motion in this file's family off, so the app can be compared with and without it.
+    // `localStorage.setItem("flowjoe_motion", "off")` turns every motion in this file's family off (a reload is only needed for CSS loops: visibleSpinners.js), so the app can be compared with and without it.
     if (localStorage.getItem("flowjoe_motion") === "off") return false;
   } catch {
     /* storage unavailable: motion stays on */
@@ -55,6 +63,11 @@ export function canAnimate(el) {
   } catch {
     return true;
   }
+}
+
+// For scrollTo / scrollBy / scrollIntoView: a smooth scroll is motion too, so it jumps when motion stands down.
+export function scrollBehavior(el = typeof document !== "undefined" ? document.documentElement : null) {
+  return canAnimate(el) ? "smooth" : "auto";
 }
 
 // Independent translate / scale properties are used (never `transform`) so a slot, row or dialog keeps the placement the app gave it.

@@ -1,15 +1,20 @@
 /* Rich Document Workbench island styles (Phase 0.5 spike).
    Univer measures its container, so the mount must fill the iframe with a real height. */
-html,
-body {
+html {
   /* Chrome fallbacks — overridden at runtime by the parent's theme bridge (applyTheme sets
      these on documentElement from the app's CSS vars; see richDocumentWorkbench.js
-     collectWorkbenchTheme). Kept as the no-theme defaults; do not remove. */
+     collectWorkbenchTheme). Kept as the no-theme defaults; do not remove. Declared on html
+     ONLY: the bridge's inline values on html beat this rule, but a copy on body would shadow
+     them for everything inside body (the dictate button stayed default orange on every theme). */
   --bg-tertiary: #18191a;
   --border-color: #444;
   --hover-bg: #2d3136;
   --accent-color: #ff9900;
   --text-muted: #777;
+}
+
+html,
+body {
   margin: 0;
   padding: 0;
   width: 100%;

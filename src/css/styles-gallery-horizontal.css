@@ -522,6 +522,7 @@ body.fj-bg-idle:not(.fj-window-hidden) .fa-spin.fj-in-view::after,
 body.fj-bg-idle:not(.fj-window-hidden) .spinner.fj-in-view,
 body.fj-bg-idle:not(.fj-window-hidden) .spinner.fj-in-view::before,
 body.fj-bg-idle:not(.fj-window-hidden) .spinner.fj-in-view::after,
+body.fj-bg-idle:not(.fj-window-hidden) .slot-loading-skeleton.fj-in-view::before,
 body.fj-bg-idle:not(.fj-window-hidden) .ai-generate-preview-card.is-generating.fj-in-view::before,
 body.fj-bg-idle:not(.fj-window-hidden) .ai-generate-preview-card.is-generating.fj-in-view::after,
 body.fj-bg-idle:not(.fj-window-hidden) .ai-generate-preview-placeholder.is-generating.fj-in-view::before,
@@ -562,6 +563,7 @@ body.fj-bg-idle:not(.fj-window-hidden) #app-rail-joe-btn .app-rail-icon.fj-in-vi
 .spinner:not(.fj-in-view),
 .spinner:not(.fj-in-view)::before,
 .spinner:not(.fj-in-view)::after,
+.slot-loading-skeleton:not(.fj-in-view)::before,
 .ai-generate-preview-card.is-generating:not(.fj-in-view)::before,
 .ai-generate-preview-card.is-generating:not(.fj-in-view)::after,
 .ai-generate-preview-placeholder.is-generating:not(.fj-in-view)::before,
@@ -640,7 +642,6 @@ body.fj-bg-idle:not(.fj-window-hidden) #app-rail-joe-btn .app-rail-icon.fj-in-vi
   -webkit-appearance: none !important;
   -moz-appearance: none !important;
   appearance: none !important;
-  text-transform: uppercase !important;
 }
 
 /* Spinner styles */
@@ -1775,7 +1776,7 @@ button.orphan-media-modal-close.context-menu-corner-close {
 
 #modal-message .keyboard-shortcuts-legend-section h3 {
   margin: 0 0 var(--card-title-gap);
-  color: var(--accent-color);
+  color: var(--text-secondary);
   font-size: calc(15px * var(--font-scale));
   line-height: 1.2;
   letter-spacing: 0;

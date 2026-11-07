@@ -102,6 +102,7 @@ body.shape-soft :is(input, textarea, select, [contenteditable]) {
 /* Selection stops being a grey block and becomes an accent-tinted row with a
    2px spine. Reads as "here" instead of "highlighted". */
 body.shape-soft #tree li.selected > .flex-container,
+body.shape-soft #tree li.selection-inside > .flex-container,
 body.shape-soft #tree li.multi-selected > .flex-container {
   background-color: color-mix(in srgb, var(--accent-color) 12%, var(--bg-secondary));
   box-shadow: inset 2px 0 0 var(--accent-color);

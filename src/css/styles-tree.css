@@ -1185,12 +1185,12 @@ body.resizing .resizer::after,
 }
 
 /* Extend horizontal line to reach pulled-forward tree on hover */
-#tree li:not(.selected):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)::after {
+#tree li:not(.selected):not(.selection-inside):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)::after {
   width: 30px;
   /* Extend 8px more to reach the pulled-forward node */
 }
 
-#tree ul ul > li:not(.selected):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)::after {
+#tree ul ul > li:not(.selected):not(.selection-inside):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)::after {
   width: calc(30px - var(--tree-stem-nudge));
 }
 
@@ -1205,7 +1205,8 @@ body.resizing .resizer::after,
 }
 
 /* Style selected node */
-#tree li.selected>.flex-container {
+#tree li.selected>.flex-container,
+#tree li.selection-inside>.flex-container {
   background-color: var(--selection-bg);
   border-radius: var(--radius-md, 6px);
   padding: 4px 8px;
@@ -1216,6 +1217,7 @@ body.resizing .resizer::after,
 }
 
 #tree li.selected>.flex-container>.node-text,
+#tree li.selection-inside>.flex-container>.node-text,
 #tree li.multi-selected>.flex-container>.node-text {
   flex: 0 1 auto;
   min-width: 0;
@@ -1263,30 +1265,35 @@ body.resizing .resizer::after,
 }
 
 /* Set variable for selected node line-height calculations */
-#tree li.selected {
+#tree li.selected,
+#tree li.selection-inside {
   --tree-line-height-middle-padding: 10px;
   /* half the total padding and margin height */
 }
 
 
 /* Dynamic selection highlighting with rounded corners */
-#tree li.selected {
+#tree li.selected,
+#tree li.selection-inside {
   background-color: transparent;
   /* Remove background from li */
 }
 
 /* Selected node horizontal line placement */
-#tree li.selected::after {
+#tree li.selected::after,
+#tree li.selection-inside::after {
   top: calc(var(--tree-line-height-middle) + var(--tree-line-height-middle-padding));
 }
 
 /* For last-children that are selected, adjust height to account for padding */
-#tree li:last-child.selected::before {
+#tree li:last-child.selected::before,
+#tree li:last-child.selection-inside::before {
   height: calc(var(--tree-line-height-middle) + var(--tree-line-height-middle-padding));
 }
 
 /* Adjust the first root node when there are multiple roots or the single root has children */
-#tree>ul>li:first-child.selected::before {
+#tree>ul>li:first-child.selected::before,
+#tree>ul>li:first-child.selection-inside::before {
   top: calc(var(--tree-line-height-middle) + var(--tree-line-height-middle-padding));
 }
 
@@ -1514,7 +1521,7 @@ body.hide-child-counts .child-count {
 }
 
 /* Hover affordance for tree rows without overriding active selections */
-#tree li:not(.selected):not(.multi-selected):not(.context-target)>.flex-container:hover {
+#tree li:not(.selected):not(.selection-inside):not(.multi-selected):not(.context-target)>.flex-container:hover {
   background-color: color-mix(in srgb, var(--selection-bg) 45%, transparent);
   border-radius: var(--radius-md, 6px);
   padding: 0;
@@ -1529,27 +1536,27 @@ body.hide-child-counts .child-count {
 }
 
 /* Pull only this node's children branch forward on hover. */
-#tree li:not(.selected):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>ul {
+#tree li:not(.selected):not(.selection-inside):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>ul {
   transform: translateX(8px);
 }
 
 /* Keep shifted descendant row cards inside the same visible right edge. */
-#tree li:not(.selected):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>ul>li>.flex-container,
-#tree li:not(.selected):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>ul>li.selected>.flex-container,
-#tree li:not(.selected):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>ul>li.multi-selected>.flex-container {
+#tree li:not(.selected):not(.selection-inside):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>ul>li>.flex-container,
+#tree li:not(.selected):not(.selection-inside):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>ul>li.selected>.flex-container,
+#tree li:not(.selected):not(.selection-inside):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>ul>li.multi-selected>.flex-container {
   width: calc(100% - var(--tree-row-right-gutter) - 8px);
 }
 
 /* Move parent row content only; keep hover card/background itself stationary. */
-#tree li:not(.selected):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>.flex-container>.status-indicator,
-#tree li:not(.selected):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>.flex-container>.tree-node-lock-indicator,
-#tree li:not(.selected):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>.flex-container>.tree-node-frozen-indicator,
-#tree li:not(.selected):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>.flex-container>.tree-node-schedule-indicator,
-#tree li:not(.selected):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>.flex-container>.tree-node-hidden-from-joe-indicator,
-#tree li:not(.selected):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>.flex-container>.tree-node-repo-indicator,
-#tree li:not(.selected):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>.flex-container>.tree-node-share-indicator,
-#tree li:not(.selected):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>.flex-container>.node-text,
-#tree li:not(.selected):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>.flex-container>.node-inline-meta {
+#tree li:not(.selected):not(.selection-inside):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>.flex-container>.status-indicator,
+#tree li:not(.selected):not(.selection-inside):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>.flex-container>.tree-node-lock-indicator,
+#tree li:not(.selected):not(.selection-inside):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>.flex-container>.tree-node-frozen-indicator,
+#tree li:not(.selected):not(.selection-inside):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>.flex-container>.tree-node-schedule-indicator,
+#tree li:not(.selected):not(.selection-inside):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>.flex-container>.tree-node-hidden-from-joe-indicator,
+#tree li:not(.selected):not(.selection-inside):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>.flex-container>.tree-node-repo-indicator,
+#tree li:not(.selected):not(.selection-inside):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>.flex-container>.tree-node-share-indicator,
+#tree li:not(.selected):not(.selection-inside):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>.flex-container>.node-text,
+#tree li:not(.selected):not(.selection-inside):not(.multi-selected):not(.context-target):not(.virtual-gallery-origin-node):has(> .flex-container:hover)>.flex-container>.node-inline-meta {
   transform: translateX(8px);
 }
 
@@ -1713,6 +1720,7 @@ body.hide-child-counts .child-count {
 }
 
 .tree-section.tree-compact #tree li.selected>.flex-container>.node-text,
+.tree-section.tree-compact #tree li.selection-inside>.flex-container>.node-text,
 .tree-section.tree-compact #tree li.multi-selected>.flex-container>.node-text {
   flex: 0 1 auto;
   min-width: 0;
@@ -1731,6 +1739,7 @@ body.hide-child-counts .child-count {
 }
 
 .tree-section.tree-tight #tree li.selected>.flex-container>.node-text,
+.tree-section.tree-tight #tree li.selection-inside>.flex-container>.node-text,
 .tree-section.tree-tight #tree li.multi-selected>.flex-container>.node-text {
   max-width: 56%;
 }
@@ -1745,6 +1754,7 @@ body.hide-child-counts .child-count {
 }
 
 .tree-section.tree-ultra-tight #tree li.selected>.flex-container>.node-text,
+.tree-section.tree-ultra-tight #tree li.selection-inside>.flex-container>.node-text,
 .tree-section.tree-ultra-tight #tree li.multi-selected>.flex-container>.node-text {
   max-width: 48%;
 }
@@ -1758,6 +1768,7 @@ body.hide-child-counts .child-count {
    width can be based on the real visible row content, not the currently clipped render. */
 .tree-section.tree-autosize-measuring .node-text,
 .tree-section.tree-autosize-measuring #tree li.selected>.flex-container>.node-text,
+.tree-section.tree-autosize-measuring #tree li.selection-inside>.flex-container>.node-text,
 .tree-section.tree-autosize-measuring #tree li.multi-selected>.flex-container>.node-text {
   flex: 0 0 auto;
   min-width: 0;

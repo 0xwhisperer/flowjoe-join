@@ -1318,7 +1318,6 @@ body.fj-bg-idle:not(.fj-window-hidden) .notification-undo-timer-progress.fj-in-v
   font-size: var(--font-micro) !important;
   font-family: inherit !important;
   font-weight: normal !important;
-  text-transform: uppercase !important;
   letter-spacing: 0.03em;
   background: var(--bg-tertiary, #333) !important;
   color: var(--text-secondary, #999) !important;
@@ -2206,13 +2205,13 @@ input[type="text"].breadcrumb-node-edit-input {
   white-space: nowrap;
 }
 
-#tree li.virtual-gallery-origin-node:not(.selected):not(.multi-selected):not(.context-target)>.flex-container {
+#tree li.virtual-gallery-origin-node:not(.selected):not(.selection-inside):not(.multi-selected):not(.context-target)>.flex-container {
   padding: 4px 8px;
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent-color) 38%, transparent);
   background: color-mix(in srgb, var(--accent-color) 8%, transparent);
 }
 
-#tree li.virtual-gallery-origin-node:not(.selected):not(.multi-selected):not(.context-target)>.flex-container:hover {
+#tree li.virtual-gallery-origin-node:not(.selected):not(.selection-inside):not(.multi-selected):not(.context-target)>.flex-container:hover {
   padding: 4px 8px;
   width: calc(100% - var(--tree-row-right-gutter));
   background: color-mix(in srgb, var(--selection-bg) 55%, color-mix(in srgb, var(--accent-color) 8%, transparent));
@@ -2223,7 +2222,7 @@ input[type="text"].breadcrumb-node-edit-input {
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent-color) 44%, transparent);
 }
 
-#tree li.virtual-gallery-origin-node:not(.selected):not(.multi-selected):not(.context-target):has(> .flex-container:hover)::after {
+#tree li.virtual-gallery-origin-node:not(.selected):not(.selection-inside):not(.multi-selected):not(.context-target):has(> .flex-container:hover)::after {
   width: 22px;
 }
 

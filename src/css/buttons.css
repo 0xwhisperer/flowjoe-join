@@ -2167,8 +2167,7 @@ body.tree-branch-toggle-flat .header-audio-saved-playlist-expand-btn.collapse-bt
   overflow: hidden;
   border-radius: var(--radius-md, 6px);
   border: 1px solid color-mix(in srgb, var(--border-color) 82%, transparent);
-  background:
-    linear-gradient(135deg, color-mix(in srgb, var(--accent-color) 16%, var(--bg-tertiary)), var(--bg-primary));
+  background: var(--bg-tertiary);
   box-sizing: border-box;
   isolation: isolate;
 }
@@ -3205,9 +3204,9 @@ body.settings-panel-open .topbar > div[style*="margin-left: auto"] {
   background-color: var(--hover-bg);
 }
 
-/* Button focus styles */
-button:focus,
-button:focus-visible,
+/* Button focus styles. The :where(:not(...)) exemption adds no specificity and covers only the outline: dialogs that draw their own keyboard-focus ring (destination picker, merge conflict windows) do so without a competing !important. */
+button:where(:not(.node-selector-target, .node-selector-branch-toggle, .repo-merge-conflict-modal *)):focus,
+button:where(:not(.node-selector-target, .node-selector-branch-toggle, .repo-merge-conflict-modal *)):focus-visible,
 [role="button"]:focus,
 [role="button"]:focus-visible,
 .icon-btn:focus,
@@ -3220,6 +3219,20 @@ button:focus-visible,
 .arrow-btn:focus-visible {
   outline: none !important;
   outline-offset: 0 !important;
+}
+
+button:focus,
+button:focus-visible,
+[role="button"]:focus,
+[role="button"]:focus-visible,
+.icon-btn:focus,
+.icon-btn:focus-visible,
+.add-root-btn:focus,
+.add-root-btn:focus-visible,
+.add-image-btn:focus,
+.add-image-btn:focus-visible,
+.arrow-btn:focus,
+.arrow-btn:focus-visible {
   box-shadow: none !important;
 }
 
@@ -3238,8 +3251,8 @@ button:focus-visible,
 
 #node-selector-dialog .node-selector-target:focus-visible,
 #node-selector-dialog .node-selector-branch-toggle:focus-visible {
-  outline: 2px solid var(--accent-color) !important;
-  outline-offset: -2px !important;
+  outline: 2px solid var(--accent-color);
+  outline-offset: -2px;
   border-radius: var(--radius-sm, 4px);
 }
 

@@ -100,7 +100,7 @@
   white-space: nowrap;
 }
 .terminal-tab-select:focus-visible {
-  outline: 2px solid var(--accent-color, #ff9500);
+  outline: 2px solid var(--accent-color);
   outline-offset: 2px;
 }
 .terminal-tab-select[hidden] {

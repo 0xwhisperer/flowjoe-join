@@ -1285,7 +1285,7 @@
   #ai-spell-check-modal.joe-docked #ai-chat-messages .flow-mutation-approval-card {
     border: 1px solid var(--jd-accent-line);
     border-radius: var(--jd-radius);
-    background: linear-gradient(180deg, var(--jd-accent-soft), transparent 70%);
+    background: var(--bg-secondary);
     box-shadow: none;
   }
 

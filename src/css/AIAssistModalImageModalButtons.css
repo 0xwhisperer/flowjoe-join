@@ -35,14 +35,6 @@
   box-shadow: var(--focus-ring) !important;
 }
 
-#image-modal[data-summary-mode-active="true"] #image-modal-cancel:focus:not(:disabled) {
-  background: var(--hover-bg) !important;
-  border-color: var(--accent-color) !important;
-  color: var(--accent-color) !important;
-  outline: none !important;
-  box-shadow: var(--focus-ring) !important;
-}
-
 #image-modal .flowjoe-modal-control-btn:active:not(:disabled) {
   background: color-mix(in srgb, var(--accent-color) 18%, var(--bg-tertiary)) !important;
   border-color: var(--accent-color) !important;
@@ -59,10 +51,8 @@
   box-shadow: none !important;
 }
 
+/* Pressed background/border/colour already come from the pressed rule above; only the focus ring needs to beat its box-shadow: none. */
 #image-modal #image-modal-hide-from-joe[aria-checked="true"]:focus-visible:not(:disabled) {
-  background: color-mix(in srgb, var(--accent-color) 14%, var(--bg-secondary)) !important;
-  border-color: var(--accent-color) !important;
-  color: var(--accent-color) !important;
   box-shadow: var(--focus-ring) !important;
 }
 

@@ -58,7 +58,6 @@ body .tooltip-wrapper > .tooltip-content {
   opacity: 0;
   visibility: hidden;
   z-index: var(--flowjoe-z-tooltip) !important;
-  transition: opacity 120ms ease;
 }
 
 .flowjoe-tooltip.is-visible {

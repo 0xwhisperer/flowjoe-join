@@ -297,25 +297,6 @@
   padding: 0 18px 18px;
 }
 
-/* Staggered fade-up entrance animation for history items */
-@media (prefers-reduced-motion: no-preference) {
-  .ai-image-history-item.ai-history-entering {
-    opacity: 0;
-    animation: aiHistoryItemEnter 0.28s ease-out both;
-  }
-}
-
-@keyframes aiHistoryItemEnter {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 .ai-image-history-empty {
   padding: 28px 12px;
   color: var(--text-secondary);

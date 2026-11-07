@@ -12,7 +12,7 @@
 // It stands down for reduced motion, for `localStorage.flowjoe_motion = "off"` (every motion in the family), and for
 // `localStorage.flowjoe_motion_windows = "off"` (only these windows: today's open and close come back exactly; no reload needed).
 
-import {canAnimate, springCurve} from "./motionSprings.js";
+import {canAnimate, SMALL_LEAVE_MS, springCurve} from "./motionSprings.js";
 
 export const WINDOW_MOTION_SWITCH = "flowjoe_motion_windows";
 const GHOST_ATTR = "data-fj-motion-ghost";
@@ -486,20 +486,24 @@ function retire(ghost, anims, duration) {
 
 // A ghost leaves toward `end` (keyframe values, e.g. {opacity: 0, translate: "0 -4px"}) and is removed. Returns when it has visibly gone (the spring's
 // last tenth is a tail too small to see; the mockup's "leave, then arrive" waits for the same moment), which is when what replaces it may arrive.
-export function leaveGhost(ghost, end, {spring = "exit"} = {}) {
-  const {easing, duration} = springCurve(spring);
+export function leaveGhost(ghost, end, {spring = "exit", maxMs = Infinity} = {}) {
+  const curve = springCurve(spring);
+  const easing = curve.easing;
+  const duration = Math.min(curve.duration, maxMs);
   if (ghost) retire(ghost, [ghost.root.animate([{offset: 0}, {offset: 1, ...end}], {duration, easing, fill: "forwards"})], duration);
   return Math.round(duration * 0.9);
 }
 
 // The window leaves into `to` (an element or a point): opacity -> 0, scale -> `scale`, optional translate. `press`: a control inside the window that
 // was just pressed; its copy gives the one-beat press while the window leaves.
-export function closeSurface(el, {to = null, scale = 0.92, spring = "exit", fade = true, translate = null, restore = null, press = null, layer = null, clipTo = null, key} = {}) {
+export function closeSurface(el, {to = null, scale = 0.92, spring = "exit", fade = true, translate = null, restore = null, press = null, layer = null, clipTo = null, maxMs = Infinity, key} = {}) {
   if (!el || !el.isConnected || !windowMotionOn(el, key)) return null;
   stopMotion(el);
   const ghost = makeGhost(el, {restore, layer, clipTo});
   if (!ghost) return null;
-  const {easing, duration} = springCurve(spring);
+  const curve = springCurve(spring);
+  const easing = curve.easing;
+  const duration = Math.min(curve.duration, maxMs); // `maxMs`: small things (SMALL_LEAVE_MS) leave quicker than the spring's whole tail
   const pt = pointOf(to);
   const origin = pt ? originFor(ghost.root, pt) : null;
   const k0 = {offset: 0};
@@ -585,6 +589,33 @@ export function closeDialog(modal, {to = null, restore = null, key} = {}) {
   }
   retire(ghost, anims, duration);
   return ghost;
+}
+
+// Layout code that reads a window's size while it is growing would read the scaled size and keep it: `measure` runs with the window's own animations
+// lifted (they carry on afterwards), so it sees the window at rest.
+export function measureAtRest(el, measure) {
+  const lifted = el && typeof el.getAnimations === "function" ? el.getAnimations().map((anim) => [anim, anim.effect]) : [];
+  lifted.forEach(([anim]) => (anim.effect = null));
+  try {
+    return measure();
+  } finally {
+    lifted.forEach(([anim, effect]) => (anim.effect = effect));
+  }
+}
+
+// A closeDialog copy that was started before its destination existed (a window minimizing into a pill the app draws a moment later) is aimed at it now.
+export function aimDialogGhost(ghost, to) {
+  const panel = ghost && ghost.root && ghost.root.firstElementChild;
+  const pt = pointOf(to);
+  if (panel && pt) panel.style.setProperty("transform-origin", originFor(panel, pt));
+}
+
+// A minimized pill pops in just after its window starts shrinking toward it, and goes the same way when the window comes back.
+export function popInPill(pill, key) {
+  return openSurface(pill, {scale: 0.8, spring: "snappy", delay: 60, key});
+}
+export function popOutPill(pill, key) {
+  return closeSurface(pill, {scale: 0.8, maxMs: SMALL_LEAVE_MS, key});
 }
 
 // Watches the shared #modal once: when it is hidden, the dialog that was on it leaves into `to`. Another dialog taking the modal over without hiding

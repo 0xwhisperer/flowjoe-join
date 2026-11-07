@@ -190,7 +190,7 @@
   }
 
   .stack-audio-playback-controls button:hover {
-    background: linear-gradient(135deg, color-mix(in srgb, var(--bg-tertiary) 56%, transparent), color-mix(in srgb, var(--accent-color) 38%, transparent));
+    background: var(--bg-tertiary);
     border-color: var(--gallery-glass-control-border-hover);
     color: var(--text-primary);
     transform: translateY(-1px);
@@ -198,8 +198,8 @@
   }
 
   .stack-audio-playback-controls button.is-active {
-    background: linear-gradient(135deg, color-mix(in srgb, var(--accent-color) 42%, var(--bg-tertiary) 58%), color-mix(in srgb, var(--accent-color) 28%, var(--bg-secondary) 72%));
-    border: 1px solid var(--gallery-glass-control-border-active);
+    background: var(--bg-tertiary);
+    border: 1px solid var(--accent-color);
     color: var(--text-primary);
     box-shadow: var(--gallery-glass-control-shadow-resting);
   }
@@ -731,7 +731,7 @@
     margin: 0 0 8px;
     font-size: 14px;
     font-weight: 600;
-    color: var(--accent-color);
+    color: var(--text-secondary);
   }
 
   .stack-keyboard-help ul {
@@ -893,7 +893,6 @@
   .image-item.batch-drag-member .stack-navigation {
     opacity: 0.5;
     pointer-events: none;
-    cursor: grabbing !important;
   }
 
   .image-item.dragging .stack-scrub-control,

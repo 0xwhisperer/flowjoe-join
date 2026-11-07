@@ -37,3 +37,31 @@
    font-awesome CDN link stay deliberately UNLAYERED (see fa-interop.css) — unlayered rules always
    beat any layered rule. */
 @layer tokens, themes, node-themes, rail-fix, app, overrides;
+
+/* Everything obeys Reduce motion (owner-approved 2026-11-03, motion consistency mockup, change 15). One place, the earliest layer,
+   because high-importance declarations reverse layer order and this has to outrank the components' own. It is a recorded
+   !important exception in MOTION_SYSTEM.md. A very short duration rather than none, so code waiting on animationend/transitionend still hears it;
+   a loop plays once and returns to its resting style (or its last frame, where it fills forwards). html.fj-motion-off is the console switch
+   flowjoe_motion = "off" (read at startup: visibleSpinners.js). */
+/* stylelint-disable declaration-no-important -- the global stand-down must outrank every component's own rule (recorded exception, above) */
+@layer tokens {
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-delay: 0s !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      transition-delay: 0s !important;
+      scroll-behavior: auto !important;
+    }
+  }
+  html.fj-motion-off *, html.fj-motion-off *::before, html.fj-motion-off *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+    scroll-behavior: auto !important;
+  }
+}
+/* stylelint-enable declaration-no-important */
